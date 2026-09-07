@@ -206,24 +206,38 @@ def validate_backlog() -> list[str]:
     milestone_titles = {item.get("title") for item in milestones if isinstance(item, dict)}
     label_names = {item.get("name") for item in labels if isinstance(item, dict)}
     issue_titles = {item.get("title") for item in issues if isinstance(item, dict)}
+    if backlog.get("schema_version") != 2:
+        errors.append("Le backlog GitHub doit utiliser schema_version=2")
     if len(milestones) != 4 or len(milestone_titles) != 4:
         errors.append("Le backlog doit définir exactement quatre jalons uniques")
-    if len(issues) != 7 or len(issue_titles) != 7:
-        errors.append("Le backlog doit définir exactement sept issues uniques")
-    required_labels = {"data", "qa", "source", "identity", "governance", "parliament", "postgresql"}
+    if len(issues) != 8 or len(issue_titles) != 8:
+        errors.append("Le backlog doit définir exactement huit issues uniques")
+    required_labels = {"data", "qa", "source", "identity", "governance", "parliament", "postgresql", "blocked"}
     if label_names != required_labels:
         errors.append(f"Labels GitHub incorrects: {sorted(label_names)}")
+    for milestone in milestones:
+        if milestone.get("state") not in {"open", "closed"}:
+            errors.append(f"Jalon sans état valide: {milestone.get('title')}")
     for issue in issues:
         if issue.get("milestone") not in milestone_titles:
             errors.append(f"Issue sans jalon valide: {issue.get('title')}")
         if not issue.get("acceptance"):
             errors.append(f"Issue sans critères d’acceptation: {issue.get('title')}")
+        if issue.get("state") not in {"open", "closed"}:
+            errors.append(f"Issue sans état valide: {issue.get('title')}")
+        if issue.get("state") == "closed" and issue.get("close_reason") not in {"completed", "not planned"}:
+            errors.append(f"Issue fermée sans motif valide: {issue.get('title')}")
+        if issue.get("state") == "open" and issue.get("close_reason") is not None:
+            errors.append(f"Issue ouverte avec un motif de fermeture: {issue.get('title')}")
         unknown_labels = set(issue.get("labels", [])) - label_names
         if unknown_labels:
             errors.append(f"Issue {issue.get('title')}: labels inconnus {sorted(unknown_labels)}")
         unknown_dependencies = set(issue.get("depends_on", [])) - issue_titles
         if unknown_dependencies:
             errors.append(f"Issue {issue.get('title')}: dépendances inconnues {sorted(unknown_dependencies)}")
+        unknown_blocks = set(issue.get("blocks", [])) - issue_titles
+        if unknown_blocks:
+            errors.append(f"Issue {issue.get('title')}: blocages inconnus {sorted(unknown_blocks)}")
     return errors
 
 

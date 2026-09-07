@@ -1,22 +1,26 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "repository": "MOSSAWIII/morocco-electoral-data-warehouse",
   "milestones": [
     {
       "title": "V10 — Identités et intégrité",
-      "description": "Correction des identités locales, validation des crosswalks et réconciliation des sièges."
+      "description": "Correction des identités locales, validation des crosswalks et réconciliation des sièges.",
+      "state": "closed"
     },
     {
       "title": "V11 — Pouvoir local et socio-économie",
-      "description": "Composition 2015, SMIIG, gouvernance communale et indicateurs HCP."
+      "description": "Composition 2015, SMIIG, gouvernance communale et indicateurs HCP.",
+      "state": "open"
     },
     {
       "title": "V12 — Activité parlementaire",
-      "description": "Questions parlementaires et trajectoires longitudinales d’activité."
+      "description": "Questions parlementaires et trajectoires longitudinales d’activité.",
+      "state": "open"
     },
     {
       "title": "V13 — Canonique PostgreSQL",
-      "description": "PostgreSQL devient la source canonique et Excel un export reproductible."
+      "description": "PostgreSQL devient la source canonique et Excel un export reproductible.",
+      "state": "open"
     }
   ],
   "labels": [
@@ -26,14 +30,18 @@
     {"name": "identity", "color": "fbca04", "description": "Résolution d’identité"},
     {"name": "governance", "color": "0e8a16", "description": "Pouvoir et gouvernance locale"},
     {"name": "parliament", "color": "006b75", "description": "Représentation et activité parlementaires"},
-    {"name": "postgresql", "color": "336791", "description": "Modèle et infrastructure PostgreSQL"}
+    {"name": "postgresql", "color": "336791", "description": "Modèle et infrastructure PostgreSQL"},
+    {"name": "blocked", "color": "b60205", "description": "Bloqué par une preuve, une source ou une décision externe manquante"}
   ],
   "issues": [
     {
       "title": "Corriger les identités locales sans altérer les RAW",
+      "state": "closed",
+      "close_reason": "completed",
       "milestone": "V10 — Identités et intégrité",
       "labels": ["data", "qa", "identity"],
       "depends_on": [],
+      "blocks": [],
       "acceptance": [
         "Les empreintes SHA-256 du RAW COUNCIL2021 sont inchangées.",
         "Les noms arabes et latins sont normalisés sans translittération ASCII destructive.",
@@ -44,9 +52,12 @@
     },
     {
       "title": "Valider les cinq crosswalks géographiques et les deux écarts de sièges",
+      "state": "closed",
+      "close_reason": "completed",
       "milestone": "V10 — Identités et intégrité",
       "labels": ["data", "qa", "source"],
       "depends_on": [],
+      "blocks": [],
       "acceptance": [
         "Les cinq variantes géographiques disposent chacune d’une décision sourcée et d’un audit manuel.",
         "Les communes 770 et 817 sont réconciliées avec une source primaire ou restent explicitement BLOQUÉES sans ligne inventée.",
@@ -56,9 +67,15 @@
     },
     {
       "title": "Retrouver et ingérer la composition des conseils communaux en 2015",
+      "state": "open",
+      "close_reason": null,
       "milestone": "V11 — Pouvoir local et socio-économie",
-      "labels": ["data", "source", "governance"],
-      "depends_on": ["Valider les cinq crosswalks géographiques et les deux écarts de sièges"],
+      "labels": ["data", "source", "governance", "blocked"],
+      "depends_on": [
+        "Valider les cinq crosswalks géographiques et les deux écarts de sièges",
+        "V11-A — Blocage de la source des conseils communaux 2015"
+      ],
+      "blocks": [],
       "acceptance": [
         "La source, sa licence, sa version et son empreinte sont enregistrées.",
         "Les sièges 2015 sont modélisés au grain commune × parti × élection.",
@@ -68,9 +85,12 @@
     },
     {
       "title": "Ingérer SMIIG et construire la gouvernance communale",
+      "state": "open",
+      "close_reason": null,
       "milestone": "V11 — Pouvoir local et socio-économie",
       "labels": ["data", "source", "governance"],
       "depends_on": ["Valider les cinq crosswalks géographiques et les deux écarts de sièges"],
+      "blocks": [],
       "acceptance": [
         "Les 464 lignes et 38 colonnes annoncées sont archivées et profilées sans altération.",
         "Le crosswalk SMIIG vers DIM_GEO est versionné avec score et revue des ambiguïtés.",
@@ -80,9 +100,12 @@
     },
     {
       "title": "Ajouter les indicateurs HCP communaux 2014–2024",
+      "state": "open",
+      "close_reason": null,
       "milestone": "V11 — Pouvoir local et socio-économie",
       "labels": ["data", "source", "qa"],
       "depends_on": ["Valider les cinq crosswalks géographiques et les deux écarts de sièges"],
+      "blocks": [],
       "acceptance": [
         "Seules les publications HCP identifiées et attribuées alimentent la couche observée.",
         "Chaque observation conserve année de référence, publication, unité, population et dénominateur.",
@@ -92,9 +115,12 @@
     },
     {
       "title": "Ingérer les questions parlementaires et construire les trajectoires d’activité",
+      "state": "open",
+      "close_reason": null,
       "milestone": "V12 — Activité parlementaire",
       "labels": ["data", "source", "parliament", "identity"],
       "depends_on": ["Corriger les identités locales sans altérer les RAW"],
+      "blocks": [],
       "acceptance": [
         "Les ressources 2017–2023 sont inventoriées, téléchargées et empreintées.",
         "Chaque question conserve sa date, son auteur, son groupe, son destinataire, son statut et sa source.",
@@ -104,6 +130,8 @@
     },
     {
       "title": "Migrer la couche canonique vers PostgreSQL et générer Excel en export",
+      "state": "open",
+      "close_reason": null,
       "milestone": "V13 — Canonique PostgreSQL",
       "labels": ["data", "qa", "postgresql"],
       "depends_on": [
@@ -114,6 +142,7 @@
         "Ajouter les indicateurs HCP communaux 2014–2024",
         "Ingérer les questions parlementaires et construire les trajectoires d’activité"
       ],
+      "blocks": [],
       "acceptance": [
         "Docker démarre une instance PostgreSQL locale reproductible sans secret versionné.",
         "Les migrations créent dimensions, crosswalks, faits, provenance et QA avec contraintes explicites.",
@@ -121,7 +150,21 @@
         "Les volumes et métriques PostgreSQL sont réconciliés avec la dernière version validée.",
         "Le classeur Excel est généré depuis PostgreSQL et n’est plus une entrée canonique."
       ]
+    },
+    {
+      "title": "V11-A — Blocage de la source des conseils communaux 2015",
+      "state": "open",
+      "close_reason": null,
+      "milestone": "V11 — Pouvoir local et socio-économie",
+      "labels": ["qa", "source", "governance", "blocked"],
+      "depends_on": [],
+      "blocks": ["Retrouver et ingérer la composition des conseils communaux en 2015"],
+      "acceptance": [
+        "La décision reste NO_GO et aucune ligne 2015 n’est ingérée tant que les preuves manquent.",
+        "Les groupes DUP2015_c459fd20416612f454ea (lignes 14307–14308) et DUP2015_c2c5322331ee46ebe863 (lignes 30802–30803) sont expliqués par une preuve attribuée et archivée.",
+        "Les modalités autorisées du champ role sont établies par une documentation source officielle ou attribuée.",
+        "Toute nouvelle qualification conserve les lignes source, ne supprime aucun doublon automatiquement et produit un nouveau rapport GO/NO_GO."
+      ]
     }
   ]
 }
-

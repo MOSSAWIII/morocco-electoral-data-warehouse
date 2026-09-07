@@ -4,6 +4,7 @@ import argparse
 import json
 import subprocess
 import sys
+from typing import Any
 
 from morocco_elections.config import get_paths
 
@@ -25,13 +26,20 @@ def gh(*args: str, input_text: str | None = None) -> str:
     return result.stdout
 
 
-def load_backlog() -> dict:
+def mutate(*args: str, dry_run: bool) -> str:
+    if dry_run:
+        print("DRY_RUN " + subprocess.list2cmdline(["gh", *args]))
+        return ""
+    return gh(*args)
+
+
+def load_backlog() -> dict[str, Any]:
     return json.loads(BACKLOG.read_text(encoding="utf-8"))
 
 
-def ensure_labels(repo: str, backlog: dict) -> None:
+def ensure_labels(repo: str, backlog: dict[str, Any], *, dry_run: bool) -> None:
     for label in backlog["labels"]:
-        gh(
+        mutate(
             "label",
             "create",
             label["name"],
@@ -42,38 +50,69 @@ def ensure_labels(repo: str, backlog: dict) -> None:
             "--description",
             label["description"],
             "--force",
+            dry_run=dry_run,
         )
 
 
-def ensure_milestones(repo: str, backlog: dict) -> None:
+def ensure_milestones(repo: str, backlog: dict[str, Any], *, dry_run: bool) -> None:
     existing = json.loads(gh("api", f"repos/{repo}/milestones?state=all&per_page=100"))
-    titles = {item["title"] for item in existing}
+    by_title = {item["title"]: item for item in existing}
     for milestone in backlog["milestones"]:
-        if milestone["title"] not in titles:
-            gh(
+        current = by_title.get(milestone["title"])
+        fields = (
+            "--field",
+            f"title={milestone['title']}",
+            "--field",
+            f"description={milestone['description']}",
+            "--field",
+            f"state={milestone['state']}",
+        )
+        if current:
+            mutate(
                 "api",
-                f"repos/{repo}/milestones",
+                f"repos/{repo}/milestones/{current['number']}",
                 "--method",
-                "POST",
-                "--field",
-                f"title={milestone['title']}",
-                "--field",
-                f"description={milestone['description']}",
+                "PATCH",
+                *fields,
+                dry_run=dry_run,
             )
+        else:
+            mutate("api", f"repos/{repo}/milestones", "--method", "POST", *fields, dry_run=dry_run)
 
 
-def issue_body(issue: dict) -> str:
+def list_issues(repo: str) -> list[dict[str, Any]]:
+    return json.loads(
+        gh(
+            "issue",
+            "list",
+            "--repo",
+            repo,
+            "--state",
+            "all",
+            "--limit",
+            "1000",
+            "--json",
+            "number,title,state,url,labels,milestone",
+        )
+    )
+
+
+def issue_body(issue: dict[str, Any], issue_urls: dict[str, str]) -> str:
     lines = ["## Critères d’acceptation", ""]
-    lines.extend(f"- [ ] {criterion}" for criterion in issue["acceptance"])
-    if issue["depends_on"]:
-        lines.extend(["", "## Dépendances", ""])
-        lines.extend(f"- {title}" for title in issue["depends_on"])
-    lines.extend(["", "_Créé depuis `metadata/github_backlog.json`._", ""])
+    marker = "x" if issue["state"] == "closed" and issue["close_reason"] == "completed" else " "
+    lines.extend(f"- [{marker}] {criterion}" for criterion in issue["acceptance"])
+    for heading, field in (("Dépendances", "depends_on"), ("Bloque", "blocks")):
+        if not issue[field]:
+            continue
+        lines.extend(["", f"## {heading}", ""])
+        for title in issue[field]:
+            url = issue_urls.get(title)
+            lines.append(f"- [{title}]({url})" if url else f"- {title}")
+    lines.extend(["", "_Synchronisé depuis `metadata/github_backlog.json`._", ""])
     return "\n".join(lines)
 
 
-def ensure_issues(repo: str, backlog: dict) -> None:
-    existing = json.loads(gh("issue", "list", "--repo", repo, "--state", "all", "--limit", "1000", "--json", "title"))
+def _create_missing_issues(repo: str, backlog: dict[str, Any], existing: list[dict[str, Any]], *, dry_run: bool) -> None:
     titles = {item["title"] for item in existing}
     for issue in backlog["issues"]:
         if issue["title"] in titles:
@@ -86,32 +125,84 @@ def ensure_issues(repo: str, backlog: dict) -> None:
             "--title",
             issue["title"],
             "--body",
-            issue_body(issue),
+            issue_body(issue, {}),
             "--milestone",
             issue["milestone"],
         ]
         for label in issue["labels"]:
             args.extend(["--label", label])
-        gh(*args)
+        mutate(*args, dry_run=dry_run)
 
 
-def publish(repo: str | None = None) -> int:
+def _sync_issue(
+    repo: str,
+    issue: dict[str, Any],
+    current: dict[str, Any],
+    issue_urls: dict[str, str],
+    *,
+    dry_run: bool,
+) -> None:
+    number = str(current["number"])
+    desired_labels = set(issue["labels"])
+    current_labels = {item["name"] for item in current.get("labels", [])}
+    args = [
+        "issue",
+        "edit",
+        number,
+        "--repo",
+        repo,
+        "--title",
+        issue["title"],
+        "--body",
+        issue_body(issue, issue_urls),
+        "--milestone",
+        issue["milestone"],
+    ]
+    for label in sorted(desired_labels - current_labels):
+        args.extend(["--add-label", label])
+    for label in sorted(current_labels - desired_labels):
+        args.extend(["--remove-label", label])
+    mutate(*args, dry_run=dry_run)
+    if issue["state"] == "closed" and current["state"].lower() != "closed":
+        mutate("issue", "close", number, "--repo", repo, "--reason", issue["close_reason"], dry_run=dry_run)
+    elif issue["state"] == "open" and current["state"].lower() != "open":
+        mutate("issue", "reopen", number, "--repo", repo, dry_run=dry_run)
+
+
+def ensure_issues(repo: str, backlog: dict[str, Any], *, dry_run: bool) -> None:
+    existing = list_issues(repo)
+    _create_missing_issues(repo, backlog, existing, dry_run=dry_run)
+    if dry_run:
+        return
+    existing = list_issues(repo)
+    by_title = {item["title"]: item for item in existing}
+    issue_urls = {title: item["url"] for title, item in by_title.items()}
+    for issue in backlog["issues"]:
+        current = by_title.get(issue["title"])
+        if not current:
+            raise RuntimeError(f"Issue absente après création: {issue['title']}")
+        _sync_issue(repo, issue, current, issue_urls, dry_run=False)
+
+
+def publish(repo: str | None = None, *, dry_run: bool = False) -> int:
     backlog = load_backlog()
     selected_repo = repo or backlog["repository"]
     gh("auth", "status", "--hostname", "github.com")
     gh("repo", "view", selected_repo, "--json", "nameWithOwner")
-    ensure_labels(selected_repo, backlog)
-    ensure_milestones(selected_repo, backlog)
-    ensure_issues(selected_repo, backlog)
-    print(f"GITHUB_BACKLOG_OK repo={selected_repo} milestones={len(backlog['milestones'])} issues={len(backlog['issues'])}")
+    ensure_labels(selected_repo, backlog, dry_run=dry_run)
+    ensure_milestones(selected_repo, backlog, dry_run=dry_run)
+    ensure_issues(selected_repo, backlog, dry_run=dry_run)
+    status = "GITHUB_BACKLOG_DRY_RUN" if dry_run else "GITHUB_BACKLOG_OK"
+    print(f"{status} repo={selected_repo} milestones={len(backlog['milestones'])} issues={len(backlog['issues'])}")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Publie le backlog versionné dans un dépôt GitHub déjà créé.")
     parser.add_argument("--repo", help="OWNER/REPO ; utilise la valeur du manifeste par défaut")
+    parser.add_argument("--dry-run", action="store_true", help="Affiche les mutations prévues sans les exécuter")
     args = parser.parse_args(argv)
-    return publish(args.repo)
+    return publish(args.repo, dry_run=args.dry_run)
 
 
 if __name__ == "__main__":
