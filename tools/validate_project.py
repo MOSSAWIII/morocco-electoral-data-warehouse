@@ -1,0 +1,390 @@
+from __future__ import annotations
+
+import argparse
+import ast
+import hashlib
+import importlib.util
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+from typing import Iterable
+
+import openpyxl
+
+
+ROOT = Path(__file__).resolve().parents[1]
+MANIFEST_PATH = ROOT / "metadata" / "source_manifest.json"
+BACKLOG_PATH = ROOT / "metadata" / "github_backlog.json"
+DOCUMENTATION_DIR = ROOT / "documentation_v9"
+EXPECTED_DOCUMENTS = [
+    "00_INDEX_ET_MODE_EMPLOI.txt",
+    "01_ONTOLOGIE_ELECTORALE_GLOBALE.txt",
+    "02_ARCHITECTURE_DES_CUBES.txt",
+    "03_DIMENSIONS_CONFORMES.txt",
+    "04_HIERARCHIE_GEOGRAPHIQUE.txt",
+    "05_CROSSWALKS_ET_IDENTITES.txt",
+    "06_TEMPS_CYCLES_ET_ELECTIONS.txt",
+    "07_FAITS_ELECTORAUX_ET_MOBILISATION.txt",
+    "08_PERSONNES_MANDATS_ET_REPRESENTATION.txt",
+    "09_POUVOIR_LOCAL_ET_GOUVERNANCE.txt",
+    "10_SOCIO_ECONOMIE_CAMPAGNE_INFORMATION.txt",
+    "11_PIPELINE_RAW_NORMALIZED_FACT_ANALYTICAL.txt",
+    "12_REGLES_D_INTEGRITE_ET_JOINTURE.txt",
+    "13_METRIQUES_DERIVEES_ET_REGLES_TEMPORELLES.txt",
+    "14_CATALOGUE_COMPLET_DES_ONGLETS.txt",
+]
+REQUIRED_DOCUMENT_METADATA = (
+    "VERSION",
+    "CLASSEUR SOURCE",
+    "DATE DE GÉNÉRATION",
+    "PÉRIMÈTRE",
+    "RENVOIS",
+)
+REQUIRED_SOURCE_FIELDS = {
+    "source_id",
+    "local_path",
+    "source_url",
+    "producer",
+    "license",
+    "version",
+    "sha256",
+    "byte_size",
+    "grain",
+    "rows",
+    "columns",
+    "status",
+}
+REQUIRED_ARTIFACT_FIELDS = {
+    "artifact_id",
+    "local_path",
+    "sha256",
+    "byte_size",
+    "sheet_count",
+    "status",
+}
+FORBIDDEN_SUFFIXES = {
+    ".xlsx",
+    ".xls",
+    ".xlsm",
+    ".parquet",
+    ".shp",
+    ".shx",
+    ".dbf",
+    ".prj",
+    ".cpg",
+    ".zip",
+    ".7z",
+    ".dump",
+    ".backup",
+    ".pem",
+    ".key",
+}
+FORBIDDEN_DIRECTORIES = {"raw_sources", "exports", "artifacts", "backups", "secrets", "pgdata", "postgres-data"}
+MAX_TRACKED_BYTES = 5 * 1024 * 1024
+EXPECTED_V9_VOLUMES = {
+    "LOCAL_MANDATES": 32513,
+    "PARLIAMENTARY_MANDATES": 1654,
+    "COMMUNE_ELECTION_PANEL": 3076,
+    "ELECTORAL_TRANSITIONS_2015_2021": 14555,
+    "ANALYTICAL_PANEL": 22054,
+}
+
+
+class ValidationError(RuntimeError):
+    pass
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def load_manifest(path: Path = MANIFEST_PATH) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValidationError(f"Manifeste illisible: {path}: {exc}") from exc
+
+
+def validate_manifest(manifest: dict) -> list[str]:
+    errors: list[str] = []
+    if manifest.get("schema_version") != 1:
+        errors.append("metadata/source_manifest.json: schema_version doit valoir 1")
+    if manifest.get("warehouse_version") != "V9":
+        errors.append("metadata/source_manifest.json: warehouse_version doit valoir V9")
+
+    sources = manifest.get("sources")
+    artifacts = manifest.get("artifacts")
+    if not isinstance(sources, list) or not sources:
+        errors.append("Le manifeste doit contenir une liste sources non vide")
+        sources = []
+    if not isinstance(artifacts, list) or not artifacts:
+        errors.append("Le manifeste doit contenir une liste artifacts non vide")
+        artifacts = []
+
+    seen_ids: set[str] = set()
+    seen_paths: set[str] = set()
+    for kind, records, required, id_field in (
+        ("source", sources, REQUIRED_SOURCE_FIELDS, "source_id"),
+        ("artifact", artifacts, REQUIRED_ARTIFACT_FIELDS, "artifact_id"),
+    ):
+        for index, record in enumerate(records):
+            label = f"{kind}[{index}]"
+            if not isinstance(record, dict):
+                errors.append(f"{label}: objet JSON attendu")
+                continue
+            missing = sorted(required - record.keys())
+            if missing:
+                errors.append(f"{label}: champs absents: {', '.join(missing)}")
+            record_id = str(record.get(id_field, ""))
+            local_path = str(record.get("local_path", ""))
+            if not record_id or record_id in seen_ids:
+                errors.append(f"{label}: identifiant vide ou dupliqué: {record_id!r}")
+            if not local_path or local_path in seen_paths or Path(local_path).is_absolute() or ".." in Path(local_path).parts:
+                errors.append(f"{label}: local_path invalide ou dupliqué: {local_path!r}")
+            seen_ids.add(record_id)
+            seen_paths.add(local_path)
+            if not re.fullmatch(r"[0-9a-f]{64}", str(record.get("sha256", ""))):
+                errors.append(f"{label}: SHA-256 invalide")
+            for field in ("byte_size", "rows", "columns", "sheet_count"):
+                if field in record and (not isinstance(record[field], int) or record[field] <= 0):
+                    errors.append(f"{label}: {field} doit être un entier positif")
+    return errors
+
+
+def validate_backlog() -> list[str]:
+    errors: list[str] = []
+    try:
+        backlog = json.loads(BACKLOG_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"Backlog GitHub illisible: {exc}"]
+    milestones = backlog.get("milestones", [])
+    labels = backlog.get("labels", [])
+    issues = backlog.get("issues", [])
+    milestone_titles = {item.get("title") for item in milestones if isinstance(item, dict)}
+    label_names = {item.get("name") for item in labels if isinstance(item, dict)}
+    issue_titles = {item.get("title") for item in issues if isinstance(item, dict)}
+    if len(milestones) != 4 or len(milestone_titles) != 4:
+        errors.append("Le backlog doit définir exactement quatre jalons uniques")
+    if len(issues) != 7 or len(issue_titles) != 7:
+        errors.append("Le backlog doit définir exactement sept issues uniques")
+    required_labels = {"data", "qa", "source", "identity", "governance", "parliament", "postgresql"}
+    if label_names != required_labels:
+        errors.append(f"Labels GitHub incorrects: {sorted(label_names)}")
+    for issue in issues:
+        if issue.get("milestone") not in milestone_titles:
+            errors.append(f"Issue sans jalon valide: {issue.get('title')}")
+        if not issue.get("acceptance"):
+            errors.append(f"Issue sans critères d’acceptation: {issue.get('title')}")
+        unknown_labels = set(issue.get("labels", [])) - label_names
+        if unknown_labels:
+            errors.append(f"Issue {issue.get('title')}: labels inconnus {sorted(unknown_labels)}")
+        unknown_dependencies = set(issue.get("depends_on", [])) - issue_titles
+        if unknown_dependencies:
+            errors.append(f"Issue {issue.get('title')}: dépendances inconnues {sorted(unknown_dependencies)}")
+    return errors
+
+
+def validate_python_sources() -> list[str]:
+    errors: list[str] = []
+    for path in sorted(ROOT.rglob("*.py")):
+        if any(part in {".venv", "venv", "__pycache__"} for part in path.parts):
+            continue
+        try:
+            ast.parse(path.read_text(encoding="utf-8-sig"), filename=str(path))
+        except (OSError, SyntaxError, UnicodeError) as exc:
+            errors.append(f"Python invalide: {path.relative_to(ROOT)}: {exc}")
+    return errors
+
+
+def validate_documentation() -> list[str]:
+    errors: list[str] = []
+    actual = sorted(path.name for path in DOCUMENTATION_DIR.glob("*.txt"))
+    if actual != EXPECTED_DOCUMENTS:
+        errors.append(f"Corpus documentaire incorrect: attendu {EXPECTED_DOCUMENTS}, obtenu {actual}")
+    for name in EXPECTED_DOCUMENTS:
+        path = DOCUMENTATION_DIR / name
+        if not path.is_file():
+            continue
+        try:
+            content = path.read_text(encoding="utf-8-sig")
+        except UnicodeError as exc:
+            errors.append(f"Document non UTF-8: {name}: {exc}")
+            continue
+        if not content.strip():
+            errors.append(f"Document vide: {name}")
+        for token in REQUIRED_DOCUMENT_METADATA:
+            if token not in content:
+                errors.append(f"Métadonnée absente de {name}: {token}")
+    return errors
+
+
+def tracked_files() -> list[Path]:
+    result = subprocess.run(
+        ["git", "ls-files", "-z"],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return []
+    return [ROOT / item.decode("utf-8") for item in result.stdout.split(b"\0") if item]
+
+
+def candidate_repository_files() -> list[Path]:
+    tracked = tracked_files()
+    if tracked:
+        return tracked
+    candidates: list[Path] = []
+    for path in ROOT.rglob("*"):
+        if not path.is_file() or ".git" in path.parts:
+            continue
+        relative = path.relative_to(ROOT)
+        if any(part in FORBIDDEN_DIRECTORIES or part in {".venv", "venv", "__pycache__"} for part in relative.parts):
+            continue
+        if path.suffix.lower() in FORBIDDEN_SUFFIXES:
+            continue
+        candidates.append(path)
+    return candidates
+
+
+def validate_repository_files(files: Iterable[Path] | None = None) -> list[str]:
+    errors: list[str] = []
+    selected = list(files) if files is not None else candidate_repository_files()
+    secret_patterns = {
+        "clé privée": re.compile("BEGIN" + r" [A-Z ]*PRIVATE KEY"),
+        "jeton GitHub classique": re.compile("gh" + r"p_[A-Za-z0-9]{20,}"),
+        "jeton GitHub fin": re.compile("github" + r"_pat_[A-Za-z0-9_]{20,}"),
+        "clé AWS": re.compile("AK" + r"IA[0-9A-Z]{16}"),
+    }
+    for path in selected:
+        try:
+            relative = path.resolve().relative_to(ROOT.resolve())
+        except ValueError:
+            errors.append(f"Fichier hors dépôt: {path}")
+            continue
+        if any(part in FORBIDDEN_DIRECTORIES for part in relative.parts):
+            errors.append(f"Répertoire de données interdit dans Git: {relative.as_posix()}")
+        if path.suffix.lower() in FORBIDDEN_SUFFIXES:
+            errors.append(f"Type de fichier interdit dans Git: {relative.as_posix()}")
+        if path.exists() and path.stat().st_size > MAX_TRACKED_BYTES:
+            errors.append(f"Fichier suivi supérieur à 5 MiB: {relative.as_posix()}")
+        if not path.exists() or path.suffix.lower() in FORBIDDEN_SUFFIXES:
+            continue
+        try:
+            content = path.read_text(encoding="utf-8-sig")
+        except (UnicodeError, OSError):
+            continue
+        for label, pattern in secret_patterns.items():
+            if pattern.search(content):
+                errors.append(f"Secret potentiel ({label}) dans {relative.as_posix()}")
+    return errors
+
+
+def validate_physical_record(record: dict) -> list[str]:
+    errors: list[str] = []
+    path = ROOT / record["local_path"]
+    label = record.get("source_id") or record.get("artifact_id")
+    if not path.is_file():
+        return [f"{label}: fichier local absent: {record['local_path']}"]
+    if path.stat().st_size != record["byte_size"]:
+        errors.append(f"{label}: taille attendue {record['byte_size']}, obtenue {path.stat().st_size}")
+    actual_hash = sha256(path)
+    if actual_hash != record["sha256"]:
+        errors.append(f"{label}: SHA-256 attendu {record['sha256']}, obtenu {actual_hash}")
+    return errors
+
+
+def validate_full(manifest: dict) -> list[str]:
+    errors: list[str] = []
+    for source in manifest["sources"]:
+        errors.extend(validate_physical_record(source))
+        path = ROOT / source["local_path"]
+        if path.suffix.lower() == ".xlsx" and path.is_file():
+            workbook = openpyxl.load_workbook(path, read_only=True, data_only=False)
+            sheet = workbook.worksheets[source.get("sheet_index", 0)]
+            actual_rows = sheet.max_row - 1
+            actual_columns = sheet.max_column
+            workbook.close()
+            if actual_rows != source["rows"] or actual_columns != source["columns"]:
+                errors.append(
+                    f"{source['source_id']}: dimensions attendues {source['rows']}×{source['columns']}, "
+                    f"obtenues {actual_rows}×{actual_columns}"
+                )
+
+    for artifact in manifest["artifacts"]:
+        errors.extend(validate_physical_record(artifact))
+        path = ROOT / artifact["local_path"]
+        if path.is_file():
+            workbook = openpyxl.load_workbook(path, read_only=True, data_only=False)
+            actual_sheets = len(workbook.sheetnames)
+            if actual_sheets != artifact["sheet_count"]:
+                errors.append(f"{artifact['artifact_id']}: {actual_sheets} onglets au lieu de {artifact['sheet_count']}")
+            if artifact["artifact_id"] == "WAREHOUSE_V9_EXPORT":
+                for sheet_name, expected in EXPECTED_V9_VOLUMES.items():
+                    sheet = workbook[sheet_name]
+                    actual = sheet.max_row - 4
+                    if actual != expected:
+                        errors.append(f"V9.{sheet_name}: {actual} lignes peuplées au lieu de {expected}")
+            workbook.close()
+
+    v9_path = ROOT / "Morocco_Electoral_Data_Warehouse_V9.xlsx"
+    generator_path = ROOT / "generate_v9_documentation.py"
+    if v9_path.is_file() and generator_path.is_file():
+        spec = importlib.util.spec_from_file_location("generate_v9_documentation", generator_path)
+        if spec is None or spec.loader is None:
+            errors.append("Impossible de charger generate_v9_documentation.py")
+        else:
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            before_hash = sha256(v9_path)
+            model = module.load_model()
+            generated, metric_rules = module.build_docs(model)
+            try:
+                module.validate(model, generated, metric_rules, before_hash)
+            except RuntimeError as exc:
+                errors.append(str(exc))
+            for name, content in generated.items():
+                expected = content.replace("\r\n", "\n").rstrip() + "\n"
+                actual = (DOCUMENTATION_DIR / name).read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+                if actual != expected:
+                    errors.append(f"Documentation désynchronisée du V9: {name}")
+            if sha256(v9_path) != before_hash:
+                errors.append("Le V9 a été modifié pendant la validation")
+    return errors
+
+
+def run(mode: str) -> list[str]:
+    manifest = load_manifest()
+    errors = []
+    errors.extend(validate_manifest(manifest))
+    errors.extend(validate_backlog())
+    errors.extend(validate_python_sources())
+    errors.extend(validate_documentation())
+    errors.extend(validate_repository_files())
+    if mode == "full" and not errors:
+        errors.extend(validate_full(manifest))
+    return errors
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Valide la baseline GitHub et, facultativement, les données locales V9.")
+    parser.add_argument("--mode", choices=("ci", "full"), default="ci")
+    args = parser.parse_args()
+    errors = run(args.mode)
+    if errors:
+        print("VALIDATION_FAILED")
+        for error in errors:
+            print(f"- {error}")
+        return 1
+    print(f"VALIDATION_OK mode={args.mode} documents={len(EXPECTED_DOCUMENTS)}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

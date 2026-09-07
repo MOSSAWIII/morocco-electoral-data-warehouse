@@ -1,0 +1,54 @@
+﻿FAITS ÉLECTORAUX ET MOBILISATION
+================================
+
+VERSION           : V9
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V9.xlsx
+DATE DE GÉNÉRATION: 2026-09-07
+PÉRIMÈTRE         : Voix, participation, offre et compétition.
+RENVOIS           : 02_ARCHITECTURE_DES_CUBES.txt, 12_REGLES_D_INTEGRITE_ET_JOINTURE.txt, 13_METRIQUES_DERIVEES_ET_REGLES_TEMPORELLES.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V9.
+DÉRIVÉ        : valeur calculée à partir de données V9 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+RESULTS
+OBSERVÉ: 22379 lignes totales; 22 054 lignes communales V9.
+Grain cible: geo_id × party_id × election_id.
+Clé physique: record_id. Clé analytique candidate: geo_id + party_id + election_id.
+Les 10 571 lignes 2015 utilisent 31 colonnes partisanes publiées; les 11 483
+lignes 2021 utilisent 33 colonnes partisanes publiées.
+
+MOBILISATION
+OBSERVÉ: 3115 lignes.
+Grain: geo_id × election_id.
+turnout_rate est publié; valid_votes est la somme des colonnes partisanes.
+BLOQUÉ: nInscrits/registered_voters est entièrement absent dans les deux sources
+communales. voters, invalid_votes et blank_votes ne doivent donc pas être reconstruits.
+
+ELECTORATE
+OBSERVÉ: 5 lignes à des niveaux non exhaustifs.
+Ne pas extrapoler ces lignes à toutes les communes.
+
+POLITICAL_SUPPLY
+OBSERVÉ: 31 lignes, principalement agrégées ou pilotes.
+Un élu observé n'est pas automatiquement un candidat exhaustivement observé.
+
+COMPETITION
+OBSERVÉ: 4 lignes historiques agrégées.
+Les métriques communales exhaustives se trouvent surtout dans les panels V9.
+
+DÉNOMINATEURS AUTORISÉS
+- vote_share = votes du parti / somme de toutes les colonnes partisanes publiées.
+- turnout_rate reste une mesure source car registered_voters est absent.
+- seat_share = sièges du parti / somme des élus observés du conseil, avec QA.
+- winning_share et margin_pp utilisent valid_votes communal.
+
+INTERDICTIONS
+- Ne pas calculer voters = valid_votes / turnout sans invalides et inscrits fiables.
+- Ne pas qualifier valid_votes d'officiel si le champ est seulement dérivé.
+- Ne pas sommer des pourcentages entre communes.
+- Ne pas confondre résultat en voix, élus/sièges et contrôle exécutif.

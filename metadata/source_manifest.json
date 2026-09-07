@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "warehouse_version": "V9",
+  "last_verified": "2026-09-07",
+  "sources": [
+    {
+      "source_id": "SRC_TAFRA_COMM2015_RAW_V9",
+      "local_path": "raw_sources/communes-elections-2015-1-0.xlsx",
+      "source_url": "https://open.africa/dataset/cecd6468-53f8-4fdb-8269-f1a51c029ac3/resource/6d21d289-41d2-4f62-8719-e2a4b3aae055/download/communes-elections-2015-1-0.xlsx",
+      "producer": "TAFRA / elections.ma",
+      "license": "CC BY 4.0",
+      "version": "1.0",
+      "sha256": "2b63ad67ab4817bbd86a7faa06d29f3ff6a0fe5d1d609d343121e2b680722c35",
+      "byte_size": 172732,
+      "grain": "commune/arrondissement × élection",
+      "rows": 1538,
+      "columns": 45,
+      "sheet_index": 0,
+      "status": "ingested"
+    },
+    {
+      "source_id": "SRC_TAFRA_COMM2021_RAW_V9",
+      "local_path": "raw_sources/communes-elections-2021-1-0.xlsx",
+      "source_url": "https://open.africa/dataset/cb034784-1331-466c-a02f-713dfad58ef3/resource/19d637a4-0198-44b2-a3e2-2d7bbda3a7b2/download/communes-elections-2021-1-0.xlsx",
+      "producer": "TAFRA / elections.ma",
+      "license": "CC BY 4.0",
+      "version": "1.0",
+      "sha256": "ea66c27674a9fc8098c50ffb7152a3d49463d090ed1c45f706bd43b7bad5fada",
+      "byte_size": 258267,
+      "grain": "commune/arrondissement × élection",
+      "rows": 1538,
+      "columns": 56,
+      "sheet_index": 0,
+      "status": "ingested"
+    },
+    {
+      "source_id": "SRC_TAFRA_COUNCIL2021_RAW_V9",
+      "local_path": "raw_sources/communes-elus-2021-1-1.xlsx",
+      "source_url": "https://open.africa/dataset/3600ddc0-7a66-47be-9adf-cdbaa5ff4ec5/resource/d333e552-1608-421d-86d1-41455274e764/download/communes-elus-2021-1-1.xlsx",
+      "producer": "TAFRA / elections.ma",
+      "license": "CC BY 4.0",
+      "version": "1.1",
+      "sha256": "1bf7bab06808da63545996a160e8b95c164bf76973582499e585e2ddbc99a9b9",
+      "byte_size": 2549302,
+      "grain": "personne × circonscription communale × élection",
+      "rows": 32513,
+      "columns": 18,
+      "sheet_index": 0,
+      "status": "ingested"
+    },
+    {
+      "source_id": "SRC_TAFRA_MPS_RAW_V9",
+      "local_path": "raw_sources/parlement-elus-tafra-1-6-0.xlsx",
+      "source_url": "https://open.africa/dataset/5d84fa5f-144e-4a93-9dc8-de25a4267561/resource/7a0830a0-c4d0-4929-8028-a41b6822be6d/download/parlement-elus-tafra-1-6-0.xlsx",
+      "producer": "TAFRA / sources parlementaires",
+      "license": "CC BY 4.0",
+      "version": "1.6.0",
+      "sha256": "1cb374ef8d12594ca021ec14f00a4ca3bbce569fe77d5d34ea75cf266299953a",
+      "byte_size": 192162,
+      "grain": "personne × circonscription × législature × période de siège",
+      "rows": 1654,
+      "columns": 24,
+      "sheet_index": 0,
+      "status": "ingested"
+    },
+    {
+      "source_id": "SRC_HCP_RGPH2024_RAW_V9",
+      "local_path": "raw_sources/hcp_population_legale_rgph2024.xlsx",
+      "source_url": "https://www.hcp.ma/reg-casablanca/attachment/2664423/",
+      "producer": "Haut-Commissariat au Plan",
+      "license": "official public",
+      "version": "RGPH 2024",
+      "sha256": "814b335bfe5cba525471f5ff92ee4a69056f49fad94679d7229c3a3de4004b2b",
+      "byte_size": 164888,
+      "grain": "ligne de publication région/province/commune/arrondissement",
+      "rows": 2331,
+      "columns": 7,
+      "sheet_index": 0,
+      "status": "ingested"
+    },
+    {
+      "source_id": "SRC_SIGMAROC_COMMUNES2024_V7",
+      "local_path": "raw_sources/sig_maroc_communes_rgph2024.zip",
+      "source_url": "https://sig-maroc.com/donnees/shapefiles-recensement-2024",
+      "producer": "SIG-Maroc, données HCP RGPH 2024",
+      "license": "secondary public; verify before redistribution",
+      "version": "RGPH 2024",
+      "sha256": "12e0945b288ed84b3317b3823fbbde1972b427928bc6c477e62de19ab3c1d287",
+      "byte_size": 5917985,
+      "grain": "entité géographique communale",
+      "rows": 1541,
+      "columns": 8,
+      "status": "local_reference"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "WAREHOUSE_V8_INPUT",
+      "local_path": "Morocco_Electoral_Data_Warehouse_V8.xlsx",
+      "sha256": "01edd16fe6ef53a11239b2c7b49985dda4584d41bf07e27e97be7c80c17a38eb",
+      "byte_size": 274171,
+      "sheet_count": 53,
+      "status": "local_input"
+    },
+    {
+      "artifact_id": "WAREHOUSE_V9_EXPORT",
+      "local_path": "Morocco_Electoral_Data_Warehouse_V9.xlsx",
+      "sha256": "a4a3c90e26f45d46d85f11fea4e686d21e2ebc71f415f49e3ff1852e5ebd38a8",
+      "byte_size": 13835530,
+      "sheet_count": 64,
+      "status": "local_export"
+    }
+  ]
+}

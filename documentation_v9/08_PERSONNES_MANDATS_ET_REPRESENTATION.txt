@@ -1,0 +1,53 @@
+﻿PERSONNES, MANDATS ET REPRÉSENTATION
+====================================
+
+VERSION           : V9
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V9.xlsx
+DATE DE GÉNÉRATION: 2026-09-07
+PÉRIMÈTRE         : Identités prudentes et trajectoires de mandat.
+RENVOIS           : 03_DIMENSIONS_CONFORMES.txt, 05_CROSSWALKS_ET_IDENTITES.txt, 09_POUVOIR_LOCAL_ET_GOUVERNANCE.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V9.
+DÉRIVÉ        : valeur calculée à partir de données V9 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+DIM_PERSON
+OBSERVÉ: 2723 lignes : 1 185 identités parlementaires stables et
+1 538 proxies locaux communaux. Les proxies locaux ne sont pas des personnes uniques.
+
+LOCAL_MANDATES
+OBSERVÉ: 32513 observations d'élus locaux.
+Clé: local_mandate_id.
+Grain: personne prudente × commune × circonscription × mandat.
+person_id local a la forme TAFRA_LOCAL_2021_<idCommune>_<hash>.
+BLOQUÉ: la normalisation utilisée dans V9 élimine les caractères arabes avant le
+hash. Résultat observé: 32513 mandats, 31487
+noms distincts, mais seulement 1538 person_id,
+exactement autant que les 1538 communes.
+Le person_id local est donc un proxy communal partagé par tous les élus de la
+commune. Il est interdit pour dédupliquer des personnes, compter des individus,
+mesurer des trajectoires ou joindre des élus locaux à DIM_PERSON comme identités.
+Pour une analyse individuelle provisoire, utiliser la ligne RAW et la combinaison
+idCommune + idCirconscription + prenomNom + parti, en conservant le risque d'homonymie.
+
+PARLIAMENTARY_MANDATES
+OBSERVÉ: 1654 périodes de siège pour 1 185 idPerson.
+Clé: mandate_id; personne stable: TAFRA_MP_<idPerson>.
+idSiege/source_seat_id peut apparaître plusieurs fois lorsque des députés se
+succèdent sur un siège. La clé ne doit donc jamais être legislature + idSiege seule.
+
+RÈGLES DE MANDAT
+- dateEntree/start_date est obligatoire pour ordonner les périodes.
+- dateSortie/end_date NULL signifie actif ou sortie non publiée selon le contexte.
+- entry_reason, exit_reason et replacement_procedure restent des attributs de période.
+- female/male est disponible pour les députés; le sexe n'est pas fourni pour les élus locaux.
+- role_uncertain_flag et head_of_list_uncertain_flag interdisent une certitude silencieuse.
+
+BLOQUÉ
+Le champ parti TAFRA des députés représente le premier parti observé dans la
+législature. Il ne constitue pas un historique complet du nomadisme politique.
+Une future PERSON_PARTY_HISTORY devra utiliser personne × parti × période × source.

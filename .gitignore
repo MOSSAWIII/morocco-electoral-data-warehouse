@@ -1,0 +1,48 @@
+# Donnees sources et artefacts exportes (jamais versionnes)
+raw_sources/
+*.xlsx
+*.xls
+*.xlsm
+*.parquet
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.zip
+*.7z
+*.dump
+*.backup
+exports/
+artifacts/
+backups/
+
+# Secrets et configuration locale
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Editeurs et systeme
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# PostgreSQL local
+pgdata/
+postgres-data/
+
