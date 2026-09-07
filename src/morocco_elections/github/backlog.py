@@ -126,8 +126,6 @@ def _create_missing_issues(repo: str, backlog: dict[str, Any], existing: list[di
             issue["title"],
             "--body",
             issue_body(issue, {}),
-            "--milestone",
-            issue["milestone"],
         ]
         for label in issue["labels"]:
             args.extend(["--label", label])
@@ -139,6 +137,7 @@ def _sync_issue(
     issue: dict[str, Any],
     current: dict[str, Any],
     issue_urls: dict[str, str],
+    milestone_number: int,
     *,
     dry_run: bool,
 ) -> None:
@@ -155,14 +154,21 @@ def _sync_issue(
         issue["title"],
         "--body",
         issue_body(issue, issue_urls),
-        "--milestone",
-        issue["milestone"],
     ]
     for label in sorted(desired_labels - current_labels):
         args.extend(["--add-label", label])
     for label in sorted(current_labels - desired_labels):
         args.extend(["--remove-label", label])
     mutate(*args, dry_run=dry_run)
+    mutate(
+        "api",
+        f"repos/{repo}/issues/{number}",
+        "--method",
+        "PATCH",
+        "--field",
+        f"milestone={milestone_number}",
+        dry_run=dry_run,
+    )
     if issue["state"] == "closed" and current["state"].lower() != "closed":
         mutate("issue", "close", number, "--repo", repo, "--reason", issue["close_reason"], dry_run=dry_run)
     elif issue["state"] == "open" and current["state"].lower() != "open":
@@ -177,11 +183,16 @@ def ensure_issues(repo: str, backlog: dict[str, Any], *, dry_run: bool) -> None:
     existing = list_issues(repo)
     by_title = {item["title"]: item for item in existing}
     issue_urls = {title: item["url"] for title, item in by_title.items()}
+    milestones = json.loads(gh("api", f"repos/{repo}/milestones?state=all&per_page=100"))
+    milestone_numbers = {item["title"]: item["number"] for item in milestones}
     for issue in backlog["issues"]:
         current = by_title.get(issue["title"])
         if not current:
             raise RuntimeError(f"Issue absente après création: {issue['title']}")
-        _sync_issue(repo, issue, current, issue_urls, dry_run=False)
+        milestone_number = milestone_numbers.get(issue["milestone"])
+        if milestone_number is None:
+            raise RuntimeError(f"Jalon absent après création: {issue['milestone']}")
+        _sync_issue(repo, issue, current, issue_urls, milestone_number, dry_run=False)
 
 
 def publish(repo: str | None = None, *, dry_run: bool = False) -> int:
