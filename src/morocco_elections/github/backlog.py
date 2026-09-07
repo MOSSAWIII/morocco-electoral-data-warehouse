@@ -18,6 +18,7 @@ def gh(*args: str, input_text: str | None = None) -> str:
         cwd=ROOT,
         input=input_text,
         text=True,
+        encoding="utf-8",
         capture_output=True,
         check=False,
     )

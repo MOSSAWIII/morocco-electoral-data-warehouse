@@ -29,6 +29,23 @@ def remote(number: int, title: str, *, state: str = "OPEN", labels: list[str] | 
     }
 
 
+def test_gh_decodes_github_output_as_utf8(monkeypatch) -> None:
+    captured: dict[str, Any] = {}
+
+    class Result:
+        returncode = 0
+        stdout = "V11 — Pouvoir local et socio-économie"
+        stderr = ""
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return Result()
+
+    monkeypatch.setattr(github_backlog.subprocess, "run", fake_run)
+    assert "socio-économie" in github_backlog.gh("api", "example")
+    assert captured["encoding"] == "utf-8"
+
+
 def test_missing_issue_creation_is_idempotent(monkeypatch) -> None:
     calls: list[tuple[str, ...]] = []
     monkeypatch.setattr(github_backlog, "mutate", lambda *args, **kwargs: calls.append(args) or "")
