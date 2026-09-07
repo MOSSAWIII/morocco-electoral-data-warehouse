@@ -5,6 +5,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pandas as pd
+
+from morocco_elections.research.councils_2015 import EXPECTED_COLUMNS
+
 
 ROOT = Path(__file__).resolve().parents[2]
 ENV = {**os.environ, "PYTHONPATH": str(ROOT / "src")}
@@ -31,6 +35,7 @@ def test_all_structured_commands_are_registered() -> None:
         ("build", "--help"),
         ("docs", "--help"),
         ("validate", "--help"),
+        ("qualify", "councils-2015", "--help"),
         ("github", "publish-backlog", "--help"),
     ):
         result = run_command(sys.executable, "-m", "morocco_elections", *args)
@@ -56,3 +61,44 @@ def test_full_mode_reports_missing_override_without_writing(tmp_path: Path) -> N
     )
     assert result.returncode == 1
     assert "fichier local absent" in result.stdout
+
+
+def test_councils_2015_qualification_runs_offline(tmp_path: Path) -> None:
+    candidate = tmp_path / "candidate.xlsx"
+    baseline = tmp_path / "exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx"
+    baseline.parent.mkdir(parents=True)
+    row = [1, 1, 1, None, 1, 11, "R", "W", "P", None, "C", "D", "Personne X", "PX", True, "président"]
+    with pd.ExcelWriter(candidate, engine="openpyxl") as writer:
+        pd.DataFrame([row], columns=EXPECTED_COLUMNS).to_excel(writer, sheet_name="données", index=False)
+        pd.DataFrame({"Label": EXPECTED_COLUMNS, "Définition (FR)": ["champ"] * 16}).to_excel(
+            writer, sheet_name="dictionnaire", index=False
+        )
+        pd.DataFrame({"Source": ["CC BY 4.0"]}).to_excel(writer, sheet_name="notes", index=False)
+    with pd.ExcelWriter(baseline, engine="openpyxl") as writer:
+        pd.DataFrame({"idCommune": [1], "nSieges": [1]}).to_excel(writer, sheet_name="RAW_COMM2015_FULL", index=False, startrow=3)
+        pd.DataFrame({"source_geo_id": ["TAFRA_COMM_1"], "canonical_geo_id": ["MA-1"]}).to_excel(
+            writer, sheet_name="CROSSWALK_GEO", index=False, startrow=3
+        )
+        pd.DataFrame({"party_id": ["PX"], "acronym": ["PX"]}).to_excel(writer, sheet_name="DIM_PARTY", index=False, startrow=3)
+    metadata = tmp_path / "decision.json"
+    decision = tmp_path / "decision.txt"
+    result = run_command(
+        sys.executable,
+        "-m",
+        "morocco_elections",
+        "qualify",
+        "councils-2015",
+        "--candidate",
+        str(candidate),
+        "--baseline",
+        "v10",
+        "--data-dir",
+        str(tmp_path),
+        "--metadata-output",
+        str(metadata),
+        "--decision-output",
+        str(decision),
+    )
+    assert result.returncode == 1
+    assert "QUALIFICATION_NO_GO" in result.stdout
+    assert metadata.is_file() and decision.is_file()

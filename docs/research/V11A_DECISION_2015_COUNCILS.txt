@@ -1,0 +1,127 @@
+V11-A — DÉCISION DE QUALIFICATION DES CONSEILS COMMUNAUX 2015
+
+VERSION : V11-A (recherche, sans export warehouse)
+CLASSEUR CANDIDAT : communes-elus-2015-1-0.xlsx (non versionné)
+DATE DE GÉNÉRATION : 2026-09-07
+PÉRIMÈTRE : qualification de la composition des conseils communaux issue du scrutin de 2015
+RENVOIS : metadata/v11a_source_candidates.json ; V10 reste la baseline immuable
+
+DÉCISION BINAIRE : NO_GO
+
+La décision porte uniquement sur l'aptitude à une ingestion ultérieure. Aucune ligne n'a été ingérée,
+aucun classeur V10 n'a été modifié et aucun siège n'a été reconstruit à partir des voix.
+
+PROVENANCE
+Page du jeu : https://bulk.openafrica.net/ko_KR/dataset/composition-des-conseils-communaux-2015-maroc
+URL finale : https://s3-eu-west-1.amazonaws.com/cfa-openafrica/resources/7ae81ece-1b3d-4cdc-ac49-acd6ba37f6ea/communes-elus-2015-1-0.xlsx?ETag=7fca1f51b56bff28ef48caa33a9dd562
+Producteur/source déclarée : Association TAFRA; copie déclarée de elections.ma
+Licence : CC BY 4.0
+Version : 1.0.0 (novembre 2019)
+Taille : 2189518 octets
+ETag : 7fca1f51b56bff28ef48caa33a9dd562
+SHA-256 : 8b5e6d23756087409a77fbaa00c0e25428c699245dbc3241d280b914600fd341
+
+PROFIL AGRÉGÉ
+Lignes : 31482
+Colonnes : 16
+Communes : 1538
+Circonscriptions : 20607
+Partis/codes source : 32
+
+CRITÈRES OBLIGATOIRES
+[PASS] xlsx_readable — observé=true
+[PASS] sheets — observé=["données", "dictionnaire", "notes"]
+[PASS] data_shape — observé={"rows": 31482, "columns": 16, "column_names": ["idRegion", "idWilaya", "idPrefProv", "idSousPref", "idCommune", "idCirconscription", "region", "wilaya", "prefProv", "sousPref", "commune", "circonscription", "prenomNom", "parti", "teteDeListe", "role"]}
+[PASS] commune_universe — observé={"count": 1538, "missing_count": 0, "extra_count": 0}
+[PASS] required_values — observé={"null_counts": {"idRegion": 0, "idWilaya": 0, "idPrefProv": 0, "idCommune": 0, "idCirconscription": 0, "region": 0, "wilaya": 0, "prefProv": 0, "commune": 0, "circonscription": 0, "prenomNom": 0, "parti": 0, "teteDeListe": 0, "role": 0}, "missing_columns": []}
+[PASS] communal_seat_reconciliation — observé={"communes_compared": 1538, "mismatch_count": 0}
+[PASS] national_seat_total — observé=31482
+[PASS] v10_geographic_crosswalk — observé={"covered": 1538, "required": 1538}
+[PASS] party_codes — observé={"count": 32, "unknown_codes": []}
+[FAIL] duplicate_candidates_explained — observé={"candidate_groups": 2, "exact_duplicate_rows": 0, "unresolved_groups": 2}
+  Note : Une différence de rôle ou de tête de liste ne prouve pas que deux sièges distincts sont valides.
+[FAIL] documented_domains — observé={"dictionary_labels": 16, "head_values": ["False", "True"], "role_values": ["conseiller", "président", "secrétaire du conseil", "vice président 1", "vice président 10", "vice président 2", "vice président 3", "vice président 4", "vice président 5", "vice président 6", "vice président 7", "vice président 8", "vice président 9", "vice secrétaire du conseil"]}
+  Note : Le dictionnaire définit le champ rôle mais n'énumère pas ses modalités observées.
+[PASS] license — observé="CC BY 4.0"
+[PASS] file_dictionary_notes_consistency — observé={"undocumented_columns": []}
+
+ANOMALIES PSEUDONYMISÉES
+DUP2015_c459fd20416612f454ea — lignes source [14307, 14308] — colonnes divergentes ['teteDeListe', 'role'] — statut unresolved
+DUP2015_c2c5322331ee46ebe863 — lignes source [30802, 30803] — colonnes divergentes ['teteDeListe'] — statut unresolved
+
+DISTRIBUTION AGRÉGÉE DES PARTIS
+ALAHD : 143
+CNI : 127
+FFD : 193
+MDS : 297
+MP : 3006
+NEO : 10
+PA : 15
+PADS : 37
+PAM : 6662
+PAN : 3
+PCS : 11
+PDI : 6
+PDN : 11
+PE : 6
+PEDD : 79
+PGV : 5
+PI : 5083
+PJD : 5018
+PLJS : 12
+PML : 5
+PPS : 1770
+PRD : 39
+PRE : 25
+PRV : 54
+PSU : 168
+PUD : 65
+RNI : 4415
+SAP : 60
+SAP2 : 2
+UC : 1480
+UMD : 21
+USFP : 2654
+
+DISTRIBUTION AGRÉGÉE DES RÔLES
+conseiller : 19675
+président : 1538
+secrétaire du conseil : 1534
+vice président 1 : 1538
+vice président 10 : 4
+vice président 2 : 1538
+vice président 3 : 1538
+vice président 4 : 1530
+vice président 5 : 467
+vice président 6 : 459
+vice président 7 : 99
+vice président 8 : 22
+vice président 9 : 8
+vice secrétaire du conseil : 1532
+
+LIMITES ET INTERPRÉTATION
+Les publications externes servent seulement de contrôles agrégés. Elles ne remplacent jamais le fichier granulaire.
+Le dictionnaire définit le champ role mais n'énumère pas formellement toutes ses modalités.
+Une égalité de nom, commune, circonscription et parti ne suffit pas à expliquer deux lignes de siège.
+Aucun nom d'élu ni extrait RAW n'est reproduit dans ce rapport.
+
+CONTRÔLES EXTERNES
+Médias24 : https://medias24.com/2015/09/14/elections-en-nombre-de-sieges-les-resultats-complets-et-definitifs-commune-par-commune-parti-par-parti/
+Comparaison candidat 2019 / publication Médias24 2015 (écart) :
+PAM : 6662 / 6655 (+7)
+PI : 5083 / 5106 (-23)
+PJD : 5018 / 5021 (-3)
+RNI : 4415 / 4408 (+7)
+MP : 3006 / 3007 (-1)
+USFP : 2654 / 2656 (-2)
+PPS : 1770 / 1766 (+4)
+UC : 1480 / 1489 (-9)
+Ces écarts sont qualifiés comme différences de version et/ou de périmètre; aucune ligne n'est reconstruite.
+Livret TAFRA : https://tafra.ma/wp-content/uploads/2023/04/LivretRegionalisation2017.pdf
+Le livret indique que les 819 élus d'arrondissement sont inclus dans les élus communaux.
+
+COMMANDE DE REPRODUCTION
+python -m morocco_elections qualify councils-2015 --candidate data/staging/v11a/source_candidates/communes-elus-2015-1-0.xlsx --baseline v10
+
+SUITE CONDITIONNELLE
+Interdire l'ingestion; conserver la preuve du blocage et passer au chantier SMIIG.

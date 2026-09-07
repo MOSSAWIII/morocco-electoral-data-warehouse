@@ -18,6 +18,8 @@ ROOT = PROJECT_ROOT
 MANIFEST_PATH = get_paths().source_manifest
 BACKLOG_PATH = get_paths().github_backlog
 V10_REPORT_PATH = PROJECT_ROOT / "metadata" / "v10_release_report.json"
+V11A_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11a_source_candidates.json"
+V11A_DECISION_PATH = PROJECT_ROOT / "docs" / "research" / "V11A_DECISION_2015_COUNCILS.txt"
 DOCUMENTATION_DIRS = {"v9": get_paths().documentation_v9, "v10": get_paths().documentation_v10}
 EXPECTED_DOCUMENTS = [
     "00_INDEX_ET_MODE_EMPLOI.txt",
@@ -244,6 +246,99 @@ def validate_v10_release_report(manifest: dict) -> list[str]:
     return errors
 
 
+def validate_v11a_artifacts() -> list[str]:
+    errors: list[str] = []
+    try:
+        metadata = json.loads(V11A_METADATA_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"Métadonnées V11-A illisibles: {exc}"]
+    if metadata.get("schema_version") != 1 or metadata.get("phase") != "V11-A":
+        errors.append("Les métadonnées V11-A doivent utiliser schema_version=1 et phase=V11-A")
+    if metadata.get("decision") not in {"GO", "NO_GO"}:
+        errors.append("La décision V11-A doit être GO ou NO_GO")
+    candidate = metadata.get("candidate", {})
+    required_candidate = {
+        "candidate_id",
+        "expected_local_name",
+        "dataset_url",
+        "download_url",
+        "final_url",
+        "producer",
+        "license",
+        "version",
+        "retrieved_on",
+        "etag",
+        "last_modified",
+        "byte_size",
+        "sha256",
+        "tracked",
+    }
+    if not required_candidate <= set(candidate):
+        errors.append(f"Métadonnées V11-A: champs candidat absents {sorted(required_candidate - set(candidate))}")
+    if not re.fullmatch(r"[0-9a-f]{64}", str(candidate.get("sha256", ""))):
+        errors.append("Métadonnées V11-A: SHA-256 candidat invalide")
+    if candidate.get("tracked") is not False or candidate.get("expected_local_name") != "communes-elus-2015-1-0.xlsx":
+        errors.append("Le candidat V11-A doit être déclaré non suivi sous son nom attendu")
+    try:
+        manifest = load_manifest()
+        v10_artifact = next(item for item in manifest["artifacts"] if item["artifact_id"] == "WAREHOUSE_V10_EXPORT")
+        baseline = metadata.get("baseline", {})
+        if baseline.get("sha256_before") != v10_artifact["sha256"] or baseline.get("sha256_after") != v10_artifact["sha256"]:
+            errors.append("Métadonnées V11-A: empreinte de baseline différente du V10 manifesté")
+        if baseline.get("modified") is not False:
+            errors.append("Métadonnées V11-A: V10 doit être déclaré inchangé")
+    except (KeyError, StopIteration, ValidationError) as exc:
+        errors.append(f"Métadonnées V11-A: baseline V10 invérifiable: {exc}")
+    checks = metadata.get("checks")
+    if not isinstance(checks, list) or not checks:
+        errors.append("Métadonnées V11-A: liste de contrôles obligatoire")
+        checks = []
+    check_ids = {item.get("check_id") for item in checks if isinstance(item, dict)}
+    required_checks = {
+        "xlsx_readable",
+        "sheets",
+        "data_shape",
+        "commune_universe",
+        "required_values",
+        "communal_seat_reconciliation",
+        "national_seat_total",
+        "v10_geographic_crosswalk",
+        "party_codes",
+        "duplicate_candidates_explained",
+        "documented_domains",
+        "license",
+        "file_dictionary_notes_consistency",
+    }
+    if check_ids != required_checks:
+        errors.append(f"Métadonnées V11-A: contrôles incorrects {sorted(check_ids)}")
+    failed = [item for item in checks if item.get("required") and item.get("status") != "PASS"]
+    expected_decision = "NO_GO" if failed else "GO"
+    if metadata.get("decision") != expected_decision:
+        errors.append("La décision V11-A ne correspond pas au résultat des contrôles obligatoires")
+    for anomaly in metadata.get("anomalies", []):
+        if not re.fullmatch(r"DUP2015_[0-9a-f]{20}", str(anomaly.get("anomaly_id", ""))):
+            errors.append("Métadonnées V11-A: identifiant d'anomalie non pseudonymisé")
+        if not anomaly.get("source_row_numbers") or anomaly.get("decision") != "no_deletion_no_ingestion":
+            errors.append("Métadonnées V11-A: anomalie incomplète")
+    try:
+        decision = V11A_DECISION_PATH.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as exc:
+        errors.append(f"Rapport V11-A illisible: {exc}")
+        return errors
+    for token in (
+        "VERSION : V11-A",
+        "DATE DE GÉNÉRATION",
+        "PÉRIMÈTRE",
+        "RENVOIS",
+        f"DÉCISION BINAIRE : {metadata.get('decision')}",
+        "Aucune ligne n'a été ingérée",
+        "COMMANDE DE REPRODUCTION",
+    ):
+        if token not in decision:
+            errors.append(f"Rapport V11-A: élément obligatoire absent: {token}")
+    return errors
+
+
 def validate_python_sources() -> list[str]:
     errors: list[str] = []
     for path in sorted(ROOT.rglob("*.py")):
@@ -417,6 +512,18 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None, release: s
         workbook.close()
 
     paths = get_paths(data_dir)
+    v11a_candidate = paths.data_root / "staging" / "v11a" / "source_candidates" / "communes-elus-2015-1-0.xlsx"
+    if not v11a_candidate.is_file():
+        errors.append(f"V11-A: candidat local absent: {v11a_candidate}")
+    else:
+        v11a_metadata = json.loads(V11A_METADATA_PATH.read_text(encoding="utf-8"))
+        expected_size = v11a_metadata["candidate"]["byte_size"]
+        expected_hash = v11a_metadata["candidate"]["sha256"]
+        if v11a_candidate.stat().st_size != expected_size:
+            errors.append(f"V11-A: taille candidat attendue {expected_size}, obtenue {v11a_candidate.stat().st_size}")
+        actual_hash = sha256(v11a_candidate)
+        if actual_hash != expected_hash:
+            errors.append(f"V11-A: SHA-256 candidat attendu {expected_hash}, obtenu {actual_hash}")
     if release in {"v9", "all"} and paths.v9_workbook.is_file():
         from morocco_elections.legacy.v9 import documentation as module
         module.configure_paths(data_dir)
@@ -463,6 +570,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_manifest(manifest))
     errors.extend(validate_backlog())
     errors.extend(validate_v10_release_report(manifest))
+    errors.extend(validate_v11a_artifacts())
     errors.extend(validate_python_sources())
     errors.extend(validate_documentation(release))
     errors.extend(validate_repository_files())

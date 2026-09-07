@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "description": "Cas entièrement synthétiques sans identité réelle pour le gate V11-A.",
+  "cases": [
+    {"id": "go", "mutation": "none", "expected": "GO"},
+    {"id": "missing_commune", "mutation": "drop_commune_2", "expected": "NO_GO"},
+    {"id": "excess_seat", "mutation": "append_unique_seat", "expected": "NO_GO"},
+    {"id": "unknown_party", "mutation": "set_party_XXX", "expected": "NO_GO"},
+    {"id": "critical_duplicate", "mutation": "append_exact_duplicate", "expected": "NO_GO"}
+  ]
+}

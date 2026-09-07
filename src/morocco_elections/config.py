@@ -24,6 +24,8 @@ class ProjectPaths:
     council2021: Path
     parliamentary_members: Path
     hcp_population_2024: Path
+    v11a_candidate_metadata: Path
+    v11a_decision_report: Path
 
 
 def _resolved_data_root(data_dir: str | Path | None = None) -> Path:
@@ -51,6 +53,8 @@ def get_paths(data_dir: str | Path | None = None) -> ProjectPaths:
         council2021=data_root / "raw" / "tafra" / "local_councils" / "2021" / "communes-elus-2021-1-1.xlsx",
         parliamentary_members=data_root / "raw" / "tafra" / "parliament" / "members" / "parlement-elus-tafra-1-6-0.xlsx",
         hcp_population_2024=data_root / "raw" / "hcp" / "rgph" / "2024" / "hcp_population_legale_rgph2024.xlsx",
+        v11a_candidate_metadata=PROJECT_ROOT / "metadata" / "v11a_source_candidates.json",
+        v11a_decision_report=PROJECT_ROOT / "docs" / "research" / "V11A_DECISION_2015_COUNCILS.txt",
     )
 
 

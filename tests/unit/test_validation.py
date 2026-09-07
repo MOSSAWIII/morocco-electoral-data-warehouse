@@ -28,6 +28,10 @@ def test_v10_release_report_contract() -> None:
     assert validate_project.validate_v10_release_report(manifest) == []
 
 
+def test_v11a_artifact_contract() -> None:
+    assert validate_project.validate_v11a_artifacts() == []
+
+
 def test_github_backlog_contract() -> None:
     assert validate_project.validate_backlog() == []
 

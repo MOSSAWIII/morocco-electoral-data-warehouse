@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "phase": "V11-A",
+  "generated_on": "2026-09-07",
+  "decision": "NO_GO",
+  "scope": "Qualification uniquement; aucune ingestion et aucune modification de V10.",
+  "candidate": {
+    "candidate_id": "TAFRA_COUNCILS_2015_V1_0_0",
+    "expected_local_name": "communes-elus-2015-1-0.xlsx",
+    "dataset_url": "https://bulk.openafrica.net/ko_KR/dataset/composition-des-conseils-communaux-2015-maroc",
+    "download_url": "https://open.africa/dataset/07a04224-c0ad-4861-9705-0518f5d49dbd/resource/7ae81ece-1b3d-4cdc-ac49-acd6ba37f6ea/download/communes-elus-2015-1-0.xlsx",
+    "final_url": "https://s3-eu-west-1.amazonaws.com/cfa-openafrica/resources/7ae81ece-1b3d-4cdc-ac49-acd6ba37f6ea/communes-elus-2015-1-0.xlsx?ETag=7fca1f51b56bff28ef48caa33a9dd562",
+    "producer": "Association TAFRA; copie déclarée de elections.ma",
+    "license": "CC BY 4.0",
+    "version": "1.0.0 (novembre 2019)",
+    "retrieved_on": "2026-09-07",
+    "etag": "7fca1f51b56bff28ef48caa33a9dd562",
+    "last_modified": "2024-02-05T13:15:49Z",
+    "byte_size": 2189518,
+    "sha256": "8b5e6d23756087409a77fbaa00c0e25428c699245dbc3241d280b914600fd341",
+    "tracked": false
+  },
+  "baseline": {
+    "release": "V10",
+    "workbook": "data/exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx",
+    "sha256_before": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "sha256_after": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "modified": false
+  },
+  "profile": {
+    "rows": 31482,
+    "columns": 16,
+    "communes": 1538,
+    "parties": 32,
+    "circonscriptions": 20607,
+    "party_distribution": {
+      "ALAHD": 143,
+      "CNI": 127,
+      "FFD": 193,
+      "MDS": 297,
+      "MP": 3006,
+      "NEO": 10,
+      "PA": 15,
+      "PADS": 37,
+      "PAM": 6662,
+      "PAN": 3,
+      "PCS": 11,
+      "PDI": 6,
+      "PDN": 11,
+      "PE": 6,
+      "PEDD": 79,
+      "PGV": 5,
+      "PI": 5083,
+      "PJD": 5018,
+      "PLJS": 12,
+      "PML": 5,
+      "PPS": 1770,
+      "PRD": 39,
+      "PRE": 25,
+      "PRV": 54,
+      "PSU": 168,
+      "PUD": 65,
+      "RNI": 4415,
+      "SAP": 60,
+      "SAP2": 2,
+      "UC": 1480,
+      "UMD": 21,
+      "USFP": 2654
+    },
+    "role_distribution": {
+      "conseiller": 19675,
+      "président": 1538,
+      "secrétaire du conseil": 1534,
+      "vice président 1": 1538,
+      "vice président 10": 4,
+      "vice président 2": 1538,
+      "vice président 3": 1538,
+      "vice président 4": 1530,
+      "vice président 5": 467,
+      "vice président 6": 459,
+      "vice président 7": 99,
+      "vice président 8": 22,
+      "vice président 9": 8,
+      "vice secrétaire du conseil": 1532
+    },
+    "head_of_list_distribution": {
+      "False": 10269,
+      "True": 21213
+    }
+  },
+  "checks": [
+    {
+      "check_id": "xlsx_readable",
+      "required": true,
+      "status": "PASS",
+      "observed": true,
+      "expected": true,
+      "note": ""
+    },
+    {
+      "check_id": "sheets",
+      "required": true,
+      "status": "PASS",
+      "observed": [
+        "données",
+        "dictionnaire",
+        "notes"
+      ],
+      "expected": [
+        "données",
+        "dictionnaire",
+        "notes"
+      ],
+      "note": ""
+    },
+    {
+      "check_id": "data_shape",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "rows": 31482,
+        "columns": 16,
+        "column_names": [
+          "idRegion",
+          "idWilaya",
+          "idPrefProv",
+          "idSousPref",
+          "idCommune",
+          "idCirconscription",
+          "region",
+          "wilaya",
+          "prefProv",
+          "sousPref",
+          "commune",
+          "circonscription",
+          "prenomNom",
+          "parti",
+          "teteDeListe",
+          "role"
+        ]
+      },
+      "expected": {
+        "rows": 31482,
+        "columns": 16,
+        "column_names": [
+          "idRegion",
+          "idWilaya",
+          "idPrefProv",
+          "idSousPref",
+          "idCommune",
+          "idCirconscription",
+          "region",
+          "wilaya",
+          "prefProv",
+          "sousPref",
+          "commune",
+          "circonscription",
+          "prenomNom",
+          "parti",
+          "teteDeListe",
+          "role"
+        ]
+      },
+      "note": ""
+    },
+    {
+      "check_id": "commune_universe",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "count": 1538,
+        "missing_count": 0,
+        "extra_count": 0
+      },
+      "expected": {
+        "count": 1538,
+        "identical_to_v10": true
+      },
+      "note": ""
+    },
+    {
+      "check_id": "required_values",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "null_counts": {
+          "idRegion": 0,
+          "idWilaya": 0,
+          "idPrefProv": 0,
+          "idCommune": 0,
+          "idCirconscription": 0,
+          "region": 0,
+          "wilaya": 0,
+          "prefProv": 0,
+          "commune": 0,
+          "circonscription": 0,
+          "prenomNom": 0,
+          "parti": 0,
+          "teteDeListe": 0,
+          "role": 0
+        },
+        "missing_columns": []
+      },
+      "expected": "zero null in mandatory columns",
+      "note": ""
+    },
+    {
+      "check_id": "communal_seat_reconciliation",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "communes_compared": 1538,
+        "mismatch_count": 0
+      },
+      "expected": {
+        "mismatch_count": 0
+      },
+      "note": ""
+    },
+    {
+      "check_id": "national_seat_total",
+      "required": true,
+      "status": "PASS",
+      "observed": 31482,
+      "expected": 31482,
+      "note": ""
+    },
+    {
+      "check_id": "v10_geographic_crosswalk",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "covered": 1538,
+        "required": 1538
+      },
+      "expected": {
+        "coverage_percent": 100.0
+      },
+      "note": ""
+    },
+    {
+      "check_id": "party_codes",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "count": 32,
+        "unknown_codes": []
+      },
+      "expected": {
+        "count": 32,
+        "unknown_codes": []
+      },
+      "note": ""
+    },
+    {
+      "check_id": "duplicate_candidates_explained",
+      "required": true,
+      "status": "FAIL",
+      "observed": {
+        "candidate_groups": 2,
+        "exact_duplicate_rows": 0,
+        "unresolved_groups": 2
+      },
+      "expected": {
+        "unresolved_groups": 0
+      },
+      "note": "Une différence de rôle ou de tête de liste ne prouve pas que deux sièges distincts sont valides."
+    },
+    {
+      "check_id": "documented_domains",
+      "required": true,
+      "status": "FAIL",
+      "observed": {
+        "dictionary_labels": 16,
+        "head_values": [
+          "False",
+          "True"
+        ],
+        "role_values": [
+          "conseiller",
+          "président",
+          "secrétaire du conseil",
+          "vice président 1",
+          "vice président 10",
+          "vice président 2",
+          "vice président 3",
+          "vice président 4",
+          "vice président 5",
+          "vice président 6",
+          "vice président 7",
+          "vice président 8",
+          "vice président 9",
+          "vice secrétaire du conseil"
+        ]
+      },
+      "expected": "16 columns documented; teteDeListe boolean; all role modalities explicitly enumerated",
+      "note": "Le dictionnaire définit le champ rôle mais n'énumère pas ses modalités observées."
+    },
+    {
+      "check_id": "license",
+      "required": true,
+      "status": "PASS",
+      "observed": "CC BY 4.0",
+      "expected": "CC BY 4.0",
+      "note": ""
+    },
+    {
+      "check_id": "file_dictionary_notes_consistency",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "undocumented_columns": []
+      },
+      "expected": {
+        "undocumented_columns": []
+      },
+      "note": ""
+    }
+  ],
+  "anomalies": [
+    {
+      "anomaly_id": "DUP2015_c459fd20416612f454ea",
+      "type": "duplicate_candidate_key",
+      "source_row_numbers": [
+        14307,
+        14308
+      ],
+      "row_count": 2,
+      "differing_columns": [
+        "teteDeListe",
+        "role"
+      ],
+      "status": "unresolved",
+      "decision": "no_deletion_no_ingestion"
+    },
+    {
+      "anomaly_id": "DUP2015_c2c5322331ee46ebe863",
+      "type": "duplicate_candidate_key",
+      "source_row_numbers": [
+        30802,
+        30803
+      ],
+      "row_count": 2,
+      "differing_columns": [
+        "teteDeListe"
+      ],
+      "status": "unresolved",
+      "decision": "no_deletion_no_ingestion"
+    }
+  ],
+  "secondary_controls": [
+    {
+      "source": "Médias24",
+      "url": "https://medias24.com/2015/09/14/elections-en-nombre-de-sieges-les-resultats-complets-et-definitifs-commune-par-commune-parti-par-parti/",
+      "usage": "contrôle externe agrégé uniquement",
+      "comparison": {
+        "PAM": {
+          "candidate_2019": 6662,
+          "published_2015": 6655,
+          "difference": 7
+        },
+        "PI": {
+          "candidate_2019": 5083,
+          "published_2015": 5106,
+          "difference": -23
+        },
+        "PJD": {
+          "candidate_2019": 5018,
+          "published_2015": 5021,
+          "difference": -3
+        },
+        "RNI": {
+          "candidate_2019": 4415,
+          "published_2015": 4408,
+          "difference": 7
+        },
+        "MP": {
+          "candidate_2019": 3006,
+          "published_2015": 3007,
+          "difference": -1
+        },
+        "USFP": {
+          "candidate_2019": 2654,
+          "published_2015": 2656,
+          "difference": -2
+        },
+        "PPS": {
+          "candidate_2019": 1770,
+          "published_2015": 1766,
+          "difference": 4
+        },
+        "UC": {
+          "candidate_2019": 1480,
+          "published_2015": 1489,
+          "difference": -9
+        }
+      },
+      "interpretation": "Écarts attribuables à la version 2019 corrigée et/ou au périmètre; jamais utilisés pour reconstruire des lignes."
+    },
+    {
+      "source": "Livret TAFRA — Régionalisation",
+      "url": "https://tafra.ma/wp-content/uploads/2023/04/LivretRegionalisation2017.pdf",
+      "usage": "contrôle externe agrégé; inclut 819 élus d'arrondissement"
+    }
+  ],
+  "next_action": "Interdire l'ingestion; conserver la preuve du blocage et passer au chantier SMIIG."
+}
