@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-import importlib.util
+import sys
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location("validate_project", ROOT / "tools" / "validate_project.py")
-assert SPEC is not None and SPEC.loader is not None
-validate_project = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(validate_project)
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "src"))
+
+from morocco_elections.quality import validation as validate_project  # noqa: E402
 
 
 def test_manifest_contract() -> None:
@@ -16,6 +15,7 @@ def test_manifest_contract() -> None:
     assert validate_project.validate_manifest(manifest) == []
     assert len(manifest["sources"]) == 6
     assert len(manifest["artifacts"]) == 2
+    assert len(manifest["physical_files"]) == 19
 
 
 def test_documentation_contract() -> None:

@@ -1,64 +1,74 @@
 # Morocco Electoral Data Warehouse
 
-Warehouse quantitatif consacré aux élections, à la représentation et à la gouvernance territoriale au Maroc. La baseline documentaire et analytique actuelle est la V9.
+Warehouse quantitatif consacré aux élections, à la représentation et à la gouvernance territoriale au Maroc. La baseline analytique actuelle est V9 ; le projet est structuré pour les chantiers V10–V13.
 
 ## Principes
 
-- Les fichiers RAW sont immuables et restent hors de Git.
-- PostgreSQL deviendra la couche canonique ; Excel restera un produit d'export.
-- Toute donnée est qualifiée par un statut explicite :
-  - `OBSERVÉ` : valeur présente dans une source identifiée ;
-  - `DÉRIVÉ` : valeur calculée, avec formule et dénominateur documentés ;
-  - `STRUCTURE VIDE` : schéma prévu sans donnée disponible ;
-  - `PILOTE` : ancien échantillon conservé à titre exploratoire ;
-  - `BLOQUÉ` : limite ouverte et enregistrée en QA.
-- Une valeur absente n'est jamais reconstruite sans source, et une métrique dérivée n'est jamais présentée comme officielle.
+- Les RAW sont immuables et restent hors de Git.
+- Le flux autorisé est `RAW → STAGING → PROCESSED → POSTGRESQL → EXPORTS`.
+- PostgreSQL deviendra la couche canonique ; Excel restera un produit d’export.
+- Toute donnée est qualifiée : `OBSERVÉ`, `DÉRIVÉ`, `STRUCTURE VIDE`, `PILOTE` ou `BLOQUÉ`.
+- Une valeur absente n’est jamais reconstruite sans source et une métrique dérivée n’est jamais présentée comme officielle.
 
-## Baseline V9
+## Organisation
 
-La V9 contient 64 onglets et organise notamment deux cubes centraux :
+- `src/morocco_elections/` : package, domaines, qualité, stockage, exports et compatibilité V9.
+- `data/` : données locales ignorées par Git ; voir son README pour le contrat des zones.
+- `docs/v9/ontology/` : les 15 documents UTF-8 de l’ontologie V9.
+- `docs/architecture/` : règles de dépendance et flux futurs.
+- `metadata/` : provenance physique des sources et backlog GitHub.
+- `database/` et `infrastructure/postgres/` : contrats réservés à V13.
+- `tests/unit/`, `tests/integration/` et `tests/fixtures/synthetic/` : stratégie de test.
 
-- `COMMUNE × PARTI × ÉLECTION` ;
-- `COMMUNE × ÉLECTION`.
+La V9 contient 64 onglets, notamment les cubes `COMMUNE × PARTI × ÉLECTION` et `COMMUNE × ÉLECTION`. Les principaux volumes contrôlés sont 32 513 mandats locaux, 1 654 mandats parlementaires, 3 076 observations commune-élection, 14 555 transitions et 22 054 observations du panel analytique.
 
-Elle comprend aussi les couches mandats, pouvoir local, socio-économie, provenance, contrôles qualité et panels analytiques. Le corpus de référence se trouve dans `documentation_v9/` et contient exactement 15 documents texte UTF-8.
-
-Les principaux volumes contrôlés sont : 32 513 mandats locaux, 1 654 mandats parlementaires, 3 076 observations commune-élection, 14 555 transitions et 22 054 observations du panel analytique commune-parti-élection.
-
-## Données locales
-
-Les sources doivent être placées sous `raw_sources/` selon les chemins définis dans `metadata/source_manifest.json`. Les classeurs `Morocco_Electoral_Data_Warehouse_V8.xlsx` et `Morocco_Electoral_Data_Warehouse_V9.xlsx` restent également locaux. Tous ces fichiers sont ignorés par Git ; leurs empreintes SHA-256 et leurs dimensions attendues sont versionnées.
-
-Il ne faut jamais forcer l'ajout d'un fichier ignoré avec `git add -f`.
-
-## Installation et validation
+## Installation
 
 ```powershell
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
-python tools/validate_project.py --mode ci
-python tools/validate_project.py --mode full
+python -m pip install --no-deps --editable .
 ```
 
-Le mode `ci` fonctionne dans un clone sans données. Le mode `full` exige les sources, V8 et V9, mais ne les modifie pas. La documentation peut être régénérée localement avec :
+La racine des données est `<repo>/data` par défaut. Elle peut être déplacée sans changer le code :
 
 ```powershell
+$env:ELECTIONS_DATA_DIR = "D:\warehouse-electoral-data"
+```
+
+Un argument `--data-dir` a priorité sur cette variable.
+
+## Commandes structurées
+
+```powershell
+python -m morocco_elections validate --mode ci
+python -m morocco_elections validate --mode full
+python -m morocco_elections build v9
+python -m morocco_elections docs v9
+python -m morocco_elections github publish-backlog
+```
+
+Le mode `ci` fonctionne sans données. Le mode `full` vérifie localement les sources, leurs SHA-256, V8, V9, les volumes, les 64 onglets et les 15 documents sans écrire de fichier.
+
+## Compatibilité V9
+
+Les anciens points d’entrée restent disponibles :
+
+```powershell
+python build_v9.py
 python generate_v9_documentation.py
 ```
 
-La construction actuelle de V9 reste disponible avec `python build_v9.py`. Cette commande écrit V9 ; elle n'est donc pas exécutée par la validation.
+Le constructeur écrit dans `data/exports/excel/v9/`. Le générateur documentaire écrit dans `docs/v9/ontology/`.
+
+## Données et sécurité
+
+Les chemins attendus sont définis dans `metadata/source_manifest.json`. RAW, V8, V9, Parquet, Shapefiles, archives, exports PostgreSQL et secrets sont ignorés par Git. Ne jamais contourner cette règle avec `git add -f`.
 
 ## Développement
 
-La branche `main` reçoit les changements par pull request après réussite de la CI. Utiliser des branches `feat/...` ou `fix/...`. Les conventions et contrôles sont détaillés dans `CONTRIBUTING.md`.
+La branche `main` reçoit les changements par pull request après réussite de la CI. Utiliser `feat/...` ou `fix/...` pour les fonctions métier et `chore/...` pour l’infrastructure.
 
-## Feuille de route
+Le backlog hors ligne définit sept chantiers et quatre jalons dans `metadata/github_backlog.json`. Sa publication restera différée jusqu’à la création d’un dépôt GitHub distant.
 
-Les travaux sont organisés en quatre jalons GitHub : V10 identités et intégrité, V11 pouvoir local et socio-économie, V12 activité parlementaire, puis V13 canonique PostgreSQL. Les sept chantiers sont suivis dans les issues du dépôt.
-
-Tant que le dépôt reste uniquement local, le backlog complet est conservé dans `metadata/github_backlog.json`. Après création et authentification du dépôt distant, sa publication idempotente se fait avec :
-
-```powershell
-python tools/publish_github_backlog.py
-```

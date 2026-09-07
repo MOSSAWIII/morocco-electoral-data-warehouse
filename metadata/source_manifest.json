@@ -1,11 +1,12 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "warehouse_version": "V9",
   "last_verified": "2026-09-07",
   "sources": [
     {
       "source_id": "SRC_TAFRA_COMM2015_RAW_V9",
-      "local_path": "raw_sources/communes-elections-2015-1-0.xlsx",
+      "previous_local_path": "raw_sources/communes-elections-2015-1-0.xlsx",
+      "local_path": "data/raw/tafra/communal_results/2015/communes-elections-2015-1-0.xlsx",
       "source_url": "https://open.africa/dataset/cecd6468-53f8-4fdb-8269-f1a51c029ac3/resource/6d21d289-41d2-4f62-8719-e2a4b3aae055/download/communes-elections-2015-1-0.xlsx",
       "producer": "TAFRA / elections.ma",
       "license": "CC BY 4.0",
@@ -20,7 +21,8 @@
     },
     {
       "source_id": "SRC_TAFRA_COMM2021_RAW_V9",
-      "local_path": "raw_sources/communes-elections-2021-1-0.xlsx",
+      "previous_local_path": "raw_sources/communes-elections-2021-1-0.xlsx",
+      "local_path": "data/raw/tafra/communal_results/2021/communes-elections-2021-1-0.xlsx",
       "source_url": "https://open.africa/dataset/cb034784-1331-466c-a02f-713dfad58ef3/resource/19d637a4-0198-44b2-a3e2-2d7bbda3a7b2/download/communes-elections-2021-1-0.xlsx",
       "producer": "TAFRA / elections.ma",
       "license": "CC BY 4.0",
@@ -35,7 +37,8 @@
     },
     {
       "source_id": "SRC_TAFRA_COUNCIL2021_RAW_V9",
-      "local_path": "raw_sources/communes-elus-2021-1-1.xlsx",
+      "previous_local_path": "raw_sources/communes-elus-2021-1-1.xlsx",
+      "local_path": "data/raw/tafra/local_councils/2021/communes-elus-2021-1-1.xlsx",
       "source_url": "https://open.africa/dataset/3600ddc0-7a66-47be-9adf-cdbaa5ff4ec5/resource/d333e552-1608-421d-86d1-41455274e764/download/communes-elus-2021-1-1.xlsx",
       "producer": "TAFRA / elections.ma",
       "license": "CC BY 4.0",
@@ -50,7 +53,8 @@
     },
     {
       "source_id": "SRC_TAFRA_MPS_RAW_V9",
-      "local_path": "raw_sources/parlement-elus-tafra-1-6-0.xlsx",
+      "previous_local_path": "raw_sources/parlement-elus-tafra-1-6-0.xlsx",
+      "local_path": "data/raw/tafra/parliament/members/parlement-elus-tafra-1-6-0.xlsx",
       "source_url": "https://open.africa/dataset/5d84fa5f-144e-4a93-9dc8-de25a4267561/resource/7a0830a0-c4d0-4929-8028-a41b6822be6d/download/parlement-elus-tafra-1-6-0.xlsx",
       "producer": "TAFRA / sources parlementaires",
       "license": "CC BY 4.0",
@@ -65,7 +69,8 @@
     },
     {
       "source_id": "SRC_HCP_RGPH2024_RAW_V9",
-      "local_path": "raw_sources/hcp_population_legale_rgph2024.xlsx",
+      "previous_local_path": "raw_sources/hcp_population_legale_rgph2024.xlsx",
+      "local_path": "data/raw/hcp/rgph/2024/hcp_population_legale_rgph2024.xlsx",
       "source_url": "https://www.hcp.ma/reg-casablanca/attachment/2664423/",
       "producer": "Haut-Commissariat au Plan",
       "license": "official public",
@@ -80,7 +85,8 @@
     },
     {
       "source_id": "SRC_SIGMAROC_COMMUNES2024_V7",
-      "local_path": "raw_sources/sig_maroc_communes_rgph2024.zip",
+      "previous_local_path": "raw_sources/sig_maroc_communes_rgph2024.zip",
+      "local_path": "data/raw/sig_maroc/rgph/2024/sig_maroc_communes_rgph2024.zip",
       "source_url": "https://sig-maroc.com/donnees/shapefiles-recensement-2024",
       "producer": "SIG-Maroc, données HCP RGPH 2024",
       "license": "secondary public; verify before redistribution",
@@ -96,7 +102,8 @@
   "artifacts": [
     {
       "artifact_id": "WAREHOUSE_V8_INPUT",
-      "local_path": "Morocco_Electoral_Data_Warehouse_V8.xlsx",
+      "previous_local_path": "Morocco_Electoral_Data_Warehouse_V8.xlsx",
+      "local_path": "data/legacy/excel/v8/Morocco_Electoral_Data_Warehouse_V8.xlsx",
       "sha256": "01edd16fe6ef53a11239b2c7b49985dda4584d41bf07e27e97be7c80c17a38eb",
       "byte_size": 274171,
       "sheet_count": 53,
@@ -104,11 +111,33 @@
     },
     {
       "artifact_id": "WAREHOUSE_V9_EXPORT",
-      "local_path": "Morocco_Electoral_Data_Warehouse_V9.xlsx",
+      "previous_local_path": "Morocco_Electoral_Data_Warehouse_V9.xlsx",
+      "local_path": "data/exports/excel/v9/Morocco_Electoral_Data_Warehouse_V9.xlsx",
       "sha256": "a4a3c90e26f45d46d85f11fea4e686d21e2ebc71f415f49e3ff1852e5ebd38a8",
       "byte_size": 13835530,
       "sheet_count": 64,
       "status": "local_export"
     }
+  ],
+  "physical_files": [
+    {"file_id": "COMM2015_XLSX", "previous_local_path": "raw_sources/communes-elections-2015-1-0.xlsx", "local_path": "data/raw/tafra/communal_results/2015/communes-elections-2015-1-0.xlsx", "sha256": "2b63ad67ab4817bbd86a7faa06d29f3ff6a0fe5d1d609d343121e2b680722c35", "byte_size": 172732, "kind": "raw"},
+    {"file_id": "COMM2021_XLSX", "previous_local_path": "raw_sources/communes-elections-2021-1-0.xlsx", "local_path": "data/raw/tafra/communal_results/2021/communes-elections-2021-1-0.xlsx", "sha256": "ea66c27674a9fc8098c50ffb7152a3d49463d090ed1c45f706bd43b7bad5fada", "byte_size": 258267, "kind": "raw"},
+    {"file_id": "COUNCIL2021_XLSX", "previous_local_path": "raw_sources/communes-elus-2021-1-1.xlsx", "local_path": "data/raw/tafra/local_councils/2021/communes-elus-2021-1-1.xlsx", "sha256": "1bf7bab06808da63545996a160e8b95c164bf76973582499e585e2ddbc99a9b9", "byte_size": 2549302, "kind": "raw"},
+    {"file_id": "MPS_XLSX", "previous_local_path": "raw_sources/parlement-elus-tafra-1-6-0.xlsx", "local_path": "data/raw/tafra/parliament/members/parlement-elus-tafra-1-6-0.xlsx", "sha256": "1cb374ef8d12594ca021ec14f00a4ca3bbce569fe77d5d34ea75cf266299953a", "byte_size": 192162, "kind": "raw"},
+    {"file_id": "HCP2024_XLSX", "previous_local_path": "raw_sources/hcp_population_legale_rgph2024.xlsx", "local_path": "data/raw/hcp/rgph/2024/hcp_population_legale_rgph2024.xlsx", "sha256": "814b335bfe5cba525471f5ff92ee4a69056f49fad94679d7229c3a3de4004b2b", "byte_size": 164888, "kind": "raw"},
+    {"file_id": "SIG2024_ZIP", "previous_local_path": "raw_sources/sig_maroc_communes_rgph2024.zip", "local_path": "data/raw/sig_maroc/rgph/2024/sig_maroc_communes_rgph2024.zip", "sha256": "12e0945b288ed84b3317b3823fbbde1972b427928bc6c477e62de19ab3c1d287", "byte_size": 5917985, "kind": "raw_archive"},
+    {"file_id": "SIG2024_CPG", "previous_local_path": "raw_sources/sig_maroc_communes_rgph2024/communes.cpg", "local_path": "data/raw/sig_maroc/rgph/2024/communes/communes.cpg", "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824", "byte_size": 5, "kind": "raw_component"},
+    {"file_id": "SIG2024_DBF", "previous_local_path": "raw_sources/sig_maroc_communes_rgph2024/communes.dbf", "local_path": "data/raw/sig_maroc/rgph/2024/communes/communes.dbf", "sha256": "aa9033af522f1ad8e7da5c6e2e495442611522bf49edda60c5a99365089fde3a", "byte_size": 1276238, "kind": "raw_component", "rows": 1541, "columns": 8},
+    {"file_id": "SIG2024_PRJ", "previous_local_path": "raw_sources/sig_maroc_communes_rgph2024/communes.prj", "local_path": "data/raw/sig_maroc/rgph/2024/communes/communes.prj", "sha256": "a02a27b1d1982c8516d83398e85a3c8b1aef1713c13ef4d84d7bde17430c07c4", "byte_size": 145, "kind": "raw_component"},
+    {"file_id": "SIG2024_SHP", "previous_local_path": "raw_sources/sig_maroc_communes_rgph2024/communes.shp", "local_path": "data/raw/sig_maroc/rgph/2024/communes/communes.shp", "sha256": "24c579b9bf03ec7718af18636ba00db1adbb7dd63c0a554e5251e8bc49abb6e8", "byte_size": 8827460, "kind": "raw_component", "rows": 1541},
+    {"file_id": "SIG2024_SHX", "previous_local_path": "raw_sources/sig_maroc_communes_rgph2024/communes.shx", "local_path": "data/raw/sig_maroc/rgph/2024/communes/communes.shx", "sha256": "2ebc42cf15a688f4c1e4dedd1bad2c25cb6706aea8e18f978e1e01b08af558f8", "byte_size": 12428, "kind": "raw_component"},
+    {"file_id": "HF_COMM2015_TRAIN", "previous_local_path": "raw_sources/comm2015_train.parquet", "local_path": "data/raw/mirrors/huggingface/communal_results_2015/train.parquet", "sha256": "4535a506c352d666c2fdf4c38f499add6de5e48f6e3f766bc34d2fefab670a62", "byte_size": 86777, "kind": "raw_mirror", "rows": 1230, "columns": 21},
+    {"file_id": "HF_COMM2015_TEST", "previous_local_path": "raw_sources/comm2015_test.parquet", "local_path": "data/raw/mirrors/huggingface/communal_results_2015/test.parquet", "sha256": "b3bc6e56d3e3e5f0b455c0b34bfbc262952d5d904e85857bd13341b1dc187c16", "byte_size": 29366, "kind": "raw_mirror", "rows": 308, "columns": 21},
+    {"file_id": "HF_COUNCIL2021_TRAIN", "previous_local_path": "raw_sources/council2021_train.parquet", "local_path": "data/raw/mirrors/huggingface/local_councils_2021/train.parquet", "sha256": "0150eb86da7a8bc14f0da5733b024884c8cb390fd020fd3b4b1dd2a5c54c429c", "byte_size": 1164817, "kind": "raw_mirror", "rows": 26010, "columns": 18},
+    {"file_id": "HF_COUNCIL2021_TEST", "previous_local_path": "raw_sources/council2021_test.parquet", "local_path": "data/raw/mirrors/huggingface/local_councils_2021/test.parquet", "sha256": "7225d2fed2a0fb0ee634383169f17c6924d32c91870ca1f829fa9e5a63be0615", "byte_size": 298104, "kind": "raw_mirror", "rows": 6503, "columns": 18},
+    {"file_id": "HF_MPS_TRAIN", "previous_local_path": "raw_sources/mps_train.parquet", "local_path": "data/raw/mirrors/huggingface/parliament_members/train.parquet", "sha256": "54a4157275add61d5d51796e2330d03aa330fdeff5326561ec58dbf077fa7d74", "byte_size": 85783, "kind": "raw_mirror", "rows": 1323, "columns": 23},
+    {"file_id": "HF_MPS_TEST", "previous_local_path": "raw_sources/mps_test.parquet", "local_path": "data/raw/mirrors/huggingface/parliament_members/test.parquet", "sha256": "c4bae75e6ae7959d6d36d8654e0e4e85737928120d5ef0e5efef76eb9725f165", "byte_size": 32143, "kind": "raw_mirror", "rows": 331, "columns": 23},
+    {"file_id": "WAREHOUSE_V8", "previous_local_path": "Morocco_Electoral_Data_Warehouse_V8.xlsx", "local_path": "data/legacy/excel/v8/Morocco_Electoral_Data_Warehouse_V8.xlsx", "sha256": "01edd16fe6ef53a11239b2c7b49985dda4584d41bf07e27e97be7c80c17a38eb", "byte_size": 274171, "kind": "legacy_artifact", "sheets": 53},
+    {"file_id": "WAREHOUSE_V9", "previous_local_path": "Morocco_Electoral_Data_Warehouse_V9.xlsx", "local_path": "data/exports/excel/v9/Morocco_Electoral_Data_Warehouse_V9.xlsx", "sha256": "a4a3c90e26f45d46d85f11fea4e686d21e2ebc71f415f49e3ff1852e5ebd38a8", "byte_size": 13835530, "kind": "export_artifact", "sheets": 64}
   ]
 }

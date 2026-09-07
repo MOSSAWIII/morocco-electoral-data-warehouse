@@ -1,5 +1,11 @@
 # Donnees sources et artefacts exportes (jamais versionnes)
 raw_sources/
+data/raw/
+data/legacy/
+data/staging/
+data/processed/
+data/exports/
+data/tmp/
 *.xlsx
 *.xls
 *.xlsm
@@ -13,9 +19,9 @@ raw_sources/
 *.7z
 *.dump
 *.backup
-exports/
-artifacts/
-backups/
+/exports/
+/artifacts/
+/backups/
 
 # Secrets et configuration locale
 .env
@@ -23,11 +29,12 @@ backups/
 !.env.example
 *.pem
 *.key
-secrets/
+/secrets/
 
 # Python
 __pycache__/
 *.py[cod]
+*.egg-info/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
@@ -45,4 +52,3 @@ Thumbs.db
 # PostgreSQL local
 pgdata/
 postgres-data/
-
