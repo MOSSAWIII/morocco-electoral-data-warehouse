@@ -34,6 +34,7 @@ def build_parser() -> argparse.ArgumentParser:
     github_commands = github.add_subparsers(dest="github_command", required=True)
     backlog = github_commands.add_parser("publish-backlog", help="Publier les jalons et issues")
     backlog.add_argument("--repo")
+    backlog.add_argument("--dry-run", action="store_true")
     return parser
 
 
@@ -70,5 +71,5 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "github" and args.github_command == "publish-backlog":
         from morocco_elections.github.backlog import publish
 
-        return publish(repo=args.repo)
+        return publish(repo=args.repo, dry_run=args.dry_run)
     raise AssertionError("Commande non gérée")

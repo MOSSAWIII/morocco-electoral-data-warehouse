@@ -34,6 +34,10 @@ def test_v11a_artifact_contract() -> None:
 
 def test_github_backlog_contract() -> None:
     assert validate_project.validate_backlog() == []
+    backlog = validate_project.json.loads(validate_project.BACKLOG_PATH.read_text(encoding="utf-8"))
+    assert len(backlog["milestones"]) == 4
+    assert len(backlog["labels"]) == 8
+    assert len(backlog["issues"]) == 8
 
 
 def test_python_sources_parse() -> None:
