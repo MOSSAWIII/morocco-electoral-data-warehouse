@@ -1,0 +1,57 @@
+﻿CROSSWALKS ET IDENTITÉS
+=======================
+
+VERSION           : V10
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V10.xlsx
+DATE DE GÉNÉRATION: 2026-09-07
+PÉRIMÈTRE         : Résolution géographique, partis et personnes.
+RENVOIS           : 03_DIMENSIONS_CONFORMES.txt, 04_HIERARCHIE_GEOGRAPHIQUE.txt, 08_PERSONNES_MANDATS_ET_REPRESENTATION.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V10.
+DÉRIVÉ        : valeur calculée à partir de données V10 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+CROSSWALK_GEO
+Grain : source_system × source_geo_id × élection.
+Clé logique : source_system + source_geo_id + contexte électoral.
+Résultat : canonical_geo_id, canonical_region_id et canonical_province_id.
+
+ORDRE DE MATCHING
+1. Nom normalisé + province/préfecture exacte.
+2. Variantes d'accents, apostrophes, espaces, traits d'union et suffixes administratifs.
+3. Fuzzy matching uniquement à l'intérieur du même parent.
+4. Codes administratifs/historiques lorsque disponibles.
+5. Revue manuelle si le score ou l'unicité reste insuffisant.
+
+OBSERVÉ: 3 052 raccords normalized_name+province et 24 raccords
+fuzzy_name+province. Dix lignes élection-spécifiques correspondent à cinq unités
+uniques validées manuellement par code officiel et parent administratif.
+
+UNITÉS VALIDÉES
+Voir MANUAL_RESOLUTIONS_V10: cinq décisions géographiques, dix lignes élection-spécifiques, confiance 1.0.
+
+
+CROSSWALK_PARTY
+Grain : source_system × raw_source_code × période.
+Le code brut, le nom brut, le canonical_party_id et la validité sont conservés.
+AGD et AFG sont des coalitions temporelles, pas des synonymes intemporels.
+SAP, SAP2 et SAP3 sont des emplacements de listes indépendantes, pas des
+identités partisanes stables entre communes ou élections.
+
+RÈGLES D'IDENTITÉ
+- Ne jamais développer un acronyme ambigu sans preuve source.
+- Ne jamais fusionner deux codes uniquement parce que leurs noms se ressemblent.
+- Une alliance conserve alliance_flag et sa période.
+- predecessor/successor restent NULL sans relation documentée.
+- DÉRIVÉ: V10 porte 32 512 person_id locaux déterministes pour 32 513 observations.
+- La portée reste source + commune + circonscription + parti + nom Unicode normalisé;
+  aucune égalité de nom ne prouve une identité inter-circonscription.
+- Les 44 groupes nom-commune ambigus sont conservés dans IDENTITY_AUDIT_V10.
+- L'identité parlementaire TAFRA_MP_* repose sur idPerson et peut être longitudinale.
+
+DÉCISIONS V10
+Cinq unités géographiques, dix lignes élection-spécifiques: validated_manual, confidence_score=1.0. Les graphies historiques restent des alias.

@@ -7,7 +7,9 @@ def test_default_layout() -> None:
     paths = get_paths()
     assert paths.data_root == (PROJECT_ROOT / "data").resolve()
     assert paths.documentation_v9 == PROJECT_ROOT / "docs" / "v9" / "ontology"
+    assert paths.documentation_v10 == PROJECT_ROOT / "docs" / "v10" / "ontology"
     assert paths.v9_workbook == paths.data_root / "exports" / "excel" / "v9" / "Morocco_Electoral_Data_Warehouse_V9.xlsx"
+    assert paths.v10_workbook == paths.data_root / "exports" / "excel" / "v10" / "Morocco_Electoral_Data_Warehouse_V10.xlsx"
 
 
 def test_explicit_data_dir_has_priority(monkeypatch, tmp_path: Path) -> None:
@@ -23,4 +25,3 @@ def test_environment_data_dir(monkeypatch, tmp_path: Path) -> None:
     assert get_paths().data_root == environment_root.resolve()
     resolved = resolve_manifest_path("data/raw/example.xlsx")
     assert resolved == environment_root / "raw" / "example.xlsx"
-

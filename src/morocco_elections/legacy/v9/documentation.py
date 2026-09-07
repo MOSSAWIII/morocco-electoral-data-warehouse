@@ -11,6 +11,7 @@ import openpyxl
 from morocco_elections.config import get_paths
 
 VERSION = "V9"
+AUDIT_SHEET = "WORKBOOK_AUDIT_V9"
 GENERATED_ON = date.today().isoformat()
 
 
@@ -98,7 +99,7 @@ def table_records(wb, sheet_name, header_row=4):
 
 def load_model():
     wb = openpyxl.load_workbook(WORKBOOK, read_only=True, data_only=False)
-    audit_headers, audit_rows = table_records(wb, "WORKBOOK_AUDIT_V9")
+    audit_headers, audit_rows = table_records(wb, AUDIT_SHEET)
     audit = {row["sheet"]: row for row in audit_rows}
     coverage_headers, coverage_rows = table_records(wb, "DATA_COVERAGE")
     coverage = {row["domain_sheet"]: row for row in coverage_rows}

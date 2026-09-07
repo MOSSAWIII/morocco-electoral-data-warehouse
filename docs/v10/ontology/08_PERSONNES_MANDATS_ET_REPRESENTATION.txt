@@ -1,0 +1,47 @@
+﻿PERSONNES, MANDATS ET REPRÉSENTATION
+====================================
+
+VERSION           : V10
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V10.xlsx
+DATE DE GÉNÉRATION: 2026-09-07
+PÉRIMÈTRE         : Identités prudentes et trajectoires de mandat.
+RENVOIS           : 03_DIMENSIONS_CONFORMES.txt, 05_CROSSWALKS_ET_IDENTITES.txt, 09_POUVOIR_LOCAL_ET_GOUVERNANCE.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V10.
+DÉRIVÉ        : valeur calculée à partir de données V10 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+DIM_PERSON
+OBSERVÉ/DÉRIVÉ: 33697 lignes, dont 1 185 identités parlementaires
+et 32 512 identités locales prudentes.
+
+LOCAL_MANDATES
+OBSERVÉ: 32 513 observations d'élus locaux; local_mandate_id reste la clé de ligne.
+DÉRIVÉ: person_name_normalized et person_name_match_key sont calculés sans écraser
+person_name_ar. person_id est le SHA-256 tronqué de la portée source + commune +
+circonscription + parti + nom Unicode normalisé.
+OBSERVÉ: une identité Bni Makada est liée à deux observations RAW conservées.
+DÉRIVÉ: 44 groupes nom-commune ambigus sont audités sans fusion spéculative.
+INTERDIT: utiliser le nom seul ou étendre person_id hors de sa portée documentée.
+
+PARLIAMENTARY_MANDATES
+OBSERVÉ: 1654 périodes de siège pour 1 185 idPerson.
+Clé: mandate_id; personne stable: TAFRA_MP_<idPerson>.
+idSiege/source_seat_id peut apparaître plusieurs fois lorsque des députés se
+succèdent sur un siège. La clé ne doit donc jamais être legislature + idSiege seule.
+
+RÈGLES DE MANDAT
+- dateEntree/start_date est obligatoire pour ordonner les périodes.
+- dateSortie/end_date NULL signifie actif ou sortie non publiée selon le contexte.
+- entry_reason, exit_reason et replacement_procedure restent des attributs de période.
+- female/male est disponible pour les députés; le sexe n'est pas fourni pour les élus locaux.
+- role_uncertain_flag et head_of_list_uncertain_flag interdisent une certitude silencieuse.
+
+BLOQUÉ
+Le champ parti TAFRA des députés représente le premier parti observé dans la
+législature. Il ne constitue pas un historique complet du nomadisme politique.
+Une future PERSON_PARTY_HISTORY devra utiliser personne × parti × période × source.

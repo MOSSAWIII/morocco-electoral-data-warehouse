@@ -1,0 +1,73 @@
+﻿INDEX ET MODE D'EMPLOI
+======================
+
+VERSION           : V10
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V10.xlsx
+DATE DE GÉNÉRATION: 2026-09-07
+PÉRIMÈTRE         : Corpus documentaire complet de V10.
+RENVOIS           : 01_ONTOLOGIE_ELECTORALE_GLOBALE.txt, 02_ARCHITECTURE_DES_CUBES.txt, 03_DIMENSIONS_CONFORMES.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V10.
+DÉRIVÉ        : valeur calculée à partir de données V10 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+Ce corpus décrit l'ontologie, les cubes, les hiérarchies, les règles de jointure,
+les métriques et la gouvernance des données du warehouse V10. Il ne remplace pas
+le classeur : le classeur reste l'unique source de vérité exécutable.
+
+ORDRE DE LECTURE RECOMMANDÉ
+1. Ontologie globale.
+2. Architecture des cubes.
+3. Dimensions conformes et hiérarchie géographique.
+4. Faits électoraux, personnes et pouvoir local.
+5. Pipeline, intégrité, métriques et règles temporelles.
+6. Catalogue exhaustif des 67 onglets.
+
+CONVENTIONS
+- Les identifiants techniques sont reproduits sans traduction.
+- NULL signifie absent ou non calculable, jamais zéro implicite.
+- Une part est exprimée sur l'échelle 0–100 sauf mention explicite.
+- Une ligne RAW n'est jamais corrigée silencieusement.
+- Une relation temporelle doit conserver observation_year, election_year,
+  temporal_distance et temporal_join_method lorsqu'ils existent.
+- Les anciens onglets SAMPLE/PILOT restent historiques et ne remplacent jamais
+  les tables FULL ou les panels V10.
+- DÉRIVÉ: le person_id local V10 est Unicode, déterministe et de portée prudente;
+  toute analyse doit respecter source+commune+circonscription+parti.
+
+LISTE DES DOCUMENTS
+01. 00_INDEX_ET_MODE_EMPLOI.txt
+02. 01_ONTOLOGIE_ELECTORALE_GLOBALE.txt
+03. 02_ARCHITECTURE_DES_CUBES.txt
+04. 03_DIMENSIONS_CONFORMES.txt
+05. 04_HIERARCHIE_GEOGRAPHIQUE.txt
+06. 05_CROSSWALKS_ET_IDENTITES.txt
+07. 06_TEMPS_CYCLES_ET_ELECTIONS.txt
+08. 07_FAITS_ELECTORAUX_ET_MOBILISATION.txt
+09. 08_PERSONNES_MANDATS_ET_REPRESENTATION.txt
+10. 09_POUVOIR_LOCAL_ET_GOUVERNANCE.txt
+11. 10_SOCIO_ECONOMIE_CAMPAGNE_INFORMATION.txt
+12. 11_PIPELINE_RAW_NORMALIZED_FACT_ANALYTICAL.txt
+13. 12_REGLES_D_INTEGRITE_ET_JOINTURE.txt
+14. 13_METRIQUES_DERIVEES_ET_REGLES_TEMPORELLES.txt
+15. 14_CATALOGUE_COMPLET_DES_ONGLETS.txt
+EMPREINTE DE LA SOURCE
+----------------------
+SHA-256 V10: 47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6
+Nombre d'onglets: 67
+Nombre de documents: 15
+
+STRUCTURES VIDES
+----------------
+STRUCTURE VIDE: LOCAL_FINANCE, POLITICAL_ACTIVITY, SHOCKS
+
+PILOTES CONSERVÉS
+-----------------
+PILOTE: ANALYTICAL_PANEL_PILOT_2015, COMMUNE_ELECTION_PANEL_PILOT, COUNCIL2021_SAMPLE_STATS, COUNCIL_COMPOSITION_2021_PILOT, MICRO_COMM2015_ANALYTICS, RAW_COMM2015_SAMPLE, RAW_COUNCIL2021_SAMPLE, RAW_MPS_SAMPLE
+
+ÉTAT V10
+Les cinq variantes géographiques et les deux écarts de sièges sont résolus avec preuve. Restent BLOQUÉS: nInscrits, sièges 2015, 135 présidences et historique partisan parlementaire complet.

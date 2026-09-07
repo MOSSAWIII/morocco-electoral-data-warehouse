@@ -1,0 +1,59 @@
+{
+  "release": "V10",
+  "baseline": "V9",
+  "generated_on": "2026-09-07",
+  "status": "validated",
+  "workbooks": {
+    "V8": "01edd16fe6ef53a11239b2c7b49985dda4584d41bf07e27e97be7c80c17a38eb",
+    "V9": "a4a3c90e26f45d46d85f11fea4e686d21e2ebc71f415f49e3ff1852e5ebd38a8",
+    "V10": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6"
+  },
+  "volumes": {
+    "sheets": 67,
+    "LOCAL_MANDATES": 32513,
+    "local_person_ids": 32512,
+    "identity_ambiguity_groups": 44,
+    "IDENTITY_AUDIT_V10": 44,
+    "PARLIAMENTARY_MANDATES": 1654,
+    "DIM_PERSON": 33697,
+    "COMMUNE_ELECTION_PANEL": 3076,
+    "ELECTORAL_TRANSITIONS_2015_2021": 14555,
+    "ANALYTICAL_PANEL": 22054,
+    "MANUAL_RESOLUTIONS_V10": 7,
+    "COUNCIL_SEAT_STATUS_V10": 1538
+  },
+  "integrity": {
+    "raw_hashes_unchanged": true,
+    "v8_hash_unchanged": true,
+    "v9_hash_unchanged": true,
+    "technical_person_id_collisions": 0,
+    "empty_person_keys": 0,
+    "geographic_rows_manually_validated": 10,
+    "geographic_units_manually_validated": 5,
+    "observed_seat_difference": -2,
+    "reconciled_seat_difference": 0,
+    "imputed_people": 0
+  },
+  "allowed_changed_sheets": [
+    "README",
+    "SOURCES",
+    "DIM_PERSON",
+    "CROSSWALK_GEO",
+    "LOCAL_MANDATES",
+    "LOCAL_COUNCIL_CONTROL",
+    "QUALITY_CONTROL",
+    "DATA_COVERAGE",
+    "WORKBOOK_AUDIT_V10",
+    "IDENTITY_AUDIT_V10",
+    "MANUAL_RESOLUTIONS_V10",
+    "COUNCIL_SEAT_STATUS_V10"
+  ],
+  "validation": {
+    "pytest": "19 passed",
+    "ruff": "passed",
+    "ci_mode": "passed",
+    "full_mode_v9_v10": "passed",
+    "semantic_comparison": "passed",
+    "deterministic_v10_export": true
+  }
+}

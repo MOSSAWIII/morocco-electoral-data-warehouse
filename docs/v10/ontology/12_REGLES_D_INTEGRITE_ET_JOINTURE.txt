@@ -1,0 +1,71 @@
+﻿RÈGLES D'INTÉGRITÉ ET DE JOINTURE
+=================================
+
+VERSION           : V10
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V10.xlsx
+DATE DE GÉNÉRATION: 2026-09-07
+PÉRIMÈTRE         : Contraintes référentielles, cardinalités et interdictions.
+RENVOIS           : 03_DIMENSIONS_CONFORMES.txt, 05_CROSSWALKS_ET_IDENTITES.txt, 13_METRIQUES_DERIVEES_ET_REGLES_TEMPORELLES.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V10.
+DÉRIVÉ        : valeur calculée à partir de données V10 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+CLÉS ET CARDINALITÉS
+DIM_GEO.geo_id                 1 → N faits territoriaux.
+DIM_TIME.time_id               1 → N faits datés.
+DIM_PARTY.party_id             1 → N résultats/mandats/compositions.
+DIM_PERSON.person_id           1 → N périodes de mandat lorsque l'identité est stable.
+DIM_ELECTION.election_id       1 → N résultats/mobilisations/mandats électoraux.
+SOURCES.source_id              1 → N lignes de faits et dimensions.
+
+CLÉS ANALYTIQUES
+RESULTS: geo_id + election_id + party_id.
+MOBILISATION: geo_id + election_id.
+ANALYTICAL_PANEL: geo_id + election_id + party_id.
+COMMUNE_ELECTION_PANEL: geo_id + election_id.
+ELECTORAL_TRANSITIONS_2015_2021: geo_id + party_id.
+LOCAL_COUNCIL_CONTROL: geo_id + election_id + party_id.
+PARLIAMENTARY_MANDATES: mandate_id; ne pas utiliser idSiege seul.
+LOCAL_MANDATES: local_mandate_id identifie l'observation; person_id identifie une
+personne prudente dans sa portée documentée, jamais au-delà sans preuve.
+
+RÈGLES DE NULLITÉ
+- NULL = inconnu, absent, inapplicable ou non calculable selon notes/QA.
+- NULL n'est jamais converti automatiquement en zéro.
+- Un dénominateur NULL ou nul produit une métrique dérivée NULL.
+- Un champ BLOQUÉ reste NULL jusqu'à ingestion d'une source défendable.
+
+RÈGLES NUMÉRIQUES
+- Comptages non négatifs.
+- turnout_rate, vote_share et seat_share dans [0,100].
+- Somme vote_share ≈ 100 au grain commune-élection complet.
+- Somme party_seats = sièges du conseil, sinon anomalie QA.
+- winner doit avoir rank=1; les ex æquo doivent rester détectables.
+- Les valeurs dérivées conservent la source de leurs intrants.
+
+JOINTURES INTERDITES
+- noms de commune seuls;
+- noms de personne seuls entre communes;
+- person_id local utilisé au-delà de sa portée source+commune+circonscription+parti;
+- acronymes de parti ambigus;
+- année seule lorsque plusieurs observations existent;
+- agrégation de mesures appartenant à des niveaux géographiques différents;
+- 2024 présenté comme observation 2015/2021;
+- largest_party utilisé comme president_party;
+- parti parlementaire utilisé comme historique complet de changement de parti.
+
+GESTION DES DOUBLONS
+Une duplication de clé primaire est bloquante. Une duplication de clé naturelle
+candidate est conservée jusqu'à comparaison de toutes les colonnes. V10 contient
+deux lignes candidates sur commune+circonscription+nom+parti qui ne doivent pas
+être supprimées silencieusement.
+
+CARDINALITÉS V10
+IDENTITY_AUDIT_V10: audit_id unique; 44 groupes.
+MANUAL_RESOLUTIONS_V10: resolution_id unique; 7 décisions.
+COUNCIL_SEAT_STATUS_V10: source_idcommune unique; 1 538 communes.

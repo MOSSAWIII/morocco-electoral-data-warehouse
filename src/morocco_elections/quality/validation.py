@@ -17,7 +17,8 @@ from morocco_elections.config import PROJECT_ROOT, get_paths, resolve_manifest_p
 ROOT = PROJECT_ROOT
 MANIFEST_PATH = get_paths().source_manifest
 BACKLOG_PATH = get_paths().github_backlog
-DOCUMENTATION_DIR = get_paths().documentation_v9
+V10_REPORT_PATH = PROJECT_ROOT / "metadata" / "v10_release_report.json"
+DOCUMENTATION_DIRS = {"v9": get_paths().documentation_v9, "v10": get_paths().documentation_v10}
 EXPECTED_DOCUMENTS = [
     "00_INDEX_ET_MODE_EMPLOI.txt",
     "01_ONTOLOGIE_ELECTORALE_GLOBALE.txt",
@@ -105,6 +106,14 @@ EXPECTED_V9_VOLUMES = {
     "ELECTORAL_TRANSITIONS_2015_2021": 14555,
     "ANALYTICAL_PANEL": 22054,
 }
+EXPECTED_V10_VOLUMES = {
+    **EXPECTED_V9_VOLUMES,
+    "DIM_PERSON": 33697,
+    "IDENTITY_AUDIT_V10": 44,
+    "MANUAL_RESOLUTIONS_V10": 7,
+    "COUNCIL_SEAT_STATUS_V10": 1538,
+}
+REQUIRED_EVIDENCE_FIELDS = {"evidence_id", "local_path", "source_url", "publisher", "sha256", "byte_size", "status"}
 
 
 class ValidationError(RuntimeError):
@@ -129,29 +138,34 @@ def load_manifest(path: Path | None = None) -> dict:
 
 def validate_manifest(manifest: dict) -> list[str]:
     errors: list[str] = []
-    if manifest.get("schema_version") != 2:
-        errors.append("metadata/source_manifest.json: schema_version doit valoir 2")
-    if manifest.get("warehouse_version") != "V9":
-        errors.append("metadata/source_manifest.json: warehouse_version doit valoir V9")
+    if manifest.get("schema_version") != 3:
+        errors.append("metadata/source_manifest.json: schema_version doit valoir 3")
+    if manifest.get("warehouse_version") != "V10":
+        errors.append("metadata/source_manifest.json: warehouse_version doit valoir V10")
 
     sources = manifest.get("sources")
     artifacts = manifest.get("artifacts")
     physical_files = manifest.get("physical_files")
+    evidence = manifest.get("evidence")
     if not isinstance(sources, list) or not sources:
         errors.append("Le manifeste doit contenir une liste sources non vide")
         sources = []
     if not isinstance(artifacts, list) or not artifacts:
         errors.append("Le manifeste doit contenir une liste artifacts non vide")
         artifacts = []
-    if not isinstance(physical_files, list) or len(physical_files) != 19:
-        errors.append("Le manifeste doit inventorier exactement 19 fichiers physiques déplacés")
+    if not isinstance(physical_files, list) or len(physical_files) != 22:
+        errors.append("Le manifeste doit inventorier exactement 22 fichiers physiques")
         physical_files = []
+    if not isinstance(evidence, list) or len(evidence) != 2:
+        errors.append("Le manifeste doit inventorier exactement deux preuves officielles V10")
+        evidence = []
 
     seen_ids: set[str] = set()
     for kind, records, required, id_field in (
         ("source", sources, REQUIRED_SOURCE_FIELDS, "source_id"),
         ("artifact", artifacts, REQUIRED_ARTIFACT_FIELDS, "artifact_id"),
         ("physical_file", physical_files, REQUIRED_PHYSICAL_FILE_FIELDS, "file_id"),
+        ("evidence", evidence, REQUIRED_EVIDENCE_FIELDS, "evidence_id"),
     ):
         seen_paths: set[str] = set()
         for index, record in enumerate(records):
@@ -211,6 +225,25 @@ def validate_backlog() -> list[str]:
     return errors
 
 
+def validate_v10_release_report(manifest: dict) -> list[str]:
+    try:
+        report = json.loads(V10_REPORT_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"Rapport V10 illisible: {exc}"]
+    errors = []
+    if report.get("release") != "V10" or report.get("baseline") != "V9" or report.get("status") != "validated":
+        errors.append("Le rapport de release doit décrire V10 validé contre V9")
+    artifacts = {item["artifact_id"]: item for item in manifest.get("artifacts", [])}
+    for version in ("V8", "V9", "V10"):
+        artifact = artifacts.get(f"WAREHOUSE_{version}_{'INPUT' if version == 'V8' else 'EXPORT'}")
+        if not artifact or report.get("workbooks", {}).get(version) != artifact.get("sha256"):
+            errors.append(f"Empreinte {version} incohérente dans le rapport de release")
+    for sheet, expected in EXPECTED_V10_VOLUMES.items():
+        if report.get("volumes", {}).get(sheet) != expected:
+            errors.append(f"Volume {sheet} incohérent dans le rapport de release")
+    return errors
+
+
 def validate_python_sources() -> list[str]:
     errors: list[str] = []
     for path in sorted(ROOT.rglob("*.py")):
@@ -223,25 +256,27 @@ def validate_python_sources() -> list[str]:
     return errors
 
 
-def validate_documentation() -> list[str]:
+def validate_documentation(release: str = "all") -> list[str]:
     errors: list[str] = []
-    actual = sorted(path.name for path in DOCUMENTATION_DIR.glob("*.txt"))
-    if actual != EXPECTED_DOCUMENTS:
-        errors.append(f"Corpus documentaire incorrect: attendu {EXPECTED_DOCUMENTS}, obtenu {actual}")
-    for name in EXPECTED_DOCUMENTS:
-        path = DOCUMENTATION_DIR / name
-        if not path.is_file():
-            continue
-        try:
-            content = path.read_text(encoding="utf-8-sig")
-        except UnicodeError as exc:
-            errors.append(f"Document non UTF-8: {name}: {exc}")
-            continue
-        if not content.strip():
-            errors.append(f"Document vide: {name}")
-        for token in REQUIRED_DOCUMENT_METADATA:
-            if token not in content:
-                errors.append(f"Métadonnée absente de {name}: {token}")
+    releases = DOCUMENTATION_DIRS if release == "all" else {release: DOCUMENTATION_DIRS[release]}
+    for version, directory in releases.items():
+        actual = sorted(path.name for path in directory.glob("*.txt"))
+        if actual != EXPECTED_DOCUMENTS:
+            errors.append(f"Corpus documentaire {version} incorrect: attendu {EXPECTED_DOCUMENTS}, obtenu {actual}")
+        for name in EXPECTED_DOCUMENTS:
+            path = directory / name
+            if not path.is_file():
+                continue
+            try:
+                content = path.read_text(encoding="utf-8-sig")
+            except UnicodeError as exc:
+                errors.append(f"Document non UTF-8: {version}/{name}: {exc}")
+                continue
+            if not content.strip():
+                errors.append(f"Document vide: {version}/{name}")
+            for token in REQUIRED_DOCUMENT_METADATA:
+                if token not in content:
+                    errors.append(f"Métadonnée absente de {version}/{name}: {token}")
     return errors
 
 
@@ -314,7 +349,7 @@ def validate_repository_files(files: Iterable[Path] | None = None) -> list[str]:
 def validate_physical_record(record: dict, data_dir: str | Path | None = None) -> list[str]:
     errors: list[str] = []
     path = resolve_manifest_path(record["local_path"], data_dir)
-    label = record.get("source_id") or record.get("artifact_id")
+    label = record.get("source_id") or record.get("artifact_id") or record.get("evidence_id") or record.get("file_id")
     if not path.is_file():
         return [f"{label}: fichier local absent: {record['local_path']}"]
     if path.stat().st_size != record["byte_size"]:
@@ -325,47 +360,67 @@ def validate_physical_record(record: dict, data_dir: str | Path | None = None) -
     return errors
 
 
-def validate_full(manifest: dict, data_dir: str | Path | None = None) -> list[str]:
+def _populated_rows(sheet) -> int:
+    return sum(1 for row in sheet.iter_rows(min_row=5, values_only=True) if any(value is not None for value in row))
+
+
+def compare_v10_to_v9(data_dir: str | Path | None = None) -> list[str]:
     errors: list[str] = []
-    for physical_file in manifest["physical_files"]:
-        errors.extend(validate_physical_record(physical_file, data_dir))
+    paths = get_paths(data_dir)
+    if not paths.v9_workbook.is_file() or not paths.v10_workbook.is_file():
+        return ["Comparaison V9/V10 impossible: un classeur est absent"]
+    old = openpyxl.load_workbook(paths.v9_workbook, read_only=True, data_only=False)
+    new = openpyxl.load_workbook(paths.v10_workbook, read_only=True, data_only=False)
+    allowed = {"README", "SOURCES", "DIM_PERSON", "CROSSWALK_GEO", "LOCAL_MANDATES", "LOCAL_COUNCIL_CONTROL", "QUALITY_CONTROL", "DATA_COVERAGE", "WORKBOOK_AUDIT_V9", "WORKBOOK_AUDIT_V10", "IDENTITY_AUDIT_V10", "MANUAL_RESOLUTIONS_V10", "COUNCIL_SEAT_STATUS_V10"}
+    for name in sorted((set(old.sheetnames) & set(new.sheetnames)) - allowed):
+        left = list(old[name].iter_rows(min_row=4, values_only=True))
+        right = list(new[name].iter_rows(min_row=4, values_only=True))
+        if left != right:
+            errors.append(f"Différence V9/V10 non autorisée dans {name}")
+    expected_new = {"IDENTITY_AUDIT_V10", "MANUAL_RESOLUTIONS_V10", "COUNCIL_SEAT_STATUS_V10", "WORKBOOK_AUDIT_V10"}
+    actual_new = set(new.sheetnames) - set(old.sheetnames)
+    if actual_new != expected_new:
+        errors.append(f"Onglets V10 nouveaux inattendus: {sorted(actual_new)}")
+    old.close()
+    new.close()
+    return errors
+
+
+def validate_full(manifest: dict, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> list[str]:
+    errors: list[str] = []
+    for record in [*manifest["physical_files"], *manifest["evidence"]]:
+        errors.extend(validate_physical_record(record, data_dir))
     for source in manifest["sources"]:
         errors.extend(validate_physical_record(source, data_dir))
         path = resolve_manifest_path(source["local_path"], data_dir)
         if path.suffix.lower() == ".xlsx" and path.is_file():
             workbook = openpyxl.load_workbook(path, read_only=True, data_only=False)
             sheet = workbook.worksheets[source.get("sheet_index", 0)]
-            actual_rows = sheet.max_row - 1
-            actual_columns = sheet.max_column
+            actual_rows, actual_columns = sheet.max_row - 1, sheet.max_column
             workbook.close()
             if actual_rows != source["rows"] or actual_columns != source["columns"]:
-                errors.append(
-                    f"{source['source_id']}: dimensions attendues {source['rows']}×{source['columns']}, "
-                    f"obtenues {actual_rows}×{actual_columns}"
-                )
+                errors.append(f"{source['source_id']}: dimensions attendues {source['rows']}×{source['columns']}, obtenues {actual_rows}×{actual_columns}")
 
     for artifact in manifest["artifacts"]:
         errors.extend(validate_physical_record(artifact, data_dir))
         path = resolve_manifest_path(artifact["local_path"], data_dir)
-        if path.is_file():
-            workbook = openpyxl.load_workbook(path, read_only=True, data_only=False)
-            actual_sheets = len(workbook.sheetnames)
-            if actual_sheets != artifact["sheet_count"]:
-                errors.append(f"{artifact['artifact_id']}: {actual_sheets} onglets au lieu de {artifact['sheet_count']}")
-            if artifact["artifact_id"] == "WAREHOUSE_V9_EXPORT":
-                for sheet_name, expected in EXPECTED_V9_VOLUMES.items():
-                    sheet = workbook[sheet_name]
-                    actual = sheet.max_row - 4
-                    if actual != expected:
-                        errors.append(f"V9.{sheet_name}: {actual} lignes peuplées au lieu de {expected}")
-            workbook.close()
+        if not path.is_file():
+            continue
+        workbook = openpyxl.load_workbook(path, read_only=True, data_only=False)
+        if len(workbook.sheetnames) != artifact["sheet_count"]:
+            errors.append(f"{artifact['artifact_id']}: {len(workbook.sheetnames)} onglets au lieu de {artifact['sheet_count']}")
+        volumes = EXPECTED_V9_VOLUMES if artifact["artifact_id"] == "WAREHOUSE_V9_EXPORT" else EXPECTED_V10_VOLUMES if artifact["artifact_id"] == "WAREHOUSE_V10_EXPORT" else {}
+        for sheet_name, expected in volumes.items():
+            actual = _populated_rows(workbook[sheet_name])
+            if actual != expected:
+                errors.append(f"{artifact['artifact_id']}.{sheet_name}: {actual} lignes au lieu de {expected}")
+        workbook.close()
 
-    v9_path = get_paths(data_dir).v9_workbook
-    if v9_path.is_file():
+    paths = get_paths(data_dir)
+    if release in {"v9", "all"} and paths.v9_workbook.is_file():
         from morocco_elections.legacy.v9 import documentation as module
-
         module.configure_paths(data_dir)
-        before_hash = sha256(v9_path)
+        before_hash = sha256(paths.v9_workbook)
         model = module.load_model()
         generated, metric_rules = module.build_docs(model)
         try:
@@ -374,44 +429,68 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None) -> list[st
             errors.append(str(exc))
         for name, content in generated.items():
             expected = content.replace("\r\n", "\n").rstrip() + "\n"
-            actual = (DOCUMENTATION_DIR / name).read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+            actual = (DOCUMENTATION_DIRS["v9"] / name).read_text(encoding="utf-8-sig").replace("\r\n", "\n")
             if actual != expected:
                 errors.append(f"Documentation désynchronisée du V9: {name}")
-        if sha256(v9_path) != before_hash:
+        if sha256(paths.v9_workbook) != before_hash:
             errors.append("Le V9 a été modifié pendant la validation")
+
+    if release in {"v10", "all"} and paths.v10_workbook.is_file():
+        from morocco_elections.releases.v10 import documentation as module10
+        module10.configure_paths(data_dir)
+        before_hash = sha256(paths.v10_workbook)
+        model = module10.base.load_model()
+        generated, _ = module10.base.build_docs(model)
+        generated = module10._adapt(generated, model)
+        try:
+            module10._validate(model, generated, before_hash)
+        except RuntimeError as exc:
+            errors.append(str(exc))
+        for name, content in generated.items():
+            expected = content.replace("\r\n", "\n").rstrip() + "\n"
+            actual = (DOCUMENTATION_DIRS["v10"] / name).read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+            if actual != expected:
+                errors.append(f"Documentation désynchronisée du V10: {name}")
+        if sha256(paths.v10_workbook) != before_hash:
+            errors.append("Le V10 a été modifié pendant la validation")
+        errors.extend(compare_v10_to_v9(data_dir))
     return errors
 
 
-def run(mode: str, data_dir: str | Path | None = None) -> list[str]:
+def run(mode: str, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> list[str]:
     manifest = load_manifest()
     errors = []
     errors.extend(validate_manifest(manifest))
     errors.extend(validate_backlog())
+    errors.extend(validate_v10_release_report(manifest))
     errors.extend(validate_python_sources())
-    errors.extend(validate_documentation())
+    errors.extend(validate_documentation(release))
     errors.extend(validate_repository_files())
     if mode == "full" and not errors:
-        errors.extend(validate_full(manifest, data_dir))
+        errors.extend(validate_full(manifest, data_dir, release, baseline))
     return errors
 
 
-def report(mode: str, data_dir: str | Path | None = None) -> int:
-    errors = run(mode, data_dir)
+def report(mode: str, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> int:
+    errors = run(mode, data_dir, release, baseline)
     if errors:
         print("VALIDATION_FAILED")
         for error in errors:
             print(f"- {error}")
         return 1
-    print(f"VALIDATION_OK mode={mode} documents={len(EXPECTED_DOCUMENTS)}")
+    document_count = len(EXPECTED_DOCUMENTS) * (2 if release == "all" else 1)
+    print(f"VALIDATION_OK mode={mode} release={release} documents={document_count}")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Valide la baseline GitHub et, facultativement, les données locales V9.")
+    parser = argparse.ArgumentParser(description="Valide le dépôt et les releases locales V9/V10.")
     parser.add_argument("--mode", choices=("ci", "full"), default="ci")
     parser.add_argument("--data-dir")
+    parser.add_argument("--release", choices=("v9", "v10", "all"), default="all")
+    parser.add_argument("--baseline", choices=("v9",))
     args = parser.parse_args(argv)
-    return report(args.mode, args.data_dir)
+    return report(args.mode, args.data_dir, args.release, args.baseline)
 
 
 if __name__ == "__main__":

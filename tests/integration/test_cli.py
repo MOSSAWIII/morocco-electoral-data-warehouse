@@ -37,6 +37,12 @@ def test_all_structured_commands_are_registered() -> None:
         assert result.returncode == 0, result.stdout + result.stderr
 
 
+def test_v10_versions_are_registered() -> None:
+    for command in ("build", "docs"):
+        result = run_command(sys.executable, "-m", "morocco_elections", command, "v10", "--help")
+        assert result.returncode == 0, result.stdout + result.stderr
+
+
 def test_full_mode_reports_missing_override_without_writing(tmp_path: Path) -> None:
     result = run_command(
         sys.executable,
@@ -50,4 +56,3 @@ def test_full_mode_reports_missing_override_without_writing(tmp_path: Path) -> N
     )
     assert result.returncode == 1
     assert "fichier local absent" in result.stdout
-

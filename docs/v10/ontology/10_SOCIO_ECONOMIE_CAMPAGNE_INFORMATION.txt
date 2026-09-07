@@ -1,0 +1,47 @@
+﻿SOCIO-ÉCONOMIE, CAMPAGNE ET INFORMATION
+=======================================
+
+VERSION           : V10
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V10.xlsx
+DATE DE GÉNÉRATION: 2026-09-07
+PÉRIMÈTRE         : Domaines explicatifs et couverture réellement disponible.
+RENVOIS           : 01_ONTOLOGIE_ELECTORALE_GLOBALE.txt, 06_TEMPS_CYCLES_ET_ELECTIONS.txt, 11_PIPELINE_RAW_NORMALIZED_FACT_ANALYTICAL.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V10.
+DÉRIVÉ        : valeur calculée à partir de données V10 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+DOMAINES SOCIO-ÉCONOMIQUES
+POPULATION: OBSERVÉ, 1564 lignes, grain déclaré=geography × time.
+SOCIAL_HUMAN: OBSERVÉ, 14 lignes, grain déclaré=documented by sheet schema/title.
+LIVING_CONDITIONS: OBSERVÉ, 60 lignes, grain déclaré=documented by sheet schema/title.
+DIGITAL_ACCESS: OBSERVÉ, 6 lignes, grain déclaré=documented by sheet schema/title.
+ECONOMY: OBSERVÉ, 1 lignes, grain déclaré=documented by sheet schema/title.
+PUBLIC_CAPITAL: OBSERVÉ, 1 lignes, grain déclaré=documented by sheet schema/title.
+
+CAMPAGNE, INFORMATION ET ACTION PUBLIQUE
+CAMPAIGN_FINANCE: OBSERVÉ, 9 lignes.
+MEDIA_OFFLINE: OBSERVÉ, 1 lignes.
+DIGITAL_CAMPAIGN: OBSERVÉ, 24 lignes.
+PUBLIC_OPINION: OBSERVÉ, 3 lignes.
+SHOCKS: STRUCTURE VIDE, 0 lignes.
+LOCAL_FINANCE: STRUCTURE VIDE, 0 lignes.
+POLITICAL_ACTIVITY: STRUCTURE VIDE, 0 lignes.
+
+
+RÈGLES D'UTILISATION
+- POPULATION 2024 est exhaustive au niveau canonique communal/arrondissement.
+- Les autres domaines ont surtout une couverture nationale, régionale ou pilote.
+- geo_id et time_id doivent tous deux correspondre au niveau réel de l'observation.
+- Une mesure nationale ne peut pas être répétée sur chaque commune comme si elle était locale.
+- Une enquête conserve survey_name, wave, sample_size et pondération lorsqu'ils existent.
+- Une dépense de campagne doit préciser parti/personne, scrutin, devise et périmètre.
+- Les métriques numériques génériques peuvent être stockées dans FACT_OBSERVATION,
+  mais metric_id doit exister dans DATA_DICTIONARY.
+
+STRUCTURES VIDES V10
+POLITICAL_ACTIVITY, LOCAL_FINANCE et SHOCKS n'ont aucune ligne. Leur schéma est
+documenté, mais aucune mesure ne doit être présentée comme disponible.

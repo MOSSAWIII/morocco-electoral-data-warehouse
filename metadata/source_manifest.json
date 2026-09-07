@@ -1,6 +1,6 @@
 {
-  "schema_version": 2,
-  "warehouse_version": "V9",
+  "schema_version": 3,
+  "warehouse_version": "V10",
   "last_verified": "2026-09-07",
   "sources": [
     {
@@ -117,6 +117,34 @@
       "byte_size": 13835530,
       "sheet_count": 64,
       "status": "local_export"
+    },
+    {
+      "artifact_id": "WAREHOUSE_V10_EXPORT",
+      "local_path": "data/exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx",
+      "sha256": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+      "byte_size": 17817641,
+      "sheet_count": 67,
+      "status": "local_export"
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EVIDENCE_HCP_RGPH2014_CODES",
+      "local_path": "data/raw/evidence/v10/HCP_RGPH2014_codes.pdf",
+      "source_url": "https://rgph2014.hcp.ma/file/167576/",
+      "publisher": "Haut-Commissariat au Plan",
+      "sha256": "e4be135515f7ca72ac0b3a7dfaecd0ff1265911c978c317895c8ba0ec527393e",
+      "byte_size": 1692920,
+      "status": "official_evidence"
+    },
+    {
+      "evidence_id": "EVIDENCE_SGG_BO_7037",
+      "local_path": "data/raw/evidence/v10/BO_7037_Ar.pdf",
+      "source_url": "https://www.sgg.gov.ma/BO/bo_ar/2021/BO_7037_Ar.pdf",
+      "publisher": "Secrétariat général du gouvernement",
+      "sha256": "f41faa09cdf00616f7bbd386b577089bc4cf4deac096db7ebbb0d268fc273fbe",
+      "byte_size": 629157,
+      "status": "official_evidence"
     }
   ],
   "physical_files": [
@@ -138,6 +166,9 @@
     {"file_id": "HF_MPS_TRAIN", "previous_local_path": "raw_sources/mps_train.parquet", "local_path": "data/raw/mirrors/huggingface/parliament_members/train.parquet", "sha256": "54a4157275add61d5d51796e2330d03aa330fdeff5326561ec58dbf077fa7d74", "byte_size": 85783, "kind": "raw_mirror", "rows": 1323, "columns": 23},
     {"file_id": "HF_MPS_TEST", "previous_local_path": "raw_sources/mps_test.parquet", "local_path": "data/raw/mirrors/huggingface/parliament_members/test.parquet", "sha256": "c4bae75e6ae7959d6d36d8654e0e4e85737928120d5ef0e5efef76eb9725f165", "byte_size": 32143, "kind": "raw_mirror", "rows": 331, "columns": 23},
     {"file_id": "WAREHOUSE_V8", "previous_local_path": "Morocco_Electoral_Data_Warehouse_V8.xlsx", "local_path": "data/legacy/excel/v8/Morocco_Electoral_Data_Warehouse_V8.xlsx", "sha256": "01edd16fe6ef53a11239b2c7b49985dda4584d41bf07e27e97be7c80c17a38eb", "byte_size": 274171, "kind": "legacy_artifact", "sheets": 53},
-    {"file_id": "WAREHOUSE_V9", "previous_local_path": "Morocco_Electoral_Data_Warehouse_V9.xlsx", "local_path": "data/exports/excel/v9/Morocco_Electoral_Data_Warehouse_V9.xlsx", "sha256": "a4a3c90e26f45d46d85f11fea4e686d21e2ebc71f415f49e3ff1852e5ebd38a8", "byte_size": 13835530, "kind": "export_artifact", "sheets": 64}
+    {"file_id": "WAREHOUSE_V9", "previous_local_path": "Morocco_Electoral_Data_Warehouse_V9.xlsx", "local_path": "data/exports/excel/v9/Morocco_Electoral_Data_Warehouse_V9.xlsx", "sha256": "a4a3c90e26f45d46d85f11fea4e686d21e2ebc71f415f49e3ff1852e5ebd38a8", "byte_size": 13835530, "kind": "export_artifact", "sheets": 64},
+    {"file_id": "WAREHOUSE_V10", "previous_local_path": null, "local_path": "data/exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx", "sha256": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6", "byte_size": 17817641, "kind": "export_artifact", "sheets": 67},
+    {"file_id": "FILE_EVIDENCE_HCP_RGPH2014_CODES", "previous_local_path": null, "local_path": "data/raw/evidence/v10/HCP_RGPH2014_codes.pdf", "sha256": "e4be135515f7ca72ac0b3a7dfaecd0ff1265911c978c317895c8ba0ec527393e", "byte_size": 1692920, "kind": "evidence"},
+    {"file_id": "FILE_EVIDENCE_SGG_BO_7037", "previous_local_path": null, "local_path": "data/raw/evidence/v10/BO_7037_Ar.pdf", "sha256": "f41faa09cdf00616f7bbd386b577089bc4cf4deac096db7ebbb0d268fc273fbe", "byte_size": 629157, "kind": "evidence"}
   ]
 }

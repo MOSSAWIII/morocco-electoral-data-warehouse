@@ -14,12 +14,18 @@ def test_manifest_contract() -> None:
     manifest = validate_project.load_manifest()
     assert validate_project.validate_manifest(manifest) == []
     assert len(manifest["sources"]) == 6
-    assert len(manifest["artifacts"]) == 2
-    assert len(manifest["physical_files"]) == 19
+    assert len(manifest["artifacts"]) == 3
+    assert len(manifest["physical_files"]) == 22
+    assert len(manifest["evidence"]) == 2
 
 
 def test_documentation_contract() -> None:
     assert validate_project.validate_documentation() == []
+
+
+def test_v10_release_report_contract() -> None:
+    manifest = validate_project.load_manifest()
+    assert validate_project.validate_v10_release_report(manifest) == []
 
 
 def test_github_backlog_contract() -> None:

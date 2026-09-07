@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "morocco-electoral-warehouse"
-version = "9.0.0"
+version = "10.0.0"
 description = "Reproducible pipelines and quality contracts for the Morocco electoral warehouse"
 requires-python = ">=3.11,<3.12"
 dependencies = [
