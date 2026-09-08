@@ -37,6 +37,10 @@ def test_smiig_artifact_contract() -> None:
     assert validate_project.validate_smiig_artifacts() == []
 
 
+def test_quality_baseline_contract() -> None:
+    assert validate_project.validate_quality_baseline_artifacts() == []
+
+
 def test_github_backlog_contract() -> None:
     assert validate_project.validate_backlog() == []
     backlog = validate_project.json.loads(validate_project.BACKLOG_PATH.read_text(encoding="utf-8"))

@@ -36,6 +36,15 @@ def build_parser() -> argparse.ArgumentParser:
     smiig.add_argument("--metadata-output")
     smiig.add_argument("--decision-output")
 
+    quality = commands.add_parser("quality", help="Produire des artefacts de qualité transversaux")
+    quality_commands = quality.add_subparsers(dest="quality_command", required=True)
+    baseline = quality_commands.add_parser("baseline", help="Générer la baseline V10-QA")
+    baseline.add_argument("--release", choices=("v10",), default="v10")
+    baseline.add_argument("--as-of")
+    baseline.add_argument("--data-dir")
+    baseline.add_argument("--metadata-output")
+    baseline.add_argument("--report-output")
+
     github = commands.add_parser("github", help="Opérations GitHub différées")
     github_commands = github.add_subparsers(dest="github_command", required=True)
     backlog = github_commands.add_parser("publish-backlog", help="Publier les jalons et issues")
@@ -83,6 +92,15 @@ def main(argv: list[str] | None = None) -> int:
             metadata_output=args.metadata_output,
             decision_output=args.decision_output,
             data_dir=args.data_dir,
+        )
+    if args.command == "quality" and args.quality_command == "baseline":
+        from morocco_elections.quality.baseline import generate
+
+        return generate(
+            data_dir=args.data_dir,
+            as_of=args.as_of,
+            metadata_output=args.metadata_output,
+            report_output=args.report_output,
         )
     if args.command == "github" and args.github_command == "publish-backlog":
         from morocco_elections.github.backlog import publish

@@ -16,6 +16,7 @@ Warehouse quantitatif consacré aux élections, à la représentation et à la g
 - `data/` : données locales ignorées par Git ; voir son README pour le contrat des zones.
 - `docs/v9/ontology/` : les 15 documents UTF-8 de l’ontologie V9.
 - `docs/v10/ontology/` : les 15 documents UTF-8 de l’ontologie V10.
+- `docs/research/` : rapports de qualification et baseline QA générée.
 - `docs/architecture/` : règles de dépendance et flux futurs.
 - `metadata/` : provenance physique des sources et backlog GitHub.
 - `database/` et `infrastructure/postgres/` : contrats réservés à V13.
@@ -50,10 +51,13 @@ python -m morocco_elections docs v9
 python -m morocco_elections build v10
 python -m morocco_elections docs v10
 python -m morocco_elections validate --mode full --release v10 --baseline v9
+python -m morocco_elections quality baseline --release v10 --as-of 2026-09-08
 python -m morocco_elections github publish-backlog
 ```
 
 Le mode `ci` fonctionne sans données. Le mode `full` vérifie les empreintes, volumes, documents, 67 onglets V10 et différences autorisées par rapport à V9 sans écrire de fichier.
+
+La baseline V10-QA écrit `metadata/v10_quality_baseline.json`, source de vérité machine, puis génère `docs/research/V10_QUALITY_BASELINE.txt`. Elle ne modifie ni V10 ni les RAW et n'attribue aucune note globale.
 
 ## Compatibilité V9
 

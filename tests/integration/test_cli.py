@@ -39,6 +39,7 @@ def test_all_structured_commands_are_registered() -> None:
         ("validate", "--help"),
         ("qualify", "councils-2015", "--help"),
         ("qualify", "smiig", "--help"),
+        ("quality", "baseline", "--help"),
         ("github", "publish-backlog", "--help"),
     ):
         result = run_command(sys.executable, "-m", "morocco_elections", *args)
@@ -64,6 +65,22 @@ def test_full_mode_reports_missing_override_without_writing(tmp_path: Path) -> N
     )
     assert result.returncode == 1
     assert "fichier local absent" in result.stdout
+
+
+def test_quality_baseline_reports_missing_v10(tmp_path: Path) -> None:
+    result = run_command(
+        sys.executable,
+        "-m",
+        "morocco_elections",
+        "quality",
+        "baseline",
+        "--release",
+        "v10",
+        "--data-dir",
+        str(tmp_path),
+    )
+    assert result.returncode == 1
+    assert "QUALITY_BASELINE_FAILED" in result.stdout
 
 
 def test_councils_2015_qualification_runs_offline(tmp_path: Path) -> None:
