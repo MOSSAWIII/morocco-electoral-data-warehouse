@@ -1,0 +1,211 @@
+V10-QA — BASELINE DE COMPLÉTUDE ET D'EXACTITUDE
+
+DATE D'ARRÊTÉ : 2026-09-08
+BASELINE : V10
+CLASSEUR SOURCE : data/exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx
+SHA-256 : 47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6
+PÉRIMÈTRE : audit transversal sans ingestion ni modification de V10.
+
+PRINCIPE
+Présence physique, complétude contre un univers, cohérence interne et preuve externe sont quatre notions distinctes.
+Aucune note globale n'est calculée. Un volume présent ne prouve pas à lui seul la complétude.
+
+SYNTHÈSE PAR TABLE
+COMPLET=5 | PARTIEL=28 | BLOQUÉ=2 | NON ÉVALUÉ=32
+
+UNIVERS ET COUVERTURE
+[COMPLET] COV_COMMUNES_2015 — Unités communales électorales 2015 — attendu=1538 observé=1538 utilisable=1538 couverture=100.0 %
+[COMPLET] COV_COMMUNES_2021 — Unités communales électorales 2021 — attendu=1538 observé=1538 utilisable=1538 couverture=100.0 %
+[COMPLET] COV_COMMUNE_ELECTIONS — Couples commune × élection — attendu=3076 observé=3076 utilisable=3076 couverture=100.0 %
+[BLOQUÉ] COV_REGISTERED_VOTERS — Dénominateurs électoraux communaux — attendu=3076 observé=0 utilisable=0 couverture=0.0 %
+  Limite : 3 076 dénominateurs absents.
+[COMPLET] COV_LOCAL_SEATS_2021 — Sièges communaux légaux 2021 — attendu=32515 observé=32513 utilisable=32513 couverture=99.9938 %
+  Limite : Deux sièges légalement vacants.
+[PARTIEL] COV_LOCAL_PRESIDENCIES_2021 — Présidences communales — attendu=1538 observé=1403 utilisable=1403 couverture=91.2224 %
+  Limite : 135 présidences non résolues.
+[PARTIEL] COV_PARLIAMENTARY_MANDATES — Mandats parlementaires publiés par TAFRA — attendu=1654 observé=1654 utilisable=1654 couverture=100.0 %
+  Limite : Historique partisan intra-législature incomplet.
+[COMPLET] COV_RGPH2024_POPULATION — Observations de population RGPH 2024 chargées — attendu=1564 observé=1564 utilisable=1564 couverture=100.0 %
+  Limite : Usage temporel limité à une référence RGPH 2024.
+[BLOQUÉ] COV_COUNCIL_SEATS_2015 — Sièges communaux 2015 de la source candidate — attendu=31482 observé=0 utilisable=0 couverture=0.0 %
+  Limite : Source candidate NO_GO; aucune ligne intégrée.
+[BLOQUÉ] COV_SMIIG — Observations du pilote SMIIG candidat — attendu=464 observé=0 utilisable=0 couverture=0.0 %
+  Limite : Source candidate NO_GO; aucune ligne intégrée.
+[NON ÉVALUÉ] COV_RESULTS_PARTY_CELLS — Univers non démontré — attendu=None observé=22379 utilisable=22379 couverture=non calculable
+  Limite : Univers partisan exhaustif non démontré, notamment en 2015.
+
+SCORECARD PAR TABLE
+[NON ÉVALUÉ] README — lignes=91 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] SOURCES — lignes=49 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[PARTIEL] DIM_GEO — lignes=1666 — Univers central couvert; quelques structures hors univers électoral restent provisoires ou dérivées.
+[NON ÉVALUÉ] DIM_TIME — lignes=17 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[PARTIEL] DIM_PARTY — lignes=53 — Données présentes avec limites ou statut provisoire documenté.
+[PARTIEL] DIM_PERSON — lignes=33697 — Données présentes avec limites ou statut provisoire documenté.
+[PARTIEL] DIM_ELECTION — lignes=9 — Données présentes avec limites ou statut provisoire documenté.
+[COMPLET] POPULATION — lignes=1564 — Population RGPH 2024 vérifiée dans son périmètre publié.
+[NON ÉVALUÉ] SOCIAL_HUMAN — lignes=14 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] LIVING_CONDITIONS — lignes=60 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[BLOQUÉ] ELECTORATE — lignes=5 — Structure présente, mais inscrits et autres dénominateurs communaux absents.
+[PARTIEL] POLITICAL_SUPPLY — lignes=31 — Données présentes avec limites ou statut provisoire documenté.
+[NON ÉVALUÉ] COMPETITION — lignes=4 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] CAMPAIGN_FINANCE — lignes=9 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] MEDIA_OFFLINE — lignes=1 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[PARTIEL] DIGITAL_CAMPAIGN — lignes=24 — Données présentes avec limites ou statut provisoire documenté.
+[NON ÉVALUÉ] DIGITAL_ACCESS — lignes=6 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] PUBLIC_OPINION — lignes=3 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[BLOQUÉ] MOBILISATION — lignes=3115 — Taux publiés présents mais dénominateurs communaux absents.
+[PARTIEL] RESULTS — lignes=22379 — Résultats observés; offre partisane 2015 non exhaustive.
+[PARTIEL] POWER_REP — lignes=6020 — Données présentes avec limites ou statut provisoire documenté.
+[NON ÉVALUÉ] POLITICAL_ACTIVITY — lignes=0 — Structure prévue sans observation exploitable.
+[NON ÉVALUÉ] LOCAL_FINANCE — lignes=0 — Structure prévue sans observation exploitable.
+[NON ÉVALUÉ] ECONOMY — lignes=1 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] PUBLIC_CAPITAL — lignes=1 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] SHOCKS — lignes=0 — Structure prévue sans observation exploitable.
+[PARTIEL] INSTITUTIONAL_LEGAL — lignes=17 — Données présentes avec limites ou statut provisoire documenté.
+[PARTIEL] FACT_OBSERVATION — lignes=127 — Données présentes avec limites ou statut provisoire documenté.
+[NON ÉVALUÉ] DATA_DICTIONARY — lignes=283 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] QUALITY_CONTROL — lignes=31 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[PARTIEL] PARTY_TRENDS — lignes=66 — Données présentes avec limites ou statut provisoire documenté.
+[NON ÉVALUÉ] RAW_IMPORT_QUEUE — lignes=10 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] DATA_COVERAGE — lignes=19 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] GEO_CROSSWALK — lignes=12 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] SOURCE_DOWNLOADS — lignes=6 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] RAW_SCHEMA — lignes=62 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[PARTIEL] RAW_COMM2015_SAMPLE — lignes=24 — Données présentes avec limites ou statut provisoire documenté.
+[NON ÉVALUÉ] MICRO_COMM2015_ANALYTICS — lignes=24 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[PARTIEL] RAW_COUNCIL2021_SAMPLE — lignes=18 — Données présentes avec limites ou statut provisoire documenté.
+[PARTIEL] COUNCIL2021_SAMPLE_STATS — lignes=12 — Données présentes avec limites ou statut provisoire documenté.
+[PARTIEL] RAW_MPS_SAMPLE — lignes=13 — Données présentes avec limites ou statut provisoire documenté.
+[NON ÉVALUÉ] SOURCE_PROFILES — lignes=3 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] ANALYTICAL_PANEL_SCHEMA — lignes=26 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[COMPLET] CROSSWALK_GEO — lignes=3076 — 3 076 raccordements électoraux couverts; cinq décisions manuelles documentées.
+[NON ÉVALUÉ] CROSSWALK_PARTY — lignes=127 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[PARTIEL] LOCAL_MANDATES — lignes=32513 — 32 513 observations conservées; identités externes non prouvées exhaustivement.
+[PARTIEL] PARLIAMENTARY_MANDATES — lignes=1654 — Mandats présents; historique partisan intra-législature incomplet.
+[PARTIEL] COMMUNE_ELECTION_PANEL_PILOT — lignes=24 — Données présentes avec limites ou statut provisoire documenté.
+[PARTIEL] ANALYTICAL_PANEL_PILOT_2015 — lignes=140 — Données présentes avec limites ou statut provisoire documenté.
+[NON ÉVALUÉ] GEO_LEGACY_CODES — lignes=24 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[PARTIEL] COUNCIL_COMPOSITION_2021_PILOT — lignes=3 — Données présentes avec limites ou statut provisoire documenté.
+[NON ÉVALUÉ] LONGITUDINAL_ISSEN_2015_2021 — lignes=4 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] SOURCE_BLOCKERS_V8 — lignes=5 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[PARTIEL] RAW_COMM2015_FULL — lignes=1538 — Résultats présents; inscrits absents.
+[PARTIEL] RAW_COMM2021_FULL — lignes=1538 — Résultats présents; inscrits absents.
+[NON ÉVALUÉ] RAW_COUNCIL2021_FULL — lignes=32513 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] RAW_MPS_FULL — lignes=1654 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[NON ÉVALUÉ] RAW_HCP_RGPH2024_FULL — lignes=2327 — Données présentes mais aucun univers externe exhaustif n'est démontré.
+[PARTIEL] LOCAL_COUNCIL_CONTROL — lignes=6003 — Composition 2021 disponible; 135 présidences non résolues.
+[PARTIEL] IDENTITY_AUDIT_V10 — lignes=44 — 44 ambiguïtés documentées sans fusion automatique.
+[COMPLET] COUNCIL_SEAT_STATUS_V10 — lignes=1538 — 1 538 communes et total légal réconcilié.
+[PARTIEL] ELECTORAL_TRANSITIONS_2015_2021 — lignes=14555 — Dérivé reproductible des seules mesures observées.
+[PARTIEL] COMMUNE_TRANSITION_PANEL — lignes=1538 — Dérivé reproductible; sièges 2015 absents.
+[PARTIEL] ANALYTICAL_PANEL — lignes=22054 — Dérivé reproductible; limites des sources propagées.
+[PARTIEL] COMMUNE_ELECTION_PANEL — lignes=3076 — Dérivé reproductible; limites des sources propagées.
+[COMPLET] MANUAL_RESOLUTIONS_V10 — lignes=7 — Sept décisions avec provenance conservée.
+[COMPLET] WORKBOOK_AUDIT_V10 — lignes=66 — Inventaire physique des 67 onglets.
+
+ANOMALIES OUVERTES OU BLOQUANTES
+[BLOQUÉ/high] BASELINE_HCP_COMMUNAL_INDICATORS — socio-économie communale 2014–2024 — La population RGPH 2024 est chargée, mais la série communale d'indicateurs HCP 2014–2024 n'est pas disponible.
+[BLOQUÉ/high] DUP2015_c2c5322331ee46ebe863 — duplicate_candidate_key — duplicate_candidate_key — lignes source pseudonymisées/référencées: [30802, 30803]
+[BLOQUÉ/high] DUP2015_c459fd20416612f454ea — duplicate_candidate_key — duplicate_candidate_key — lignes source pseudonymisées/référencées: [14307, 14308]
+[BLOQUÉ/medium] QA_V10_COUNCIL_PRESIDENT — LOCAL_COUNCIL_CONTROL — Confident president identified for 1403/1538 communes; 135 remain unresolved due source role uncertainty/missingness.
+[BLOQUÉ/high] QA_V10_INSCRITS_2015 — RAW_COMM2015_FULL — nInscrits is 100% null although present in schema; voters cannot be reconstructed from turnout.
+[BLOQUÉ/high] QA_V10_INSCRITS_2021 — RAW_COMM2021_FULL — nInscrits is 100% null although present in schema; voters cannot be reconstructed from turnout.
+[BLOQUÉ/high] QA_V10_MPS_PARTY_HISTORY — PARLIAMENTARY_MANDATES — TAFRA party field is the first observed party for the legislature and does not capture within-legislature switching.
+[BLOQUÉ/high] SMIIG_02859130cc6ba26892b3 — finances_listeBiens — indicator_domain — lignes source pseudonymisées/référencées: [404]
+[BLOQUÉ/high] SMIIG_0750f797ed7e16833f67 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [448]
+[BLOQUÉ/high] SMIIG_0bca6778b6cbfb709094 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [436]
+[BLOQUÉ/high] SMIIG_0de9df7ea9d72d4fbb43 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [457]
+[BLOQUÉ/high] SMIIG_185d91a2c2ef11380973 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [464]
+[BLOQUÉ/high] SMIIG_1ebcf6d41090ef897cc9 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [461]
+[BLOQUÉ/high] SMIIG_20f0da06be4c3a504e4a — inDb — replication_lineage — lignes source pseudonymisées/référencées: [451]
+[BLOQUÉ/high] SMIIG_21586a190d2a99c65238 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [453]
+[BLOQUÉ/high] SMIIG_2169c4d53e6259c8b900 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [428]
+[BLOQUÉ/high] SMIIG_2362e2e7313b26ac0416 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [462]
+[BLOQUÉ/high] SMIIG_2da23c485daf7e4fc28e — inDb — replication_lineage — lignes source pseudonymisées/référencées: [456]
+[BLOQUÉ/high] SMIIG_31240dadb8fca7f2cecb — inDb — replication_lineage — lignes source pseudonymisées/référencées: [430]
+[BLOQUÉ/high] SMIIG_34bc65c3ba050bc7ab2c — participation_compositionInstancesConsultatives — indicator_domain — lignes source pseudonymisées/référencées: [4]
+[BLOQUÉ/high] SMIIG_3a964a56b597aa867b09 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [438]
+[BLOQUÉ/high] SMIIG_3af822ba124441d4a5bb — inDb — replication_lineage — lignes source pseudonymisées/référencées: [444]
+[BLOQUÉ/high] SMIIG_3c50d34a7d34cbae3d21 — smiig — normalized_score — lignes source pseudonymisées/référencées: [385]
+[BLOQUÉ/high] SMIIG_44b49700a3a40d849d2f — participation_espaceConcertationEnLigne — indicator_domain — lignes source pseudonymisées/référencées: [407]
+[BLOQUÉ/high] SMIIG_492bc0b56581443284fe — inDb — replication_lineage — lignes source pseudonymisées/référencées: [432]
+[BLOQUÉ/high] SMIIG_4d5cbfda78750d6ed9c9 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [426]
+[BLOQUÉ/high] SMIIG_4d821b9c9f09aaf5a6f2 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [440]
+[BLOQUÉ/high] SMIIG_510d6c8bfc24420c24e2 — smiig — normalized_score — lignes source pseudonymisées/référencées: [386]
+[BLOQUÉ/high] SMIIG_5a66e87e9ddc885ad54e — inDb — replication_lineage — lignes source pseudonymisées/référencées: [460]
+[BLOQUÉ/high] SMIIG_61ab064cb44d3a9bb9a5 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [454]
+[BLOQUÉ/high] SMIIG_64853292a80f4996119f — inDb — replication_lineage — lignes source pseudonymisées/référencées: [429]
+[BLOQUÉ/high] SMIIG_659f74485bdc410c66b8 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [450]
+[BLOQUÉ/high] SMIIG_6689ea07bd54f174bf43 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [465]
+[BLOQUÉ/high] SMIIG_6971c54c731a95a3101e — participation_compositionConseil — indicator_domain — lignes source pseudonymisées/référencées: [110]
+[BLOQUÉ/high] SMIIG_6d63cc6982f0e76bd6b5 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [433]
+[BLOQUÉ/high] SMIIG_73348a9dd167e3f85439 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [459]
+[BLOQUÉ/high] SMIIG_8fe30d16f8fab08374de — inDb — replication_lineage — lignes source pseudonymisées/référencées: [442]
+[BLOQUÉ/high] SMIIG_97e30e225539e3568bd7 — smiig — normalized_score — lignes source pseudonymisées/référencées: [384]
+[BLOQUÉ/high] SMIIG_996b3d2be5760676a254 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [435]
+[BLOQUÉ/high] SMIIG_9db6468e5ebcd66b46d7 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [443]
+[BLOQUÉ/high] SMIIG_SCHEMA_f0fe3f13adf890064f0e — inDb — undocumented_field — lignes source pseudonymisées/référencées: schéma
+[BLOQUÉ/high] SMIIG_a14de631333cc95df7c6 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [446]
+[BLOQUÉ/high] SMIIG_aee820f959b7ee7838bc — inDb — replication_lineage — lignes source pseudonymisées/référencées: [425]
+[BLOQUÉ/high] SMIIG_bed4f5937675f07b04bc — inDb — replication_lineage — lignes source pseudonymisées/référencées: [437]
+[BLOQUÉ/high] SMIIG_c25a925ac46d19710990 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [463]
+[BLOQUÉ/high] SMIIG_c81997c1c75eb231d97b — inDb — replication_lineage — lignes source pseudonymisées/référencées: [445]
+[BLOQUÉ/high] SMIIG_ca2b83f47bd2efe204f4 — gouvernance_livreProcedure — indicator_domain — lignes source pseudonymisées/référencées: [351]
+[BLOQUÉ/high] SMIIG_ccb2866267e59912c31b — inDb — replication_lineage — lignes source pseudonymisées/référencées: [439]
+[BLOQUÉ/high] SMIIG_d2f2c8aabf14f844e15d — inDb — replication_lineage — lignes source pseudonymisées/référencées: [447]
+[BLOQUÉ/high] SMIIG_d4b4cdc6fc08e8f44fa6 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [458]
+[BLOQUÉ/high] SMIIG_dfce318c7de1a1fee4d4 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [427]
+[BLOQUÉ/high] SMIIG_e6615dd6c8483d8c70ea — inDb — replication_lineage — lignes source pseudonymisées/référencées: [441]
+[BLOQUÉ/high] SMIIG_e66571c69ef55090a787 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [449]
+[BLOQUÉ/high] SMIIG_e69984957d4d96a2aa0e — smiig — normalized_score — lignes source pseudonymisées/référencées: [383]
+[BLOQUÉ/high] SMIIG_ebbd7b7e95ac11b34e5f — inDb — replication_lineage — lignes source pseudonymisées/référencées: [431]
+[BLOQUÉ/high] SMIIG_eff8b8edfc11efb393f0 — inDb — replication_lineage — lignes source pseudonymisées/référencées: [455]
+[BLOQUÉ/high] SMIIG_f4758a4b0d7badd0341e — inDb — replication_lineage — lignes source pseudonymisées/référencées: [434]
+[BLOQUÉ/high] SMIIG_f89b972e2869318c128e — inDb — replication_lineage — lignes source pseudonymisées/référencées: [452]
+[BLOQUÉ/high] V11A_ROLE_DOMAIN_UNDOCUMENTED — rôles des conseils 2015 — Le dictionnaire définit le champ rôle sans énumérer ses modalités.
+[PARTIEL/medium] V6_QA_001 — SOURCE_PROFILES — ESA card reports 1,538 total rows but detailed train/test counts sum to 1,537.
+[PARTIEL/medium] V6_QA_002 — SOURCE_PROFILES — ESA card reports 32,513 total rows but detailed train/test counts sum to 32,512.
+[PARTIEL/medium] V6_QA_003 — SOURCE_PROFILES — ESA card reports 1,654 total rows but detailed train/test counts sum to 1,653.
+[PARTIEL/medium] V7_QA_002 — POPULATION — Some SIG-Maroc rows report household count=0 despite nonzero population.
+[PARTIEL/medium] V8_QA_001 — COUNCIL_COMPOSITION_2021_PILOT — 2021 Issen council composition comes from a 2026 user-created Wikimedia Commons diagram, not directly from TAFRA/OpenAfrica.
+
+HIÉRARCHIE DES SOURCES
+1. officielle primaire — Publication ou acte de l'autorité compétente.
+2. producteur original — Producteur du jeu avec provenance et licence démontrées.
+3. miroir qualifié — Octets ou transformation traçables jusqu'au producteur original.
+4. source secondaire — Contrôle ou contexte; ne remplace pas une source granulaire primaire.
+5. pilote — Périmètre exploratoire non généralisable.
+
+ANALYSES AUTORISÉES, CONDITIONNELLES OU INTERDITES
+[CONDITIONNELLE] Résultats et classements par parti observé — tables=RESULTS, ANALYTICAL_PANEL
+  Règle : Limiter les parts aux colonnes partisanes observées; ne pas les présenter comme exhaustives en 2015.
+[CONDITIONNELLE] Transitions électorales communales 2015–2021 — tables=ELECTORAL_TRANSITIONS_2015_2021, COMMUNE_TRANSITION_PANEL
+  Règle : Comparer uniquement les partis et mesures observés aux deux dates; les sièges 2015 sont absents.
+[CONDITIONNELLE] Taux de participation communaux publiés — tables=MOBILISATION
+  Règle : Utiliser uniquement le taux publié; ne reconstruire ni inscrits, ni votants, ni bulletins invalides.
+[AUTORISÉE] Composition communale 2021 et sièges occupés/légaux — tables=LOCAL_COUNCIL_CONTROL, COUNCIL_SEAT_STATUS_V10
+  Règle : Distinguer les 32 513 sièges occupés des 32 515 sièges légaux réconciliés avec deux vacances documentées.
+[CONDITIONNELLE] Présidences communales 2021 — tables=LOCAL_COUNCIL_CONTROL
+  Règle : Périmètre strict de 1 403 communes résolues sur 1 538.
+[CONDITIONNELLE] Parti arrivé premier versus parti du président — tables=RESULTS, LOCAL_COUNCIL_CONTROL
+  Règle : Périmètre strict des 1 403 présidences résolues; victoire électorale et gouvernance restent distinctes.
+[INTERDITE] Effectifs communaux d'inscrits, votants et bulletins invalides — tables=ELECTORATE, MOBILISATION, RAW_COMM2015_FULL, RAW_COMM2021_FULL
+  Règle : Les 3 076 dénominateurs communaux attendus sont absents et ne doivent pas être reconstruits du taux de participation.
+[INTERDITE] Trajectoires partisanes intra-législature des parlementaires — tables=PARLIAMENTARY_MANDATES
+  Règle : Le champ parti conserve le premier parti identifié et ne décrit pas les changements en cours de mandat.
+[INTERDITE] Composition et contrôle des conseils communaux 2015 — tables=aucune table intégrée
+  Règle : La source candidate V11-A est NO_GO et n'est pas intégrée.
+[INTERDITE] Gouvernance communale issue de SMIIG — tables=aucune table intégrée
+  Règle : La source candidate SMIIG est NO_GO et n'est pas intégrée.
+[INTERDITE] RGPH 2024 interprété comme mesure contemporaine de l'élection 2015 — tables=POPULATION, ANALYTICAL_PANEL, COMMUNE_ELECTION_PANEL
+  Règle : RGPH 2024 est une référence de recensement distante de neuf ans, pas une observation de 2015.
+
+PRIORITÉS APRÈS LA BASELINE
+1. inscrits et dénominateurs électoraux
+2. présidences et contrôle communal
+3. indicateurs HCP avec discipline temporelle
+4. résolution externe des conseils 2015 et de SMIIG
+5. questions parlementaires
+6. PostgreSQL
+
+Ce rapport est généré intégralement depuis metadata/v10_quality_baseline.json.

@@ -22,6 +22,8 @@ V11A_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11a_source_candidates.json"
 V11A_DECISION_PATH = PROJECT_ROOT / "docs" / "research" / "V11A_DECISION_2015_COUNCILS.txt"
 SMIIG_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11_smiig_source_candidates.json"
 SMIIG_DECISION_PATH = PROJECT_ROOT / "docs" / "research" / "V11_SMIIG_QUALIFICATION.txt"
+QUALITY_BASELINE_PATH = PROJECT_ROOT / "metadata" / "v10_quality_baseline.json"
+QUALITY_BASELINE_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V10_QUALITY_BASELINE.txt"
 DOCUMENTATION_DIRS = {"v9": get_paths().documentation_v9, "v10": get_paths().documentation_v10}
 EXPECTED_DOCUMENTS = [
     "00_INDEX_ET_MODE_EMPLOI.txt",
@@ -670,6 +672,65 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None, release: s
     return errors
 
 
+def validate_quality_baseline_artifacts(data_dir: str | Path | None = None, full: bool = False) -> list[str]:
+    from morocco_elections.quality import baseline as quality_baseline
+
+    errors: list[str] = []
+    if not QUALITY_BASELINE_PATH.is_file() or not QUALITY_BASELINE_REPORT_PATH.is_file():
+        return ["V10-QA: artefacts JSON/TXT absents"]
+    try:
+        data = json.loads(QUALITY_BASELINE_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"V10-QA: JSON illisible: {exc}"]
+    if data.get("schema_version") != 1 or data.get("phase") != "V10-QA" or data.get("baseline_release") != "V10":
+        errors.append("V10-QA: métadonnées racine invalides")
+    release_report = json.loads(V10_REPORT_PATH.read_text(encoding="utf-8"))
+    if data.get("source_workbook_sha256") != release_report["workbooks"]["V10"]:
+        errors.append("V10-QA: empreinte V10 différente du rapport de release")
+    errors.extend(f"V10-QA: {error}" for error in quality_baseline.validate_baseline(data))
+    if len(data.get("table_status", [])) != 67:
+        errors.append("V10-QA: le scorecard doit inventorier les 67 onglets V10")
+    required_blockers = {
+        "QA_V10_INSCRITS_2015",
+        "QA_V10_INSCRITS_2021",
+        "QA_V10_COUNCIL_PRESIDENT",
+        "QA_V10_MPS_PARTY_HISTORY",
+        "V11A_ROLE_DOMAIN_UNDOCUMENTED",
+        "BASELINE_HCP_COMMUNAL_INDICATORS",
+    }
+    actual_blockers = {item.get("anomaly_id") for item in data.get("anomalies", []) if item.get("status") == "BLOQUÉ"}
+    if not required_blockers <= actual_blockers:
+        errors.append(f"V10-QA: blockers obligatoires absents: {sorted(required_blockers - actual_blockers)}")
+    required_analyses = {
+        "ANA_OBSERVED_PARTY_RESULTS",
+        "ANA_ELECTORAL_TRANSITIONS",
+        "ANA_REPORTED_TURNOUT",
+        "ANA_COUNCIL_2021",
+        "ANA_PRESIDENCIES",
+        "ANA_WINNER_VS_PRESIDENT",
+        "ANA_REGISTERED_VOTERS",
+        "ANA_COUNCILS_2015",
+        "ANA_SMIIG",
+        "ANA_RGPH_2015_CONTEMPORARY",
+    }
+    actual_analyses = {item.get("analysis_id") for item in data.get("analysis_permissions", [])}
+    if not required_analyses <= actual_analyses:
+        errors.append(f"V10-QA: analyses obligatoires absentes: {sorted(required_analyses - actual_analyses)}")
+    expected_report = quality_baseline.render_report(data)
+    actual_report = QUALITY_BASELINE_REPORT_PATH.read_text(encoding="utf-8-sig")
+    if actual_report != expected_report:
+        errors.append("V10-QA: rapport TXT désynchronisé du JSON")
+    if full and not errors:
+        workbook = get_paths(data_dir).v10_workbook
+        if not workbook.is_file():
+            errors.append(f"V10-QA: classeur local absent: {workbook}")
+        else:
+            rebuilt = quality_baseline.build_baseline(workbook, str(data["as_of"]))
+            if rebuilt != data:
+                errors.append("V10-QA: JSON désynchronisé des sources locales et du V10")
+    return errors
+
+
 def run(mode: str, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> list[str]:
     manifest = load_manifest()
     errors = []
@@ -678,11 +739,14 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_v10_release_report(manifest))
     errors.extend(validate_v11a_artifacts())
     errors.extend(validate_smiig_artifacts())
+    errors.extend(validate_quality_baseline_artifacts())
     errors.extend(validate_python_sources())
     errors.extend(validate_documentation(release))
     errors.extend(validate_repository_files())
     if mode == "full" and not errors:
         errors.extend(validate_full(manifest, data_dir, release, baseline))
+        if not errors:
+            errors.extend(validate_quality_baseline_artifacts(data_dir, full=True))
     return errors
 
 
