@@ -45,6 +45,15 @@ def build_parser() -> argparse.ArgumentParser:
     denominators.add_argument("--data-dir")
     denominators.add_argument("--metadata-output")
     denominators.add_argument("--decision-output")
+    presidencies = qualification.add_parser(
+        "local-presidencies", help="Qualifier les 135 présidences communales 2021 non résolues"
+    )
+    presidencies.add_argument("--evidence-index")
+    presidencies.add_argument("--baseline", choices=("v10",), default="v10")
+    presidencies.add_argument("--as-of")
+    presidencies.add_argument("--data-dir")
+    presidencies.add_argument("--metadata-output")
+    presidencies.add_argument("--decision-output")
 
     quality = commands.add_parser("quality", help="Produire des artefacts de qualité transversaux")
     quality_commands = quality.add_subparsers(dest="quality_command", required=True)
@@ -109,6 +118,17 @@ def main(argv: list[str] | None = None) -> int:
         return qualify(
             candidate_2015=args.candidate_2015,
             candidate_2021=args.candidate_2021,
+            baseline=args.baseline,
+            as_of=args.as_of,
+            metadata_output=args.metadata_output,
+            decision_output=args.decision_output,
+            data_dir=args.data_dir,
+        )
+    if args.command == "qualify" and args.qualification == "local-presidencies":
+        from morocco_elections.research.local_presidencies import qualify
+
+        return qualify(
+            evidence_index=args.evidence_index,
             baseline=args.baseline,
             as_of=args.as_of,
             metadata_output=args.metadata_output,

@@ -1,0 +1,1825 @@
+{
+  "schema_version": 1,
+  "phase": "V10-QA-2",
+  "generated_on": "2026-09-08",
+  "decision": "NO_GO",
+  "scope": "Qualification individuelle des 135 présidences communales 2021; aucune ingestion.",
+  "gate": {
+    "expected_cases": 135,
+    "decision_level": "commune",
+    "official_sources_required": 1,
+    "independent_secondary_sources_required": 2,
+    "person_and_party_required": true,
+    "inference_from_head_or_largest_party_allowed": false,
+    "installation_window": [
+      "2021-09-08",
+      "2021-10-31"
+    ]
+  },
+  "baseline": {
+    "release": "V10",
+    "workbook": "data/exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx",
+    "sha256_before": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "sha256_after": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "modified": false
+  },
+  "evidence_index": {
+    "provided": false,
+    "local_path": null,
+    "sha256": null,
+    "tracked": false,
+    "errors": []
+  },
+  "summary": {
+    "expected": 135,
+    "validated": 0,
+    "unresolved": 135,
+    "ambiguous_identity_communes": 4,
+    "raw_rows_in_scope": 2535,
+    "raw_president_rows": 4,
+    "raw_confident_president_rows": 0,
+    "communes_without_president_role": 131
+  },
+  "decisions": [
+    {
+      "case_id": "V10QA2_PRES_MA-01-051-0105",
+      "geo_id": "MA-01-051-0105",
+      "source_idcommune": 978,
+      "identity_ambiguity": true,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-01-571-0303",
+      "geo_id": "MA-01-571-0303",
+      "source_idcommune": 2085,
+      "identity_ambiguity": true,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-03-561-0107",
+      "geo_id": "MA-03-561-0107",
+      "source_idcommune": 1030,
+      "identity_ambiguity": true,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-04-481-0303",
+      "geo_id": "MA-04-481-0303",
+      "source_idcommune": 1339,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-04-481-0905",
+      "geo_id": "MA-04-481-0905",
+      "source_idcommune": 1334,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0301",
+      "geo_id": "MA-05-081-0301",
+      "source_idcommune": 1136,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0303",
+      "geo_id": "MA-05-081-0303",
+      "source_idcommune": 1130,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0305",
+      "geo_id": "MA-05-081-0305",
+      "source_idcommune": 1127,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0307",
+      "geo_id": "MA-05-081-0307",
+      "source_idcommune": 1126,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0309",
+      "geo_id": "MA-05-081-0309",
+      "source_idcommune": 1150,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0311",
+      "geo_id": "MA-05-081-0311",
+      "source_idcommune": 1148,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0313",
+      "geo_id": "MA-05-081-0313",
+      "source_idcommune": 1160,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0501",
+      "geo_id": "MA-05-081-0501",
+      "source_idcommune": 1128,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0505",
+      "geo_id": "MA-05-081-0505",
+      "source_idcommune": 1143,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0507",
+      "geo_id": "MA-05-081-0507",
+      "source_idcommune": 1142,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0509",
+      "geo_id": "MA-05-081-0509",
+      "source_idcommune": 1163,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0511",
+      "geo_id": "MA-05-081-0511",
+      "source_idcommune": 1164,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0513",
+      "geo_id": "MA-05-081-0513",
+      "source_idcommune": 1137,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0515",
+      "geo_id": "MA-05-081-0515",
+      "source_idcommune": 1146,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0517",
+      "geo_id": "MA-05-081-0517",
+      "source_idcommune": 1155,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0519",
+      "geo_id": "MA-05-081-0519",
+      "source_idcommune": 1149,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0521",
+      "geo_id": "MA-05-081-0521",
+      "source_idcommune": 1153,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0903",
+      "geo_id": "MA-05-081-0903",
+      "source_idcommune": 1132,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0907",
+      "geo_id": "MA-05-081-0907",
+      "source_idcommune": 1124,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0909",
+      "geo_id": "MA-05-081-0909",
+      "source_idcommune": 1140,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0911",
+      "geo_id": "MA-05-081-0911",
+      "source_idcommune": 1145,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0913",
+      "geo_id": "MA-05-081-0913",
+      "source_idcommune": 1138,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0915",
+      "geo_id": "MA-05-081-0915",
+      "source_idcommune": 1166,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0917",
+      "geo_id": "MA-05-081-0917",
+      "source_idcommune": 1151,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0919",
+      "geo_id": "MA-05-081-0919",
+      "source_idcommune": 1147,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0921",
+      "geo_id": "MA-05-081-0921",
+      "source_idcommune": 1156,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-0923",
+      "geo_id": "MA-05-081-0923",
+      "source_idcommune": 1157,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1101",
+      "geo_id": "MA-05-081-1101",
+      "source_idcommune": 1135,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1105",
+      "geo_id": "MA-05-081-1105",
+      "source_idcommune": 1133,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1125",
+      "geo_id": "MA-05-081-1125",
+      "source_idcommune": 1158,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1305",
+      "geo_id": "MA-05-081-1305",
+      "source_idcommune": 1123,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1307",
+      "geo_id": "MA-05-081-1307",
+      "source_idcommune": 1129,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1309",
+      "geo_id": "MA-05-081-1309",
+      "source_idcommune": 1141,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1317",
+      "geo_id": "MA-05-081-1317",
+      "source_idcommune": 1162,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1319",
+      "geo_id": "MA-05-081-1319",
+      "source_idcommune": 1152,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1501",
+      "geo_id": "MA-05-081-1501",
+      "source_idcommune": 1125,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1503",
+      "geo_id": "MA-05-081-1503",
+      "source_idcommune": 1131,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1511",
+      "geo_id": "MA-05-081-1511",
+      "source_idcommune": 1139,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1513",
+      "geo_id": "MA-05-081-1513",
+      "source_idcommune": 1165,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1515",
+      "geo_id": "MA-05-081-1515",
+      "source_idcommune": 1161,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-05-081-1521",
+      "geo_id": "MA-05-081-1521",
+      "source_idcommune": 1154,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-07-211-0305",
+      "geo_id": "MA-07-211-0305",
+      "source_idcommune": 1557,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-07-211-0533",
+      "geo_id": "MA-07-211-0533",
+      "source_idcommune": 1560,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0101",
+      "geo_id": "MA-09-541-0101",
+      "source_idcommune": 768,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0102",
+      "geo_id": "MA-09-541-0102",
+      "source_idcommune": 789,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0103",
+      "geo_id": "MA-09-541-0103",
+      "source_idcommune": 809,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0105",
+      "geo_id": "MA-09-541-0105",
+      "source_idcommune": 799,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0107",
+      "geo_id": "MA-09-541-0107",
+      "source_idcommune": 786,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0109",
+      "geo_id": "MA-09-541-0109",
+      "source_idcommune": 787,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0111",
+      "geo_id": "MA-09-541-0111",
+      "source_idcommune": 819,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0301",
+      "geo_id": "MA-09-541-0301",
+      "source_idcommune": 780,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0303",
+      "geo_id": "MA-09-541-0303",
+      "source_idcommune": 770,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0305",
+      "geo_id": "MA-09-541-0305",
+      "source_idcommune": 782,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0307",
+      "geo_id": "MA-09-541-0307",
+      "source_idcommune": 775,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0309",
+      "geo_id": "MA-09-541-0309",
+      "source_idcommune": 801,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0311",
+      "geo_id": "MA-09-541-0311",
+      "source_idcommune": 797,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0313",
+      "geo_id": "MA-09-541-0313",
+      "source_idcommune": 810,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0315",
+      "geo_id": "MA-09-541-0315",
+      "source_idcommune": 856,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0317",
+      "geo_id": "MA-09-541-0317",
+      "source_idcommune": 844,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0319",
+      "geo_id": "MA-09-541-0319",
+      "source_idcommune": 848,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0321",
+      "geo_id": "MA-09-541-0321",
+      "source_idcommune": 813,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0323",
+      "geo_id": "MA-09-541-0323",
+      "source_idcommune": 822,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0325",
+      "geo_id": "MA-09-541-0325",
+      "source_idcommune": 829,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0327",
+      "geo_id": "MA-09-541-0327",
+      "source_idcommune": 836,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0329",
+      "geo_id": "MA-09-541-0329",
+      "source_idcommune": 832,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0331",
+      "geo_id": "MA-09-541-0331",
+      "source_idcommune": 833,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0409",
+      "geo_id": "MA-09-541-0409",
+      "source_idcommune": 772,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0413",
+      "geo_id": "MA-09-541-0413",
+      "source_idcommune": 807,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0417",
+      "geo_id": "MA-09-541-0417",
+      "source_idcommune": 792,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0421",
+      "geo_id": "MA-09-541-0421",
+      "source_idcommune": 791,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0423",
+      "geo_id": "MA-09-541-0423",
+      "source_idcommune": 795,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0425",
+      "geo_id": "MA-09-541-0425",
+      "source_idcommune": 800,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0429",
+      "geo_id": "MA-09-541-0429",
+      "source_idcommune": 854,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0433",
+      "geo_id": "MA-09-541-0433",
+      "source_idcommune": 788,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0435",
+      "geo_id": "MA-09-541-0435",
+      "source_idcommune": 790,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0439",
+      "geo_id": "MA-09-541-0439",
+      "source_idcommune": 847,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0447",
+      "geo_id": "MA-09-541-0447",
+      "source_idcommune": 850,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0449",
+      "geo_id": "MA-09-541-0449",
+      "source_idcommune": 816,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0453",
+      "geo_id": "MA-09-541-0453",
+      "source_idcommune": 817,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0459",
+      "geo_id": "MA-09-541-0459",
+      "source_idcommune": 827,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0461",
+      "geo_id": "MA-09-541-0461",
+      "source_idcommune": 830,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0467",
+      "geo_id": "MA-09-541-0467",
+      "source_idcommune": 834,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0469",
+      "geo_id": "MA-09-541-0469",
+      "source_idcommune": 831,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0505",
+      "geo_id": "MA-09-541-0505",
+      "source_idcommune": 779,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0511",
+      "geo_id": "MA-09-541-0511",
+      "source_idcommune": 808,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0517",
+      "geo_id": "MA-09-541-0517",
+      "source_idcommune": 851,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0519",
+      "geo_id": "MA-09-541-0519",
+      "source_idcommune": 805,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0521",
+      "geo_id": "MA-09-541-0521",
+      "source_idcommune": 853,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0523",
+      "geo_id": "MA-09-541-0523",
+      "source_idcommune": 855,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0525",
+      "geo_id": "MA-09-541-0525",
+      "source_idcommune": 840,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0527",
+      "geo_id": "MA-09-541-0527",
+      "source_idcommune": 845,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0533",
+      "geo_id": "MA-09-541-0533",
+      "source_idcommune": 823,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0701",
+      "geo_id": "MA-09-541-0701",
+      "source_idcommune": 781,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0705",
+      "geo_id": "MA-09-541-0705",
+      "source_idcommune": 778,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0707",
+      "geo_id": "MA-09-541-0707",
+      "source_idcommune": 777,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0709",
+      "geo_id": "MA-09-541-0709",
+      "source_idcommune": 776,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0711",
+      "geo_id": "MA-09-541-0711",
+      "source_idcommune": 774,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0713",
+      "geo_id": "MA-09-541-0713",
+      "source_idcommune": 796,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0715",
+      "geo_id": "MA-09-541-0715",
+      "source_idcommune": 841,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0717",
+      "geo_id": "MA-09-541-0717",
+      "source_idcommune": 820,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0719",
+      "geo_id": "MA-09-541-0719",
+      "source_idcommune": 826,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0721",
+      "geo_id": "MA-09-541-0721",
+      "source_idcommune": 824,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0723",
+      "geo_id": "MA-09-541-0723",
+      "source_idcommune": 821,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0725",
+      "geo_id": "MA-09-541-0725",
+      "source_idcommune": 838,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0737",
+      "geo_id": "MA-09-541-0737",
+      "source_idcommune": 785,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0765",
+      "geo_id": "MA-09-541-0765",
+      "source_idcommune": 835,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0903",
+      "geo_id": "MA-09-541-0903",
+      "source_idcommune": 769,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0905",
+      "geo_id": "MA-09-541-0905",
+      "source_idcommune": 771,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0911",
+      "geo_id": "MA-09-541-0911",
+      "source_idcommune": 811,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0915",
+      "geo_id": "MA-09-541-0915",
+      "source_idcommune": 804,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0927",
+      "geo_id": "MA-09-541-0927",
+      "source_idcommune": 802,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0941",
+      "geo_id": "MA-09-541-0941",
+      "source_idcommune": 842,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0943",
+      "geo_id": "MA-09-541-0943",
+      "source_idcommune": 843,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0945",
+      "geo_id": "MA-09-541-0945",
+      "source_idcommune": 846,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0951",
+      "geo_id": "MA-09-541-0951",
+      "source_idcommune": 815,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0955",
+      "geo_id": "MA-09-541-0955",
+      "source_idcommune": 828,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0957",
+      "geo_id": "MA-09-541-0957",
+      "source_idcommune": 825,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-0963",
+      "geo_id": "MA-09-541-0963",
+      "source_idcommune": 837,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1101",
+      "geo_id": "MA-09-541-1101",
+      "source_idcommune": 803,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1103",
+      "geo_id": "MA-09-541-1103",
+      "source_idcommune": 773,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1107",
+      "geo_id": "MA-09-541-1107",
+      "source_idcommune": 812,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1109",
+      "geo_id": "MA-09-541-1109",
+      "source_idcommune": 806,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1113",
+      "geo_id": "MA-09-541-1113",
+      "source_idcommune": 798,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1115",
+      "geo_id": "MA-09-541-1115",
+      "source_idcommune": 794,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1119",
+      "geo_id": "MA-09-541-1119",
+      "source_idcommune": 793,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1129",
+      "geo_id": "MA-09-541-1129",
+      "source_idcommune": 849,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1131",
+      "geo_id": "MA-09-541-1131",
+      "source_idcommune": 852,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1133",
+      "geo_id": "MA-09-541-1133",
+      "source_idcommune": 818,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-09-541-1171",
+      "geo_id": "MA-09-541-1171",
+      "source_idcommune": 839,
+      "identity_ambiguity": false,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    },
+    {
+      "case_id": "V10QA2_PRES_MA-11-121-0101",
+      "geo_id": "MA-11-121-0101",
+      "source_idcommune": 1376,
+      "identity_ambiguity": true,
+      "decision": "NO_GO",
+      "person_id": null,
+      "party_id": null,
+      "evidence_ids": [],
+      "reason_codes": [
+        "NO_EVIDENCE"
+      ]
+    }
+  ],
+  "evidence": [],
+  "research_sources": [
+    {
+      "source_id": "DGCT_OPEN_DATA",
+      "url": "https://www.collectivites-territoriales.gov.ma/index.php/fr/open-data-1",
+      "publisher": "Direction générale des collectivités territoriales",
+      "priority": 1,
+      "finding": "Point d'entrée officiel prioritaire; aucun registre national nominatif 2021 exploitable n'a été identifié."
+    },
+    {
+      "source_id": "TAFRA_COUNCILS_2021",
+      "url": "http://www.elections.ma",
+      "publisher": "TAFRA, copie de la publication du ministère de l'Intérieur",
+      "priority": 1,
+      "finding": "Le dictionnaire confirme que flagRole signale les homonymies ou données absentes; 135 communes n'ont aucune ligne président."
+    },
+    {
+      "source_id": "SECONDARY_INSTALLATION_REPORTS",
+      "url": "https://fr.le360.ma/politique/voici-la-liste-des-presidents-des-conseils-communaux-elus-ce-vendredi-17-septembre-2021-245841/",
+      "publisher": "Presse contemporaine",
+      "priority": 2,
+      "finding": "Piste secondaire seulement; deux origines indépendantes sont nécessaires en l'absence de preuve officielle."
+    }
+  ],
+  "next_action": "Ne rien ingérer; poursuivre la recherche de preuves sur les 135 communes."
+}

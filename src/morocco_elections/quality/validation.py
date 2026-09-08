@@ -26,6 +26,8 @@ QUALITY_BASELINE_PATH = PROJECT_ROOT / "metadata" / "v10_quality_baseline.json"
 QUALITY_BASELINE_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V10_QUALITY_BASELINE.txt"
 DENOMINATORS_METADATA_PATH = PROJECT_ROOT / "metadata" / "v10qa1_electoral_denominators.json"
 DENOMINATORS_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V10QA1_ELECTORAL_DENOMINATORS.txt"
+PRESIDENCIES_METADATA_PATH = PROJECT_ROOT / "metadata" / "v10qa2_local_presidencies.json"
+PRESIDENCIES_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V10QA2_LOCAL_PRESIDENCIES.txt"
 DOCUMENTATION_DIRS = {"v9": get_paths().documentation_v9, "v10": get_paths().documentation_v10}
 EXPECTED_DOCUMENTS = [
     "00_INDEX_ET_MODE_EMPLOI.txt",
@@ -790,6 +792,47 @@ def validate_electoral_denominator_artifacts(data_dir: str | Path | None = None,
     return errors
 
 
+def validate_local_presidency_artifacts(data_dir: str | Path | None = None, full: bool = False) -> list[str]:
+    from morocco_elections.research import local_presidencies
+
+    errors: list[str] = []
+    try:
+        metadata = json.loads(PRESIDENCIES_METADATA_PATH.read_text(encoding="utf-8"))
+        report = PRESIDENCIES_REPORT_PATH.read_text(encoding="utf-8-sig")
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"V10-QA-2: artefacts illisibles: {exc}"]
+    errors.extend(f"V10-QA-2: {error}" for error in local_presidencies.validate_metadata(metadata))
+    try:
+        manifest = load_manifest()
+        v10_artifact = next(item for item in manifest["artifacts"] if item["artifact_id"] == "WAREHOUSE_V10_EXPORT")
+        baseline = metadata.get("baseline", {})
+        if baseline.get("sha256_before") != v10_artifact["sha256"] or baseline.get("sha256_after") != v10_artifact["sha256"]:
+            errors.append("V10-QA-2: empreinte de baseline différente du V10 manifesté")
+    except (KeyError, StopIteration, ValidationError) as exc:
+        errors.append(f"V10-QA-2: baseline invérifiable: {exc}")
+    source_ids = {item.get("source_id") for item in metadata.get("research_sources", [])}
+    if source_ids != {"DGCT_OPEN_DATA", "TAFRA_COUNCILS_2021", "SECONDARY_INSTALLATION_REPORTS"}:
+        errors.append("V10-QA-2: registre de recherche incomplet")
+    if report != local_presidencies.render_report(metadata):
+        errors.append("V10-QA-2: rapport TXT désynchronisé du JSON")
+    if full and not errors:
+        paths = get_paths(data_dir)
+        index_record = metadata.get("evidence_index", {})
+        index_path: Path | None = None
+        if index_record.get("provided"):
+            local_path = str(index_record.get("local_path", ""))
+            index_path = resolve_manifest_path(local_path, data_dir)
+            if not index_path.is_file():
+                errors.append(f"V10-QA-2: index local absent: {index_path}")
+            elif local_presidencies.sha256_file(index_path) != index_record.get("sha256"):
+                errors.append("V10-QA-2: index local différent de son empreinte")
+        if not errors:
+            rebuilt = local_presidencies.build_metadata(paths.v10_workbook, index_path, str(metadata["generated_on"]))
+            if rebuilt != metadata:
+                errors.append("V10-QA-2: décision désynchronisée des preuves locales et de V10")
+    return errors
+
+
 def run(mode: str, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> list[str]:
     manifest = load_manifest()
     errors = []
@@ -800,6 +843,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_smiig_artifacts())
     errors.extend(validate_quality_baseline_artifacts())
     errors.extend(validate_electoral_denominator_artifacts())
+    errors.extend(validate_local_presidency_artifacts())
     errors.extend(validate_python_sources())
     errors.extend(validate_documentation(release))
     errors.extend(validate_repository_files())
@@ -809,6 +853,8 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
             errors.extend(validate_quality_baseline_artifacts(data_dir, full=True))
         if not errors:
             errors.extend(validate_electoral_denominator_artifacts(data_dir, full=True))
+        if not errors:
+            errors.extend(validate_local_presidency_artifacts(data_dir, full=True))
     return errors
 
 

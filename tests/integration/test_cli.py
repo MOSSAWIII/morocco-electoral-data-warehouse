@@ -40,6 +40,7 @@ def test_all_structured_commands_are_registered() -> None:
         ("qualify", "councils-2015", "--help"),
         ("qualify", "smiig", "--help"),
         ("qualify", "electoral-denominators", "--help"),
+        ("qualify", "local-presidencies", "--help"),
         ("quality", "baseline", "--help"),
         ("github", "publish-backlog", "--help"),
     ):
@@ -98,6 +99,55 @@ def test_electoral_denominators_reports_missing_v10_without_network(tmp_path: Pa
     )
     assert result.returncode == 2
     assert "ELECTORAL_DENOMINATORS_FAILED" in result.stdout
+
+
+def test_local_presidencies_qualification_runs_offline(tmp_path: Path) -> None:
+    baseline = tmp_path / "exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx"
+    baseline.parent.mkdir(parents=True)
+    source_ids = list(range(1, 136))
+    with pd.ExcelWriter(baseline, engine="openpyxl") as writer:
+        pd.DataFrame(
+            {
+                "person_id": [f"PERS_{item}" for item in source_ids],
+                "source_idcommune": source_ids,
+                "canonical_geo_id": [f"MA-TEST-{item:03d}" for item in source_ids],
+                "party_id": ["PX"] * 135,
+            }
+        ).to_excel(writer, sheet_name="LOCAL_MANDATES", index=False, startrow=3)
+        pd.DataFrame(
+            {
+                "geo_id": [f"MA-TEST-{item:03d}" for item in source_ids],
+                "president_person_id": [None] * 135,
+            }
+        ).to_excel(writer, sheet_name="LOCAL_COUNCIL_CONTROL", index=False, startrow=3)
+        pd.DataFrame({"source_idcommune": pd.Series(dtype=int)}).to_excel(
+            writer, sheet_name="IDENTITY_AUDIT_V10", index=False, startrow=3
+        )
+        pd.DataFrame({"idCommune": source_ids, "role": ["conseiller"] * 135, "flagRole": [1] * 135}).to_excel(
+            writer, sheet_name="RAW_COUNCIL2021_FULL", index=False, startrow=3
+        )
+    metadata = tmp_path / "presidencies.json"
+    decision = tmp_path / "presidencies.txt"
+    result = run_command(
+        sys.executable,
+        "-m",
+        "morocco_elections",
+        "qualify",
+        "local-presidencies",
+        "--baseline",
+        "v10",
+        "--as-of",
+        "2026-09-08",
+        "--data-dir",
+        str(tmp_path),
+        "--metadata-output",
+        str(metadata),
+        "--decision-output",
+        str(decision),
+    )
+    assert result.returncode == 1
+    assert "LOCAL_PRESIDENCIES_NO_GO" in result.stdout
+    assert metadata.is_file() and decision.is_file()
 
 
 def test_councils_2015_qualification_runs_offline(tmp_path: Path) -> None:
