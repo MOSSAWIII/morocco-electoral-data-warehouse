@@ -4,6 +4,7 @@ import argparse
 import json
 import subprocess
 import sys
+import time
 from typing import Any
 
 from morocco_elections.config import get_paths
@@ -13,18 +14,24 @@ BACKLOG = get_paths().github_backlog
 
 
 def gh(*args: str, input_text: str | None = None) -> str:
-    result = subprocess.run(
-        ["gh", *args],
-        cwd=ROOT,
-        input=input_text,
-        text=True,
-        encoding="utf-8",
-        capture_output=True,
-        check=False,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or f"gh {' '.join(args)} a échoué")
-    return result.stdout
+    transient_markers = ("tls handshake timeout", "unexpected eof", "connection reset", "connection attempt failed")
+    for attempt in range(4):
+        result = subprocess.run(
+            ["gh", *args],
+            cwd=ROOT,
+            input=input_text,
+            text=True,
+            encoding="utf-8",
+            capture_output=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            return result.stdout
+        message = result.stderr.strip() or result.stdout.strip() or f"gh {' '.join(args)} a échoué"
+        if attempt == 3 or not any(marker in message.casefold() for marker in transient_markers):
+            raise RuntimeError(message)
+        time.sleep(2**attempt)
+    raise AssertionError("Boucle de relance GitHub incomplète")
 
 
 def mutate(*args: str, dry_run: bool) -> str:

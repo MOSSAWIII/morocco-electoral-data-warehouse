@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from morocco_elections.github import backlog as github_backlog
 
 
@@ -44,6 +46,43 @@ def test_gh_decodes_github_output_as_utf8(monkeypatch) -> None:
     monkeypatch.setattr(github_backlog.subprocess, "run", fake_run)
     assert "socio-économie" in github_backlog.gh("api", "example")
     assert captured["encoding"] == "utf-8"
+
+
+def test_gh_retries_transient_network_failures(monkeypatch) -> None:
+    attempts = 0
+    waits: list[int] = []
+
+    class Result:
+        stdout = "ok"
+        stderr = ""
+
+        def __init__(self, returncode: int) -> None:
+            self.returncode = returncode
+            if returncode:
+                self.stderr = "net/http: TLS handshake timeout"
+
+    def fake_run(*args, **kwargs):
+        nonlocal attempts
+        attempts += 1
+        return Result(1 if attempts < 3 else 0)
+
+    monkeypatch.setattr(github_backlog.subprocess, "run", fake_run)
+    monkeypatch.setattr(github_backlog.time, "sleep", waits.append)
+    assert github_backlog.gh("api", "example") == "ok"
+    assert attempts == 3
+    assert waits == [1, 2]
+
+
+def test_gh_does_not_retry_functional_failures(monkeypatch) -> None:
+    class Result:
+        returncode = 1
+        stdout = ""
+        stderr = "Validation Failed (HTTP 422)"
+
+    monkeypatch.setattr(github_backlog.subprocess, "run", lambda *args, **kwargs: Result())
+    monkeypatch.setattr(github_backlog.time, "sleep", lambda delay: pytest.fail("unexpected retry"))
+    with pytest.raises(RuntimeError, match="Validation Failed"):
+        github_backlog.gh("api", "example")
 
 
 def test_missing_issue_creation_is_idempotent(monkeypatch) -> None:
