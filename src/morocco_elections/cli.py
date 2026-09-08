@@ -29,6 +29,12 @@ def build_parser() -> argparse.ArgumentParser:
     councils.add_argument("--data-dir")
     councils.add_argument("--metadata-output")
     councils.add_argument("--decision-output")
+    smiig = qualification.add_parser("smiig", help="Qualifier une source SMIIG sans l'ingérer")
+    smiig.add_argument("--candidate", required=True)
+    smiig.add_argument("--baseline", choices=("v10",), default="v10")
+    smiig.add_argument("--data-dir")
+    smiig.add_argument("--metadata-output")
+    smiig.add_argument("--decision-output")
 
     github = commands.add_parser("github", help="Opérations GitHub différées")
     github_commands = github.add_subparsers(dest="github_command", required=True)
@@ -60,6 +66,16 @@ def main(argv: list[str] | None = None) -> int:
         return report(mode=args.mode, data_dir=args.data_dir, release=args.release, baseline=args.baseline)
     if args.command == "qualify" and args.qualification == "councils-2015":
         from morocco_elections.research.councils_2015 import qualify_candidate
+
+        return qualify_candidate(
+            candidate=args.candidate,
+            baseline=args.baseline,
+            metadata_output=args.metadata_output,
+            decision_output=args.decision_output,
+            data_dir=args.data_dir,
+        )
+    if args.command == "qualify" and args.qualification == "smiig":
+        from morocco_elections.research.smiig import qualify_candidate
 
         return qualify_candidate(
             candidate=args.candidate,
