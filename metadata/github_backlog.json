@@ -88,11 +88,12 @@
       "state": "open",
       "close_reason": null,
       "milestone": "V11 — Pouvoir local et socio-économie",
-      "labels": ["data", "source", "governance"],
+      "labels": ["data", "source", "governance", "blocked"],
       "depends_on": ["Valider les cinq crosswalks géographiques et les deux écarts de sièges"],
       "blocks": [],
       "acceptance": [
         "Les 464 lignes et 38 colonnes annoncées sont archivées et profilées sans altération.",
+        "Une nouvelle qualification lève les quatre bloqueurs V11 SMIIG et conclut GO avant toute ingestion.",
         "Le crosswalk SMIIG vers DIM_GEO est versionné avec score et revue des ambiguïtés.",
         "La gouvernance est disponible au grain commune/arrondissement × année pour 2020–2023.",
         "Les mesures, unités, nullités, provenance et règles temporelles sont documentées."
