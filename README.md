@@ -54,6 +54,7 @@ python -m morocco_elections validate --mode full --release v10 --baseline v9
 python -m morocco_elections quality baseline --release v10 --as-of 2026-09-08
 python -m morocco_elections qualify electoral-denominators --baseline v10 --as-of 2026-09-08
 python -m morocco_elections qualify local-presidencies --baseline v10 --as-of 2026-09-08
+python -m morocco_elections qualify hcp-indicators --baseline v10 --as-of 2026-09-08
 python -m morocco_elections github publish-backlog
 ```
 
@@ -64,6 +65,8 @@ La baseline V10-QA écrit `metadata/v10_quality_baseline.json`, source de vérit
 La qualification V10-QA-1 exige 3 076 inscrits communaux directement publiés. Sans source officielle complète pour 2015 et 2021, elle produit `NO_GO` sans reconstruire ni ingérer de valeur.
 
 La qualification V10-QA-2 évalue séparément les 135 présidences communales non résolues. Une commune passe uniquement avec une preuve officielle ou deux sources secondaires indépendantes établissant la personne et son parti; aucune présidence n'est déduite d'une tête de liste ou du plus grand parti.
+
+La qualification V10-QA-3 évalue chaque couple indicateur HCP × millésime au regard des 1 538 unités V10. Elle sépare les valeurs observées des formules dérivées, refuse l'interpolation et décide séparément de la comparabilité 2014–2024. Les classeurs candidats restent sous `data/staging/v10qa3/`, hors Git.
 
 ## Compatibilité V9
 
@@ -82,6 +85,6 @@ Les chemins attendus sont définis dans `metadata/source_manifest.json`. RAW, V8
 
 ## Développement
 
-La branche `main` reçoit les changements par pull request après réussite de la CI. Utiliser `feat/...` ou `fix/...` pour les fonctions métier et `chore/...` pour l’infrastructure.
+La branche `main` reçoit les changements par pull request après réussite de la CI. Utiliser `research/...` pour les qualifications, `feat/...` ou `fix/...` pour les fonctions métier et `chore/...` pour l’infrastructure.
 
 Le backlog hors ligne définit sept chantiers et quatre jalons dans `metadata/github_backlog.json`. Sa publication restera différée jusqu’à la création d’un dépôt GitHub distant.

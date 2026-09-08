@@ -1,0 +1,83 @@
+V10-QA-3 — QUALIFICATION DES INDICATEURS COMMUNAUX HCP 2014–2024
+
+VERSION : V10-QA-3 (recherche, sans export warehouse)
+DATE DE GÉNÉRATION : 2026-09-08
+PÉRIMÈTRE : indicateurs HCP au grain des 1 538 unités analytiques V10
+RENVOIS : metadata/v10qa3_hcp_indicators.json ; V10-QA ; V10 immuable
+
+BILAN : 3 GO et 25 NO_GO sur 28 décisions indicateur × millésime.
+COMPARABILITÉ 2014–2024 : 1 indicateur(s) GO.
+
+Aucune valeur n'a été ingérée. Aucun classeur source n'est suivi par Git.
+Les symboles ., … et - restent manquants ou non applicables et ne deviennent jamais zéro.
+
+SOURCES
+[qualified_candidate] RGPH2014_INDIVIDUALS — https://www.hcp.ma/file/230045/ — octets=11296286 — sha256=c20c1f7d08c1089bf4610f81a0eac89516a278fddb24b8577588284e2fc9a2d0
+[qualified_candidate] RGPH2014_HOUSEHOLDS — https://www.hcp.ma/file/230042/ — octets=3227296 — sha256=2fde794a15d0d98889875316666d918f1044f8055610bfb909d056a15fe878a1
+[qualified_candidate] RGPH2024_INDICATORS — https://www.hcp.ma/file/242671/ — octets=7597863 — sha256=f3d96fcae3c10a2c194b2fe97ee8352a242fb3f36b1b63d4d2a7006176dc7c3e
+
+DÉCISIONS PAR INDICATEUR
+[NO_GO] activity_rate 2014 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2014_INDIVIDUALS
+[NO_GO] activity_rate 2024 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2024_INDICATORS
+[NO_GO] household_computer_rate 2014 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2014_HOUSEHOLDS
+[NO_GO] household_computer_rate 2024 — OBSERVED — couverture=0/1538 — unité=percent — source=None
+[NO_GO] household_electricity_rate 2014 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2014_HOUSEHOLDS
+[NO_GO] household_electricity_rate 2024 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2024_INDICATORS
+[NO_GO] household_internet_rate 2014 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2014_HOUSEHOLDS
+[NO_GO] household_internet_rate 2024 — OBSERVED — couverture=0/1538 — unité=percent — source=None
+[NO_GO] household_piped_water_rate 2014 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2014_HOUSEHOLDS
+[NO_GO] household_piped_water_rate 2024 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2024_INDICATORS
+[NO_GO] household_public_sewer_rate 2014 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2014_HOUSEHOLDS
+[NO_GO] household_public_sewer_rate 2024 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2024_INDICATORS
+[NO_GO] illiteracy_rate_10_plus 2014 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2014_INDIVIDUALS
+[NO_GO] illiteracy_rate_10_plus 2024 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2024_INDICATORS
+[NO_GO] literacy_rate_10_plus 2014 — DERIVED — couverture=1534/1538 — unité=percent — source=DERIVED_FROM_QUALIFIED_HCP
+  Formule : 100 - illiteracy_rate_10_plus ; dénominateur : population_10_plus defined by source ; NULL si une composante manque ou si le dénominateur est nul ou négatif.
+[NO_GO] literacy_rate_10_plus 2024 — DERIVED — couverture=1534/1538 — unité=percent — source=DERIVED_FROM_QUALIFIED_HCP
+  Formule : 100 - illiteracy_rate_10_plus ; dénominateur : population_10_plus defined by source ; NULL si une composante manque ou si le dénominateur est nul ou négatif.
+[GO] population_legal 2014 — OBSERVED — couverture=1538/1538 — unité=persons — source=RGPH2014_INDIVIDUALS
+[GO] population_legal 2024 — OBSERVED — couverture=1538/1538 — unité=persons — source=RGPH2024_INDICATORS
+[NO_GO] population_municipal 2014 — OBSERVED — couverture=1534/1538 — unité=persons — source=RGPH2014_INDIVIDUALS
+[GO] population_municipal 2024 — OBSERVED — couverture=1538/1538 — unité=persons — source=RGPH2024_INDICATORS
+[NO_GO] population_urban 2014 — OBSERVED — couverture=401/1538 — unité=persons — source=RGPH2014_INDIVIDUALS
+[NO_GO] population_urban 2024 — OBSERVED — couverture=416/1538 — unité=persons — source=RGPH2024_INDICATORS
+[NO_GO] school_enrollment_rate 2014 — OBSERVED — couverture=1531/1538 — unité=percent — source=RGPH2014_INDIVIDUALS
+[NO_GO] school_enrollment_rate 2024 — OBSERVED — couverture=1532/1538 — unité=percent — source=RGPH2024_INDICATORS
+[NO_GO] unemployment_rate 2014 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2014_INDIVIDUALS
+[NO_GO] unemployment_rate 2024 — OBSERVED — couverture=1534/1538 — unité=percent — source=RGPH2024_INDICATORS
+[NO_GO] urbanization_rate 2014 — DERIVED — couverture=401/1538 — unité=percent — source=DERIVED_FROM_QUALIFIED_HCP
+  Formule : 100 * population_urban / population_municipal ; dénominateur : population_municipal ; NULL si une composante manque ou si le dénominateur est nul ou négatif.
+[NO_GO] urbanization_rate 2024 — DERIVED — couverture=416/1538 — unité=percent — source=DERIVED_FROM_QUALIFIED_HCP
+  Formule : 100 * population_urban / population_municipal ; dénominateur : population_municipal ; NULL si une composante manque ou si le dénominateur est nul ou négatif.
+
+COMPARABILITÉ 2014–2024
+[GO] population_legal — Même définition, unité et univers communal; aucune interpolation.
+[NO_GO] population_municipal — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+[NO_GO] population_urban — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+[NO_GO] urbanization_rate — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+[NO_GO] illiteracy_rate_10_plus — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+[NO_GO] literacy_rate_10_plus — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+[NO_GO] school_enrollment_rate — Classes d'âge différentes: 7-12 ans en 2014 et 6-11 ans en 2024.
+[NO_GO] activity_rate — Le libellé 2014 ne démontre pas le même univers d'âge que le taux 15 ans et plus de 2024.
+[NO_GO] unemployment_rate — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+[NO_GO] household_electricity_rate — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+[NO_GO] household_piped_water_rate — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+[NO_GO] household_public_sewer_rate — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+[NO_GO] household_internet_rate — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+[NO_GO] household_computer_rate — Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.
+
+DISCIPLINE TEMPORELLE
+[CONDITIONAL] élection 2015 × observation 2014 — écart signé=-1 ans
+[FORBIDDEN] élection 2015 × observation 2024 — écart signé=9 ans
+[CONDITIONAL] élection 2021 × observation 2014 — écart signé=-7 ans
+[CONDITIONAL] élection 2021 × observation 2024 — écart signé=3 ans
+
+INTERCENSITAIRE : NO_GO — Aucune publication officielle nationale communale intercensitaire couvrant ces indicateurs n'a été identifiée.
+
+COMMANDE DE REPRODUCTION
+python -m morocco_elections qualify hcp-indicators --candidate-2014-individuals data/staging/v10qa3/source_candidates/rgph2014_individus.xlsx --candidate-2014-households data/staging/v10qa3/source_candidates/rgph2014_menages.xlsx --candidate-2024-indicators data/staging/v10qa3/source_candidates/rgph2024_indicateurs.xlsx --baseline v10 --as-of 2026-09-08
+
+SUITE
+Ouvrir feat/v11-hcp-indicators uniquement pour les indicateurs GO; conserver les autres comme lacunes explicites.
+
+Ce rapport est généré intégralement depuis metadata/v10qa3_hcp_indicators.json.

@@ -1,0 +1,837 @@
+{
+  "schema_version": 1,
+  "phase": "V10-QA-3",
+  "generated_on": "2026-09-08",
+  "scope": "Qualification HCP communale 2014-2024; aucune ingestion.",
+  "decision_model": "GO/NO_GO par indicateur canonique et millésime",
+  "baseline": {
+    "release": "V10",
+    "sha256_before": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "sha256_after": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "modified": false
+  },
+  "gate": {
+    "expected_units": 1538,
+    "full_national_coverage_required": true,
+    "fuzzy_matching_allowed": false,
+    "screen_scraping_allowed": false,
+    "interpolation_allowed": false,
+    "missing_symbols_are_zero": false
+  },
+  "sources": [
+    {
+      "source_id": "RGPH2014_INDIVIDUALS",
+      "local_name": "rgph2014_individus.xlsx",
+      "source_url": "https://www.hcp.ma/file/230045/",
+      "final_url": "https://www.hcp.ma/file/230045/",
+      "publisher": "Haut-Commissariat au Plan",
+      "publication_date": "2017-05-30",
+      "retrieved_on": "2026-09-08",
+      "reuse_terms": "Téléchargement public officiel HCP; attribution conservée; fichier non redistribué.",
+      "etag": null,
+      "last_modified": null,
+      "byte_size": 11296286,
+      "sha256": "c20c1f7d08c1089bf4610f81a0eac89516a278fddb24b8577588284e2fc9a2d0",
+      "sheets": [
+        {
+          "name": "Indic.Ensemble",
+          "rows": 1982,
+          "columns": 171
+        },
+        {
+          "name": "Indic.Urbain",
+          "rows": 1982,
+          "columns": 171
+        },
+        {
+          "name": "Indic.Rural",
+          "rows": 1982,
+          "columns": 171
+        }
+      ],
+      "status": "qualified_candidate",
+      "tracked": false
+    },
+    {
+      "source_id": "RGPH2014_HOUSEHOLDS",
+      "local_name": "rgph2014_menages.xlsx",
+      "source_url": "https://www.hcp.ma/file/230042/",
+      "final_url": "https://www.hcp.ma/file/230042/",
+      "publisher": "Haut-Commissariat au Plan",
+      "publication_date": "2017-05-30",
+      "retrieved_on": "2026-09-08",
+      "reuse_terms": "Téléchargement public officiel HCP; attribution conservée; fichier non redistribué.",
+      "etag": null,
+      "last_modified": null,
+      "byte_size": 3227296,
+      "sha256": "2fde794a15d0d98889875316666d918f1044f8055610bfb909d056a15fe878a1",
+      "sheets": [
+        {
+          "name": "Indic.Ensemble",
+          "rows": 1981,
+          "columns": 51
+        },
+        {
+          "name": "Indic.Urbain",
+          "rows": 1981,
+          "columns": 51
+        },
+        {
+          "name": "Indic.Rural",
+          "rows": 1981,
+          "columns": 51
+        }
+      ],
+      "status": "qualified_candidate",
+      "tracked": false
+    },
+    {
+      "source_id": "RGPH2024_INDICATORS",
+      "local_name": "rgph2024_indicateurs.xlsx",
+      "source_url": "https://www.hcp.ma/file/242671/",
+      "final_url": "https://www.hcp.ma/file/242671/",
+      "publisher": "Haut-Commissariat au Plan",
+      "publication_date": "2024-12-17",
+      "retrieved_on": "2026-09-08",
+      "reuse_terms": "Téléchargement public officiel HCP; attribution conservée; fichier non redistribué.",
+      "etag": null,
+      "last_modified": null,
+      "byte_size": 7597863,
+      "sha256": "f3d96fcae3c10a2c194b2fe97ee8352a242fb3f36b1b63d4d2a7006176dc7c3e",
+      "sheets": [
+        {
+          "name": "Population",
+          "rows": 2020,
+          "columns": 191
+        },
+        {
+          "name": "Population_Urbaine",
+          "rows": 2020,
+          "columns": 191
+        },
+        {
+          "name": "Population_Rurale",
+          "rows": 2020,
+          "columns": 191
+        },
+        {
+          "name": "Ménages",
+          "rows": 2019,
+          "columns": 38
+        },
+        {
+          "name": "Ménages_Urbains",
+          "rows": 2019,
+          "columns": 38
+        },
+        {
+          "name": "Ménages_Ruraux",
+          "rows": 2019,
+          "columns": 38
+        },
+        {
+          "name": "Définitions_des_Concepts",
+          "rows": 157,
+          "columns": 8
+        },
+        {
+          "name": "Signes_Conventionnels",
+          "rows": 5,
+          "columns": 2
+        },
+        {
+          "name": "Avis_aux_Utilisateurs",
+          "rows": 6,
+          "columns": 2
+        }
+      ],
+      "status": "qualified_candidate",
+      "tracked": false
+    }
+  ],
+  "geographic_matching": {
+    "2014_individuals_ensemble": {
+      "official_code": 1361,
+      "exact_normalized_name_and_parent": 177
+    },
+    "2014_individuals_urban": {
+      "official_code": 1361,
+      "exact_normalized_name_and_parent": 177
+    },
+    "2014_households": {
+      "official_code": 1361,
+      "exact_normalized_name_and_parent": 177
+    },
+    "2024_population": {
+      "official_code": 1505,
+      "exact_normalized_name_and_parent": 31,
+      "documented_hcp_2024_code_alias": 2
+    },
+    "2024_population_urban": {
+      "official_code": 1505,
+      "exact_normalized_name_and_parent": 31,
+      "documented_hcp_2024_code_alias": 2
+    },
+    "2024_households": {
+      "official_code": 1505,
+      "exact_normalized_name_and_parent": 31,
+      "documented_hcp_2024_code_alias": 2
+    }
+  },
+  "geographic_resolutions": [
+    {
+      "source_geo_id": "MA-06-355-0107",
+      "canonical_geo_id": "MA-06-355-0301",
+      "method": "documented_hcp_2024_code_alias"
+    },
+    {
+      "source_geo_id": "MA-06-385-0105",
+      "canonical_geo_id": "MA-06-385-0305",
+      "method": "documented_hcp_2024_code_alias"
+    }
+  ],
+  "indicator_decisions": [
+    {
+      "indicator_id": "activity_rate",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_INDIVIDUALS",
+      "definition": "Taux net d'activité",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "activity_rate",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2024_INDICATORS",
+      "definition": "Taux d'activité des 15 ans et plus",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "household_computer_rate",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_HOUSEHOLDS",
+      "definition": "Ménages équipés d'un ordinateur",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "household_computer_rate",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": null,
+      "definition": "Non publié",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 0,
+      "usable_units": 0,
+      "coverage_rate": 0.0,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "household_electricity_rate",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_HOUSEHOLDS",
+      "definition": "Logements équipés en électricité",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "household_electricity_rate",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2024_INDICATORS",
+      "definition": "Électricité",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "household_internet_rate",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_HOUSEHOLDS",
+      "definition": "Ménages équipés d'Internet",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "household_internet_rate",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": null,
+      "definition": "Non publié",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 0,
+      "usable_units": 0,
+      "coverage_rate": 0.0,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "household_piped_water_rate",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_HOUSEHOLDS",
+      "definition": "Logements équipés en eau courante",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "household_piped_water_rate",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2024_INDICATORS",
+      "definition": "Eau courante",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "household_public_sewer_rate",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_HOUSEHOLDS",
+      "definition": "Évacuation des eaux usées par réseau public",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "household_public_sewer_rate",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2024_INDICATORS",
+      "definition": "Réseau public d'assainissement",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "illiteracy_rate_10_plus",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_INDIVIDUALS",
+      "definition": "Taux d'analphabétisme",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "illiteracy_rate_10_plus",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2024_INDICATORS",
+      "definition": "Taux d'analphabétisme des 10 ans et plus",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "literacy_rate_10_plus",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "DERIVED",
+      "source_id": "DERIVED_FROM_QUALIFIED_HCP",
+      "definition": "100 - illiteracy_rate_10_plus",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": "100 - illiteracy_rate_10_plus",
+      "denominator": "population_10_plus defined by source",
+      "null_rule": "NULL si une composante manque ou si le dénominateur est nul ou négatif."
+    },
+    {
+      "indicator_id": "literacy_rate_10_plus",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "DERIVED",
+      "source_id": "DERIVED_FROM_QUALIFIED_HCP",
+      "definition": "100 - illiteracy_rate_10_plus",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": "100 - illiteracy_rate_10_plus",
+      "denominator": "population_10_plus defined by source",
+      "null_rule": "NULL si une composante manque ou si le dénominateur est nul ou négatif."
+    },
+    {
+      "indicator_id": "population_legal",
+      "observation_year": 2014,
+      "decision": "GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_INDIVIDUALS",
+      "definition": "Population légale",
+      "unit": "persons",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1538,
+      "coverage_rate": 1.0,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "population_legal",
+      "observation_year": 2024,
+      "decision": "GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2024_INDICATORS",
+      "definition": "Population légale",
+      "unit": "persons",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1538,
+      "coverage_rate": 1.0,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "population_municipal",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_INDIVIDUALS",
+      "definition": "Population municipale",
+      "unit": "persons",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "population_municipal",
+      "observation_year": 2024,
+      "decision": "GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2024_INDICATORS",
+      "definition": "Population municipale",
+      "unit": "persons",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1538,
+      "coverage_rate": 1.0,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "population_urban",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_INDIVIDUALS",
+      "definition": "Population municipale, milieu urbain",
+      "unit": "persons",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 401,
+      "coverage_rate": 0.260728,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "population_urban",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2024_INDICATORS",
+      "definition": "Population municipale, milieu urbain",
+      "unit": "persons",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 416,
+      "coverage_rate": 0.270481,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "school_enrollment_rate",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_INDIVIDUALS",
+      "definition": "Taux de scolarisation des enfants âgés de 7 à 12 ans",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1531,
+      "coverage_rate": 0.995449,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "school_enrollment_rate",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2024_INDICATORS",
+      "definition": "Taux de scolarisation des 6-11 ans en 2023/2024",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1532,
+      "coverage_rate": 0.996099,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "unemployment_rate",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2014_INDIVIDUALS",
+      "definition": "Taux de chômage",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "unemployment_rate",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "OBSERVED",
+      "source_id": "RGPH2024_INDICATORS",
+      "definition": "Taux de chômage",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 1534,
+      "coverage_rate": 0.997399,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": null,
+      "denominator": null,
+      "null_rule": "NULL si la valeur publiée est absente, non applicable ou hors domaine."
+    },
+    {
+      "indicator_id": "urbanization_rate",
+      "observation_year": 2014,
+      "decision": "NO_GO",
+      "kind": "DERIVED",
+      "source_id": "DERIVED_FROM_QUALIFIED_HCP",
+      "definition": "100 * population_urban / population_municipal",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 401,
+      "coverage_rate": 0.260728,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": "100 * population_urban / population_municipal",
+      "denominator": "population_municipal",
+      "null_rule": "NULL si une composante manque ou si le dénominateur est nul ou négatif."
+    },
+    {
+      "indicator_id": "urbanization_rate",
+      "observation_year": 2024,
+      "decision": "NO_GO",
+      "kind": "DERIVED",
+      "source_id": "DERIVED_FROM_QUALIFIED_HCP",
+      "definition": "100 * population_urban / population_municipal",
+      "unit": "percent",
+      "expected_units": 1538,
+      "matched_units": 1538,
+      "usable_units": 416,
+      "coverage_rate": 0.270481,
+      "duplicates": 0,
+      "invalid_values": 0,
+      "formula": "100 * population_urban / population_municipal",
+      "denominator": "population_municipal",
+      "null_rule": "NULL si une composante manque ou si le dénominateur est nul ou négatif."
+    }
+  ],
+  "comparability": [
+    {
+      "indicator_id": "population_legal",
+      "period": "2014-2024",
+      "decision": "GO",
+      "reason": "Même définition, unité et univers communal; aucune interpolation.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "population_municipal",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "population_urban",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "urbanization_rate",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "illiteracy_rate_10_plus",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "literacy_rate_10_plus",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "school_enrollment_rate",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Classes d'âge différentes: 7-12 ans en 2014 et 6-11 ans en 2024.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "activity_rate",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Le libellé 2014 ne démontre pas le même univers d'âge que le taux 15 ans et plus de 2024.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "unemployment_rate",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "household_electricity_rate",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "household_piped_water_rate",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "household_public_sewer_rate",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "household_internet_rate",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    },
+    {
+      "indicator_id": "household_computer_rate",
+      "period": "2014-2024",
+      "decision": "NO_GO",
+      "reason": "Au moins un millésime ne couvre pas les 1 538 unités avec une valeur utilisable.",
+      "interpolation_allowed": false
+    }
+  ],
+  "intercensal": {
+    "decision": "NO_GO",
+    "reason": "Aucune publication officielle nationale communale intercensitaire couvrant ces indicateurs n'a été identifiée.",
+    "values_reconstructed": false
+  },
+  "temporal_permissions": [
+    {
+      "election_year": 2015,
+      "observation_year": 2014,
+      "permission": "CONDITIONAL",
+      "offset_years": -1
+    },
+    {
+      "election_year": 2015,
+      "observation_year": 2024,
+      "permission": "FORBIDDEN",
+      "offset_years": 9
+    },
+    {
+      "election_year": 2021,
+      "observation_year": 2014,
+      "permission": "CONDITIONAL",
+      "offset_years": -7
+    },
+    {
+      "election_year": 2021,
+      "observation_year": 2024,
+      "permission": "CONDITIONAL",
+      "offset_years": 3
+    }
+  ],
+  "summary": {
+    "indicator_year_decisions": 28,
+    "go": 3,
+    "no_go": 25,
+    "comparability_go": 1
+  },
+  "next_action": "Ouvrir feat/v11-hcp-indicators uniquement pour les indicateurs GO; conserver les autres comme lacunes explicites."
+}
