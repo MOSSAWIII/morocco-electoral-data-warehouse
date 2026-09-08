@@ -1,0 +1,73 @@
+V10-QA-1 — QUALIFICATION DES DÉNOMINATEURS ÉLECTORAUX 2015–2021
+
+VERSION : V10-QA-1 (recherche, sans export warehouse)
+DATE DE GÉNÉRATION : 2026-09-08
+PÉRIMÈTRE : 1 538 communes/arrondissements × élections 2015 et 2021
+RENVOIS : metadata/v10qa1_electoral_denominators.json ; V10-QA ; V10 immuable
+
+DÉCISION BINAIRE : NO_GO
+
+Aucune ligne d'inscrits n'a été ingérée. V10, ses RAW, ses documents et ses tags n'ont pas été modifiés.
+Les inscrits, votants ou votes valides/invalides ne sont jamais reconstruits depuis les voix ou un taux.
+
+GATE
+GO exige 1 538 inscrits directement publiés en 2015 et 1 538 en 2021; aucun GO partiel n'est autorisé.
+Les votants et votes valides, invalides ou blancs sont facultatifs et ne sont retenus que si leur sémantique est explicite.
+
+RÉSULTATS PAR ANNÉE
+2015 — NO_GO — lignes=0 — total inscrits=None — champs facultatifs=[]
+  [FAIL] accounting_identity — observé=null
+  [FAIL] aggregate_only — observé=null
+  [FAIL] election_year — observé=null
+  [FAIL] file_readable — observé=null
+  [FAIL] geographic_universe — observé=null
+  [FAIL] national_total — observé=null
+  [FAIL] optional_counts — observé=null
+  [FAIL] provenance — observé=null
+  [FAIL] registered_voters — observé=null
+  [FAIL] row_count — observé=null
+  [FAIL] turnout_reconciliation — observé=null
+  [FAIL] unique_geo_key — observé=null
+2021 — NO_GO — lignes=0 — total inscrits=None — champs facultatifs=[]
+  [FAIL] accounting_identity — observé=null
+  [FAIL] aggregate_only — observé=null
+  [FAIL] election_year — observé=null
+  [FAIL] file_readable — observé=null
+  [FAIL] geographic_universe — observé=null
+  [FAIL] national_total — observé=null
+  [FAIL] optional_counts — observé=null
+  [FAIL] provenance — observé=null
+  [FAIL] registered_voters — observé=null
+  [FAIL] row_count — observé=null
+  [FAIL] turnout_reconciliation — observé=null
+  [FAIL] unique_geo_key — observé=null
+
+RECHERCHE ET PROVENANCE
+[not_found] OFFICIAL_ELECTIONS_MA_RESULTS — https://www.elections.ma/elections/communales/resultats.aspx
+  Constat : Aucun export agrégé des inscrits 2015 et 2021 n'a été identifié.
+[not_found] OFFICIAL_ELECTORAL_LISTS_STATS — https://www.listeselectorales.ma/fr/statistiques.aspx
+  Constat : Le portail courant publie des statistiques nationales contemporaines, pas les 3 076 agrégats historiques requis.
+[not_found] WAYBACK_ELECTIONS_MA_2015 — https://web.archive.org/web/20150916012118/http://www.elections.ma/elections/communales/resultats.aspx
+  Constat : Interface et service de taux archivés; aucun CSV/XLS/XLSX communal d'inscrits retrouvé.
+[control_only] CNDH_2015_CONTROL — https://cndh.ma/sites/default/files/2024-01/rapportdeffr_7sept_compressed.pdf
+  Constat : 15 498 658 inscrits au niveau national; aucune table communale exploitable.
+[control_only] CNDH_2021_CONTROL — https://cndh.ma/en/2021-elections-thematic-observation-new-approach-highlighting-details-relationship-between-0
+  Constat : 17 983 490 inscrits au niveau national; aucune table communale exploitable.
+[known_missing] TAFRA_COMMUNAL_RESULTS_2015_2021 — https://open.africa/organization/tafra
+  Constat : Les notes des deux fichiers indiquent explicitement que le nombre d'inscrits et les votes nuls ne sont pas reportés.
+
+CONTRÔLES NATIONAUX
+2015 : 15 498 658 inscrits
+2021 : 17 983 490 inscrits
+
+ANOMALIES
+DENOM_2015_SOURCE_NOT_FOUND — missing_official_aggregate_source — lignes affectées=1538 — décision=no_reconstruction_no_ingestion
+DENOM_2021_SOURCE_NOT_FOUND — missing_official_aggregate_source — lignes affectées=1538 — décision=no_reconstruction_no_ingestion
+
+COMMANDE DE REPRODUCTION
+python -m morocco_elections qualify electoral-denominators --baseline v10 --as-of 2026-09-08
+
+SUITE
+Maintenir l'interdiction d'ingestion et passer à la qualification des 135 présidences communales.
+
+Ce rapport est généré intégralement depuis metadata/v10qa1_electoral_denominators.json.

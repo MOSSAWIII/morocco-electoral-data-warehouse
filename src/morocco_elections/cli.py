@@ -35,6 +35,16 @@ def build_parser() -> argparse.ArgumentParser:
     smiig.add_argument("--data-dir")
     smiig.add_argument("--metadata-output")
     smiig.add_argument("--decision-output")
+    denominators = qualification.add_parser(
+        "electoral-denominators", help="Qualifier les inscrits communaux 2015 et 2021"
+    )
+    denominators.add_argument("--candidate-2015")
+    denominators.add_argument("--candidate-2021")
+    denominators.add_argument("--baseline", choices=("v10",), default="v10")
+    denominators.add_argument("--as-of")
+    denominators.add_argument("--data-dir")
+    denominators.add_argument("--metadata-output")
+    denominators.add_argument("--decision-output")
 
     quality = commands.add_parser("quality", help="Produire des artefacts de qualité transversaux")
     quality_commands = quality.add_subparsers(dest="quality_command", required=True)
@@ -89,6 +99,18 @@ def main(argv: list[str] | None = None) -> int:
         return qualify_candidate(
             candidate=args.candidate,
             baseline=args.baseline,
+            metadata_output=args.metadata_output,
+            decision_output=args.decision_output,
+            data_dir=args.data_dir,
+        )
+    if args.command == "qualify" and args.qualification == "electoral-denominators":
+        from morocco_elections.research.electoral_denominators import qualify
+
+        return qualify(
+            candidate_2015=args.candidate_2015,
+            candidate_2021=args.candidate_2021,
+            baseline=args.baseline,
+            as_of=args.as_of,
             metadata_output=args.metadata_output,
             decision_output=args.decision_output,
             data_dir=args.data_dir,
