@@ -41,6 +41,7 @@ def test_all_structured_commands_are_registered() -> None:
         ("qualify", "smiig", "--help"),
         ("qualify", "electoral-denominators", "--help"),
         ("qualify", "local-presidencies", "--help"),
+        ("qualify", "hcp-indicators", "--help"),
         ("quality", "baseline", "--help"),
         ("github", "publish-backlog", "--help"),
     ):
@@ -99,6 +100,24 @@ def test_electoral_denominators_reports_missing_v10_without_network(tmp_path: Pa
     )
     assert result.returncode == 2
     assert "ELECTORAL_DENOMINATORS_FAILED" in result.stdout
+
+
+def test_hcp_indicators_reports_missing_v10_without_network(tmp_path: Path) -> None:
+    result = run_command(
+        sys.executable,
+        "-m",
+        "morocco_elections",
+        "qualify",
+        "hcp-indicators",
+        "--baseline",
+        "v10",
+        "--as-of",
+        "2026-09-08",
+        "--data-dir",
+        str(tmp_path),
+    )
+    assert result.returncode == 2
+    assert "HCP_INDICATORS_FAILED" in result.stdout
 
 
 def test_local_presidencies_qualification_runs_offline(tmp_path: Path) -> None:

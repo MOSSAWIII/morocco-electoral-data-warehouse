@@ -28,6 +28,8 @@ DENOMINATORS_METADATA_PATH = PROJECT_ROOT / "metadata" / "v10qa1_electoral_denom
 DENOMINATORS_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V10QA1_ELECTORAL_DENOMINATORS.txt"
 PRESIDENCIES_METADATA_PATH = PROJECT_ROOT / "metadata" / "v10qa2_local_presidencies.json"
 PRESIDENCIES_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V10QA2_LOCAL_PRESIDENCIES.txt"
+HCP_INDICATORS_METADATA_PATH = PROJECT_ROOT / "metadata" / "v10qa3_hcp_indicators.json"
+HCP_INDICATORS_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V10QA3_HCP_INDICATORS.txt"
 DOCUMENTATION_DIRS = {"v9": get_paths().documentation_v9, "v10": get_paths().documentation_v10}
 EXPECTED_DOCUMENTS = [
     "00_INDEX_ET_MODE_EMPLOI.txt",
@@ -833,6 +835,51 @@ def validate_local_presidency_artifacts(data_dir: str | Path | None = None, full
     return errors
 
 
+def validate_hcp_indicator_artifacts(data_dir: str | Path | None = None, full: bool = False) -> list[str]:
+    from morocco_elections.research import hcp_indicators
+
+    errors: list[str] = []
+    try:
+        metadata = json.loads(HCP_INDICATORS_METADATA_PATH.read_text(encoding="utf-8"))
+        report = HCP_INDICATORS_REPORT_PATH.read_text(encoding="utf-8-sig")
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"V10-QA-3: artefacts illisibles: {exc}"]
+    errors.extend(f"V10-QA-3: {error}" for error in hcp_indicators.validate_metadata(metadata))
+    try:
+        manifest = load_manifest()
+        v10_artifact = next(item for item in manifest["artifacts"] if item["artifact_id"] == "WAREHOUSE_V10_EXPORT")
+        baseline = metadata.get("baseline", {})
+        if baseline.get("sha256_before") != v10_artifact["sha256"] or baseline.get("sha256_after") != v10_artifact["sha256"]:
+            errors.append("V10-QA-3: empreinte de baseline différente du V10 manifesté")
+    except (KeyError, StopIteration, ValidationError) as exc:
+        errors.append(f"V10-QA-3: baseline invérifiable: {exc}")
+    source_ids = {item.get("source_id") for item in metadata.get("sources", [])}
+    if source_ids != set(hcp_indicators.SOURCE_SPECS):
+        errors.append("V10-QA-3: registre des trois sources HCP incomplet")
+    if report != hcp_indicators.render_report(metadata):
+        errors.append("V10-QA-3: rapport TXT désynchronisé du JSON")
+    if full and not errors:
+        paths = get_paths(data_dir)
+        candidates: dict[str, Path | None] = {}
+        for record in metadata["sources"]:
+            source_id = str(record["source_id"])
+            if record.get("status") == "not_provided":
+                candidates[source_id] = None
+                continue
+            candidate = paths.data_root / "staging" / "v10qa3" / "source_candidates" / str(record["local_name"])
+            if not candidate.is_file():
+                errors.append(f"V10-QA-3: candidat local absent: {candidate}")
+                continue
+            if candidate.stat().st_size != record.get("byte_size") or hcp_indicators.sha256_file(candidate) != record.get("sha256"):
+                errors.append(f"V10-QA-3: candidat {source_id} différent de son empreinte")
+            candidates[source_id] = candidate
+        if not errors:
+            rebuilt = hcp_indicators.build_metadata(paths.v10_workbook, candidates, str(metadata["generated_on"]))
+            if rebuilt != metadata:
+                errors.append("V10-QA-3: décision désynchronisée des sources locales et de V10")
+    return errors
+
+
 def run(mode: str, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> list[str]:
     manifest = load_manifest()
     errors = []
@@ -844,6 +891,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_quality_baseline_artifacts())
     errors.extend(validate_electoral_denominator_artifacts())
     errors.extend(validate_local_presidency_artifacts())
+    errors.extend(validate_hcp_indicator_artifacts())
     errors.extend(validate_python_sources())
     errors.extend(validate_documentation(release))
     errors.extend(validate_repository_files())
@@ -855,6 +903,8 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
             errors.extend(validate_electoral_denominator_artifacts(data_dir, full=True))
         if not errors:
             errors.extend(validate_local_presidency_artifacts(data_dir, full=True))
+        if not errors:
+            errors.extend(validate_hcp_indicator_artifacts(data_dir, full=True))
     return errors
 
 

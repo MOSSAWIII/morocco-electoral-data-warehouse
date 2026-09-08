@@ -54,6 +54,15 @@ def build_parser() -> argparse.ArgumentParser:
     presidencies.add_argument("--data-dir")
     presidencies.add_argument("--metadata-output")
     presidencies.add_argument("--decision-output")
+    hcp = qualification.add_parser("hcp-indicators", help="Qualifier les indicateurs communaux HCP 2014 et 2024")
+    hcp.add_argument("--candidate-2014-individuals")
+    hcp.add_argument("--candidate-2014-households")
+    hcp.add_argument("--candidate-2024-indicators")
+    hcp.add_argument("--baseline", choices=("v10",), default="v10")
+    hcp.add_argument("--as-of")
+    hcp.add_argument("--data-dir")
+    hcp.add_argument("--metadata-output")
+    hcp.add_argument("--decision-output")
 
     quality = commands.add_parser("quality", help="Produire des artefacts de qualité transversaux")
     quality_commands = quality.add_subparsers(dest="quality_command", required=True)
@@ -129,6 +138,19 @@ def main(argv: list[str] | None = None) -> int:
 
         return qualify(
             evidence_index=args.evidence_index,
+            baseline=args.baseline,
+            as_of=args.as_of,
+            metadata_output=args.metadata_output,
+            decision_output=args.decision_output,
+            data_dir=args.data_dir,
+        )
+    if args.command == "qualify" and args.qualification == "hcp-indicators":
+        from morocco_elections.research.hcp_indicators import qualify
+
+        return qualify(
+            candidate_2014_individuals=args.candidate_2014_individuals,
+            candidate_2014_households=args.candidate_2014_households,
+            candidate_2024_indicators=args.candidate_2024_indicators,
             baseline=args.baseline,
             as_of=args.as_of,
             metadata_output=args.metadata_output,
