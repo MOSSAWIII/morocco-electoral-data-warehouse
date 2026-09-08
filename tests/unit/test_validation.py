@@ -21,6 +21,7 @@ def test_manifest_contract() -> None:
 
 def test_documentation_contract() -> None:
     assert validate_project.validate_documentation() == []
+    assert validate_project._recorded_documentation_date(validate_project.DOCUMENTATION_DIRS["v10"]) == "2026-09-07"
 
 
 def test_v10_release_report_contract() -> None:
@@ -30,6 +31,10 @@ def test_v10_release_report_contract() -> None:
 
 def test_v11a_artifact_contract() -> None:
     assert validate_project.validate_v11a_artifacts() == []
+
+
+def test_smiig_artifact_contract() -> None:
+    assert validate_project.validate_smiig_artifacts() == []
 
 
 def test_github_backlog_contract() -> None:

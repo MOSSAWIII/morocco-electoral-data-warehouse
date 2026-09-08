@@ -20,6 +20,8 @@ BACKLOG_PATH = get_paths().github_backlog
 V10_REPORT_PATH = PROJECT_ROOT / "metadata" / "v10_release_report.json"
 V11A_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11a_source_candidates.json"
 V11A_DECISION_PATH = PROJECT_ROOT / "docs" / "research" / "V11A_DECISION_2015_COUNCILS.txt"
+SMIIG_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11_smiig_source_candidates.json"
+SMIIG_DECISION_PATH = PROJECT_ROOT / "docs" / "research" / "V11_SMIIG_QUALIFICATION.txt"
 DOCUMENTATION_DIRS = {"v9": get_paths().documentation_v9, "v10": get_paths().documentation_v10}
 EXPECTED_DOCUMENTS = [
     "00_INDEX_ET_MODE_EMPLOI.txt",
@@ -353,6 +355,73 @@ def validate_v11a_artifacts() -> list[str]:
     return errors
 
 
+def validate_smiig_artifacts() -> list[str]:
+    errors: list[str] = []
+    try:
+        metadata = json.loads(SMIIG_METADATA_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"Métadonnées SMIIG illisibles: {exc}"]
+    if metadata.get("schema_version") != 1 or metadata.get("phase") != "V11-SMIIG-QUALIFICATION":
+        errors.append("Les métadonnées SMIIG doivent utiliser schema_version=1 et la phase attendue")
+    if metadata.get("decision") not in {"GO", "NO_GO"} or metadata.get("status") != "PILOTE":
+        errors.append("La qualification SMIIG doit porter une décision binaire et le statut PILOTE")
+    candidate = metadata.get("candidate", {})
+    required_candidate = {
+        "candidate_id", "expected_local_name", "dataset_url", "resource_url", "final_url", "producer", "license",
+        "version", "retrieved_on", "etag", "last_modified", "byte_size", "sha256", "tracked",
+    }
+    if not required_candidate <= set(candidate):
+        errors.append(f"Métadonnées SMIIG: champs candidat absents {sorted(required_candidate - set(candidate))}")
+    if not re.fullmatch(r"[0-9a-f]{64}", str(candidate.get("sha256", ""))):
+        errors.append("Métadonnées SMIIG: SHA-256 candidat invalide")
+    if candidate.get("tracked") is not False:
+        errors.append("Le candidat SMIIG doit être déclaré non suivi")
+    try:
+        manifest = load_manifest()
+        v10_artifact = next(item for item in manifest["artifacts"] if item["artifact_id"] == "WAREHOUSE_V10_EXPORT")
+        baseline = metadata.get("baseline", {})
+        if baseline.get("sha256_before") != v10_artifact["sha256"] or baseline.get("sha256_after") != v10_artifact["sha256"]:
+            errors.append("Métadonnées SMIIG: empreinte de baseline différente du V10 manifesté")
+        if baseline.get("modified") is not False:
+            errors.append("Métadonnées SMIIG: V10 doit être déclaré inchangé")
+    except (KeyError, StopIteration, ValidationError) as exc:
+        errors.append(f"Métadonnées SMIIG: baseline V10 invérifiable: {exc}")
+    checks = metadata.get("checks")
+    if not isinstance(checks, list):
+        errors.append("Métadonnées SMIIG: liste de contrôles obligatoire")
+        checks = []
+    expected_checks = {
+        "xlsx_and_sheets", "data_shape", "required_values", "temporal_coverage", "grain_uniqueness",
+        "v10_universe_subset", "v10_geographic_crosswalk", "dictionary_consistency", "license", "indicator_domains",
+        "component_formula", "normalized_score_formula", "arrondissement_replication_lineage", "identity_and_role_scope",
+    }
+    actual_checks = {item.get("check_id") for item in checks if isinstance(item, dict)}
+    if actual_checks != expected_checks:
+        errors.append(f"Métadonnées SMIIG: contrôles incorrects {sorted(actual_checks)}")
+    failed = [item for item in checks if item.get("required") and item.get("status") != "PASS"]
+    if metadata.get("decision") != ("NO_GO" if failed else "GO"):
+        errors.append("La décision SMIIG ne correspond pas aux contrôles obligatoires")
+    for anomaly in metadata.get("anomalies", []):
+        anomaly_id = str(anomaly.get("anomaly_id", ""))
+        if not re.fullmatch(r"SMIIG_(?:SCHEMA_)?[0-9a-f]{20}", anomaly_id):
+            errors.append("Métadonnées SMIIG: identifiant d'anomalie non pseudonymisé")
+        if anomaly.get("status") != "unresolved":
+            errors.append("Métadonnées SMIIG: anomalie sans statut unresolved")
+    try:
+        report = SMIIG_DECISION_PATH.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as exc:
+        errors.append(f"Rapport SMIIG illisible: {exc}")
+        return errors
+    for token in (
+        "VERSION : V11-SMIIG-QUALIFICATION", "DATE DE GÉNÉRATION", "PÉRIMÈTRE", "RENVOIS",
+        f"DÉCISION BINAIRE : {metadata.get('decision')}", "STATUT DE COUVERTURE : PILOTE",
+        "Aucune ligne SMIIG n'a été ingérée", "COMMANDE DE REPRODUCTION",
+    ):
+        if token not in report:
+            errors.append(f"Rapport SMIIG: élément obligatoire absent: {token}")
+    return errors
+
+
 def validate_python_sources() -> list[str]:
     errors: list[str] = []
     for path in sorted(ROOT.rglob("*.py")):
@@ -473,6 +542,15 @@ def _populated_rows(sheet) -> int:
     return sum(1 for row in sheet.iter_rows(min_row=5, values_only=True) if any(value is not None for value in row))
 
 
+def _recorded_documentation_date(directory: Path) -> str:
+    index = directory / "00_INDEX_ET_MODE_EMPLOI.txt"
+    content = index.read_text(encoding="utf-8-sig")
+    match = re.search(r"DATE DE GÉNÉRATION\s*:\s*(\d{4}-\d{2}-\d{2})", content)
+    if not match:
+        raise ValidationError(f"Date de génération documentaire introuvable: {index}")
+    return match.group(1)
+
+
 def compare_v10_to_v9(data_dir: str | Path | None = None) -> list[str]:
     errors: list[str] = []
     paths = get_paths(data_dir)
@@ -538,9 +616,22 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None, release: s
         actual_hash = sha256(v11a_candidate)
         if actual_hash != expected_hash:
             errors.append(f"V11-A: SHA-256 candidat attendu {expected_hash}, obtenu {actual_hash}")
+    smiig_candidate = paths.data_root / "staging" / "v11_smiig" / "source_candidates" / "2024-01-08-dataset-smiig-v2023-communes.xlsx"
+    if not smiig_candidate.is_file():
+        errors.append(f"SMIIG: candidat local absent: {smiig_candidate}")
+    else:
+        smiig_metadata = json.loads(SMIIG_METADATA_PATH.read_text(encoding="utf-8"))
+        expected_size = smiig_metadata["candidate"]["byte_size"]
+        expected_hash = smiig_metadata["candidate"]["sha256"]
+        if smiig_candidate.stat().st_size != expected_size:
+            errors.append(f"SMIIG: taille candidat attendue {expected_size}, obtenue {smiig_candidate.stat().st_size}")
+        actual_hash = sha256(smiig_candidate)
+        if actual_hash != expected_hash:
+            errors.append(f"SMIIG: SHA-256 candidat attendu {expected_hash}, obtenu {actual_hash}")
     if release in {"v9", "all"} and paths.v9_workbook.is_file():
         from morocco_elections.legacy.v9 import documentation as module
         module.configure_paths(data_dir)
+        module.GENERATED_ON = _recorded_documentation_date(DOCUMENTATION_DIRS["v9"])
         before_hash = sha256(paths.v9_workbook)
         model = module.load_model()
         generated, metric_rules = module.build_docs(model)
@@ -559,6 +650,7 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None, release: s
     if release in {"v10", "all"} and paths.v10_workbook.is_file():
         from morocco_elections.releases.v10 import documentation as module10
         module10.configure_paths(data_dir)
+        module10.base.GENERATED_ON = _recorded_documentation_date(DOCUMENTATION_DIRS["v10"])
         before_hash = sha256(paths.v10_workbook)
         model = module10.base.load_model()
         generated, _ = module10.base.build_docs(model)
@@ -585,6 +677,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_backlog())
     errors.extend(validate_v10_release_report(manifest))
     errors.extend(validate_v11a_artifacts())
+    errors.extend(validate_smiig_artifacts())
     errors.extend(validate_python_sources())
     errors.extend(validate_documentation(release))
     errors.extend(validate_repository_files())

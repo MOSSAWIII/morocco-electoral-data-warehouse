@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "description": "Cas SMIIG entièrement synthétiques sans personne réelle.",
+  "cases": [
+    {"id": "go", "mutation": "none", "expected": "GO"},
+    {"id": "license_absent", "mutation": "license_absent", "expected": "NO_GO"},
+    {"id": "empty_identifier", "mutation": "empty_identifier", "expected": "NO_GO"},
+    {"id": "duplicate_grain", "mutation": "duplicate_grain", "expected": "NO_GO"},
+    {"id": "year_out_of_range", "mutation": "year_out_of_range", "expected": "NO_GO"},
+    {"id": "unknown_role", "mutation": "unexpected_role_field", "expected": "NO_GO"},
+    {"id": "invalid_indicator_domain", "mutation": "invalid_indicator_domain", "expected": "NO_GO"},
+    {"id": "unmapped_geography", "mutation": "unmapped_geography", "expected": "NO_GO"}
+  ]
+}

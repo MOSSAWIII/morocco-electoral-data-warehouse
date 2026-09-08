@@ -1,0 +1,120 @@
+V11 — QUALIFICATION DE LA SOURCE SMIIG DATA COMMUNES 2023
+
+VERSION : V11-SMIIG-QUALIFICATION (recherche, sans export warehouse)
+CLASSEUR CANDIDAT : 2024-01-08-dataset-smiig-v2023-communes.xlsx (non versionné)
+DATE DE GÉNÉRATION : 2026-09-08
+PÉRIMÈTRE : communes de plus de 50 000 habitants, mesures 2020–2023
+RENVOIS : metadata/v11_smiig_source_candidates.json ; issue GitHub #7 ; V10 baseline immuable
+
+DÉCISION BINAIRE : NO_GO
+STATUT DE COUVERTURE : PILOTE
+
+Aucune ligne SMIIG n'a été ingérée. Aucun export V11 n'a été produit et V10 n'a pas été modifié.
+
+PROVENANCE
+Jeu : https://open.africa/en_AU/dataset/smiig-data-communes-2023
+Ressource : https://open.africa/dataset/6dd7b9ca-907e-4d26-a9c6-6fd37566db3e/resource/1f4e6352-beba-4d97-8cd1-8beab2ddd94d/download/2024-01-08-dataset-smiig-v2023-communes.xlsx
+Producteur : TAFRA
+Licence : CC BY 4.0
+Version : 1.0.0 (janvier 2024)
+Taille : 94775 octets
+ETag : bcb539e2cc50312a44e9415ebdb83e59
+SHA-256 : 8e818ba26df52ac60bfd0d02a7c587a987051a90857f0c6dfac9010df82e143f
+
+PROFIL AGRÉGÉ
+Lignes × colonnes : 464 × 38
+Unités territoriales : 116
+Années : [2020, 2021, 2022, 2023]
+Types géographiques : {"arrondissement": 41, "commune": 75}
+Couverture de l'univers V10 : 7.5423 % (116/1538)
+Valeurs optionnelles nulles : {"idSousPref": 400, "sousPref": 400, "url": 164, "inDb": 341}
+
+CRITÈRES OBLIGATOIRES
+[PASS] xlsx_and_sheets — observé=["donnees", "dictionnaire", "notes"]
+[PASS] data_shape — observé={"rows": 464, "columns": 38, "column_names": ["idRegion", "idWilaya", "idPrefProv", "idSousPref", "idCommune", "region", "wilaya", "prefProv", "sousPref", "commune", "url", "annee", "participation_contactAministration", "participation_compositionConseil", "participation_agendaConseil", "participation_compositionCommissionsConseil", "participation_compositionInstancesConsultatives", "participation_espaceConcertationEnLigne", "participation_contactCommune", "finances_budgetCommune", "finances_budgetCommuneHistorique", "finances_rapportAudit", "finances_etatsComptablesHistorique", "finances_listeBiens", "finances_etatsComptables", "finances_marchesPublicsFuturs", "finances_subventions", "gouvernance_organigramme", "gouvernance_planAction", "gouvernance_recrutement", "gouvernance_livreProcedure", "gouvernance_reglementInterieur", "participation", "finances", "gouvernance", "smiigBrut", "smiig", "inDb"]}
+[PASS] required_values — observé={"missing_columns": [], "null_counts": {"idRegion": 0, "idWilaya": 0, "idPrefProv": 0, "idCommune": 0, "region": 0, "wilaya": 0, "prefProv": 0, "commune": 0, "annee": 0, "participation_contactAministration": 0, "participation_compositionConseil": 0, "participation_agendaConseil": 0, "participation_compositionCommissionsConseil": 0, "participation_compositionInstancesConsultatives": 0, "participation_espaceConcertationEnLigne": 0, "participation_contactCommune": 0, "finances_budgetCommune": 0, "finances_budgetCommuneHistorique": 0, "finances_rapportAudit": 0, "finances_etatsComptablesHistorique": 0, "finances_listeBiens": 0, "finances_etatsComptables": 0, "finances_marchesPublicsFuturs": 0, "finances_subventions": 0, "gouvernance_organigramme": 0, "gouvernance_planAction": 0, "gouvernance_recrutement": 0, "gouvernance_livreProcedure": 0, "gouvernance_reglementInterieur": 0, "participation": 0, "finances": 0, "gouvernance": 0, "smiigBrut": 0, "smiig": 0}}
+[PASS] temporal_coverage — observé={"years": [2020, 2021, 2022, 2023], "rows_by_year": {"2020": 116, "2021": 116, "2022": 116, "2023": 116}}
+[PASS] grain_uniqueness — observé={"duplicate_rows": 0, "unique_keys": 464}
+[PASS] v10_universe_subset — observé={"observed_units": 116, "v10_universe": 1538, "coverage_percent": 7.5423, "outside_v10": 0}
+  Note : Une couverture partielle conforme au périmètre >50 000 habitants est classée PILOTE.
+[PASS] v10_geographic_crosswalk — observé={"covered_units": 116, "required_units": 116, "ambiguous_units": 0}
+[FAIL] dictionary_consistency — observé={"documented_fields": 37, "undocumented_fields": ["inDb"]}
+[PASS] license — observé="CC BY 4.0"
+[FAIL] indicator_domains — observé={"documented_indicator_maxima": 20, "violating_cells": 5}
+[PASS] component_formula — observé={"mismatch_rows": 0, "max_absolute_error": 0.0}
+[FAIL] normalized_score_formula — observé={"mismatch_rows": 4, "max_absolute_error": 59.91735537190083}
+[FAIL] arrondissement_replication_lineage — observé={"arrondissement_rows": 164, "linked_rows": 123, "missing_links": 41}
+  Note : Les notes déclarent une réplication du score municipal vers les arrondissements.
+[PASS] identity_and_role_scope — observé={"person_or_role_columns": [], "automatic_identity_merges": 0}
+  Note : La source mesure la publication proactive; elle ne contient ni personnes ni rôles individuels.
+
+BLOQUEURS
+- dictionary_consistency
+- indicator_domains
+- normalized_score_formula
+- arrondissement_replication_lineage
+
+ANOMALIES PSEUDONYMISÉES
+SMIIG_SCHEMA_f0fe3f13adf890064f0e — type=undocumented_field — ligne=None — colonne=inDb — statut=unresolved
+SMIIG_6971c54c731a95a3101e — type=indicator_domain — ligne=110 — colonne=participation_compositionConseil — statut=unresolved
+SMIIG_34bc65c3ba050bc7ab2c — type=indicator_domain — ligne=4 — colonne=participation_compositionInstancesConsultatives — statut=unresolved
+SMIIG_44b49700a3a40d849d2f — type=indicator_domain — ligne=407 — colonne=participation_espaceConcertationEnLigne — statut=unresolved
+SMIIG_02859130cc6ba26892b3 — type=indicator_domain — ligne=404 — colonne=finances_listeBiens — statut=unresolved
+SMIIG_ca2b83f47bd2efe204f4 — type=indicator_domain — ligne=351 — colonne=gouvernance_livreProcedure — statut=unresolved
+SMIIG_e69984957d4d96a2aa0e — type=normalized_score — ligne=383 — colonne=smiig — statut=unresolved
+SMIIG_97e30e225539e3568bd7 — type=normalized_score — ligne=384 — colonne=smiig — statut=unresolved
+SMIIG_3c50d34a7d34cbae3d21 — type=normalized_score — ligne=385 — colonne=smiig — statut=unresolved
+SMIIG_510d6c8bfc24420c24e2 — type=normalized_score — ligne=386 — colonne=smiig — statut=unresolved
+SMIIG_aee820f959b7ee7838bc — type=replication_lineage — ligne=425 — colonne=inDb — statut=unresolved
+SMIIG_4d5cbfda78750d6ed9c9 — type=replication_lineage — ligne=426 — colonne=inDb — statut=unresolved
+SMIIG_dfce318c7de1a1fee4d4 — type=replication_lineage — ligne=427 — colonne=inDb — statut=unresolved
+SMIIG_2169c4d53e6259c8b900 — type=replication_lineage — ligne=428 — colonne=inDb — statut=unresolved
+SMIIG_64853292a80f4996119f — type=replication_lineage — ligne=429 — colonne=inDb — statut=unresolved
+SMIIG_31240dadb8fca7f2cecb — type=replication_lineage — ligne=430 — colonne=inDb — statut=unresolved
+SMIIG_ebbd7b7e95ac11b34e5f — type=replication_lineage — ligne=431 — colonne=inDb — statut=unresolved
+SMIIG_492bc0b56581443284fe — type=replication_lineage — ligne=432 — colonne=inDb — statut=unresolved
+SMIIG_6d63cc6982f0e76bd6b5 — type=replication_lineage — ligne=433 — colonne=inDb — statut=unresolved
+SMIIG_f4758a4b0d7badd0341e — type=replication_lineage — ligne=434 — colonne=inDb — statut=unresolved
+SMIIG_996b3d2be5760676a254 — type=replication_lineage — ligne=435 — colonne=inDb — statut=unresolved
+SMIIG_0bca6778b6cbfb709094 — type=replication_lineage — ligne=436 — colonne=inDb — statut=unresolved
+SMIIG_bed4f5937675f07b04bc — type=replication_lineage — ligne=437 — colonne=inDb — statut=unresolved
+SMIIG_3a964a56b597aa867b09 — type=replication_lineage — ligne=438 — colonne=inDb — statut=unresolved
+SMIIG_ccb2866267e59912c31b — type=replication_lineage — ligne=439 — colonne=inDb — statut=unresolved
+SMIIG_4d821b9c9f09aaf5a6f2 — type=replication_lineage — ligne=440 — colonne=inDb — statut=unresolved
+SMIIG_e6615dd6c8483d8c70ea — type=replication_lineage — ligne=441 — colonne=inDb — statut=unresolved
+SMIIG_8fe30d16f8fab08374de — type=replication_lineage — ligne=442 — colonne=inDb — statut=unresolved
+SMIIG_9db6468e5ebcd66b46d7 — type=replication_lineage — ligne=443 — colonne=inDb — statut=unresolved
+SMIIG_3af822ba124441d4a5bb — type=replication_lineage — ligne=444 — colonne=inDb — statut=unresolved
+SMIIG_c81997c1c75eb231d97b — type=replication_lineage — ligne=445 — colonne=inDb — statut=unresolved
+SMIIG_a14de631333cc95df7c6 — type=replication_lineage — ligne=446 — colonne=inDb — statut=unresolved
+SMIIG_d2f2c8aabf14f844e15d — type=replication_lineage — ligne=447 — colonne=inDb — statut=unresolved
+SMIIG_0750f797ed7e16833f67 — type=replication_lineage — ligne=448 — colonne=inDb — statut=unresolved
+SMIIG_e66571c69ef55090a787 — type=replication_lineage — ligne=449 — colonne=inDb — statut=unresolved
+SMIIG_659f74485bdc410c66b8 — type=replication_lineage — ligne=450 — colonne=inDb — statut=unresolved
+SMIIG_20f0da06be4c3a504e4a — type=replication_lineage — ligne=451 — colonne=inDb — statut=unresolved
+SMIIG_f89b972e2869318c128e — type=replication_lineage — ligne=452 — colonne=inDb — statut=unresolved
+SMIIG_21586a190d2a99c65238 — type=replication_lineage — ligne=453 — colonne=inDb — statut=unresolved
+SMIIG_61ab064cb44d3a9bb9a5 — type=replication_lineage — ligne=454 — colonne=inDb — statut=unresolved
+SMIIG_eff8b8edfc11efb393f0 — type=replication_lineage — ligne=455 — colonne=inDb — statut=unresolved
+SMIIG_2da23c485daf7e4fc28e — type=replication_lineage — ligne=456 — colonne=inDb — statut=unresolved
+SMIIG_0de9df7ea9d72d4fbb43 — type=replication_lineage — ligne=457 — colonne=inDb — statut=unresolved
+SMIIG_d4b4cdc6fc08e8f44fa6 — type=replication_lineage — ligne=458 — colonne=inDb — statut=unresolved
+SMIIG_73348a9dd167e3f85439 — type=replication_lineage — ligne=459 — colonne=inDb — statut=unresolved
+SMIIG_5a66e87e9ddc885ad54e — type=replication_lineage — ligne=460 — colonne=inDb — statut=unresolved
+SMIIG_1ebcf6d41090ef897cc9 — type=replication_lineage — ligne=461 — colonne=inDb — statut=unresolved
+SMIIG_2362e2e7313b26ac0416 — type=replication_lineage — ligne=462 — colonne=inDb — statut=unresolved
+SMIIG_c25a925ac46d19710990 — type=replication_lineage — ligne=463 — colonne=inDb — statut=unresolved
+SMIIG_185d91a2c2ef11380973 — type=replication_lineage — ligne=464 — colonne=inDb — statut=unresolved
+SMIIG_6689ea07bd54f174bf43 — type=replication_lineage — ligne=465 — colonne=inDb — statut=unresolved
+
+LIMITES
+La couverture est volontairement partielle et reste PILOTE; elle ne représente pas les 1 538 unités de V10.
+Les notes indiquent que les scores des villes à arrondissements sont répliqués sur chaque arrondissement.
+La source ne contient ni personne ni rôle individuel; aucune résolution d'identité n'est effectuée.
+Aucune anomalie n'est corrigée et aucune valeur n'est reconstruite dans cette phase.
+
+COMMANDE DE REPRODUCTION
+python -m morocco_elections qualify smiig --candidate data/staging/v11_smiig/source_candidates/2024-01-08-dataset-smiig-v2023-communes.xlsx --baseline v10
+
+SUITE CONDITIONNELLE
+Interdire l'ingestion; demander à TAFRA une version corrigée ou une documentation explicative.

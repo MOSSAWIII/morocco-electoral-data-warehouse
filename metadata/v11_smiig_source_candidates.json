@@ -1,0 +1,759 @@
+{
+  "schema_version": 1,
+  "phase": "V11-SMIIG-QUALIFICATION",
+  "generated_on": "2026-09-08",
+  "decision": "NO_GO",
+  "status": "PILOTE",
+  "scope": "Qualification uniquement; aucune ingestion SMIIG et aucune modification de V10.",
+  "candidate": {
+    "candidate_id": "TAFRA_SMIIG_COMMUNES_2023_V1_0_0",
+    "expected_local_name": "2024-01-08-dataset-smiig-v2023-communes.xlsx",
+    "dataset_url": "https://open.africa/en_AU/dataset/smiig-data-communes-2023",
+    "resource_url": "https://open.africa/dataset/6dd7b9ca-907e-4d26-a9c6-6fd37566db3e/resource/1f4e6352-beba-4d97-8cd1-8beab2ddd94d/download/2024-01-08-dataset-smiig-v2023-communes.xlsx",
+    "final_url": "https://s3-eu-west-1.amazonaws.com/cfa-openafrica/resources/1f4e6352-beba-4d97-8cd1-8beab2ddd94d/2024-01-08-dataset-smiig-v2023-communes.xlsx?ETag=bcb539e2cc50312a44e9415ebdb83e59",
+    "producer": "TAFRA",
+    "license": "CC BY 4.0",
+    "version": "1.0.0 (janvier 2024)",
+    "retrieved_on": "2026-09-07",
+    "etag": "bcb539e2cc50312a44e9415ebdb83e59",
+    "last_modified": "2024-01-25T13:33:35Z",
+    "byte_size": 94775,
+    "sha256": "8e818ba26df52ac60bfd0d02a7c587a987051a90857f0c6dfac9010df82e143f",
+    "tracked": false
+  },
+  "baseline": {
+    "release": "V10",
+    "workbook": "data/exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx",
+    "sha256_before": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "sha256_after": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "modified": false
+  },
+  "profile": {
+    "rows": 464,
+    "columns": 38,
+    "units": 116,
+    "years": [
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rows_by_year": {
+      "2020": 116,
+      "2021": 116,
+      "2022": 116,
+      "2023": 116
+    },
+    "geography_types": {
+      "arrondissement": 41,
+      "commune": 75
+    },
+    "v10_universe": 1538,
+    "v10_coverage_percent": 7.5423,
+    "optional_nulls": {
+      "idSousPref": 400,
+      "sousPref": 400,
+      "url": 164,
+      "inDb": 341
+    }
+  },
+  "checks": [
+    {
+      "check_id": "xlsx_and_sheets",
+      "required": true,
+      "status": "PASS",
+      "observed": [
+        "donnees",
+        "dictionnaire",
+        "notes"
+      ],
+      "expected": [
+        "donnees",
+        "dictionnaire",
+        "notes"
+      ],
+      "note": ""
+    },
+    {
+      "check_id": "data_shape",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "rows": 464,
+        "columns": 38,
+        "column_names": [
+          "idRegion",
+          "idWilaya",
+          "idPrefProv",
+          "idSousPref",
+          "idCommune",
+          "region",
+          "wilaya",
+          "prefProv",
+          "sousPref",
+          "commune",
+          "url",
+          "annee",
+          "participation_contactAministration",
+          "participation_compositionConseil",
+          "participation_agendaConseil",
+          "participation_compositionCommissionsConseil",
+          "participation_compositionInstancesConsultatives",
+          "participation_espaceConcertationEnLigne",
+          "participation_contactCommune",
+          "finances_budgetCommune",
+          "finances_budgetCommuneHistorique",
+          "finances_rapportAudit",
+          "finances_etatsComptablesHistorique",
+          "finances_listeBiens",
+          "finances_etatsComptables",
+          "finances_marchesPublicsFuturs",
+          "finances_subventions",
+          "gouvernance_organigramme",
+          "gouvernance_planAction",
+          "gouvernance_recrutement",
+          "gouvernance_livreProcedure",
+          "gouvernance_reglementInterieur",
+          "participation",
+          "finances",
+          "gouvernance",
+          "smiigBrut",
+          "smiig",
+          "inDb"
+        ]
+      },
+      "expected": {
+        "rows": 464,
+        "columns": 38,
+        "column_names": [
+          "idRegion",
+          "idWilaya",
+          "idPrefProv",
+          "idSousPref",
+          "idCommune",
+          "region",
+          "wilaya",
+          "prefProv",
+          "sousPref",
+          "commune",
+          "url",
+          "annee",
+          "participation_contactAministration",
+          "participation_compositionConseil",
+          "participation_agendaConseil",
+          "participation_compositionCommissionsConseil",
+          "participation_compositionInstancesConsultatives",
+          "participation_espaceConcertationEnLigne",
+          "participation_contactCommune",
+          "finances_budgetCommune",
+          "finances_budgetCommuneHistorique",
+          "finances_rapportAudit",
+          "finances_etatsComptablesHistorique",
+          "finances_listeBiens",
+          "finances_etatsComptables",
+          "finances_marchesPublicsFuturs",
+          "finances_subventions",
+          "gouvernance_organigramme",
+          "gouvernance_planAction",
+          "gouvernance_recrutement",
+          "gouvernance_livreProcedure",
+          "gouvernance_reglementInterieur",
+          "participation",
+          "finances",
+          "gouvernance",
+          "smiigBrut",
+          "smiig",
+          "inDb"
+        ]
+      },
+      "note": ""
+    },
+    {
+      "check_id": "required_values",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "missing_columns": [],
+        "null_counts": {
+          "idRegion": 0,
+          "idWilaya": 0,
+          "idPrefProv": 0,
+          "idCommune": 0,
+          "region": 0,
+          "wilaya": 0,
+          "prefProv": 0,
+          "commune": 0,
+          "annee": 0,
+          "participation_contactAministration": 0,
+          "participation_compositionConseil": 0,
+          "participation_agendaConseil": 0,
+          "participation_compositionCommissionsConseil": 0,
+          "participation_compositionInstancesConsultatives": 0,
+          "participation_espaceConcertationEnLigne": 0,
+          "participation_contactCommune": 0,
+          "finances_budgetCommune": 0,
+          "finances_budgetCommuneHistorique": 0,
+          "finances_rapportAudit": 0,
+          "finances_etatsComptablesHistorique": 0,
+          "finances_listeBiens": 0,
+          "finances_etatsComptables": 0,
+          "finances_marchesPublicsFuturs": 0,
+          "finances_subventions": 0,
+          "gouvernance_organigramme": 0,
+          "gouvernance_planAction": 0,
+          "gouvernance_recrutement": 0,
+          "gouvernance_livreProcedure": 0,
+          "gouvernance_reglementInterieur": 0,
+          "participation": 0,
+          "finances": 0,
+          "gouvernance": 0,
+          "smiigBrut": 0,
+          "smiig": 0
+        }
+      },
+      "expected": "zero null in mandatory identifiers, geography, year and measures",
+      "note": ""
+    },
+    {
+      "check_id": "temporal_coverage",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "years": [
+          2020,
+          2021,
+          2022,
+          2023
+        ],
+        "rows_by_year": {
+          "2020": 116,
+          "2021": 116,
+          "2022": 116,
+          "2023": 116
+        }
+      },
+      "expected": {
+        "years": [
+          2020,
+          2021,
+          2022,
+          2023
+        ],
+        "rows_per_year": 116
+      },
+      "note": ""
+    },
+    {
+      "check_id": "grain_uniqueness",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "duplicate_rows": 0,
+        "unique_keys": 464
+      },
+      "expected": {
+        "duplicate_rows": 0,
+        "grain": "idCommune × annee"
+      },
+      "note": ""
+    },
+    {
+      "check_id": "v10_universe_subset",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "observed_units": 116,
+        "v10_universe": 1538,
+        "coverage_percent": 7.5423,
+        "outside_v10": 0
+      },
+      "expected": {
+        "observed_units": 116,
+        "outside_v10": 0
+      },
+      "note": "Une couverture partielle conforme au périmètre >50 000 habitants est classée PILOTE."
+    },
+    {
+      "check_id": "v10_geographic_crosswalk",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "covered_units": 116,
+        "required_units": 116,
+        "ambiguous_units": 0
+      },
+      "expected": {
+        "coverage_percent": 100.0,
+        "ambiguous_units": 0
+      },
+      "note": ""
+    },
+    {
+      "check_id": "dictionary_consistency",
+      "required": true,
+      "status": "FAIL",
+      "observed": {
+        "documented_fields": 37,
+        "undocumented_fields": [
+          "inDb"
+        ]
+      },
+      "expected": {
+        "documented_fields": 38,
+        "undocumented_fields": []
+      },
+      "note": ""
+    },
+    {
+      "check_id": "license",
+      "required": true,
+      "status": "PASS",
+      "observed": "CC BY 4.0",
+      "expected": "CC BY 4.0",
+      "note": ""
+    },
+    {
+      "check_id": "indicator_domains",
+      "required": true,
+      "status": "FAIL",
+      "observed": {
+        "documented_indicator_maxima": 20,
+        "violating_cells": 5
+      },
+      "expected": {
+        "documented_indicator_maxima": 20,
+        "violating_cells": 0
+      },
+      "note": ""
+    },
+    {
+      "check_id": "component_formula",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "mismatch_rows": 0,
+        "max_absolute_error": 0.0
+      },
+      "expected": {
+        "formula": "smiigBrut = participation + finances + gouvernance",
+        "mismatch_rows": 0
+      },
+      "note": ""
+    },
+    {
+      "check_id": "normalized_score_formula",
+      "required": true,
+      "status": "FAIL",
+      "observed": {
+        "mismatch_rows": 4,
+        "max_absolute_error": 59.91735537190083
+      },
+      "expected": {
+        "formula": "smiig = smiigBrut / 242 × 100",
+        "tolerance": 1e-06,
+        "mismatch_rows": 0
+      },
+      "note": ""
+    },
+    {
+      "check_id": "arrondissement_replication_lineage",
+      "required": true,
+      "status": "FAIL",
+      "observed": {
+        "arrondissement_rows": 164,
+        "linked_rows": 123,
+        "missing_links": 41
+      },
+      "expected": {
+        "missing_links": 0
+      },
+      "note": "Les notes déclarent une réplication du score municipal vers les arrondissements."
+    },
+    {
+      "check_id": "identity_and_role_scope",
+      "required": true,
+      "status": "PASS",
+      "observed": {
+        "person_or_role_columns": [],
+        "automatic_identity_merges": 0
+      },
+      "expected": {
+        "person_or_role_columns": [],
+        "automatic_identity_merges": 0
+      },
+      "note": "La source mesure la publication proactive; elle ne contient ni personnes ni rôles individuels."
+    }
+  ],
+  "anomalies": [
+    {
+      "anomaly_id": "SMIIG_SCHEMA_f0fe3f13adf890064f0e",
+      "type": "undocumented_field",
+      "source_row_number": null,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_6971c54c731a95a3101e",
+      "type": "indicator_domain",
+      "source_row_number": 110,
+      "column": "participation_compositionConseil",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_34bc65c3ba050bc7ab2c",
+      "type": "indicator_domain",
+      "source_row_number": 4,
+      "column": "participation_compositionInstancesConsultatives",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_44b49700a3a40d849d2f",
+      "type": "indicator_domain",
+      "source_row_number": 407,
+      "column": "participation_espaceConcertationEnLigne",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_02859130cc6ba26892b3",
+      "type": "indicator_domain",
+      "source_row_number": 404,
+      "column": "finances_listeBiens",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_ca2b83f47bd2efe204f4",
+      "type": "indicator_domain",
+      "source_row_number": 351,
+      "column": "gouvernance_livreProcedure",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_e69984957d4d96a2aa0e",
+      "type": "normalized_score",
+      "source_row_number": 383,
+      "column": "smiig",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_97e30e225539e3568bd7",
+      "type": "normalized_score",
+      "source_row_number": 384,
+      "column": "smiig",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_3c50d34a7d34cbae3d21",
+      "type": "normalized_score",
+      "source_row_number": 385,
+      "column": "smiig",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_510d6c8bfc24420c24e2",
+      "type": "normalized_score",
+      "source_row_number": 386,
+      "column": "smiig",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_aee820f959b7ee7838bc",
+      "type": "replication_lineage",
+      "source_row_number": 425,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_4d5cbfda78750d6ed9c9",
+      "type": "replication_lineage",
+      "source_row_number": 426,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_dfce318c7de1a1fee4d4",
+      "type": "replication_lineage",
+      "source_row_number": 427,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_2169c4d53e6259c8b900",
+      "type": "replication_lineage",
+      "source_row_number": 428,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_64853292a80f4996119f",
+      "type": "replication_lineage",
+      "source_row_number": 429,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_31240dadb8fca7f2cecb",
+      "type": "replication_lineage",
+      "source_row_number": 430,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_ebbd7b7e95ac11b34e5f",
+      "type": "replication_lineage",
+      "source_row_number": 431,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_492bc0b56581443284fe",
+      "type": "replication_lineage",
+      "source_row_number": 432,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_6d63cc6982f0e76bd6b5",
+      "type": "replication_lineage",
+      "source_row_number": 433,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_f4758a4b0d7badd0341e",
+      "type": "replication_lineage",
+      "source_row_number": 434,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_996b3d2be5760676a254",
+      "type": "replication_lineage",
+      "source_row_number": 435,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_0bca6778b6cbfb709094",
+      "type": "replication_lineage",
+      "source_row_number": 436,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_bed4f5937675f07b04bc",
+      "type": "replication_lineage",
+      "source_row_number": 437,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_3a964a56b597aa867b09",
+      "type": "replication_lineage",
+      "source_row_number": 438,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_ccb2866267e59912c31b",
+      "type": "replication_lineage",
+      "source_row_number": 439,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_4d821b9c9f09aaf5a6f2",
+      "type": "replication_lineage",
+      "source_row_number": 440,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_e6615dd6c8483d8c70ea",
+      "type": "replication_lineage",
+      "source_row_number": 441,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_8fe30d16f8fab08374de",
+      "type": "replication_lineage",
+      "source_row_number": 442,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_9db6468e5ebcd66b46d7",
+      "type": "replication_lineage",
+      "source_row_number": 443,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_3af822ba124441d4a5bb",
+      "type": "replication_lineage",
+      "source_row_number": 444,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_c81997c1c75eb231d97b",
+      "type": "replication_lineage",
+      "source_row_number": 445,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_a14de631333cc95df7c6",
+      "type": "replication_lineage",
+      "source_row_number": 446,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_d2f2c8aabf14f844e15d",
+      "type": "replication_lineage",
+      "source_row_number": 447,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_0750f797ed7e16833f67",
+      "type": "replication_lineage",
+      "source_row_number": 448,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_e66571c69ef55090a787",
+      "type": "replication_lineage",
+      "source_row_number": 449,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_659f74485bdc410c66b8",
+      "type": "replication_lineage",
+      "source_row_number": 450,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_20f0da06be4c3a504e4a",
+      "type": "replication_lineage",
+      "source_row_number": 451,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_f89b972e2869318c128e",
+      "type": "replication_lineage",
+      "source_row_number": 452,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_21586a190d2a99c65238",
+      "type": "replication_lineage",
+      "source_row_number": 453,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_61ab064cb44d3a9bb9a5",
+      "type": "replication_lineage",
+      "source_row_number": 454,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_eff8b8edfc11efb393f0",
+      "type": "replication_lineage",
+      "source_row_number": 455,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_2da23c485daf7e4fc28e",
+      "type": "replication_lineage",
+      "source_row_number": 456,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_0de9df7ea9d72d4fbb43",
+      "type": "replication_lineage",
+      "source_row_number": 457,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_d4b4cdc6fc08e8f44fa6",
+      "type": "replication_lineage",
+      "source_row_number": 458,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_73348a9dd167e3f85439",
+      "type": "replication_lineage",
+      "source_row_number": 459,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_5a66e87e9ddc885ad54e",
+      "type": "replication_lineage",
+      "source_row_number": 460,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_1ebcf6d41090ef897cc9",
+      "type": "replication_lineage",
+      "source_row_number": 461,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_2362e2e7313b26ac0416",
+      "type": "replication_lineage",
+      "source_row_number": 462,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_c25a925ac46d19710990",
+      "type": "replication_lineage",
+      "source_row_number": 463,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_185d91a2c2ef11380973",
+      "type": "replication_lineage",
+      "source_row_number": 464,
+      "column": "inDb",
+      "status": "unresolved"
+    },
+    {
+      "anomaly_id": "SMIIG_6689ea07bd54f174bf43",
+      "type": "replication_lineage",
+      "source_row_number": 465,
+      "column": "inDb",
+      "status": "unresolved"
+    }
+  ],
+  "research_sources": [
+    {
+      "title": "Jeu SMIIG Data communes Maroc 2023",
+      "url": "https://open.africa/en_AU/dataset/smiig-data-communes-2023",
+      "role": "source candidate et licence"
+    },
+    {
+      "title": "Méthode SMIIG Data — TAFRA",
+      "url": "https://tafra.ma/la-mise-en-oeuvre-du-droit-dacces-a-linformation-lindicateur-smiig-data-des-communes/",
+      "role": "cadre méthodologique"
+    }
+  ],
+  "next_action": "Interdire l'ingestion; demander à TAFRA une version corrigée ou une documentation explicative."
+}

@@ -26,6 +26,8 @@ class ProjectPaths:
     hcp_population_2024: Path
     v11a_candidate_metadata: Path
     v11a_decision_report: Path
+    v11_smiig_candidate_metadata: Path
+    v11_smiig_decision_report: Path
 
 
 def _resolved_data_root(data_dir: str | Path | None = None) -> Path:
@@ -55,6 +57,8 @@ def get_paths(data_dir: str | Path | None = None) -> ProjectPaths:
         hcp_population_2024=data_root / "raw" / "hcp" / "rgph" / "2024" / "hcp_population_legale_rgph2024.xlsx",
         v11a_candidate_metadata=PROJECT_ROOT / "metadata" / "v11a_source_candidates.json",
         v11a_decision_report=PROJECT_ROOT / "docs" / "research" / "V11A_DECISION_2015_COUNCILS.txt",
+        v11_smiig_candidate_metadata=PROJECT_ROOT / "metadata" / "v11_smiig_source_candidates.json",
+        v11_smiig_decision_report=PROJECT_ROOT / "docs" / "research" / "V11_SMIIG_QUALIFICATION.txt",
     )
 
 
