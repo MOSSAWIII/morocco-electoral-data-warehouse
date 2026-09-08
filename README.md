@@ -52,12 +52,15 @@ python -m morocco_elections build v10
 python -m morocco_elections docs v10
 python -m morocco_elections validate --mode full --release v10 --baseline v9
 python -m morocco_elections quality baseline --release v10 --as-of 2026-09-08
+python -m morocco_elections qualify electoral-denominators --baseline v10 --as-of 2026-09-08
 python -m morocco_elections github publish-backlog
 ```
 
 Le mode `ci` fonctionne sans données. Le mode `full` vérifie les empreintes, volumes, documents, 67 onglets V10 et différences autorisées par rapport à V9 sans écrire de fichier.
 
 La baseline V10-QA écrit `metadata/v10_quality_baseline.json`, source de vérité machine, puis génère `docs/research/V10_QUALITY_BASELINE.txt`. Elle ne modifie ni V10 ni les RAW et n'attribue aucune note globale.
+
+La qualification V10-QA-1 exige 3 076 inscrits communaux directement publiés. Sans source officielle complète pour 2015 et 2021, elle produit `NO_GO` sans reconstruire ni ingérer de valeur.
 
 ## Compatibilité V9
 

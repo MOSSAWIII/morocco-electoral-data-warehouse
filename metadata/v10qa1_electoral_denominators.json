@@ -1,0 +1,330 @@
+{
+  "schema_version": 1,
+  "phase": "V10-QA-1",
+  "generated_on": "2026-09-08",
+  "decision": "NO_GO",
+  "scope": "Qualification des inscrits communaux 2015 et 2021; aucune ingestion.",
+  "gate": {
+    "required_years": [
+      2015,
+      2021
+    ],
+    "expected_rows_per_year": 1538,
+    "expected_rows_total": 3076,
+    "mandatory_field": "registered_voters directly published",
+    "optional_fields": [
+      "voters",
+      "valid_votes",
+      "invalid_votes",
+      "blank_votes"
+    ],
+    "partial_go_allowed": false,
+    "reconstruction_allowed": false
+  },
+  "national_controls": {
+    "2015": 15498658,
+    "2021": 17983490
+  },
+  "baseline": {
+    "release": "V10",
+    "workbook": "data/exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx",
+    "sha256_before": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "sha256_after": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "modified": false
+  },
+  "candidates": {
+    "2015": null,
+    "2021": null
+  },
+  "year_results": {
+    "2015": {
+      "year": 2015,
+      "decision": "NO_GO",
+      "profile": {
+        "rows": 0,
+        "columns": 0,
+        "key": null,
+        "registered_total": null,
+        "optional_fields_present": [],
+        "personal_columns": []
+      },
+      "checks": [
+        {
+          "check_id": "accounting_identity",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "aggregate_only",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "election_year",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "file_readable",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "geographic_universe",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "national_total",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "optional_counts",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "provenance",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "registered_voters",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "row_count",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "turnout_reconciliation",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "unique_geo_key",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        }
+      ]
+    },
+    "2021": {
+      "year": 2021,
+      "decision": "NO_GO",
+      "profile": {
+        "rows": 0,
+        "columns": 0,
+        "key": null,
+        "registered_total": null,
+        "optional_fields_present": [],
+        "personal_columns": []
+      },
+      "checks": [
+        {
+          "check_id": "accounting_identity",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "aggregate_only",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "election_year",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "file_readable",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "geographic_universe",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "national_total",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "optional_counts",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "provenance",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "registered_voters",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "row_count",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "turnout_reconciliation",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        },
+        {
+          "check_id": "unique_geo_key",
+          "required": true,
+          "status": "FAIL",
+          "observed": null,
+          "expected": "candidat officiel complet",
+          "note": "Aucun candidat agrégé officiel n'a été trouvé pour cette année."
+        }
+      ]
+    }
+  },
+  "research_sources": [
+    {
+      "source_id": "OFFICIAL_ELECTIONS_MA_RESULTS",
+      "url": "https://www.elections.ma/elections/communales/resultats.aspx",
+      "publisher": "Ministère de l'Intérieur",
+      "role": "interface officielle des résultats communaux et des taux de participation",
+      "finding": "Aucun export agrégé des inscrits 2015 et 2021 n'a été identifié.",
+      "candidate_status": "not_found"
+    },
+    {
+      "source_id": "OFFICIAL_ELECTORAL_LISTS_STATS",
+      "url": "https://www.listeselectorales.ma/fr/statistiques.aspx",
+      "publisher": "Ministère de l'Intérieur",
+      "role": "statistiques officielles du corps électoral",
+      "finding": "Le portail courant publie des statistiques nationales contemporaines, pas les 3 076 agrégats historiques requis.",
+      "candidate_status": "not_found"
+    },
+    {
+      "source_id": "WAYBACK_ELECTIONS_MA_2015",
+      "url": "https://web.archive.org/web/20150916012118/http://www.elections.ma/elections/communales/resultats.aspx",
+      "publisher": "Archive du site officiel elections.ma",
+      "role": "vérification de l'interface historique 2015",
+      "finding": "Interface et service de taux archivés; aucun CSV/XLS/XLSX communal d'inscrits retrouvé.",
+      "candidate_status": "not_found"
+    },
+    {
+      "source_id": "CNDH_2015_CONTROL",
+      "url": "https://cndh.ma/sites/default/files/2024-01/rapportdeffr_7sept_compressed.pdf",
+      "publisher": "Conseil national des droits de l'Homme",
+      "role": "contrôle national 2015",
+      "finding": "15 498 658 inscrits au niveau national; aucune table communale exploitable.",
+      "candidate_status": "control_only"
+    },
+    {
+      "source_id": "CNDH_2021_CONTROL",
+      "url": "https://cndh.ma/en/2021-elections-thematic-observation-new-approach-highlighting-details-relationship-between-0",
+      "publisher": "Conseil national des droits de l'Homme",
+      "role": "contrôle national 2021",
+      "finding": "17 983 490 inscrits au niveau national; aucune table communale exploitable.",
+      "candidate_status": "control_only"
+    },
+    {
+      "source_id": "TAFRA_COMMUNAL_RESULTS_2015_2021",
+      "url": "https://open.africa/organization/tafra",
+      "publisher": "TAFRA, copie de elections.ma",
+      "role": "sources RAW déjà conservées dans V10",
+      "finding": "Les notes des deux fichiers indiquent explicitement que le nombre d'inscrits et les votes nuls ne sont pas reportés.",
+      "candidate_status": "known_missing"
+    }
+  ],
+  "anomalies": [
+    {
+      "anomaly_id": "DENOM_2015_SOURCE_NOT_FOUND",
+      "year": 2015,
+      "type": "missing_official_aggregate_source",
+      "status": "unresolved",
+      "affected_rows": 1538,
+      "decision": "no_reconstruction_no_ingestion"
+    },
+    {
+      "anomaly_id": "DENOM_2021_SOURCE_NOT_FOUND",
+      "year": 2021,
+      "type": "missing_official_aggregate_source",
+      "status": "unresolved",
+      "affected_rows": 1538,
+      "decision": "no_reconstruction_no_ingestion"
+    }
+  ],
+  "next_action": "Maintenir l'interdiction d'ingestion et passer à la qualification des 135 présidences communales."
+}

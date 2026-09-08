@@ -24,6 +24,8 @@ SMIIG_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11_smiig_source_candidates.j
 SMIIG_DECISION_PATH = PROJECT_ROOT / "docs" / "research" / "V11_SMIIG_QUALIFICATION.txt"
 QUALITY_BASELINE_PATH = PROJECT_ROOT / "metadata" / "v10_quality_baseline.json"
 QUALITY_BASELINE_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V10_QUALITY_BASELINE.txt"
+DENOMINATORS_METADATA_PATH = PROJECT_ROOT / "metadata" / "v10qa1_electoral_denominators.json"
+DENOMINATORS_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V10QA1_ELECTORAL_DENOMINATORS.txt"
 DOCUMENTATION_DIRS = {"v9": get_paths().documentation_v9, "v10": get_paths().documentation_v10}
 EXPECTED_DOCUMENTS = [
     "00_INDEX_ET_MODE_EMPLOI.txt",
@@ -731,6 +733,63 @@ def validate_quality_baseline_artifacts(data_dir: str | Path | None = None, full
     return errors
 
 
+def validate_electoral_denominator_artifacts(data_dir: str | Path | None = None, full: bool = False) -> list[str]:
+    from morocco_elections.research import electoral_denominators
+
+    errors: list[str] = []
+    try:
+        metadata = json.loads(DENOMINATORS_METADATA_PATH.read_text(encoding="utf-8"))
+        report = DENOMINATORS_REPORT_PATH.read_text(encoding="utf-8-sig")
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"V10-QA-1: artefacts illisibles: {exc}"]
+    errors.extend(f"V10-QA-1: {error}" for error in electoral_denominators.validate_metadata(metadata))
+    try:
+        manifest = load_manifest()
+        v10_artifact = next(item for item in manifest["artifacts"] if item["artifact_id"] == "WAREHOUSE_V10_EXPORT")
+        baseline = metadata.get("baseline", {})
+        if baseline.get("sha256_before") != v10_artifact["sha256"] or baseline.get("sha256_after") != v10_artifact["sha256"]:
+            errors.append("V10-QA-1: empreinte de baseline différente du V10 manifesté")
+    except (KeyError, StopIteration, ValidationError) as exc:
+        errors.append(f"V10-QA-1: baseline invérifiable: {exc}")
+    source_ids = {item.get("source_id") for item in metadata.get("research_sources", [])}
+    required_sources = {
+        "OFFICIAL_ELECTIONS_MA_RESULTS",
+        "OFFICIAL_ELECTORAL_LISTS_STATS",
+        "WAYBACK_ELECTIONS_MA_2015",
+        "CNDH_2015_CONTROL",
+        "CNDH_2021_CONTROL",
+        "TAFRA_COMMUNAL_RESULTS_2015_2021",
+    }
+    if source_ids != required_sources:
+        errors.append("V10-QA-1: registre de recherche incomplet")
+    if report != electoral_denominators.render_report(metadata):
+        errors.append("V10-QA-1: rapport TXT désynchronisé du JSON")
+    if full and not errors:
+        paths = get_paths(data_dir)
+        candidates: dict[int, Path | None] = {}
+        for year in electoral_denominators.YEARS:
+            record = metadata["candidates"][str(year)]
+            if record is None:
+                candidates[year] = None
+                continue
+            candidate = paths.data_root / "staging" / "v10qa1" / "source_candidates" / record["local_name"]
+            if not candidate.is_file():
+                errors.append(f"V10-QA-1: candidat local absent: {candidate}")
+                continue
+            if candidate.stat().st_size != record["byte_size"] or electoral_denominators.sha256_file(candidate) != record["sha256"]:
+                errors.append(f"V10-QA-1: candidat {year} différent de son empreinte")
+            candidates[year] = candidate
+        if not errors:
+            rebuilt = electoral_denominators.build_metadata(
+                workbook_path=paths.v10_workbook,
+                candidate_paths=candidates,
+                as_of=str(metadata["generated_on"]),
+            )
+            if rebuilt != metadata:
+                errors.append("V10-QA-1: décision désynchronisée des sources locales et de V10")
+    return errors
+
+
 def run(mode: str, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> list[str]:
     manifest = load_manifest()
     errors = []
@@ -740,6 +799,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_v11a_artifacts())
     errors.extend(validate_smiig_artifacts())
     errors.extend(validate_quality_baseline_artifacts())
+    errors.extend(validate_electoral_denominator_artifacts())
     errors.extend(validate_python_sources())
     errors.extend(validate_documentation(release))
     errors.extend(validate_repository_files())
@@ -747,6 +807,8 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
         errors.extend(validate_full(manifest, data_dir, release, baseline))
         if not errors:
             errors.extend(validate_quality_baseline_artifacts(data_dir, full=True))
+        if not errors:
+            errors.extend(validate_electoral_denominator_artifacts(data_dir, full=True))
     return errors
 
 

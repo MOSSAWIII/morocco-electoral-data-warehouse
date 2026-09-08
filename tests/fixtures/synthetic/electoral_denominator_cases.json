@@ -1,0 +1,11 @@
+[
+  {"case": "go", "mutation": "none", "expected": "GO"},
+  {"case": "commune_absente", "mutation": "drop_last", "expected": "NO_GO"},
+  {"case": "doublon", "mutation": "duplicate_first", "expected": "NO_GO"},
+  {"case": "inscrit_vide", "mutation": "blank_registered", "expected": "NO_GO"},
+  {"case": "inscrit_negatif", "mutation": "negative_registered", "expected": "NO_GO"},
+  {"case": "geographie_inconnue", "mutation": "unknown_geo", "expected": "NO_GO"},
+  {"case": "total_divergent", "mutation": "wrong_total", "expected": "NO_GO"},
+  {"case": "annee_incorrecte", "mutation": "wrong_year", "expected": "NO_GO"},
+  {"case": "donnee_personnelle", "mutation": "personal_field", "expected": "NO_GO"}
+]

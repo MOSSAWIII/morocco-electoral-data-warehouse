@@ -39,6 +39,7 @@ def test_all_structured_commands_are_registered() -> None:
         ("validate", "--help"),
         ("qualify", "councils-2015", "--help"),
         ("qualify", "smiig", "--help"),
+        ("qualify", "electoral-denominators", "--help"),
         ("quality", "baseline", "--help"),
         ("github", "publish-backlog", "--help"),
     ):
@@ -81,6 +82,22 @@ def test_quality_baseline_reports_missing_v10(tmp_path: Path) -> None:
     )
     assert result.returncode == 1
     assert "QUALITY_BASELINE_FAILED" in result.stdout
+
+
+def test_electoral_denominators_reports_missing_v10_without_network(tmp_path: Path) -> None:
+    result = run_command(
+        sys.executable,
+        "-m",
+        "morocco_elections",
+        "qualify",
+        "electoral-denominators",
+        "--baseline",
+        "v10",
+        "--data-dir",
+        str(tmp_path),
+    )
+    assert result.returncode == 2
+    assert "ELECTORAL_DENOMINATORS_FAILED" in result.stdout
 
 
 def test_councils_2015_qualification_runs_offline(tmp_path: Path) -> None:
