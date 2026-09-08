@@ -1,0 +1,174 @@
+V10-QA-2 — QUALIFICATION DES PRÉSIDENCES COMMUNALES 2021
+
+VERSION : V10-QA-2 (recherche, sans export warehouse)
+DATE DE GÉNÉRATION : 2026-09-08
+PÉRIMÈTRE : 135 communes sans ligne président dans le RAW communal 2021
+RENVOIS : metadata/v10qa2_local_presidencies.json ; V10-QA ; V10 immuable
+
+DÉCISION GLOBALE : NO_GO
+COUVERTURE : 0/135 présidences validées; 135 restent non résolues.
+DIAGNOSTIC V10 : 2535 lignes d'élus; 131 communes sans rôle président; 4 rôles président incertains; 0 présidence certaine.
+
+Aucune présidence n'a été ingérée. V10, ses RAW, ses documents et ses tags n'ont pas été modifiés.
+Aucune présidence n'est déduite d'une tête de liste, du plus grand parti ou d'une vice-présidence.
+
+GATE PAR COMMUNE
+GO exige personne et parti dans LOCAL_MANDATES, une preuve officielle ou deux origines secondaires indépendantes,
+un événement d'installation entre le 8 septembre et le 31 octobre 2021, et aucune contradiction.
+Les 4 communes touchées par une ambiguïté d'identité exigent un élément discriminant.
+
+FORMAT DE L'INDEX LOCAL (NON SUIVI)
+Une ligne par preuve : evidence_id, source_idcommune, person_id, party_id, source_class, publisher, origin_id,
+source_url, published_on, event_on, local_path, locator, direct_person, direct_party, initial_2021,
+identity_disambiguator, contradiction. source_class vaut official_primary ou secondary.
+
+DÉCISIONS
+[NO_GO] V10QA2_PRES_MA-01-051-0105 — source_idcommune=978 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-01-571-0303 — source_idcommune=2085 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-03-561-0107 — source_idcommune=1030 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-04-481-0303 — source_idcommune=1339 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-04-481-0905 — source_idcommune=1334 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0301 — source_idcommune=1136 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0303 — source_idcommune=1130 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0305 — source_idcommune=1127 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0307 — source_idcommune=1126 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0309 — source_idcommune=1150 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0311 — source_idcommune=1148 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0313 — source_idcommune=1160 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0501 — source_idcommune=1128 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0505 — source_idcommune=1143 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0507 — source_idcommune=1142 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0509 — source_idcommune=1163 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0511 — source_idcommune=1164 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0513 — source_idcommune=1137 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0515 — source_idcommune=1146 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0517 — source_idcommune=1155 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0519 — source_idcommune=1149 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0521 — source_idcommune=1153 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0903 — source_idcommune=1132 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0907 — source_idcommune=1124 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0909 — source_idcommune=1140 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0911 — source_idcommune=1145 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0913 — source_idcommune=1138 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0915 — source_idcommune=1166 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0917 — source_idcommune=1151 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0919 — source_idcommune=1147 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0921 — source_idcommune=1156 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-0923 — source_idcommune=1157 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1101 — source_idcommune=1135 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1105 — source_idcommune=1133 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1125 — source_idcommune=1158 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1305 — source_idcommune=1123 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1307 — source_idcommune=1129 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1309 — source_idcommune=1141 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1317 — source_idcommune=1162 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1319 — source_idcommune=1152 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1501 — source_idcommune=1125 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1503 — source_idcommune=1131 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1511 — source_idcommune=1139 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1513 — source_idcommune=1165 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1515 — source_idcommune=1161 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-05-081-1521 — source_idcommune=1154 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-07-211-0305 — source_idcommune=1557 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-07-211-0533 — source_idcommune=1560 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0101 — source_idcommune=768 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0102 — source_idcommune=789 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0103 — source_idcommune=809 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0105 — source_idcommune=799 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0107 — source_idcommune=786 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0109 — source_idcommune=787 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0111 — source_idcommune=819 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0301 — source_idcommune=780 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0303 — source_idcommune=770 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0305 — source_idcommune=782 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0307 — source_idcommune=775 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0309 — source_idcommune=801 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0311 — source_idcommune=797 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0313 — source_idcommune=810 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0315 — source_idcommune=856 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0317 — source_idcommune=844 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0319 — source_idcommune=848 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0321 — source_idcommune=813 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0323 — source_idcommune=822 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0325 — source_idcommune=829 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0327 — source_idcommune=836 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0329 — source_idcommune=832 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0331 — source_idcommune=833 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0409 — source_idcommune=772 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0413 — source_idcommune=807 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0417 — source_idcommune=792 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0421 — source_idcommune=791 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0423 — source_idcommune=795 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0425 — source_idcommune=800 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0429 — source_idcommune=854 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0433 — source_idcommune=788 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0435 — source_idcommune=790 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0439 — source_idcommune=847 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0447 — source_idcommune=850 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0449 — source_idcommune=816 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0453 — source_idcommune=817 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0459 — source_idcommune=827 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0461 — source_idcommune=830 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0467 — source_idcommune=834 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0469 — source_idcommune=831 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0505 — source_idcommune=779 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0511 — source_idcommune=808 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0517 — source_idcommune=851 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0519 — source_idcommune=805 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0521 — source_idcommune=853 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0523 — source_idcommune=855 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0525 — source_idcommune=840 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0527 — source_idcommune=845 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0533 — source_idcommune=823 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0701 — source_idcommune=781 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0705 — source_idcommune=778 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0707 — source_idcommune=777 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0709 — source_idcommune=776 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0711 — source_idcommune=774 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0713 — source_idcommune=796 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0715 — source_idcommune=841 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0717 — source_idcommune=820 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0719 — source_idcommune=826 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0721 — source_idcommune=824 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0723 — source_idcommune=821 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0725 — source_idcommune=838 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0737 — source_idcommune=785 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0765 — source_idcommune=835 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0903 — source_idcommune=769 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0905 — source_idcommune=771 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0911 — source_idcommune=811 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0915 — source_idcommune=804 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0927 — source_idcommune=802 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0941 — source_idcommune=842 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0943 — source_idcommune=843 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0945 — source_idcommune=846 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0951 — source_idcommune=815 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0955 — source_idcommune=828 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0957 — source_idcommune=825 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-0963 — source_idcommune=837 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1101 — source_idcommune=803 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1103 — source_idcommune=773 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1107 — source_idcommune=812 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1109 — source_idcommune=806 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1113 — source_idcommune=798 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1115 — source_idcommune=794 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1119 — source_idcommune=793 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1129 — source_idcommune=849 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1131 — source_idcommune=852 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1133 — source_idcommune=818 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-09-541-1171 — source_idcommune=839 — preuves=0 — motifs=NO_EVIDENCE
+[NO_GO] V10QA2_PRES_MA-11-121-0101 — source_idcommune=1376 — preuves=0 — motifs=NO_EVIDENCE
+
+SOURCES DE RECHERCHE
+[1] DGCT_OPEN_DATA — https://www.collectivites-territoriales.gov.ma/index.php/fr/open-data-1
+  Constat : Point d'entrée officiel prioritaire; aucun registre national nominatif 2021 exploitable n'a été identifié.
+[1] TAFRA_COUNCILS_2021 — http://www.elections.ma
+  Constat : Le dictionnaire confirme que flagRole signale les homonymies ou données absentes; 135 communes n'ont aucune ligne président.
+[2] SECONDARY_INSTALLATION_REPORTS — https://fr.le360.ma/politique/voici-la-liste-des-presidents-des-conseils-communaux-elus-ce-vendredi-17-septembre-2021-245841/
+  Constat : Piste secondaire seulement; deux origines indépendantes sont nécessaires en l'absence de preuve officielle.
+
+COMMANDE DE REPRODUCTION
+python -m morocco_elections qualify local-presidencies --baseline v10 --as-of 2026-09-08
+
+SUITE
+Ne rien ingérer; poursuivre la recherche de preuves sur les 135 communes.
