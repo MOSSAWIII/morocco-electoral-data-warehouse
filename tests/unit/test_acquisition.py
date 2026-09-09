@@ -171,6 +171,7 @@ def test_inventory_is_deterministic_and_contains_no_raw_rows(tmp_path: Path) -> 
     assert first["record_count"] == 1
     assert first["duplicate_payloads"] == []
     assert first["profile_issues"] == []
+    assert first["structural_issues"] == []
     assert first["records"][0]["tables"][0]["headers"] == ["geo_id", "value"]
     assert "secret-row-value" not in json.dumps(first)
 
