@@ -80,6 +80,10 @@ def test_acquisition_inventory_contract() -> None:
     assert validate_project.validate_acquisition_inventory() == []
 
 
+def test_ontology_v1_contract() -> None:
+    assert validate_project.validate_ontology_contract() == []
+
+
 def test_python_sources_parse() -> None:
     assert validate_project.validate_python_sources() == []
 

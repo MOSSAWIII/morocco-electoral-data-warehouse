@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "ontology_version": "1.0.0",
+  "baseline_release": "V12",
+  "language": "fr",
+  "purpose": "Contrat logique stable pour relier les données électorales marocaines sans dépendre d'un format de stockage.",
+  "principles": [
+    "Les RAW sont immuables et ne constituent pas des tables canoniques.",
+    "Chaque valeur canonique conserve sa source et, lorsqu'elle existe, sa preuve.",
+    "Un identifiant source n'est jamais traité comme un identifiant canonique sans crosswalk explicite.",
+    "Les relations qui changent portent leur propre période de validité.",
+    "Une absence reste NULL; elle n'est jamais reconstruite silencieusement.",
+    "Les cubes sont dérivés des faits canoniques et ne deviennent pas une seconde source de vérité."
+  ],
+  "maturity_levels": {
+    "CURRENT": "Concept présent dans V12 et réutilisable.",
+    "PARTIAL": "Concept présent, mais contrat ou couverture encore incomplet.",
+    "PLANNED": "Concept requis par des sources profilées, pas encore canonique."
+  },
+  "dimensions": [
+    {
+      "dimension_id": "territory",
+      "canonical_id": "geo_id",
+      "definition": "Entité géographique ou administrative datée.",
+      "maturity": "CURRENT",
+      "v12_tables": ["DIM_GEO"],
+      "identity_rule": "Code stable, type, parent administratif et version de découpage; jamais le seul libellé.",
+      "temporal_fields": ["valid_from", "valid_to", "boundary_version"]
+    },
+    {
+      "dimension_id": "time",
+      "canonical_id": "time_id",
+      "definition": "Date, année, session, législature ou période analytique.",
+      "maturity": "CURRENT",
+      "v12_tables": ["DIM_TIME"],
+      "identity_rule": "Identifiant déterministe de la granularité temporelle déclarée.",
+      "temporal_fields": ["date", "year", "valid_from", "valid_to"]
+    },
+    {
+      "dimension_id": "election",
+      "canonical_id": "election_id",
+      "definition": "Scrutin défini par type, date, niveau et cadre juridique.",
+      "maturity": "CURRENT",
+      "v12_tables": ["DIM_ELECTION"],
+      "identity_rule": "Type de scrutin, date officielle et niveau institutionnel.",
+      "temporal_fields": ["election_date", "term_start", "term_end"]
+    },
+    {
+      "dimension_id": "electoral_contest",
+      "canonical_id": "contest_id",
+      "definition": "Course électorale datée: circonscription, liste locale, régionale ou nationale.",
+      "maturity": "PLANNED",
+      "v12_tables": [],
+      "identity_rule": "election_id, code source de circonscription, type de liste, territoire et version de découpage.",
+      "temporal_fields": ["valid_from", "valid_to", "boundary_version"]
+    },
+    {
+      "dimension_id": "party",
+      "canonical_id": "party_id",
+      "definition": "Organisation politique, alliance ou liste explicitement typée.",
+      "maturity": "PARTIAL",
+      "v12_tables": ["DIM_PARTY", "CROSSWALK_PARTY"],
+      "identity_rule": "Organisation distincte du code source, du symbole et des alliances; fusions et scissions datées.",
+      "temporal_fields": ["valid_from", "valid_to", "founded_year", "dissolved_year"]
+    },
+    {
+      "dimension_id": "person",
+      "canonical_id": "person_id",
+      "definition": "Personne physique apparaissant dans une candidature, un mandat, une fonction ou une activité.",
+      "maturity": "PARTIAL",
+      "v12_tables": ["DIM_PERSON", "IDENTITY_AUDIT_V10"],
+      "identity_rule": "Identifiant source stable ou clé déterministe contextualisée; aucune fusion sur le seul nom.",
+      "temporal_fields": []
+    },
+    {
+      "dimension_id": "institution",
+      "canonical_id": "institution_id",
+      "definition": "Conseil, chambre, gouvernement, ministère ou autre institution publique.",
+      "maturity": "PLANNED",
+      "v12_tables": [],
+      "identity_rule": "Type, niveau, territoire de compétence et période d'existence.",
+      "temporal_fields": ["valid_from", "valid_to"]
+    },
+    {
+      "dimension_id": "role",
+      "canonical_id": "role_id",
+      "definition": "Fonction documentée: élu, président, vice-président, député, ministre ou rôle de candidature.",
+      "maturity": "PARTIAL",
+      "v12_tables": ["LOCAL_MANDATES", "PARLIAMENTARY_MANDATES"],
+      "identity_rule": "Vocabulaire canonique relié sans perte à la modalité source.",
+      "temporal_fields": []
+    },
+    {
+      "dimension_id": "activity_type",
+      "canonical_id": "activity_type_id",
+      "definition": "Nature d'une activité parlementaire ou institutionnelle publiée.",
+      "maturity": "PARTIAL",
+      "v12_tables": ["PARLIAMENTARY_QUESTIONS"],
+      "identity_rule": "Type observé et définition source: question écrite, question orale, engagement, proposition, vote ou commission.",
+      "temporal_fields": []
+    },
+    {
+      "dimension_id": "topic",
+      "canonical_id": "topic_id",
+      "definition": "Thème analytique appliqué à une activité, un programme ou un événement.",
+      "maturity": "PLANNED",
+      "v12_tables": [],
+      "identity_rule": "Taxonomie versionnée; le texte source reste conservé séparément.",
+      "temporal_fields": ["valid_from", "valid_to"]
+    },
+    {
+      "dimension_id": "indicator",
+      "canonical_id": "indicator_id",
+      "definition": "Mesure socio-économique ou territoriale avec définition, unité et population de référence.",
+      "maturity": "CURRENT",
+      "v12_tables": ["FACT_OBSERVATION", "DATA_DICTIONARY"],
+      "identity_rule": "Concept, unité, méthode et population de référence; les ruptures de définition créent une version distincte.",
+      "temporal_fields": ["valid_from", "valid_to"]
+    },
+    {
+      "dimension_id": "program",
+      "canonical_id": "program_id",
+      "definition": "Budget, programme, projet ou engagement public identifiable.",
+      "maturity": "PLANNED",
+      "v12_tables": [],
+      "identity_rule": "Identifiant officiel, institution porteuse, territoire, période et version budgétaire.",
+      "temporal_fields": ["valid_from", "valid_to"]
+    },
+    {
+      "dimension_id": "source_evidence",
+      "canonical_id": "evidence_id",
+      "definition": "Publication ou fichier permettant de retracer une assertion canonique.",
+      "maturity": "CURRENT",
+      "v12_tables": ["SOURCES"],
+      "identity_rule": "source_id, URL, version, date de publication et SHA-256 du fichier acquis.",
+      "temporal_fields": ["publication_date", "retrieved_at"]
+    }
+  ],
+  "crosswalk_contract": {
+    "primary_key": ["entity_type", "source_system", "source_record_id", "valid_from"],
+    "required_fields": [
+      "entity_type",
+      "source_system",
+      "source_record_id",
+      "canonical_id",
+      "source_label",
+      "normalized_label",
+      "valid_from",
+      "valid_to",
+      "match_method",
+      "confidence",
+      "evidence_id",
+      "review_status"
+    ],
+    "rules": [
+      "canonical_id peut rester NULL lorsqu'une identité n'est pas résolue.",
+      "Un match flou ne peut jamais devenir automatiquement validated_manual.",
+      "Toute décision manuelle cite evidence_id et conserve la valeur source.",
+      "Deux lignes de validité qui se chevauchent pour la même clé source sont interdites sauf ambiguïté explicitement enregistrée."
+    ]
+  },
+  "facts": [
+    {
+      "fact_id": "election_result",
+      "target_table": "FACT_ELECTION_RESULT",
+      "grain": ["contest_id", "party_id"],
+      "dimensions": ["electoral_contest", "party", "election", "territory", "source_evidence"],
+      "maturity": "PARTIAL",
+      "v12_tables": ["RESULTS"],
+      "observed_measures": ["votes", "seats"],
+      "derived_measures": ["vote_share", "seat_share", "rank", "margin_votes", "margin_pp"],
+      "rules": ["Les voix et sièges restent associés au type de liste publié.", "Une part exige un dénominateur documenté au même contest_id."]
+    },
+    {
+      "fact_id": "electoral_mobilization",
+      "target_table": "FACT_ELECTORAL_MOBILIZATION",
+      "grain": ["contest_id"],
+      "dimensions": ["electoral_contest", "election", "territory", "source_evidence"],
+      "maturity": "PARTIAL",
+      "v12_tables": ["MOBILISATION", "ELECTORATE"],
+      "observed_measures": ["registered_voters", "voters", "valid_votes", "invalid_votes", "blank_votes"],
+      "derived_measures": ["turnout_rate", "abstention_rate", "valid_vote_rate"],
+      "rules": ["Chaque taux cite son numérateur et son dénominateur.", "Une colonne physiquement vide reste indisponible."]
+    },
+    {
+      "fact_id": "candidacy",
+      "target_table": "FACT_CANDIDACY",
+      "grain": ["candidacy_id"],
+      "dimensions": ["person", "party", "electoral_contest", "election", "territory", "role", "source_evidence"],
+      "maturity": "PLANNED",
+      "v12_tables": [],
+      "observed_measures": ["list_position", "elected_flag"],
+      "derived_measures": [],
+      "rules": ["candidacy_id distingue les candidatures multiples d'une même personne.", "Le candidat n'est pas déduit du seul titulaire d'un mandat."]
+    },
+    {
+      "fact_id": "mandate",
+      "target_table": "FACT_MANDATE",
+      "grain": ["mandate_id", "valid_from"],
+      "dimensions": ["person", "party", "institution", "election", "territory", "role", "source_evidence"],
+      "maturity": "PARTIAL",
+      "v12_tables": ["LOCAL_MANDATES", "PARLIAMENTARY_MANDATES"],
+      "observed_measures": ["seat_number", "replacement_flag"],
+      "derived_measures": ["mandate_duration_days"],
+      "rules": ["L'affiliation est celle de la période du mandat, pas un attribut éternel de la personne.", "Un siège vacant ne crée jamais une personne fictive."]
+    },
+    {
+      "fact_id": "local_governance",
+      "target_table": "FACT_LOCAL_GOVERNANCE",
+      "grain": ["institution_id", "governance_period_id", "party_id", "role_id"],
+      "dimensions": ["institution", "territory", "party", "role", "time", "source_evidence"],
+      "maturity": "PARTIAL",
+      "v12_tables": ["LOCAL_COUNCIL_CONTROL", "COUNCIL_SEAT_STATUS_V10"],
+      "observed_measures": ["occupied_seats", "legal_seats", "vacant_seats", "role_holder_count"],
+      "derived_measures": ["occupied_seat_share", "legal_seat_share"],
+      "rules": ["Le parti arrivé premier et le parti du président sont deux faits distincts.", "Une présidence n'est jamais déduite d'une tête de liste ou du plus grand parti."]
+    },
+    {
+      "fact_id": "parliamentary_activity",
+      "target_table": "FACT_PARLIAMENTARY_ACTIVITY",
+      "grain": ["activity_id"],
+      "dimensions": ["person", "party", "institution", "activity_type", "topic", "time", "source_evidence"],
+      "maturity": "PARTIAL",
+      "v12_tables": ["PARLIAMENTARY_QUESTIONS"],
+      "observed_measures": ["submission_date", "response_date", "status", "recipient_institution_id"],
+      "derived_measures": ["response_delay_days", "answered_flag"],
+      "rules": ["L'identité non résolue reste NULL sans supprimer l'activité.", "Les questions écrites et orales conservent leur type source."]
+    },
+    {
+      "fact_id": "observation",
+      "target_table": "FACT_OBSERVATION",
+      "grain": ["geo_id", "time_id", "indicator_id"],
+      "dimensions": ["territory", "time", "indicator", "source_evidence"],
+      "maturity": "CURRENT",
+      "v12_tables": ["FACT_OBSERVATION", "POPULATION"],
+      "observed_measures": ["value_numeric", "value_text", "unit"],
+      "derived_measures": [],
+      "rules": ["L'année observée est conservée et n'est jamais renommée en année électorale.", "Une rupture de définition interdit la comparaison longitudinale implicite."]
+    },
+    {
+      "fact_id": "public_program",
+      "target_table": "FACT_PUBLIC_PROGRAM",
+      "grain": ["geo_id", "institution_id", "program_id", "time_id"],
+      "dimensions": ["territory", "institution", "program", "time", "source_evidence"],
+      "maturity": "PLANNED",
+      "v12_tables": [],
+      "observed_measures": ["budget_amount", "committed_amount", "spent_amount", "project_count", "status"],
+      "derived_measures": ["execution_rate"],
+      "rules": ["Devise, prix courants/constants et exercice budgétaire sont obligatoires pour les montants.", "Un engagement annoncé n'est pas une dépense exécutée."]
+    }
+  ],
+  "relations": [
+    {"relation_id": "territory_parent", "from": "territory", "to": "territory", "cardinality": "N:1", "join_key": "parent_geo_id -> geo_id", "temporal": true},
+    {"relation_id": "contest_election", "from": "electoral_contest", "to": "election", "cardinality": "N:1", "join_key": "election_id", "temporal": false},
+    {"relation_id": "contest_territory", "from": "electoral_contest", "to": "territory", "cardinality": "N:1", "join_key": "geo_id", "temporal": true},
+    {"relation_id": "person_party_affiliation", "from": "person", "to": "party", "cardinality": "N:N", "join_key": "person_id + party_id + valid_from", "temporal": true},
+    {"relation_id": "institution_territory", "from": "institution", "to": "territory", "cardinality": "N:1", "join_key": "geo_id", "temporal": true},
+    {"relation_id": "mandate_person", "from": "mandate", "to": "person", "cardinality": "N:1", "join_key": "person_id", "temporal": true},
+    {"relation_id": "mandate_institution", "from": "mandate", "to": "institution", "cardinality": "N:1", "join_key": "institution_id", "temporal": true},
+    {"relation_id": "activity_author", "from": "parliamentary_activity", "to": "person", "cardinality": "N:0..1", "join_key": "person_id", "temporal": true},
+    {"relation_id": "observation_territory", "from": "observation", "to": "territory", "cardinality": "N:1", "join_key": "geo_id", "temporal": true},
+    {"relation_id": "fact_evidence", "from": "any_fact", "to": "source_evidence", "cardinality": "N:1..N", "join_key": "evidence_id", "temporal": false}
+  ],
+  "cubes": [
+    {
+      "cube_id": "electoral_results",
+      "grain": ["geo_id", "party_id", "election_id", "contest_id"],
+      "facts": ["election_result"],
+      "measures": ["votes", "seats", "vote_share", "seat_share", "rank", "margin_votes", "margin_pp", "hhi", "enp", "swing"]
+    },
+    {
+      "cube_id": "electoral_mobilization",
+      "grain": ["geo_id", "election_id", "contest_id"],
+      "facts": ["electoral_mobilization"],
+      "measures": ["registered_voters", "voters", "valid_votes", "invalid_votes", "blank_votes", "turnout_rate", "abstention_rate"]
+    },
+    {
+      "cube_id": "political_careers",
+      "grain": ["person_id", "party_id", "institution_id", "mandate_id", "time_id"],
+      "facts": ["candidacy", "mandate"],
+      "measures": ["candidacy_count", "mandate_count", "mandate_duration_days", "replacement_count"]
+    },
+    {
+      "cube_id": "parliamentary_activity",
+      "grain": ["person_id", "party_id", "time_id", "activity_type_id", "topic_id"],
+      "facts": ["parliamentary_activity"],
+      "measures": ["activity_count", "answered_count", "response_rate", "response_delay_days"]
+    },
+    {
+      "cube_id": "local_governance",
+      "grain": ["geo_id", "party_id", "institution_id", "governance_period_id"],
+      "facts": ["local_governance", "mandate"],
+      "measures": ["occupied_seats", "legal_seats", "vacant_seats", "occupied_seat_share", "legal_seat_share", "presidency_count"]
+    },
+    {
+      "cube_id": "territorial_indicators",
+      "grain": ["geo_id", "indicator_id", "time_id"],
+      "facts": ["observation"],
+      "measures": ["value_numeric"]
+    },
+    {
+      "cube_id": "public_programs",
+      "grain": ["geo_id", "institution_id", "program_id", "time_id"],
+      "facts": ["public_program"],
+      "measures": ["budget_amount", "committed_amount", "spent_amount", "execution_rate", "project_count"]
+    }
+  ],
+  "forbidden_joins": [
+    "Joindre deux sources par libellé géographique seul.",
+    "Joindre deux personnes par nom normalisé seul.",
+    "Traiter le parti courant d'une personne comme son parti pour toutes les périodes.",
+    "Joindre une observation socio-économique à une élection sans conserver observation_year et temporal_distance.",
+    "Mélanger listes locales, régionales et nationales sans contest_id et type de liste.",
+    "Calculer une participation ou une part lorsque le dénominateur du même grain est absent.",
+    "Utiliser un cube ou un export comme entrée de correction d'un fait canonique."
+  ]
+}
