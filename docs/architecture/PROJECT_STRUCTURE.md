@@ -10,6 +10,12 @@ PostgreSQL est un adaptateur de stockage possible, pas une condition de vérité
 
 Une couche peut dépendre uniquement des couches situées à sa gauche. Un export ne peut jamais alimenter RAW, STAGING ou la couche canonique.
 
+## Construction courante
+
+V11 est reconstruite à partir des RAW disponibles, des décisions versionnées et de V8 comme bootstrap historique. Aucun classeur V9, V10 ou V11 n'est une entrée de construction. La reconstruction intermédiaire de V10 est temporaire, vérifiée par son SHA-256 historique puis supprimée.
+
+V8 ne sera retirée qu'après récupération ou qualification séparée des sources physiques des tables qu'elle porte encore. Elle ne doit pas être remplacée par une extraction canonique non sourcée qui déplacerait simplement la dépendance.
+
 ## Domaines
 
 - `identity` : clés de personnes, normalisation Unicode, collisions et décisions de désambiguïsation.

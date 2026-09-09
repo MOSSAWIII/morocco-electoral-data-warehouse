@@ -223,7 +223,8 @@ def _retitle_and_audit(wb, v8_sheetnames: set[str]) -> None:
         raise RuntimeError(f"V10 must contain 67 sheets, got {len(wb.sheetnames)}")
 
 
-def main(data_dir: str | Path | None = None) -> None:
+def assemble_workbook(data_dir: str | Path | None = None) -> tuple[openpyxl.Workbook, dict[str, int]]:
+    """Construire V10 en mémoire directement depuis V8 et les RAW immuables."""
     paths = get_paths(data_dir)
     v9.configure_paths(data_dir)
     for path in [paths.v8_workbook, *v9.FILES.values()]:
@@ -268,10 +269,25 @@ def main(data_dir: str | Path | None = None) -> None:
     v9.build_data_coverage(wb)
     _patch_quality_and_coverage(wb, identity_count)
     _retitle_and_audit(wb, v8_sheetnames)
+    return wb, {
+        "sheets": len(wb.sheetnames),
+        "local_mandates": len(council),
+        "local_persons": identity_count,
+        "identity_audit": len(identity_audit),
+    }
+
+
+def main(data_dir: str | Path | None = None) -> None:
+    paths = get_paths(data_dir)
+    workbook, stats = assemble_workbook(data_dir)
     paths.v10_workbook.parent.mkdir(parents=True, exist_ok=True)
-    _save_deterministic(wb, paths.v10_workbook)
+    _save_deterministic(workbook, paths.v10_workbook)
+    workbook.close()
     print(f"Saved {paths.v10_workbook}")
-    print(f"Sheets={len(wb.sheetnames)} LocalMandates={len(council)} LocalPersons={identity_count} IdentityAudit={len(identity_audit)}")
+    print(
+        f"Sheets={stats['sheets']} LocalMandates={stats['local_mandates']} "
+        f"LocalPersons={stats['local_persons']} IdentityAudit={stats['identity_audit']}"
+    )
 
 
 if __name__ == "__main__":

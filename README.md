@@ -36,6 +36,8 @@ La qualité protège ces produits, mais n'est pas un produit autonome. Le succè
 
 V11 contient 67 onglets. Elle préserve intégralement V10 et ajoute à `FACT_OBSERVATION` les 1 538 populations légales 2014 et les 1 538 populations municipales 2024 validées par V10-QA-3. Aucun des 25 couples indicateur-millésime `NO_GO` n’est ingéré.
 
+La commande `build v11` reconstruit désormais le classeur depuis les RAW, les décisions versionnées et le bootstrap historique V8. Elle ne lit aucun classeur V9, V10 ou V11 comme entrée. V8 reste temporairement nécessaire pour les tables héritées dont les sources physiques ne sont pas encore disponibles séparément ; cette dépendance est explicite et n'entraîne plus une chaîne de releases.
+
 ## Installation
 
 ```powershell

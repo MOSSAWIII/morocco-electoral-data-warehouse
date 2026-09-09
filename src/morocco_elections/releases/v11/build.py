@@ -12,6 +12,7 @@ import openpyxl
 from morocco_elections.config import PROJECT_ROOT, get_paths
 from morocco_elections.legacy.v9 import build as legacy
 from morocco_elections.provenance import sha256_file
+from morocco_elections.releases.v10 import build as v10
 from morocco_elections.research import hcp_indicators as hcp
 
 
@@ -33,6 +34,21 @@ ALLOWED_CHANGED_SHEETS = {
     "QUALITY_CONTROL",
     "WORKBOOK_AUDIT_V11",
 }
+
+
+def canonical_source_inputs(data_dir: str | Path | None = None) -> tuple[Path, ...]:
+    """Entrées physiques requises, sans classeur de release V9, V10 ou V11."""
+    paths = get_paths(data_dir)
+    return (
+        paths.v8_workbook,
+        paths.comm2015,
+        paths.comm2021,
+        paths.council2021,
+        paths.parliamentary_members,
+        paths.hcp_population_2024,
+        paths.hcp_individuals_2014,
+        paths.hcp_indicators_2024,
+    )
 
 
 def _save_deterministic(workbook: openpyxl.Workbook, target: Path) -> None:
@@ -420,54 +436,72 @@ def render_diff_report(report: dict[str, Any]) -> str:
     )
 
 
-def main(data_dir: str | Path | None = None) -> None:
+def build_from_sources(
+    data_dir: str | Path | None = None,
+    *,
+    target: Path | None = None,
+    report_output: Path | None = None,
+) -> dict[str, Any]:
+    """Reconstruire V11 depuis V8, les RAW et les décisions versionnées."""
     paths = get_paths(data_dir)
-    required = [paths.v10_workbook, paths.hcp_individuals_2014, paths.hcp_indicators_2024]
+    target = target or paths.v11_workbook
+    required = canonical_source_inputs(data_dir)
     for path in required:
         if not path.is_file():
             raise FileNotFoundError(path)
     v10_release = json.loads(V10_REPORT.read_text(encoding="utf-8"))
-    v10_hash = sha256_file(paths.v10_workbook)
-    if v10_hash != v10_release["workbooks"]["V10"]:
-        raise RuntimeError("Empreinte V10 différente du rapport de release")
     input_hashes = {str(path): sha256_file(path) for path in required}
+    target.parent.mkdir(parents=True, exist_ok=True)
+    baseline_temp = target.parent / ".v11-v10-reconstructed.tmp.xlsx"
+    if baseline_temp.exists():
+        baseline_temp.unlink()
+    workbook = None
+    try:
+        workbook, _ = v10.assemble_workbook(data_dir)
+        v10._save_deterministic(workbook, baseline_temp)
+        if sha256_file(baseline_temp) != v10_release["workbooks"]["V10"]:
+            raise RuntimeError("La reconstruction directe de V10 diffère de la baseline validée")
+        workbook.close()
+        workbook = openpyxl.load_workbook(baseline_temp, data_only=False)
 
-    context = _baseline_context(paths.v10_workbook)
-    population_2014 = _extract_2014(paths.hcp_individuals_2014, context)
-    municipal_2024, legal_2024 = _extract_2024(paths.hcp_indicators_2024, context)
-    if set(population_2014) != context["universe"] or set(municipal_2024) != context["universe"]:
-        raise RuntimeError("Couverture HCP différente de 1 538 unités")
-    if sum(value for value, _ in population_2014.values()) != 33_848_242:
-        raise RuntimeError("Total population légale 2014 inattendu")
-    if sum(value for value, _ in municipal_2024.values()) != 36_490_591:
-        raise RuntimeError("Total population municipale 2024 inattendu")
+        context = _baseline_context(baseline_temp)
+        population_2014 = _extract_2014(paths.hcp_individuals_2014, context)
+        municipal_2024, legal_2024 = _extract_2024(paths.hcp_indicators_2024, context)
+        if set(population_2014) != context["universe"] or set(municipal_2024) != context["universe"]:
+            raise RuntimeError("Couverture HCP différente de 1 538 unités")
+        if sum(value for value, _ in population_2014.values()) != 33_848_242:
+            raise RuntimeError("Total population légale 2014 inattendu")
+        if sum(value for value, _ in municipal_2024.values()) != 36_490_591:
+            raise RuntimeError("Total population municipale 2024 inattendu")
 
-    workbook = openpyxl.load_workbook(paths.v10_workbook, data_only=False)
-    baseline_sheets = set(workbook.sheetnames)
-    _population_control(workbook, context["universe"], legal_2024)
-    _append_fact_observations(workbook, population_2014, municipal_2024)
-    _append_sources(workbook, paths)
-    _append_dictionary(workbook)
-    _append_quality(workbook)
-    _update_coverage(workbook)
-    _append_readme(workbook)
-    _rebuild_audit(workbook, baseline_sheets)
-    paths.v11_workbook.parent.mkdir(parents=True, exist_ok=True)
-    _save_deterministic(workbook, paths.v11_workbook)
-    workbook.close()
+        baseline_sheets = set(workbook.sheetnames)
+        _population_control(workbook, context["universe"], legal_2024)
+        _append_fact_observations(workbook, population_2014, municipal_2024)
+        _append_sources(workbook, paths)
+        _append_dictionary(workbook)
+        _append_quality(workbook)
+        _update_coverage(workbook)
+        _append_readme(workbook)
+        _rebuild_audit(workbook, baseline_sheets)
+        _save_deterministic(workbook, target)
 
-    if sha256_file(paths.v10_workbook) != v10_hash or any(sha256_file(Path(path)) != digest for path, digest in input_hashes.items()):
-        raise RuntimeError("Un fichier source ou V10 a changé pendant la construction")
-    changed, unexpected = compare_v11_to_v10(paths.v10_workbook, paths.v11_workbook)
-    if unexpected or set(changed) != ALLOWED_CHANGED_SHEETS:
-        raise RuntimeError(f"Différences V11 non conformes: changed={changed}; unexpected={unexpected}")
+        if any(sha256_file(Path(path)) != digest for path, digest in input_hashes.items()):
+            raise RuntimeError("Un fichier source a changé pendant la construction")
+        changed, unexpected = compare_v11_to_v10(baseline_temp, target)
+        if unexpected or set(changed) != ALLOWED_CHANGED_SHEETS:
+            raise RuntimeError(f"Différences V11 non conformes: changed={changed}; unexpected={unexpected}")
+    finally:
+        if workbook is not None:
+            workbook.close()
+        if baseline_temp.exists():
+            baseline_temp.unlink()
 
     report = {
         "release": "V11",
         "baseline": "V10",
         "generated_on": GENERATED_ON,
         "status": "validated",
-        "workbooks": {**v10_release["workbooks"], "V11": sha256_file(paths.v11_workbook)},
+        "workbooks": {**v10_release["workbooks"], "V11": sha256_file(target)},
         "source_hashes": {
             SOURCE_2014: sha256_file(paths.hcp_individuals_2014),
             SOURCE_2024: sha256_file(paths.hcp_indicators_2024),
@@ -492,7 +526,17 @@ def main(data_dir: str | Path | None = None) -> None:
         "actual_changed_sheets": changed,
         "integrity": {"v10_unchanged": True, "source_hashes_unchanged": True, "deterministic_export": True},
     }
-    RELEASE_REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if report_output is not None:
+        report_output.parent.mkdir(parents=True, exist_ok=True)
+        report_output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return report
+
+
+def main(data_dir: str | Path | None = None) -> None:
+    paths = get_paths(data_dir)
+    report = build_from_sources(data_dir, target=paths.v11_workbook, report_output=RELEASE_REPORT)
+    print(f"Saved {paths.v11_workbook}")
+    print(f"Sheets={report['volumes']['sheets']} FactObservations={report['volumes']['FACT_OBSERVATION_V11']}")
     DIFF_REPORT.write_text(render_diff_report(report), encoding="utf-8")
     print(f"V11_BUILD_OK path={paths.v11_workbook} facts={EXPECTED_FACT_V11} sha256={report['workbooks']['V11']}")
 
