@@ -37,6 +37,7 @@ def test_all_structured_commands_are_registered() -> None:
         ("build", "--help"),
         ("docs", "--help"),
         ("validate", "--help"),
+        ("analyze", "v11", "--help"),
         ("qualify", "councils-2015", "--help"),
         ("qualify", "smiig", "--help"),
         ("qualify", "electoral-denominators", "--help"),
@@ -69,6 +70,20 @@ def test_full_mode_reports_missing_override_without_writing(tmp_path: Path) -> N
     )
     assert result.returncode == 1
     assert "fichier local absent" in result.stdout
+
+
+def test_reference_analysis_reports_missing_v11(tmp_path: Path) -> None:
+    result = run_command(
+        sys.executable,
+        "-m",
+        "morocco_elections",
+        "analyze",
+        "v11",
+        "--data-dir",
+        str(tmp_path),
+    )
+    assert result.returncode == 2
+    assert "REFERENCE_ANALYSIS_FAILED" in result.stdout
 
 
 def test_quality_baseline_reports_missing_v10(tmp_path: Path) -> None:
