@@ -517,11 +517,23 @@ def render_report(data: dict[str, Any]) -> str:
 
 
 def generate(
+    release: str = "v10",
     data_dir: str | Path | None = None,
     as_of: str | None = None,
     metadata_output: str | Path | None = None,
     report_output: str | Path | None = None,
 ) -> int:
+    if release == "v11":
+        from morocco_elections.quality.baseline_v11 import generate as generate_v11
+
+        return generate_v11(
+            data_dir=data_dir,
+            as_of=as_of,
+            metadata_output=metadata_output,
+            report_output=report_output,
+        )
+    if release != "v10":
+        raise ValueError("Release QA non prise en charge")
     selected_date = as_of or date.today().isoformat()
     try:
         date.fromisoformat(selected_date)

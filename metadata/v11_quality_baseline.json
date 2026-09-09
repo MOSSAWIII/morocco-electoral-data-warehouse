@@ -1,0 +1,2423 @@
+{
+  "schema_version": 1,
+  "phase": "V11-QA",
+  "baseline_release": "V11",
+  "as_of": "2026-09-08",
+  "source_workbook": "data/exports/excel/v11/Morocco_Electoral_Data_Warehouse_V11.xlsx",
+  "source_workbook_sha256": "a201a214752e6cdc5eb9e80e5913aba9c9e574f11c21cb2460af966ff6bd8dd3",
+  "method": {
+    "principles": [
+      "présence physique",
+      "complétude contre univers",
+      "cohérence interne",
+      "preuve externe"
+    ],
+    "quality_statuses": [
+      "BLOQUÉ",
+      "COMPLET",
+      "NON ÉVALUÉ",
+      "PARTIEL"
+    ],
+    "analysis_statuses": [
+      "AUTORISÉE",
+      "CONDITIONNELLE",
+      "INTERDITE"
+    ],
+    "no_global_score": true
+  },
+  "universes": [
+    {
+      "universe_id": "U_COMMUNES_2015",
+      "label": "Unités communales électorales 2015",
+      "grain": "commune/arrondissement",
+      "period": "2015",
+      "expected_count": 1538,
+      "denominator_defined": true,
+      "evidence": [
+        "SRC_TAFRA_COMM2015_RAW_V9",
+        "CROSSWALK_GEO"
+      ],
+      "status": "COMPLET",
+      "note": "Univers V10 raccordé aux codes géographiques canoniques."
+    },
+    {
+      "universe_id": "U_COMMUNES_2021",
+      "label": "Unités communales électorales 2021",
+      "grain": "commune/arrondissement",
+      "period": "2021",
+      "expected_count": 1538,
+      "denominator_defined": true,
+      "evidence": [
+        "SRC_TAFRA_COMM2021_RAW_V9",
+        "CROSSWALK_GEO"
+      ],
+      "status": "COMPLET",
+      "note": "Univers V10 raccordé aux codes géographiques canoniques."
+    },
+    {
+      "universe_id": "U_COMMUNE_ELECTIONS",
+      "label": "Couples commune × élection",
+      "grain": "commune × élection",
+      "period": "2015, 2021",
+      "expected_count": 3076,
+      "denominator_defined": true,
+      "evidence": [
+        "U_COMMUNES_2015",
+        "U_COMMUNES_2021"
+      ],
+      "status": "COMPLET",
+      "note": "Produit des deux univers communaux documentés."
+    },
+    {
+      "universe_id": "U_REGISTERED_VOTERS",
+      "label": "Dénominateurs électoraux communaux",
+      "grain": "commune × élection",
+      "period": "2015, 2021",
+      "expected_count": 3076,
+      "denominator_defined": true,
+      "evidence": [
+        "RAW_COMM2015_FULL",
+        "RAW_COMM2021_FULL"
+      ],
+      "status": "BLOQUÉ",
+      "note": "Le champ nInscrits existe dans le schéma mais est entièrement vide."
+    },
+    {
+      "universe_id": "U_LOCAL_SEATS_2021",
+      "label": "Sièges communaux légaux 2021",
+      "grain": "siège communal",
+      "period": "2021",
+      "expected_count": 32515,
+      "denominator_defined": true,
+      "evidence": [
+        "COUNCIL_SEAT_STATUS_V10",
+        "MANUAL_RESOLUTIONS_V10"
+      ],
+      "status": "COMPLET",
+      "note": "Deux vacances documentées réconcilient le total légal sans créer d'élu fictif."
+    },
+    {
+      "universe_id": "U_LOCAL_PRESIDENCIES_2021",
+      "label": "Présidences communales",
+      "grain": "commune",
+      "period": "2021",
+      "expected_count": 1538,
+      "denominator_defined": true,
+      "evidence": [
+        "RAW_COUNCIL2021_FULL"
+      ],
+      "status": "PARTIEL",
+      "note": "Les rôles source ne permettent de résoudre que 1 403 présidences."
+    },
+    {
+      "universe_id": "U_PARLIAMENTARY_MANDATES",
+      "label": "Mandats parlementaires publiés par TAFRA",
+      "grain": "mandat parlementaire",
+      "period": "législatures couvertes par la source",
+      "expected_count": 1654,
+      "denominator_defined": true,
+      "evidence": [
+        "SRC_TAFRA_MPS_RAW_V9"
+      ],
+      "status": "PARTIEL",
+      "note": "L'univers source est chargé, mais les changements de parti intra-législature ne sont pas couverts."
+    },
+    {
+      "universe_id": "U_RGPH2024_POPULATION",
+      "label": "Observations de population RGPH 2024 chargées",
+      "grain": "géographie publiée × recensement",
+      "period": "2024",
+      "expected_count": 1564,
+      "denominator_defined": true,
+      "evidence": [
+        "SRC_HCP_RGPH2024_RAW_V9"
+      ],
+      "status": "COMPLET",
+      "note": "Complet dans le périmètre physique de la publication chargée; non transposable à 2015."
+    },
+    {
+      "universe_id": "U_COUNCIL_SEATS_2015_CANDIDATE",
+      "label": "Sièges communaux 2015 de la source candidate",
+      "grain": "élu × circonscription",
+      "period": "2015",
+      "expected_count": 31482,
+      "denominator_defined": true,
+      "evidence": [
+        "metadata/v11a_source_candidates.json"
+      ],
+      "status": "BLOQUÉ",
+      "note": "Univers candidat non intégré après décision NO_GO."
+    },
+    {
+      "universe_id": "U_SMIIG_CANDIDATE",
+      "label": "Observations du pilote SMIIG candidat",
+      "grain": "unité × année",
+      "period": "2020–2023",
+      "expected_count": 464,
+      "denominator_defined": true,
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "status": "BLOQUÉ",
+      "note": "Périmètre pilote candidat non intégré après décision NO_GO; univers national inconnu."
+    },
+    {
+      "universe_id": "U_HCP_POPULATION_LEGAL_2014",
+      "label": "Population légale communale RGPH 2014",
+      "grain": "commune/arrondissement × recensement",
+      "period": "2014",
+      "expected_count": 1538,
+      "denominator_defined": true,
+      "evidence": [
+        "SRC_HCP_RGPH2014_INDIVIDUALS_V11",
+        "metadata/v10qa3_hcp_indicators.json"
+      ],
+      "status": "COMPLET",
+      "note": "Univers national validé par V10-QA-3 et ingéré sans interpolation."
+    },
+    {
+      "universe_id": "U_HCP_POPULATION_MUNICIPAL_2024",
+      "label": "Population municipale communale RGPH 2024",
+      "grain": "commune/arrondissement × recensement",
+      "period": "2024",
+      "expected_count": 1538,
+      "denominator_defined": true,
+      "evidence": [
+        "SRC_HCP_RGPH2024_INDICATORS_V11",
+        "metadata/v10qa3_hcp_indicators.json"
+      ],
+      "status": "COMPLET",
+      "note": "Univers national validé par V10-QA-3 et ingéré sans interpolation."
+    }
+  ],
+  "coverage": [
+    {
+      "coverage_id": "COV_COMMUNES_2015",
+      "universe_id": "U_COMMUNES_2015",
+      "tables": [
+        "RAW_COMM2015_FULL",
+        "CROSSWALK_GEO"
+      ],
+      "expected_count": 1538,
+      "observed_count": 1538,
+      "usable_count": 1538,
+      "reconciled_count": null,
+      "denominator_defined": true,
+      "coverage_percent": 100.0,
+      "status": "COMPLET",
+      "gap": ""
+    },
+    {
+      "coverage_id": "COV_COMMUNES_2021",
+      "universe_id": "U_COMMUNES_2021",
+      "tables": [
+        "RAW_COMM2021_FULL",
+        "CROSSWALK_GEO"
+      ],
+      "expected_count": 1538,
+      "observed_count": 1538,
+      "usable_count": 1538,
+      "reconciled_count": null,
+      "denominator_defined": true,
+      "coverage_percent": 100.0,
+      "status": "COMPLET",
+      "gap": ""
+    },
+    {
+      "coverage_id": "COV_COMMUNE_ELECTIONS",
+      "universe_id": "U_COMMUNE_ELECTIONS",
+      "tables": [
+        "COMMUNE_ELECTION_PANEL"
+      ],
+      "expected_count": 3076,
+      "observed_count": 3076,
+      "usable_count": 3076,
+      "reconciled_count": null,
+      "denominator_defined": true,
+      "coverage_percent": 100.0,
+      "status": "COMPLET",
+      "gap": ""
+    },
+    {
+      "coverage_id": "COV_REGISTERED_VOTERS",
+      "universe_id": "U_REGISTERED_VOTERS",
+      "tables": [
+        "RAW_COMM2015_FULL",
+        "RAW_COMM2021_FULL",
+        "ELECTORATE"
+      ],
+      "expected_count": 3076,
+      "observed_count": 0,
+      "usable_count": 0,
+      "reconciled_count": null,
+      "denominator_defined": true,
+      "coverage_percent": 0.0,
+      "status": "BLOQUÉ",
+      "gap": "3 076 dénominateurs absents."
+    },
+    {
+      "coverage_id": "COV_LOCAL_SEATS_2021",
+      "universe_id": "U_LOCAL_SEATS_2021",
+      "tables": [
+        "LOCAL_MANDATES",
+        "COUNCIL_SEAT_STATUS_V10"
+      ],
+      "expected_count": 32515,
+      "observed_count": 32513,
+      "usable_count": 32513,
+      "reconciled_count": 32515,
+      "denominator_defined": true,
+      "coverage_percent": 99.9938,
+      "status": "COMPLET",
+      "gap": "Deux sièges légalement vacants."
+    },
+    {
+      "coverage_id": "COV_LOCAL_PRESIDENCIES_2021",
+      "universe_id": "U_LOCAL_PRESIDENCIES_2021",
+      "tables": [
+        "LOCAL_COUNCIL_CONTROL"
+      ],
+      "expected_count": 1538,
+      "observed_count": 1403,
+      "usable_count": 1403,
+      "reconciled_count": null,
+      "denominator_defined": true,
+      "coverage_percent": 91.2224,
+      "status": "PARTIEL",
+      "gap": "135 présidences non résolues."
+    },
+    {
+      "coverage_id": "COV_PARLIAMENTARY_MANDATES",
+      "universe_id": "U_PARLIAMENTARY_MANDATES",
+      "tables": [
+        "PARLIAMENTARY_MANDATES"
+      ],
+      "expected_count": 1654,
+      "observed_count": 1654,
+      "usable_count": 1654,
+      "reconciled_count": null,
+      "denominator_defined": true,
+      "coverage_percent": 100.0,
+      "status": "PARTIEL",
+      "gap": "Historique partisan intra-législature incomplet."
+    },
+    {
+      "coverage_id": "COV_RGPH2024_POPULATION",
+      "universe_id": "U_RGPH2024_POPULATION",
+      "tables": [
+        "POPULATION"
+      ],
+      "expected_count": 1564,
+      "observed_count": 1564,
+      "usable_count": 1564,
+      "reconciled_count": null,
+      "denominator_defined": true,
+      "coverage_percent": 100.0,
+      "status": "COMPLET",
+      "gap": "Usage temporel limité à une référence RGPH 2024."
+    },
+    {
+      "coverage_id": "COV_COUNCIL_SEATS_2015",
+      "universe_id": "U_COUNCIL_SEATS_2015_CANDIDATE",
+      "tables": [],
+      "expected_count": 31482,
+      "observed_count": 0,
+      "usable_count": 0,
+      "reconciled_count": null,
+      "denominator_defined": true,
+      "coverage_percent": 0.0,
+      "status": "BLOQUÉ",
+      "gap": "Source candidate NO_GO; aucune ligne intégrée."
+    },
+    {
+      "coverage_id": "COV_SMIIG",
+      "universe_id": "U_SMIIG_CANDIDATE",
+      "tables": [],
+      "expected_count": 464,
+      "observed_count": 0,
+      "usable_count": 0,
+      "reconciled_count": null,
+      "denominator_defined": true,
+      "coverage_percent": 0.0,
+      "status": "BLOQUÉ",
+      "gap": "Source candidate NO_GO; aucune ligne intégrée."
+    },
+    {
+      "coverage_id": "COV_RESULTS_PARTY_CELLS",
+      "universe_id": "",
+      "tables": [
+        "RESULTS"
+      ],
+      "expected_count": null,
+      "observed_count": 22379,
+      "usable_count": 22379,
+      "reconciled_count": null,
+      "denominator_defined": false,
+      "coverage_percent": null,
+      "status": "NON ÉVALUÉ",
+      "gap": "Univers partisan exhaustif non démontré, notamment en 2015."
+    },
+    {
+      "coverage_id": "COV_HCP_POPULATION_LEGAL_2014",
+      "universe_id": "U_HCP_POPULATION_LEGAL_2014",
+      "tables": [
+        "FACT_OBSERVATION"
+      ],
+      "expected_count": 1538,
+      "observed_count": 1538,
+      "usable_count": 1538,
+      "reconciled_count": 1538,
+      "denominator_defined": true,
+      "coverage_percent": 100.0,
+      "status": "COMPLET",
+      "gap": ""
+    },
+    {
+      "coverage_id": "COV_HCP_POPULATION_MUNICIPAL_2024",
+      "universe_id": "U_HCP_POPULATION_MUNICIPAL_2024",
+      "tables": [
+        "FACT_OBSERVATION"
+      ],
+      "expected_count": 1538,
+      "observed_count": 1538,
+      "usable_count": 1538,
+      "reconciled_count": 1538,
+      "denominator_defined": true,
+      "coverage_percent": 100.0,
+      "status": "COMPLET",
+      "gap": ""
+    }
+  ],
+  "anomalies": [
+    {
+      "anomaly_id": "BASELINE_HCP_COMMUNAL_INDICATORS",
+      "origin": "V11-QA",
+      "severity": "medium",
+      "status": "PARTIEL",
+      "scope": "socio-économie communale 2014–2024",
+      "description": "Deux apports nets HCP nationaux sont intégrés; 25 décisions indicateur-millésime restent NO_GO.",
+      "evidence": [
+        "metadata/v10qa3_hcp_indicators.json",
+        "FACT_OBSERVATION",
+        "metadata/v11_release_report.json"
+      ],
+      "required_action": "Ne qualifier et ingérer les autres indicateurs qu'après une nouvelle preuve nationale complète.",
+      "restricts_analyses": [
+        "ANA_HCP_OTHER_INDICATORS"
+      ]
+    },
+    {
+      "anomaly_id": "DUP2015_c2c5322331ee46ebe863",
+      "origin": "V11-A",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "duplicate_candidate_key",
+      "description": "duplicate_candidate_key — lignes source pseudonymisées/référencées: [30802, 30803]",
+      "evidence": [
+        "metadata/v11a_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_COUNCILS_2015"
+      ]
+    },
+    {
+      "anomaly_id": "DUP2015_c459fd20416612f454ea",
+      "origin": "V11-A",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "duplicate_candidate_key",
+      "description": "duplicate_candidate_key — lignes source pseudonymisées/référencées: [14307, 14308]",
+      "evidence": [
+        "metadata/v11a_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_COUNCILS_2015"
+      ]
+    },
+    {
+      "anomaly_id": "QA_V10_COUNCIL_NATURAL_DUP",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "medium",
+      "status": "COMPLET",
+      "scope": "RAW_COUNCIL2021_FULL",
+      "description": "Potential duplicate rows on commune+constituency+name+party: 2 rows (1 excess).",
+      "evidence": [
+        "SRC_TAFRA_COUNCIL2021_RAW_V9"
+      ],
+      "required_action": "retained as two RAW mandate observations linked to one conservative person identity",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_COUNCIL_PRESIDENT",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "medium",
+      "status": "BLOQUÉ",
+      "scope": "LOCAL_COUNCIL_CONTROL",
+      "description": "Confident president identified for 1403/1538 communes; 135 remain unresolved due source role uncertainty/missingness.",
+      "evidence": [
+        "SRC_TAFRA_COUNCIL2021_RAW_V9"
+      ],
+      "required_action": "open; blanks retained",
+      "restricts_analyses": [
+        "ANA_PRESIDENCIES",
+        "ANA_WINNER_VS_PRESIDENT"
+      ]
+    },
+    {
+      "anomaly_id": "QA_V10_COUNCIL_SEAT_SUM",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "LOCAL_COUNCIL_CONTROL",
+      "description": "Observed elected-row difference remains -2; one documented vacancy in each of communes 770 and 817 reconciles the legal total.",
+      "evidence": [
+        "SRC_TAFRA_COUNCIL2021_RAW_V9"
+      ],
+      "required_action": "explained by arrêté 3267.21; no person imputed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_GEO_2015",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "CROSSWALK_GEO",
+      "description": "Resolved 1538/1538 source units to 1538 unique HCP targets.",
+      "evidence": [
+        "SRC_HCP_RGPH2024_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_GEO_2021",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "CROSSWALK_GEO",
+      "description": "Resolved 1538/1538 source units to 1538 unique HCP targets.",
+      "evidence": [
+        "SRC_HCP_RGPH2024_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_GEO_MANUAL_REVIEW",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "CROSSWALK_GEO",
+      "description": "Five source variants (ten election rows) manually validated by official code and administrative parent.",
+      "evidence": [
+        "SRC_HCP_RGPH2024_RAW_V9"
+      ],
+      "required_action": "validated with evidence in MANUAL_RESOLUTIONS_V10",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_IDENTITY_AMBIGUITY",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "medium",
+      "status": "COMPLET",
+      "scope": "IDENTITY_AUDIT_V10",
+      "description": "44 repeated name-within-commune groups are retained and explicitly scoped; no speculative merge.",
+      "evidence": [
+        "SRC_TAFRA_COUNCIL2021_RAW_V9"
+      ],
+      "required_action": "documented conservative separation",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_IDENTITY_UNICODE",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "LOCAL_MANDATES",
+      "description": "Unicode-safe deterministic person IDs: 32512/32513 distinct; no empty key and no technical collision.",
+      "evidence": [
+        "SRC_TAFRA_COUNCIL2021_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_INSCRITS_2015",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "RAW_COMM2015_FULL",
+      "description": "nInscrits is 100% null although present in schema; voters cannot be reconstructed from turnout.",
+      "evidence": [
+        "SRC_TAFRA_COMM2015_RAW_V9"
+      ],
+      "required_action": "left null; source limitation documented",
+      "restricts_analyses": [
+        "ANA_REGISTERED_VOTERS"
+      ]
+    },
+    {
+      "anomaly_id": "QA_V10_INSCRITS_2021",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "RAW_COMM2021_FULL",
+      "description": "nInscrits is 100% null although present in schema; voters cannot be reconstructed from turnout.",
+      "evidence": [
+        "SRC_TAFRA_COMM2021_RAW_V9"
+      ],
+      "required_action": "left null; source limitation documented",
+      "restricts_analyses": [
+        "ANA_REGISTERED_VOTERS"
+      ]
+    },
+    {
+      "anomaly_id": "QA_V10_MPS_PARTY_HISTORY",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "PARLIAMENTARY_MANDATES",
+      "description": "TAFRA party field is the first observed party for the legislature and does not capture within-legislature switching.",
+      "evidence": [
+        "SRC_TAFRA_MPS_RAW_V9"
+      ],
+      "required_action": "documented; separate future ingestion required",
+      "restricts_analyses": [
+        "ANA_MP_PARTY_TRAJECTORY"
+      ]
+    },
+    {
+      "anomaly_id": "QA_V10_MPS_PK",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "PARLIAMENTARY_MANDATES",
+      "description": "Mandate IDs unique: 1654/1654; stable persons=1185.",
+      "evidence": [
+        "SRC_TAFRA_MPS_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_RAW_2015_PK",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "RAW_COMM2015_FULL",
+      "description": "idCommune unique: 1538/1538; duplicates=0",
+      "evidence": [
+        "SRC_TAFRA_COMM2015_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_RAW_2021_PK",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "RAW_COMM2021_FULL",
+      "description": "idCommune unique: 1538/1538; duplicates=0",
+      "evidence": [
+        "SRC_TAFRA_COMM2021_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_RAW_LINEAGE",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "RAW_*_FULL",
+      "description": "All four P0 source workbooks are retained in RAW sheets and SHA-256 hashes are recorded in SOURCES.",
+      "evidence": [
+        "V10.QUALITY_CONTROL"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_SHARES_2015",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "RESULTS",
+      "description": "Communes whose party shares fail to sum to 100: 0",
+      "evidence": [
+        "SRC_TAFRA_COMM2015_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_SHARES_2021",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "RESULTS",
+      "description": "Communes whose party shares fail to sum to 100: 0",
+      "evidence": [
+        "SRC_TAFRA_COMM2021_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_TEMPORAL_POP",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "ANALYTICAL_PANEL",
+      "description": "Every 2015/2021 row uses RGPH 2024 only as an explicit census_reference with temporal_distance 9 or 3.",
+      "evidence": [
+        "SRC_HCP_RGPH2024_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_TURNOUT_2015",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "MOBILISATION",
+      "description": "Turnout outside [0,100]: 0",
+      "evidence": [
+        "SRC_TAFRA_COMM2015_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "QA_V10_TURNOUT_2021",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "info",
+      "status": "COMPLET",
+      "scope": "MOBILISATION",
+      "description": "Turnout outside [0,100]: 0",
+      "evidence": [
+        "SRC_TAFRA_COMM2021_RAW_V9"
+      ],
+      "required_action": "passed",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "SMIIG_02859130cc6ba26892b3",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "finances_listeBiens",
+      "description": "indicator_domain — lignes source pseudonymisées/référencées: [404]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_0750f797ed7e16833f67",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [448]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_0bca6778b6cbfb709094",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [436]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_0de9df7ea9d72d4fbb43",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [457]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_185d91a2c2ef11380973",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [464]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_1ebcf6d41090ef897cc9",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [461]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_20f0da06be4c3a504e4a",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [451]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_21586a190d2a99c65238",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [453]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_2169c4d53e6259c8b900",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [428]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_2362e2e7313b26ac0416",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [462]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_2da23c485daf7e4fc28e",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [456]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_31240dadb8fca7f2cecb",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [430]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_34bc65c3ba050bc7ab2c",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "participation_compositionInstancesConsultatives",
+      "description": "indicator_domain — lignes source pseudonymisées/référencées: [4]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_3a964a56b597aa867b09",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [438]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_3af822ba124441d4a5bb",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [444]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_3c50d34a7d34cbae3d21",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "smiig",
+      "description": "normalized_score — lignes source pseudonymisées/référencées: [385]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_44b49700a3a40d849d2f",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "participation_espaceConcertationEnLigne",
+      "description": "indicator_domain — lignes source pseudonymisées/référencées: [407]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_492bc0b56581443284fe",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [432]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_4d5cbfda78750d6ed9c9",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [426]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_4d821b9c9f09aaf5a6f2",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [440]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_510d6c8bfc24420c24e2",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "smiig",
+      "description": "normalized_score — lignes source pseudonymisées/référencées: [386]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_5a66e87e9ddc885ad54e",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [460]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_61ab064cb44d3a9bb9a5",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [454]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_64853292a80f4996119f",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [429]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_659f74485bdc410c66b8",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [450]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_6689ea07bd54f174bf43",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [465]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_6971c54c731a95a3101e",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "participation_compositionConseil",
+      "description": "indicator_domain — lignes source pseudonymisées/référencées: [110]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_6d63cc6982f0e76bd6b5",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [433]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_73348a9dd167e3f85439",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [459]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_8fe30d16f8fab08374de",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [442]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_97e30e225539e3568bd7",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "smiig",
+      "description": "normalized_score — lignes source pseudonymisées/référencées: [384]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_996b3d2be5760676a254",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [435]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_9db6468e5ebcd66b46d7",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [443]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_SCHEMA_f0fe3f13adf890064f0e",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "undocumented_field — lignes source pseudonymisées/référencées: schéma",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_a14de631333cc95df7c6",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [446]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_aee820f959b7ee7838bc",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [425]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_bed4f5937675f07b04bc",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [437]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_c25a925ac46d19710990",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [463]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_c81997c1c75eb231d97b",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [445]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_ca2b83f47bd2efe204f4",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "gouvernance_livreProcedure",
+      "description": "indicator_domain — lignes source pseudonymisées/référencées: [351]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_ccb2866267e59912c31b",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [439]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_d2f2c8aabf14f844e15d",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [447]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_d4b4cdc6fc08e8f44fa6",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [458]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_dfce318c7de1a1fee4d4",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [427]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_e6615dd6c8483d8c70ea",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [441]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_e66571c69ef55090a787",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [449]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_e69984957d4d96a2aa0e",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "smiig",
+      "description": "normalized_score — lignes source pseudonymisées/référencées: [383]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_ebbd7b7e95ac11b34e5f",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [431]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_eff8b8edfc11efb393f0",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [455]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_f4758a4b0d7badd0341e",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [434]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "SMIIG_f89b972e2869318c128e",
+      "origin": "V11-SMIIG",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "inDb",
+      "description": "replication_lineage — lignes source pseudonymisées/référencées: [452]",
+      "evidence": [
+        "metadata/v11_smiig_source_candidates.json"
+      ],
+      "required_action": "Résoudre avec une preuve suffisante avant toute ingestion.",
+      "restricts_analyses": [
+        "ANA_SMIIG"
+      ]
+    },
+    {
+      "anomaly_id": "V11A_ROLE_DOMAIN_UNDOCUMENTED",
+      "origin": "V11-A",
+      "severity": "high",
+      "status": "BLOQUÉ",
+      "scope": "rôles des conseils 2015",
+      "description": "Le dictionnaire définit le champ rôle sans énumérer ses modalités.",
+      "evidence": [
+        "metadata/v11a_source_candidates.json"
+      ],
+      "required_action": "Obtenir un domaine officiel des rôles avant ingestion.",
+      "restricts_analyses": [
+        "ANA_COUNCILS_2015"
+      ]
+    },
+    {
+      "anomaly_id": "V6_QA_001",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "medium",
+      "status": "PARTIEL",
+      "scope": "SOURCE_PROFILES",
+      "description": "ESA card reports 1,538 total rows but detailed train/test counts sum to 1,537.",
+      "evidence": [
+        "SRC_HF_TAFRA_COMM2015_V6"
+      ],
+      "required_action": "Keep publisher total as authoritative metadata and flag split discrepancy; verify after binary import.",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "V6_QA_002",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "medium",
+      "status": "PARTIEL",
+      "scope": "SOURCE_PROFILES",
+      "description": "ESA card reports 32,513 total rows but detailed train/test counts sum to 32,512.",
+      "evidence": [
+        "SRC_HF_TAFRA_COUNCIL2021_V6"
+      ],
+      "required_action": "Verify full binary dataset; do not infer missing record.",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "V6_QA_003",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "medium",
+      "status": "PARTIEL",
+      "scope": "SOURCE_PROFILES",
+      "description": "ESA card reports 1,654 total rows but detailed train/test counts sum to 1,653.",
+      "evidence": [
+        "SRC_HF_TAFRA_MPS_V6"
+      ],
+      "required_action": "Verify full binary dataset; do not infer missing record.",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "V6_QA_004",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "high",
+      "status": "COMPLET",
+      "scope": "RESULTS",
+      "description": "ESA removed very sparse party columns from the cleaned 2015 mirror. Summing retained party columns is not guaranteed to equal all valid votes.",
+      "evidence": [
+        "SRC_HF_TAFRA_COMM2015_V6"
+      ],
+      "required_action": "Store vote counts; leave master vote_share blank. Use observed-column shares only in MICRO_COMM2015_ANALYTICS with explicit caveat.",
+      "restricts_analyses": [
+        "ANA_OBSERVED_PARTY_RESULTS",
+        "ANA_ELECTORAL_TRANSITIONS"
+      ]
+    },
+    {
+      "anomaly_id": "V6_QA_005",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "medium",
+      "status": "COMPLET",
+      "scope": "RAW_MPS_SAMPLE",
+      "description": "TAFRA states the party field records the first party identified for each legislature and does not capture MPs switching parties during the mandate.",
+      "evidence": [
+        "SRC_HF_TAFRA_MPS_V6"
+      ],
+      "required_action": "Preserve source value as mandate-entry/first-recorded party; future party-switching table must come from another source.",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "V7_QA_001",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "low",
+      "status": "COMPLET",
+      "scope": "CROSSWALK_GEO",
+      "description": "2015 TAFRA commune identifiers are joined to RGPH 2024 canonical ISO codes.",
+      "evidence": [
+        "SRC_SIGMAROC_COMMUNES2024_V7"
+      ],
+      "required_action": "24 pilot matches validated by commune name + parent province; normalized spellings explicitly flagged.",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "V7_QA_002",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "medium",
+      "status": "PARTIEL",
+      "scope": "POPULATION",
+      "description": "Some SIG-Maroc rows report household count=0 despite nonzero population.",
+      "evidence": [
+        "SRC_SIGMAROC_COMMUNES2024_V7"
+      ],
+      "required_action": "Values preserved exactly; validate against native HCP before modeling household metrics.",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "V7_QA_003",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "high",
+      "status": "COMPLET",
+      "scope": "ANALYTICAL_PANEL_PILOT_2015",
+      "description": "Observed vote shares use only nine retained ESA party columns.",
+      "evidence": [
+        "SRC_HF_TAFRA_COMM2015_V6"
+      ],
+      "required_action": "Kept explicitly as observed share; official vote_share remains pending original XLSX.",
+      "restricts_analyses": [
+        "ANA_OBSERVED_PARTY_RESULTS",
+        "ANA_ELECTORAL_TRANSITIONS"
+      ]
+    },
+    {
+      "anomaly_id": "V8_QA_001",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "medium",
+      "status": "PARTIEL",
+      "scope": "COUNCIL_COMPOSITION_2021_PILOT",
+      "description": "2021 Issen council composition comes from a 2026 user-created Wikimedia Commons diagram, not directly from TAFRA/OpenAfrica.",
+      "evidence": [
+        "SRC_COMMONS_ISSEN2021_V8"
+      ],
+      "required_action": "Use only as provisional longitudinal validation; replace once COMM2021/COUNCIL2021 binary data are ingested.",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "V8_QA_002",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "low",
+      "status": "COMPLET",
+      "scope": "SOURCE_PROFILES",
+      "description": "Earlier V6 QA recorded a 1-row train/test discrepancy from stale viewer metadata.",
+      "evidence": [
+        "SRC_HF_COMM2015_CURRENT_V8"
+      ],
+      "required_action": "Current Hugging Face page reports dataset total 1,538 with train about 1.23k and test 308; stale split discrepancy should no longer drive analysis.",
+      "restricts_analyses": []
+    },
+    {
+      "anomaly_id": "V8_QA_003",
+      "origin": "V10.QUALITY_CONTROL",
+      "severity": "medium",
+      "status": "COMPLET",
+      "scope": "LONGITUDINAL_ISSEN_2015_2021",
+      "description": "2015 metric is observed vote count while 2021 metric is council seats.",
+      "evidence": [
+        "SRC_COMMONS_ISSEN2021_V8"
+      ],
+      "required_action": "Sheet explicitly labels this as governance bridge; no vote-share swing is computed.",
+      "restricts_analyses": []
+    }
+  ],
+  "source_hierarchy": [
+    {
+      "rank": 1,
+      "class": "officielle primaire",
+      "rule": "Publication ou acte de l'autorité compétente.",
+      "examples": [
+        "SRC_HCP_RGPH2014_INDIVIDUALS_V11",
+        "SRC_HCP_RGPH2024_INDICATORS_V11"
+      ]
+    },
+    {
+      "rank": 2,
+      "class": "producteur original",
+      "rule": "Producteur du jeu avec provenance et licence démontrées."
+    },
+    {
+      "rank": 3,
+      "class": "miroir qualifié",
+      "rule": "Octets ou transformation traçables jusqu'au producteur original."
+    },
+    {
+      "rank": 4,
+      "class": "source secondaire",
+      "rule": "Contrôle ou contexte; ne remplace pas une source granulaire primaire."
+    },
+    {
+      "rank": 5,
+      "class": "pilote",
+      "rule": "Périmètre exploratoire non généralisable."
+    }
+  ],
+  "table_status": [
+    {
+      "table": "README",
+      "classification": "SOURCE / METADATA",
+      "physical_rows": 98,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "SOURCES",
+      "classification": "SOURCE / METADATA",
+      "physical_rows": 51,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "DIM_GEO",
+      "classification": "DIMENSION",
+      "physical_rows": 1666,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Univers central couvert; quelques structures hors univers électoral restent provisoires ou dérivées.",
+      "next_gap": "douar after commune QA"
+    },
+    {
+      "table": "DIM_TIME",
+      "classification": "DIMENSION",
+      "physical_rows": 17,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "DIM_PARTY",
+      "classification": "DIMENSION",
+      "physical_rows": 53,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": null
+    },
+    {
+      "table": "DIM_PERSON",
+      "classification": "DIMENSION",
+      "physical_rows": 33697,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": null
+    },
+    {
+      "table": "DIM_ELECTION",
+      "classification": "DIMENSION",
+      "physical_rows": 9,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": null
+    },
+    {
+      "table": "POPULATION",
+      "classification": "FACT",
+      "physical_rows": 1564,
+      "universe_id": "U_RGPH2024_POPULATION",
+      "status": "COMPLET",
+      "reason": "Population RGPH 2024 vérifiée dans son périmètre publié.",
+      "next_gap": "communal socioeconomic indicators"
+    },
+    {
+      "table": "SOCIAL_HUMAN",
+      "classification": "FACT",
+      "physical_rows": 14,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "LIVING_CONDITIONS",
+      "classification": "FACT",
+      "physical_rows": 60,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "ELECTORATE",
+      "classification": "FACT",
+      "physical_rows": 5,
+      "universe_id": "U_REGISTERED_VOTERS",
+      "status": "BLOQUÉ",
+      "reason": "Structure présente, mais inscrits et autres dénominateurs communaux absents.",
+      "next_gap": null
+    },
+    {
+      "table": "POLITICAL_SUPPLY",
+      "classification": "FACT",
+      "physical_rows": 31,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": null
+    },
+    {
+      "table": "COMPETITION",
+      "classification": "FACT",
+      "physical_rows": 4,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "CAMPAIGN_FINANCE",
+      "classification": "FACT",
+      "physical_rows": 9,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "MEDIA_OFFLINE",
+      "classification": "FACT",
+      "physical_rows": 1,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "DIGITAL_CAMPAIGN",
+      "classification": "FACT",
+      "physical_rows": 24,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": null
+    },
+    {
+      "table": "DIGITAL_ACCESS",
+      "classification": "FACT",
+      "physical_rows": 6,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "PUBLIC_OPINION",
+      "classification": "FACT",
+      "physical_rows": 3,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "MOBILISATION",
+      "classification": "FACT",
+      "physical_rows": 3115,
+      "universe_id": null,
+      "status": "BLOQUÉ",
+      "reason": "Taux publiés présents mais dénominateurs communaux absents.",
+      "next_gap": "registered/voters/invalid counts"
+    },
+    {
+      "table": "RESULTS",
+      "classification": "FACT",
+      "physical_rows": 22379,
+      "universe_id": "",
+      "status": "PARTIEL",
+      "reason": "Résultats observés; offre partisane 2015 non exhaustive.",
+      "next_gap": "party seats for 2015"
+    },
+    {
+      "table": "POWER_REP",
+      "classification": "FACT",
+      "physical_rows": 6020,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": null
+    },
+    {
+      "table": "POLITICAL_ACTIVITY",
+      "classification": "FACT",
+      "physical_rows": 0,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Structure prévue sans observation exploitable.",
+      "next_gap": null
+    },
+    {
+      "table": "LOCAL_FINANCE",
+      "classification": "FACT",
+      "physical_rows": 0,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Structure prévue sans observation exploitable.",
+      "next_gap": null
+    },
+    {
+      "table": "ECONOMY",
+      "classification": "FACT",
+      "physical_rows": 1,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "PUBLIC_CAPITAL",
+      "classification": "FACT",
+      "physical_rows": 1,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "SHOCKS",
+      "classification": "FACT",
+      "physical_rows": 0,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Structure prévue sans observation exploitable.",
+      "next_gap": null
+    },
+    {
+      "table": "INSTITUTIONAL_LEGAL",
+      "classification": "FACT",
+      "physical_rows": 17,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": null
+    },
+    {
+      "table": "FACT_OBSERVATION",
+      "classification": "FACT",
+      "physical_rows": 3203,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Deux univers HCP complets sont intégrés; les autres métriques gardent leurs limites propres.",
+      "next_gap": "25 décisions HCP NO_GO restent exclues"
+    },
+    {
+      "table": "DATA_DICTIONARY",
+      "classification": "SOURCE / METADATA",
+      "physical_rows": 285,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "QUALITY_CONTROL",
+      "classification": "QA",
+      "physical_rows": 35,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "PARTY_TRENDS",
+      "classification": "ANALYTICAL",
+      "physical_rows": 66,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": null
+    },
+    {
+      "table": "RAW_IMPORT_QUEUE",
+      "classification": "QUEUE",
+      "physical_rows": 10,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "DATA_COVERAGE",
+      "classification": "SOURCE / METADATA",
+      "physical_rows": 20,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "GEO_CROSSWALK",
+      "classification": "CROSSWALK",
+      "physical_rows": 12,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "SOURCE_DOWNLOADS",
+      "classification": "SOURCE / METADATA",
+      "physical_rows": 6,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "RAW_SCHEMA",
+      "classification": "RAW",
+      "physical_rows": 62,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "RAW_COMM2015_SAMPLE",
+      "classification": "RAW",
+      "physical_rows": 24,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": "pilot/sample only"
+    },
+    {
+      "table": "MICRO_COMM2015_ANALYTICS",
+      "classification": "ANALYTICAL",
+      "physical_rows": 24,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "RAW_COUNCIL2021_SAMPLE",
+      "classification": "RAW",
+      "physical_rows": 18,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": "pilot/sample only"
+    },
+    {
+      "table": "COUNCIL2021_SAMPLE_STATS",
+      "classification": "ANALYTICAL",
+      "physical_rows": 12,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": "pilot/sample only"
+    },
+    {
+      "table": "RAW_MPS_SAMPLE",
+      "classification": "RAW",
+      "physical_rows": 13,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": "pilot/sample only"
+    },
+    {
+      "table": "SOURCE_PROFILES",
+      "classification": "SOURCE / METADATA",
+      "physical_rows": 3,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "ANALYTICAL_PANEL_SCHEMA",
+      "classification": "ANALYTICAL",
+      "physical_rows": 26,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "CROSSWALK_GEO",
+      "classification": "CROSSWALK",
+      "physical_rows": 3076,
+      "universe_id": "U_COMMUNES_2021",
+      "status": "COMPLET",
+      "reason": "3 076 raccordements électoraux couverts; cinq décisions manuelles documentées.",
+      "next_gap": "incremental boundary-version review"
+    },
+    {
+      "table": "CROSSWALK_PARTY",
+      "classification": "CROSSWALK",
+      "physical_rows": 127,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "LOCAL_MANDATES",
+      "classification": "FACT",
+      "physical_rows": 32513,
+      "universe_id": "U_LOCAL_SEATS_2021",
+      "status": "PARTIEL",
+      "reason": "32 513 observations conservées; identités externes non prouvées exhaustivement.",
+      "next_gap": "external identity evidence and gender"
+    },
+    {
+      "table": "PARLIAMENTARY_MANDATES",
+      "classification": "FACT",
+      "physical_rows": 1654,
+      "universe_id": "U_PARLIAMENTARY_MANDATES",
+      "status": "PARTIEL",
+      "reason": "Mandats présents; historique partisan intra-législature incomplet.",
+      "next_gap": "PERSON_PARTY_HISTORY"
+    },
+    {
+      "table": "COMMUNE_ELECTION_PANEL_PILOT",
+      "classification": "ANALYTICAL",
+      "physical_rows": 24,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": "pilot/sample only"
+    },
+    {
+      "table": "ANALYTICAL_PANEL_PILOT_2015",
+      "classification": "ANALYTICAL",
+      "physical_rows": 140,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": "pilot/sample only"
+    },
+    {
+      "table": "GEO_LEGACY_CODES",
+      "classification": "CROSSWALK",
+      "physical_rows": 24,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "COUNCIL_COMPOSITION_2021_PILOT",
+      "classification": "FACT",
+      "physical_rows": 3,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Données présentes avec limites ou statut provisoire documenté.",
+      "next_gap": "pilot/sample only"
+    },
+    {
+      "table": "LONGITUDINAL_ISSEN_2015_2021",
+      "classification": "ANALYTICAL",
+      "physical_rows": 4,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "SOURCE_BLOCKERS_V8",
+      "classification": "SOURCE / METADATA",
+      "physical_rows": 5,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "RAW_COMM2015_FULL",
+      "classification": "RAW",
+      "physical_rows": 1538,
+      "universe_id": "U_REGISTERED_VOTERS",
+      "status": "PARTIEL",
+      "reason": "Résultats présents; inscrits absents.",
+      "next_gap": "registered-voter denominator"
+    },
+    {
+      "table": "RAW_COMM2021_FULL",
+      "classification": "RAW",
+      "physical_rows": 1538,
+      "universe_id": "U_REGISTERED_VOTERS",
+      "status": "PARTIEL",
+      "reason": "Résultats présents; inscrits absents.",
+      "next_gap": "registered-voter denominator"
+    },
+    {
+      "table": "RAW_COUNCIL2021_FULL",
+      "classification": "RAW",
+      "physical_rows": 32513,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": "resolve role exceptions"
+    },
+    {
+      "table": "RAW_MPS_FULL",
+      "classification": "RAW",
+      "physical_rows": 1654,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": "party-history events"
+    },
+    {
+      "table": "RAW_HCP_RGPH2024_FULL",
+      "classification": "RAW",
+      "physical_rows": 2327,
+      "universe_id": null,
+      "status": "NON ÉVALUÉ",
+      "reason": "Données présentes mais aucun univers externe exhaustif n'est démontré.",
+      "next_gap": null
+    },
+    {
+      "table": "LOCAL_COUNCIL_CONTROL",
+      "classification": "FACT",
+      "physical_rows": 6003,
+      "universe_id": "U_LOCAL_PRESIDENCIES_2021",
+      "status": "PARTIEL",
+      "reason": "Composition 2021 disponible; 135 présidences non résolues.",
+      "next_gap": "resolve 135 presidents"
+    },
+    {
+      "table": "IDENTITY_AUDIT_V10",
+      "classification": "QA",
+      "physical_rows": 44,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "44 ambiguïtés documentées sans fusion automatique.",
+      "next_gap": "external identity evidence"
+    },
+    {
+      "table": "COUNCIL_SEAT_STATUS_V10",
+      "classification": "QA",
+      "physical_rows": 1538,
+      "universe_id": "U_LOCAL_SEATS_2021",
+      "status": "COMPLET",
+      "reason": "1 538 communes et total légal réconcilié.",
+      "next_gap": "later dated council states"
+    },
+    {
+      "table": "ELECTORAL_TRANSITIONS_2015_2021",
+      "classification": "ANALYTICAL",
+      "physical_rows": 14555,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Dérivé reproductible des seules mesures observées.",
+      "next_gap": "2015 seats/control"
+    },
+    {
+      "table": "COMMUNE_TRANSITION_PANEL",
+      "classification": "ANALYTICAL",
+      "physical_rows": 1538,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Dérivé reproductible; sièges 2015 absents.",
+      "next_gap": "governance and socioeconomic joins"
+    },
+    {
+      "table": "ANALYTICAL_PANEL",
+      "classification": "ANALYTICAL",
+      "physical_rows": 22054,
+      "universe_id": null,
+      "status": "PARTIEL",
+      "reason": "Dérivé reproductible; limites des sources propagées.",
+      "next_gap": "P1 socioeconomic/governance variables"
+    },
+    {
+      "table": "COMMUNE_ELECTION_PANEL",
+      "classification": "ANALYTICAL",
+      "physical_rows": 3076,
+      "universe_id": "U_COMMUNE_ELECTIONS",
+      "status": "PARTIEL",
+      "reason": "Dérivé reproductible; limites des sources propagées.",
+      "next_gap": "P1 socioeconomic/governance variables"
+    },
+    {
+      "table": "MANUAL_RESOLUTIONS_V10",
+      "classification": "QA",
+      "physical_rows": 7,
+      "universe_id": null,
+      "status": "COMPLET",
+      "reason": "Sept décisions avec provenance conservée.",
+      "next_gap": "append-only reviews"
+    },
+    {
+      "table": "WORKBOOK_AUDIT_V11",
+      "classification": "QA",
+      "physical_rows": 66,
+      "universe_id": null,
+      "status": "COMPLET",
+      "reason": "Inventaire physique des 67 onglets V11.",
+      "next_gap": null
+    }
+  ],
+  "analysis_permissions": [
+    {
+      "analysis_id": "ANA_OBSERVED_PARTY_RESULTS",
+      "label": "Résultats et classements par parti observé",
+      "status": "CONDITIONNELLE",
+      "tables": [
+        "RESULTS",
+        "ANALYTICAL_PANEL"
+      ],
+      "limits": "Limiter les parts aux colonnes partisanes observées; ne pas les présenter comme exhaustives en 2015."
+    },
+    {
+      "analysis_id": "ANA_ELECTORAL_TRANSITIONS",
+      "label": "Transitions électorales communales 2015–2021",
+      "status": "CONDITIONNELLE",
+      "tables": [
+        "ELECTORAL_TRANSITIONS_2015_2021",
+        "COMMUNE_TRANSITION_PANEL"
+      ],
+      "limits": "Comparer uniquement les partis et mesures observés aux deux dates; les sièges 2015 sont absents."
+    },
+    {
+      "analysis_id": "ANA_REPORTED_TURNOUT",
+      "label": "Taux de participation communaux publiés",
+      "status": "CONDITIONNELLE",
+      "tables": [
+        "MOBILISATION"
+      ],
+      "limits": "Utiliser uniquement le taux publié; ne reconstruire ni inscrits, ni votants, ni bulletins invalides."
+    },
+    {
+      "analysis_id": "ANA_COUNCIL_2021",
+      "label": "Composition communale 2021 et sièges occupés/légaux",
+      "status": "AUTORISÉE",
+      "tables": [
+        "LOCAL_COUNCIL_CONTROL",
+        "COUNCIL_SEAT_STATUS_V10"
+      ],
+      "limits": "Distinguer les 32 513 sièges occupés des 32 515 sièges légaux réconciliés avec deux vacances documentées."
+    },
+    {
+      "analysis_id": "ANA_PRESIDENCIES",
+      "label": "Présidences communales 2021",
+      "status": "CONDITIONNELLE",
+      "tables": [
+        "LOCAL_COUNCIL_CONTROL"
+      ],
+      "limits": "Périmètre strict de 1 403 communes résolues sur 1 538."
+    },
+    {
+      "analysis_id": "ANA_WINNER_VS_PRESIDENT",
+      "label": "Parti arrivé premier versus parti du président",
+      "status": "CONDITIONNELLE",
+      "tables": [
+        "RESULTS",
+        "LOCAL_COUNCIL_CONTROL"
+      ],
+      "limits": "Périmètre strict des 1 403 présidences résolues; victoire électorale et gouvernance restent distinctes."
+    },
+    {
+      "analysis_id": "ANA_REGISTERED_VOTERS",
+      "label": "Effectifs communaux d'inscrits, votants et bulletins invalides",
+      "status": "INTERDITE",
+      "tables": [
+        "ELECTORATE",
+        "MOBILISATION",
+        "RAW_COMM2015_FULL",
+        "RAW_COMM2021_FULL"
+      ],
+      "limits": "Les 3 076 dénominateurs communaux attendus sont absents et ne doivent pas être reconstruits du taux de participation."
+    },
+    {
+      "analysis_id": "ANA_MP_PARTY_TRAJECTORY",
+      "label": "Trajectoires partisanes intra-législature des parlementaires",
+      "status": "INTERDITE",
+      "tables": [
+        "PARLIAMENTARY_MANDATES"
+      ],
+      "limits": "Le champ parti conserve le premier parti identifié et ne décrit pas les changements en cours de mandat."
+    },
+    {
+      "analysis_id": "ANA_COUNCILS_2015",
+      "label": "Composition et contrôle des conseils communaux 2015",
+      "status": "INTERDITE",
+      "tables": [],
+      "limits": "La source candidate V11-A est NO_GO et n'est pas intégrée."
+    },
+    {
+      "analysis_id": "ANA_SMIIG",
+      "label": "Gouvernance communale issue de SMIIG",
+      "status": "INTERDITE",
+      "tables": [],
+      "limits": "La source candidate SMIIG est NO_GO et n'est pas intégrée."
+    },
+    {
+      "analysis_id": "ANA_RGPH_2015_CONTEMPORARY",
+      "label": "RGPH 2024 interprété comme mesure contemporaine de l'élection 2015",
+      "status": "INTERDITE",
+      "tables": [
+        "POPULATION",
+        "ANALYTICAL_PANEL",
+        "COMMUNE_ELECTION_PANEL"
+      ],
+      "limits": "RGPH 2024 est une référence de recensement distante de neuf ans, pas une observation de 2015."
+    },
+    {
+      "analysis_id": "ANA_HCP_2014_FOR_ELECTION_2015",
+      "label": "Population légale RGPH 2014 comme référence de l'élection 2015",
+      "status": "CONDITIONNELLE",
+      "tables": [
+        "FACT_OBSERVATION"
+      ],
+      "limits": "Afficher observation_year=2014 et temporal_distance=-1; ne pas appeler la valeur « population 2015 »."
+    },
+    {
+      "analysis_id": "ANA_HCP_2024_FOR_ELECTION_2015",
+      "label": "Indicateurs RGPH 2024 comme description de l'élection 2015",
+      "status": "INTERDITE",
+      "tables": [
+        "FACT_OBSERVATION",
+        "POPULATION"
+      ],
+      "limits": "Décalage de neuf ans; aucune interprétation contemporaine autorisée."
+    },
+    {
+      "analysis_id": "ANA_HCP_FOR_ELECTION_2021",
+      "label": "Indicateurs RGPH 2014 ou 2024 comme références de l'élection 2021",
+      "status": "CONDITIONNELLE",
+      "tables": [
+        "FACT_OBSERVATION",
+        "POPULATION"
+      ],
+      "limits": "Afficher le millésime réel et la distance −7 ou +3 ans; aucune valeur ne devient une observation 2021."
+    },
+    {
+      "analysis_id": "ANA_HCP_OTHER_INDICATORS",
+      "label": "Autres indicateurs socio-économiques communaux HCP",
+      "status": "INTERDITE",
+      "tables": [],
+      "limits": "Les 25 décisions NO_GO de V10-QA-3 ne sont pas intégrées et ne doivent pas être reconstruites."
+    }
+  ],
+  "priorities": [
+    "inscrits et dénominateurs électoraux",
+    "présidences et contrôle communal",
+    "résolution externe des conseils 2015 et de SMIIG",
+    "questions parlementaires",
+    "PostgreSQL"
+  ]
+}

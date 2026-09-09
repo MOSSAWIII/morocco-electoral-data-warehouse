@@ -1,0 +1,27 @@
+V11 — RAPPORT D'ÉCARTS AVEC V10
+
+DATE : 2026-09-08
+V10 SHA-256 : 47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6
+V11 SHA-256 : a201a214752e6cdc5eb9e80e5913aba9c9e574f11c21cb2460af966ff6bd8dd3
+
+CHANGEMENTS AUTORISÉS ET OBSERVÉS
+- DATA_COVERAGE
+- DATA_DICTIONARY
+- FACT_OBSERVATION
+- QUALITY_CONTROL
+- README
+- SOURCES
+- WORKBOOK_AUDIT_V11
+
+VOLUMES
+- FACT_OBSERVATION : 127 → 3203
+- population_legal 2014 : 1538
+- population_municipal 2024 : 1538
+
+CONTRÔLES
+- Population légale 2014 : 33848242
+- Population municipale 2024 : 36490591
+- Population légale 2024 : 36828330 ; différences avec V10=0
+- Décisions NO_GO ingérées : 0
+
+Aucun panel électoral, RAW historique ou classeur V10 n'a été modifié.

@@ -8,18 +8,18 @@ def build_parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", required=True)
 
     build = commands.add_parser("build", help="Construire un export du warehouse")
-    build.add_argument("version", choices=("v9", "v10"))
+    build.add_argument("version", choices=("v9", "v10", "v11"))
     build.add_argument("--data-dir")
 
     docs = commands.add_parser("docs", help="Générer la documentation")
-    docs.add_argument("version", choices=("v9", "v10"))
+    docs.add_argument("version", choices=("v9", "v10", "v11"))
     docs.add_argument("--data-dir")
 
     validate = commands.add_parser("validate", help="Valider le dépôt et les données locales")
     validate.add_argument("--mode", choices=("ci", "full"), default="ci")
     validate.add_argument("--data-dir")
-    validate.add_argument("--release", choices=("v9", "v10", "all"), default="all")
-    validate.add_argument("--baseline", choices=("v9",))
+    validate.add_argument("--release", choices=("v9", "v10", "v11", "all"), default="all")
+    validate.add_argument("--baseline", choices=("v9", "v10"))
 
     qualify = commands.add_parser("qualify", help="Qualifier une source candidate sans l'ingérer")
     qualification = qualify.add_subparsers(dest="qualification", required=True)
@@ -67,7 +67,7 @@ def build_parser() -> argparse.ArgumentParser:
     quality = commands.add_parser("quality", help="Produire des artefacts de qualité transversaux")
     quality_commands = quality.add_subparsers(dest="quality_command", required=True)
     baseline = quality_commands.add_parser("baseline", help="Générer la baseline V10-QA")
-    baseline.add_argument("--release", choices=("v10",), default="v10")
+    baseline.add_argument("--release", choices=("v10", "v11"), default="v10")
     baseline.add_argument("--as-of")
     baseline.add_argument("--data-dir")
     baseline.add_argument("--metadata-output")
@@ -86,15 +86,19 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "build":
         if args.version == "v9":
             from morocco_elections.legacy.v9.build import main as build_release
-        else:
+        elif args.version == "v10":
             from morocco_elections.releases.v10.build import main as build_release
+        else:
+            from morocco_elections.releases.v11.build import main as build_release
         build_release(data_dir=args.data_dir)
         return 0
     if args.command == "docs":
         if args.version == "v9":
             from morocco_elections.legacy.v9.documentation import main as generate_docs
-        else:
+        elif args.version == "v10":
             from morocco_elections.releases.v10.documentation import main as generate_docs
+        else:
+            from morocco_elections.releases.v11.documentation import main as generate_docs
         generate_docs(data_dir=args.data_dir)
         return 0
     if args.command == "validate":
@@ -161,6 +165,7 @@ def main(argv: list[str] | None = None) -> int:
         from morocco_elections.quality.baseline import generate
 
         return generate(
+            release=args.release,
             data_dir=args.data_dir,
             as_of=args.as_of,
             metadata_output=args.metadata_output,

@@ -1,0 +1,1115 @@
+﻿CATALOGUE COMPLET DES ONGLETS
+=============================
+
+VERSION           : V11
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V11.xlsx
+DATE DE GÉNÉRATION: 2026-09-08
+PÉRIMÈTRE         : Inventaire exhaustif des 67 onglets et glossaire.
+RENVOIS           : 00_INDEX_ET_MODE_EMPLOI.txt, 11_PIPELINE_RAW_NORMALIZED_FACT_ANALYTICAL.txt, 12_REGLES_D_INTEGRITE_ET_JOINTURE.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V11.
+DÉRIVÉ        : valeur calculée à partir de données V11 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+CONTRAT DU CATALOGUE
+Chaque entrée reproduit le volume calculé, la classification d'audit, le grain, les clés, les colonnes physiques, la couverture, la qualité et les limites.
+
+====================================================================================================
+ONGLET: README
+CLASSIFICATION: SOURCE / METADATA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 99
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: Morocco Electoral Quantitative Data Warehouse — V10
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: Morocco Electoral Quantitative Data Warehouse — V10
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V11 updated
+
+====================================================================================================
+ONGLET: SOURCES
+CLASSIFICATION: SOURCE / METADATA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 51
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: source_id
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: source_id, source_name, publisher, source_type, domain, url, coverage_start, coverage_end, geo_granularity, temporal_frequency, format, access_method, license, reliability_score, last_checked, status, notes
+SOURCES: SRC_AFRO_2022; SRC_AFRO_2024; SRC_AGD_2015_V7; SRC_ANRT_2024; SRC_ARABBARO_2022; SRC_CHAMBER_2021; SRC_COMMONS_ISSEN2021_V8; SRC_COUR_2021
+COUVERTURE TEMPORELLE: 2002 → 2024
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V11 updated
+
+====================================================================================================
+ONGLET: DIM_GEO
+CLASSIFICATION: DIMENSION
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1666
+GRAIN: geographic entity
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: parent_geo_id, source_id
+COLONNES: geo_id, geo_name, geo_type, parent_geo_id, region_name, province_prefecture, constituency_name, commune_name, district_arrondissement, fraction, douar, urban_rural, latitude, longitude, boundary_version, valid_from, valid_to, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_HCP_RGPH2024_POP; SRC_HCP_RGPH2024_RAW_V10; SRC_HF_TAFRA_COMM2015_V6; SRC_MEDIAS24_2015
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: analytical_area, arrondissement, commune, commune_source, country, prefecture, province_prefecture, region
+QUALITÉ: derived:2, provisional:26, verified:1638
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: DIM_TIME
+CLASSIFICATION: DIMENSION
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 17
+GRAIN: time/date
+CLÉ PRIMAIRE: time_id
+CLÉS ÉTRANGÈRES: source_id
+COLONNES: time_id, date, year, quarter, month, week, day, period_type, campaign_phase, legislature, electoral_cycle, valid_from, valid_to, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: 2002 → 2024
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: verified:17
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: DIM_PARTY
+CLASSIFICATION: DIMENSION
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 53
+GRAIN: party/alliance
+CLÉ PRIMAIRE: party_id
+CLÉS ÉTRANGÈRES: alliance_id, leader_person_id, source_id
+COLONNES: party_id, party_name_fr, party_name_ar, acronym, alliance_id, founded_year, dissolved_year, legal_status, color_or_symbol, leader_person_id, parliamentary_group, valid_from, valid_to, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_TAFRA_COMM2015_RAW_V10; SRC_TAFRA_MAROCVOTE
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: provisional:53
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: DIM_PERSON
+CLASSIFICATION: DIMENSION
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 33697
+GRAIN: person identity
+CLÉ PRIMAIRE: party_id
+CLÉS ÉTRANGÈRES: person_id, source_id
+COLONNES: person_id, full_name, gender, birth_year, age_at_event, occupation, education_level, party_id, role, incumbent_flag, first_elected_year, mandates_count, valid_from, valid_to, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_TAFRA_COUNCIL2021_RAW_V10; SRC_TAFRA_MPS_RAW_V10
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: provisional:33697
+LIMITATIONS: aucune limitation synthétique déclarée
+IDENTITÉ DÉRIVÉE: 32 512 entrées PERS_LOCAL_V10_*; portée conservatrice documentée.
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: DIM_ELECTION
+CLASSIFICATION: DIMENSION
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 9
+GRAIN: election
+CLÉ PRIMAIRE: election_id
+CLÉS ÉTRANGÈRES: source_id
+COLONNES: election_id, election_name, election_type, election_date, cycle_year, chamber_or_level, electoral_system, total_seats, campaign_start, campaign_end, official_results_date, legal_framework_version, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_CHAMBER_2021; SRC_IFES_2002; SRC_IFES_2007; SRC_IFES_2011; SRC_LEMATIN_2021_LOCAL; SRC_MEDIAS24_2015; SRC_TAFRA_MAROCVOTE; SRC_WIKI_2016
+COUVERTURE TEMPORELLE: COMM2015 → REG2021
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: provisional:5, verified:4
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: POPULATION
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1564
+GRAIN: geography × time
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, source_id
+COLONNES: record_id, geo_id, time_id, population_total, population_18_plus, male_population, female_population, age_18_24, age_25_34, age_35_44, age_45_59, age_60_plus, households, avg_household_size, density_per_km2, population_growth_pct, urban_population, rural_population, internal_migrants, born_elsewhere, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_HCP_RGPH2024_POP; SRC_HCP_RGPH2024_RAW_V10
+COUVERTURE TEMPORELLE: 2014 → 2024
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: verified:1564
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: SOCIAL_HUMAN
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 14
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, source_id
+COLONNES: record_id, geo_id, time_id, literacy_rate, illiteracy_rate, school_enrollment_rate, no_schooling_rate, primary_rate, secondary_rate, higher_education_rate, employment_rate, unemployment_rate, activity_rate, female_activity_rate, youth_unemployment_rate, language_arabic_pct, language_amazigh_pct, disability_rate, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_HCP_RGPH2024_SYN; SRC_HCP_SOCIAL2024
+COUVERTURE TEMPORELLE: 2014 → 2024
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: verified:14
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: LIVING_CONDITIONS
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 60
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, source_id
+COLONNES: record_id, geo_id, time_id, monetary_poverty_rate, multidimensional_poverty_rate, vulnerability_rate, home_ownership_rate, rental_rate, overcrowding_rate, water_access_rate, electricity_access_rate, sanitation_access_rate, internet_household_rate, development_index, deprivation_index, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_HCP_POVERTY2024; SRC_HCP_RGPH2024_SYN; SRC_HCP_RSK_POV2024
+COUVERTURE TEMPORELLE: 2014 → 2024
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: verified:60
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: ELECTORATE
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 5
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, eligible_population, registered_voters, new_registered_voters, registration_rate, registered_male, registered_female, registered_18_24, registered_25_34, registered_35_59, registered_60_plus, registered_urban, registered_rural, polling_stations, voters_per_station, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_IFES_2002; SRC_IFES_2007; SRC_TAFRA_MAROCVOTE; SRC_WIKI_2016
+COUVERTURE TEMPORELLE: 2002-09-27 → 2021-09-08
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:2, verified:3
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: POLITICAL_SUPPLY
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 31
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, party_id, person_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, party_id, person_id, lists_submitted, candidate_count, seats_contested, candidates_per_seat, territorial_coverage_pct, female_candidates, female_candidates_pct, young_candidates, young_candidates_pct, incumbent_candidates, new_candidates, party_switchers, list_position, head_of_list_flag, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_IFES_2011; SRC_TAFRA_MAROCVOTE; SRC_WIKI_2011
+COUVERTURE TEMPORELLE: 2011-11-25 → 2021-09-08
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:27, verified:4
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: COMPETITION
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 4
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, party_count, effective_number_parties, vote_hhi, seat_hhi, top1_vote_share, top2_vote_share, top1_top2_margin, historical_dominance_score, challenger_count, candidate_renewal_rate, supply_volatility_index, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: DERIVED_FROM_RESULTS
+COUVERTURE TEMPORELLE: 2007 → 2021
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: derived:4
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: CAMPAIGN_FINANCE
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 9
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, party_id, person_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, party_id, person_id, public_funding, own_resources, other_resources, total_resources, total_spend, communication_spend, events_spend, printing_spend, digital_ad_spend, spend_per_candidate, spend_per_seat, spend_per_vote, dedicated_bank_account_flag, filing_on_time_flag, unjustified_amount, amount_to_repay, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_COUR_2021; SRC_SNRT_FIN2021
+COUVERTURE TEMPORELLE: 2021 → 2021-09-08
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: verified:9
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: MEDIA_OFFLINE
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, party_id, person_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, party_id, person_id, media_name, media_type, public_private, program_type, language, appearances, program_count, airtime_minutes, speaking_time_minutes, airtime_share_pct, female_speaking_share_pct, youth_speaking_share_pct, quota_expected_pct, quota_gap_pct, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_HACA_2021
+COUVERTURE TEMPORELLE: 2021 → 2021
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: verified:1
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: DIGITAL_CAMPAIGN
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 24
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, party_id, person_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, party_id, person_id, platform, page_account, followers, followers_growth, posts, videos, views, likes, comments, shares, engagement_rate, ads_count, ad_spend_lower, ad_spend_upper, impressions_lower, impressions_upper, estimated_reach, audience_age_band, audience_gender, campaign_start, campaign_end, search_interest_index, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_SNRT_DIGITAL2021; SRC_SNRT_DIGITAL_WEEK
+COUVERTURE TEMPORELLE: 2015 → 2021
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:24
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: DIGITAL_ACCESS
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 6
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, source_id
+COLONNES: record_id, geo_id, time_id, internet_access_rate, smartphone_rate, computer_tablet_rate, mobile_internet_rate, fixed_internet_rate, daily_internet_use_rate, social_media_use_rate, social_media_daily_rate, avg_social_media_hours, mobile_penetration_rate, internet_penetration_rate, 4g_coverage_rate, 5g_coverage_rate, ftth_subscriptions, mobile_subscriptions, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_ANRT_2024
+COUVERTURE TEMPORELLE: 2019 → 2024
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: verified:6
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: PUBLIC_OPINION
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 3
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, source_id
+COLONNES: record_id, geo_id, time_id, survey_name, survey_wave, sample_size, weight_variable, voted_last_election_pct, intend_vote_pct, trust_parliament_pct, trust_government_pct, trust_ruling_party_pct, trust_opposition_pct, trust_local_council_pct, satisfied_democracy_pct, elections_free_fair_pct, fear_intimidation_pct, attended_rally_pct, contacted_by_party_pct, offered_gift_money_pct, top_problem_code, economy_good_pct, government_performance_score, corruption_perception_score, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_AFRO_2022; SRC_AFRO_2024; SRC_ARABBARO_2022
+COUVERTURE TEMPORELLE: 2022 → 2024
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: verified:3
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: MOBILISATION
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 3115
+GRAIN: geography × election
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, registered_voters, voters, turnout_rate, abstention_rate, valid_votes, invalid_votes, blank_votes, turnout_change_pp, turnout_vs_national_pp, mobilisation_index, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_HF_TAFRA_COMM2015_V6; SRC_IFES_2002; SRC_IFES_2007; SRC_IFES_2011; SRC_MEDIAS24_2015; SRC_TAFRA_COMM2015_RAW_V10; SRC_TAFRA_COMM2021_RAW_V10; SRC_WIKI_2016
+COUVERTURE TEMPORELLE: 2002-09-27 → 2021-09-08
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:3112, verified:3
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RESULTS
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 22379
+GRAIN: geography × party × election
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, party_id, person_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, party_id, person_id, votes, vote_share, rank, seat_won_flag, seats, seat_share, votes_per_seat, victory_margin_votes, victory_margin_pp, votes_change, vote_share_change_pp, swing_pp, seat_change, seat_retained_flag, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_CHAMBER_2021; SRC_HF_TAFRA_COMM2015_V6; SRC_IFES_2002; SRC_IFES_2007; SRC_LEMATIN_2021_LOCAL; SRC_MEDIAS24_2015; SRC_TAFRA_COMM2015_RAW_V10; SRC_TAFRA_COMM2021_RAW_V10
+COUVERTURE TEMPORELLE: 2002-09-27 → 2021-09-08
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:22331, verified:48
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: POWER_REP
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 6020
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, party_id, person_id, coalition_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, party_id, person_id, institution_level, seats_held, seat_share, majority_opposition, coalition_id, coalition_seats, coalition_seat_share, council_presidency_flag, regional_presidency_flag, female_elected_count, female_elected_pct, newly_elected_count, reelected_count, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_CHAMBER_2021; SRC_LEMATIN_2021_LOCAL; SRC_TAFRA_COUNCIL2021_RAW_V10; SRC_WIKI_2016
+COUVERTURE TEMPORELLE: 2016 → 2021-09-08
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:6007, verified:13
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: POLITICAL_ACTIVITY
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: STRUCTURE VIDE
+LIGNES_DOCUMENTEES: 0
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, party_id, person_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, party_id, person_id, written_questions, oral_questions, questions_total, questions_per_session, local_issue_questions, national_issue_questions, ministry_target_count, attendance_rate, bills_proposed, committee_participation_count, activity_index, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: LOCAL_FINANCE
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: STRUCTURE VIDE
+LIGNES_DOCUMENTEES: 0
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, source_id
+COLONNES: record_id, geo_id, time_id, own_revenue, tax_revenue, state_transfers, subsidies, total_revenue, operating_expenditure, personnel_expenditure, equipment_expenditure, investment_expenditure, debt_stock, interest_expense, principal_repayment, budget_surplus, cash_balance, investment_execution_rate, collection_rate, financial_autonomy_rate, investment_per_capita, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: ECONOMY
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, source_id
+COLONNES: record_id, geo_id, time_id, employment_rate, unemployment_rate, youth_unemployment_rate, business_establishments, new_business_registrations, business_closures, agriculture_employment_pct, industry_employment_pct, services_employment_pct, tourism_nights, public_employment_pct, inflation_rate, household_consumption_index, income_proxy, night_lights_index, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_HCP_CEE2024
+COUVERTURE TEMPORELLE: 2024 → 2024
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: verified:1
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: PUBLIC_CAPITAL
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, source_id
+COLONNES: record_id, geo_id, time_id, schools_count, health_facilities_count, hospitals_count, police_stations_count, markets_souks_count, road_km, paved_road_pct, public_transport_supply, admin_service_points, water_service_rate, sanitation_service_rate, internet_infrastructure_score, avg_distance_school_km, avg_distance_health_km, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_HCP_CEE2024
+COUVERTURE TEMPORELLE: 2024 → 2024
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: verified:1
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: SHOCKS
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: STRUCTURE VIDE
+LIGNES_DOCUMENTEES: 0
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, source_id
+COLONNES: record_id, geo_id, time_id, shock_type, drought_index, rainfall_mm, water_stress_index, earthquake_intensity, covid_cases, covid_deaths, food_price_index, fuel_price_index, employment_shock_pct, major_project_value, major_project_jobs, disaster_damage_value, shock_severity_score, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: INSTITUTIONAL_LEGAL
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 17
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: record_id
+CLÉS ÉTRANGÈRES: geo_id, time_id, election_id, source_id
+COLONNES: record_id, geo_id, time_id, election_id, district_magnitude, constituency_size_population, constituency_size_registered, boundary_change_flag, electoral_formula, quotient_method, threshold_pct, reserved_seats, women_quota_seats, appeals_filed, appeals_accepted, appeals_rejected, results_annulled_flag, annulled_seats, by_election_flag, legal_change_score, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_CHAMBER_2021; SRC_IFES_2007; SRC_IFES_2011; SRC_TAFRA_MAROCVOTE; SRC_WIKI_2016
+COUVERTURE TEMPORELLE: 2002-09-27 → 2021-09-08
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:2, verified:15
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: FACT_OBSERVATION
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 3203
+GRAIN: geography × time × metric
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: observation_id, metric_id, time_id, election_id, party_id, person_id, source_id
+COLONNES: observation_id, metric_id, value_numeric, value_text, unit, geo_id, time_id, election_id, party_id, person_id, date_start, date_end, geo_granularity, temporal_granularity, method, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+SOURCES: SRC_AFRO_2022; SRC_AFRO_2024; SRC_ANRT_2024; SRC_HACA_2021; SRC_HCP_CEE2024; SRC_HCP_MIGRATION2024; SRC_HCP_REGACCOUNTS2024; SRC_HCP_RGPH2014_INDIVIDUALS_V11
+COUVERTURE TEMPORELLE: 2014 → 2024
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:6, verified:3197
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V11 updated
+
+====================================================================================================
+ONGLET: DATA_DICTIONARY
+CLASSIFICATION: SOURCE / METADATA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 285
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: metric_id
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: metric_id, domain, metric_name, definition, data_type, unit, preferred_geo_granularity, preferred_temporal_frequency, primary_fact_sheet, required_keys, candidate_sources, collection_status, priority, quality_rule, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V11 updated
+
+====================================================================================================
+ONGLET: QUALITY_CONTROL
+CLASSIFICATION: QA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 35
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: source_id
+CLÉS ÉTRANGÈRES: issue_id
+COLONNES: issue_id, detected_date, sheet_name, record_or_range, issue_type, severity, description, expected_rule, resolution, resolved_flag, resolved_date, owner, source_id, notes
+SOURCES: SRC_COMMONS_ISSEN2021_V8; SRC_HCP_RGPH2014_INDIVIDUALS_V11; SRC_HCP_RGPH2024_INDICATORS_V11; SRC_HCP_RGPH2024_INDICATORS_V11; SRC_HCP_RGPH2024_RAW_V10; SRC_HF_COMM2015_CURRENT_V8; SRC_HF_TAFRA_COMM2015_V6; SRC_HF_TAFRA_COUNCIL2021_V6; SRC_HF_TAFRA_MPS_V6
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V11 updated
+
+====================================================================================================
+ONGLET: PARTY_TRENDS
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 66
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: party_id
+CLÉS ÉTRANGÈRES: election_id, source_id
+COLONNES: party_id, election_id, year, votes, vote_share, seats, total_seats, source_id, source_url, quality_status, seat_share, votes_per_seat, seat_efficiency, previous_year, vote_change, vote_change_pct, vote_share_change_pp, seat_change_calc, vote_hhi_component, seat_hhi_component
+SOURCES: DERIVED_RESIDUAL; SRC_CHAMBER_2021; SRC_IFES_2007; SRC_WIKI_2011; SRC_WIKI_2016
+COUVERTURE TEMPORELLE: 2007 → 2021
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: derived:3, provisional:30, verified:33
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RAW_IMPORT_QUEUE
+CLASSIFICATION: QUEUE
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 10
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: dataset_id
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: dataset_id, dataset_name, publisher_origin, source_url, rows_known, columns_known, granularity, target_sheets, key_fields, status, blocker, next_action, priority, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: DATA_COVERAGE
+CLASSIFICATION: SOURCE / METADATA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 20
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: domain_sheet
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: domain_sheet, rows_loaded, verified_rows, provisional_rows, derived_rows, low_confidence_rows, primary_key, granularity_now, next_granularity_target
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V11 updated
+
+====================================================================================================
+ONGLET: GEO_CROSSWALK
+CLASSIFICATION: CROSSWALK
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 12
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: source_id
+CLÉS ÉTRANGÈRES: internal_geo_id
+COLONNES: internal_geo_id, hcp_iso_region, region_name, geo_level, source_id, notes
+SOURCES: SRC_SIGMAROC_RGPH2024
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: SOURCE_DOWNLOADS
+CLASSIFICATION: SOURCE / METADATA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 6
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: dataset_id
+CLÉS ÉTRANGÈRES: package_id, resource_id
+COLONNES: dataset_id, dataset_name, hf_url, openafrica_resource_page, direct_download_url, package_id, resource_id, rows, columns, file_size, license, viewer_access, binary_access_runtime, target_tables, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RAW_SCHEMA
+CLASSIFICATION: RAW
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 62
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: dataset_id
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: dataset_id, column_name, type, null_pct, min, max, mean, median, semantic_role, warehouse_target, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RAW_COMM2015_SAMPLE
+CLASSIFICATION: RAW
+STATUT DOCUMENTAIRE: PILOTE
+LIGNES_DOCUMENTEES: 24
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: idregion
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: idregion, idwilaya, idprefprov, idcommune, region, wilaya, prefprov, commune, nsieges, txparticipation, agd, mp, pam, pi, pjd, pps, rni, uc, usfp, esa_source, esa_processed
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: pilot/sample only
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: MICRO_COMM2015_ANALYTICS
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: PILOTE
+LIGNES_DOCUMENTEES: 24
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: geo_id, commune, prefprov, region, nsieges, turnout_pct, observed_votes_sum, observed_winner, observed_winner_votes, observed_winner_share_pct, observed_hhi, observed_effective_parties, non_null_party_columns, caveat
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RAW_COUNCIL2021_SAMPLE
+CLASSIFICATION: RAW
+STATUT DOCUMENTAIRE: PILOTE
+LIGNES_DOCUMENTEES: 18
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: idregion
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: idregion, idwilaya, idprefprov, idcommune, idcirconscription, region, wilaya, prefprov, commune, circonscription, prenomnom, parti, tetedeliste, role, flagrole, flagtetedeliste, esa_source, esa_processed
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: pilot/sample only
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: COUNCIL2021_SAMPLE_STATS
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: PILOTE
+LIGNES_DOCUMENTEES: 12
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: metric_type
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: metric_type, category, value, sample_n, note
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: pilot/sample only
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RAW_MPS_SAMPLE
+CLASSIFICATION: RAW
+STATUT DOCUMENTAIRE: PILOTE
+LIGNES_DOCUMENTEES: 13
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: idregion
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: idregion, idwilaya, idprefprov, idcirconscription, region, wilaya, prefprov, circonscription, parlement, idsiege, idperson, prenomnom, prenomnomar, femme, parti, dateentree, datesortie, motifentree, motifsortie, groupe, groupear, esa_source, esa_processed
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: pilot/sample only
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: SOURCE_PROFILES
+CLASSIFICATION: SOURCE / METADATA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 3
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: dataset_id
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: dataset_id, rows_total, columns, train_rows_reported, test_rows_reported, split_sum, split_gap_vs_total, unit_of_observation, source_origin, important_quality_note
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: ANALYTICAL_PANEL_SCHEMA
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 26
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: column
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: column, type, grain, source_table, derivation, required_for_v1, status, note
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: CROSSWALK_GEO
+CLASSIFICATION: CROSSWALK
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 3076
+GRAIN: source geography × election
+CLÉ PRIMAIRE: source_id
+CLÉS ÉTRANGÈRES: source_geo_id, canonical_geo_id, canonical_region_id, canonical_province_id, resolution_id
+COLONNES: source_system, source_geo_id, source_geo_name, source_region, source_province, canonical_geo_id, canonical_name, canonical_region_id, canonical_province_id, valid_from, valid_to, match_method, confidence_score, manual_review_flag, temporal_boundary_status, source_id, notes, review_status, resolution_id, evidence_url, evidence_locator, evidence_digest
+SOURCES: SRC_HCP_RGPH2024_RAW_V10
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: CROSSWALK_PARTY
+CLASSIFICATION: CROSSWALK
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 127
+GRAIN: source code × source system/year
+CLÉ PRIMAIRE: source_system
+CLÉS ÉTRANGÈRES: canonical_party_id
+COLONNES: source_system, raw_source_code, raw_name, canonical_party_id, canonical_name, valid_from, valid_to, alliance_flag, predecessor, successor, confidence, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: LOCAL_MANDATES
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 32513
+GRAIN: person × commune × constituency × mandate
+CLÉ PRIMAIRE: party_id
+CLÉS ÉTRANGÈRES: local_mandate_id, person_id, canonical_geo_id, election_id, source_id
+COLONNES: local_mandate_id, person_id, person_name_ar, person_name_normalized, person_name_match_key, identity_scope, identity_status, source_idcommune, source_idcirconscription, geo_id_source, canonical_geo_id, commune, province, party_id, head_of_list, role, role_normalized, executive_flag, role_uncertain_flag, head_of_list_uncertain_flag, election_id, source_id, quality_status, notes
+SOURCES: SRC_TAFRA_COUNCIL2021_RAW_V10
+COUVERTURE TEMPORELLE: COMM2021 → COMM2021
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: low_confidence:2699, provisional:29814
+LIMITATIONS: gender absent; role uncertainty flags retained
+IDENTITÉ DÉRIVÉE: 32 513 observations, 32 512 person_id prudents; utiliser local_mandate_id pour l'unicité de ligne.
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: PARLIAMENTARY_MANDATES
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1654
+GRAIN: person × legislature × seat spell
+CLÉ PRIMAIRE: party_id
+CLÉS ÉTRANGÈRES: mandate_id, person_id, source_seat_id, source_constituency_id, source_id
+COLONNES: mandate_id, person_id, full_name, full_name_ar, gender, legislature, source_seat_id, source_constituency_id, constituency, region, province, party_id, parliamentary_group, start_date, end_date, entry_reason, exit_reason, replacement_procedure, active_at_source_date, source_id, quality_status, notes
+SOURCES: SRC_TAFRA_MPS_RAW_V10
+COUVERTURE TEMPORELLE: 2007-2011 → 2021-2026
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: provisional:1654
+LIMITATIONS: party switching not captured
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: COMMUNE_ELECTION_PANEL_PILOT
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: PILOTE
+LIGNES_DOCUMENTEES: 24
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: election_id
+CLÉS ÉTRANGÈRES: source_geo_id, canonical_geo_id
+COLONNES: source_geo_id, canonical_geo_id, commune, province, election_id, year, council_seats, turnout_pct, population_2024, population_reference_year, observed_votes_sum, non_null_party_columns, observed_party_coverage_pct, observed_winner, observed_winner_votes, observed_winner_share_pct, observed_hhi, observed_effective_parties, geo_match_confidence, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: 2015 → 2015
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:24
+LIMITATIONS: pilot/sample only
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: ANALYTICAL_PANEL_PILOT_2015
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: PILOTE
+LIGNES_DOCUMENTEES: 140
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: source_geo_id, election_id, party_id
+COLONNES: geo_id, source_geo_id, commune, province, election_id, year, party_id, party_votes, observed_vote_share_pct, turnout_pct, population_2024, population_reference_year, geo_match_confidence, observed_rank, observed_winner_flag, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: 2015 → 2015
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:140
+LIMITATIONS: pilot/sample only
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: GEO_LEGACY_CODES
+CLASSIFICATION: CROSSWALK
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 24
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: canonical_geo_id
+CLÉS ÉTRANGÈRES: source_geo_id
+COLONNES: canonical_geo_id, canonical_commune_name, canonical_parent_province, legacy_admin_code, legacy_code_derivation, source_geo_id, source_commune_name, confidence_score, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: COUNCIL_COMPOSITION_2021_PILOT
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: PILOTE
+LIGNES_DOCUMENTEES: 3
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: election_id, party_id, source_id
+COLONNES: geo_id, commune, election_id, party_id, seats, seat_share_pct, seat_rank, total_council_seats, source_id, source_url, quality_status, notes
+SOURCES: SRC_COMMONS_ISSEN2021_V8
+COUVERTURE TEMPORELLE: COMM2021 → COMM2021
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:3
+LIMITATIONS: pilot/sample only
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: LONGITUDINAL_ISSEN_2015_2021
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 4
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: party_id
+COLONNES: geo_id, commune, party_id, year_2015, votes_2015_observed, rank_2015_observed, winner_2015_observed, seats_2021, seat_share_2021_pct, seat_rank_2021, transition_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: SOURCE_BLOCKERS_V8
+CLASSIFICATION: SOURCE / METADATA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 5
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: dataset_id
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: dataset_id, source, resource_state, datastore_active, views_available, binary_url_known, runtime_binary_access, viewer_available, usable_now, next_extraction_route, blocking_reason, priority
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RAW_COMM2015_FULL
+CLASSIFICATION: RAW
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1538
+GRAIN: source commune row
+CLÉ PRIMAIRE: idRegion
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: idRegion, idWilaya, idPrefProv, idSousPref, idCommune, region, wilaya, prefProv, sousPref, commune, nSieges, nInscrits, txParticipation, pctNuls, AGD, AHD, FFD, MDS, MP, NEO, PA, PAM, PAN, PCS, PDI, PDN, PE, PEDD, PGV, PI, PJD, PLJS, PML, PPS, PRD, PRE, PRV, PSD, PUD, RNI, SAP, SAP2, UC, UMD, USFP
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: voir données/QA
+LIMITATIONS: nInscrits absent in source
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RAW_COMM2021_FULL
+CLASSIFICATION: RAW
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1538
+GRAIN: source commune row
+CLÉ PRIMAIRE: idRegion
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: idRegion, idWilaya, idPrefProv, idSousPref, idCommune, region, wilaya, prefProv, sousPref, commune, nSieges, nInscrits, txParticipation, invalide, repPctFemmes, repAge34, repAge3544, repAge4554, repAge55, repEduSans, repEdu1aire, repEdu2aire, repEduSup, AFG, AHD, FFD, MDS, MP, NEO, PA, PAM, PAN, PCS, PDI, PDN, PE, PE2, PEDD, PI, PJD, PLJS, PML1, PPS, PRD, PRV, PSD, PSU, PUD, PVM, RNI, SAP, SAP2, SAP3, UC, UMD, USFP
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: voir données/QA
+LIMITATIONS: nInscrits absent in source
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RAW_COUNCIL2021_FULL
+CLASSIFICATION: RAW
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 32513
+GRAIN: source elected-person row
+CLÉ PRIMAIRE: idRegion
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: idRegion, idWilaya, idPrefProv, idSousPref, idCommune, idCirconscription, region, wilaya, prefProv, sousPref, commune, circonscription, prenomNom, parti, teteDeListe, role, flagRole, flagTeteDeListe
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RAW_MPS_FULL
+CLASSIFICATION: RAW
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1654
+GRAIN: source MP seat spell
+CLÉ PRIMAIRE: idRegion
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: idRegion, idWilaya, idPrefProv, idSousPref, idCirconscription, region, wilaya, prefProv, sousPref, circonscription, parlement, idSiege, idPerson, prenomNom, prenomNomAR, femme, parti, dateEntree, dateSortie, motifEntree, motifSortie, procedureRemplacement, groupe, groupeAR
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: RAW_HCP_RGPH2024_FULL
+CLASSIFICATION: RAW
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 2327
+GRAIN: literal source worksheet row
+CLÉ PRIMAIRE: selon les résultats du Recensement Général de la Population et de l'Habitat de 2024
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: Disposition source A:G; libellés sur les lignes 6–7: Collectivités territoriales, Marocains, Étrangers, Population, Ménages, libellé arabe, Code géographique
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: LOCAL_COUNCIL_CONTROL
+CLASSIFICATION: FACT
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 6003
+GRAIN: commune × party × election
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: election_id, party_id, president_person_id, president_party_id, source_id
+COLONNES: geo_id, election_id, party_id, party_seats, party_seat_share, party_seat_share_legal, seat_rank, largest_party_flag, president_person_id, president_party_id, executive_member_count, head_of_list_count, female_elected_count, female_elected_share, president_party_same_as_largest_party, source_id, quality_status, notes
+SOURCES: SRC_TAFRA_COUNCIL2021_RAW_V10
+COUVERTURE TEMPORELLE: COMM2021 → COMM2021
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: provisional:6003
+LIMITATIONS: gender absent; role uncertainty flags retained
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: IDENTITY_AUDIT_V10
+CLASSIFICATION: QA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 44
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: audit_id
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: audit_id, audit_type, source_idcommune, normalized_name_key, source_rows, source_row_count, distinct_raw_name_count, constituency_ids, party_ids, assigned_person_count, person_ids, resolution, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: reviewed:44
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: COUNCIL_SEAT_STATUS_V10
+CLASSIFICATION: QA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1538
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: resolution_id
+COLONNES: source_idcommune, geo_id, commune, legal_seat_count, observed_elected_count, documented_vacancy_count, reconciled_seat_count, observed_difference, reconciled_difference, snapshot_date, resolution_id, evidence_url, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: verified:1538
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: ELECTORAL_TRANSITIONS_2015_2021
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 14555
+GRAIN: commune × party
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: party_id, source_id
+COLONNES: geo_id, party_id, votes_2015, votes_2021, share_2015, share_2021, rank_2015, rank_2021, seats_2015, seats_2021, swing_pp, vote_change, vote_change_pct, seat_change, winner_2015, winner_2021, entered_market, exited_market, incumbent, retained_control, lost_control, gained_control, source_id, quality_status, notes
+SOURCES: SRC_TAFRA_COMM2015_RAW_V10;SRC_TAFRA_COMM2021_RAW_V10
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: derived:14555
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: COMMUNE_TRANSITION_PANEL
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 1538
+GRAIN: commune
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: geo_id, winner_2015, winner_2021, turnout_2015, turnout_2021, turnout_change_pp, pedersen_volatility, hhi_2015, hhi_2021, enp_2015, enp_2021, control_change, largest_party_2021, president_party_2021, president_same_as_largest, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: derived:1538
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: ANALYTICAL_PANEL
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 22054
+GRAIN: commune × party × election
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: election_id, party_id
+COLONNES: geo_id, election_id, year, party_id, region, province, commune, urban_rural, population_reference, observation_year, election_year, temporal_distance, temporal_join_method, poverty, unemployment, literacy, internet, registered_voters, turnout, party_votes, vote_share, rank, winner, seats, seat_share, previous_vote_share, swing_pp, vote_change, seat_change, incumbent_party, council_control_party, president_party, governance_score, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: 2015 → 2021
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: derived:22054
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: COMMUNE_ELECTION_PANEL
+CLASSIFICATION: ANALYTICAL
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 3076
+GRAIN: commune × election
+CLÉ PRIMAIRE: geo_id
+CLÉS ÉTRANGÈRES: election_id
+COLONNES: geo_id, election_id, year, turnout, winner, winning_share, runner_up, margin_votes, margin_pp, hhi, enp, volatility, largest_party, president_party, control_change, population_reference, observation_year, election_year, temporal_distance, temporal_join_method, poverty, unemployment, urban_rural, migration, quality_status, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: 2015 → 2021
+NIVEAU GÉOGRAPHIQUE: see geography key
+QUALITÉ: derived:3076
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: MANUAL_RESOLUTIONS_V10
+CLASSIFICATION: QA
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 7
+GRAIN: documented by sheet schema/title
+CLÉ PRIMAIRE: resolution_id
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: resolution_id, resolution_type, source_key, canonical_key, decision, effective_date, review_method, review_status, evidence_publisher, evidence_url, evidence_locator, evidence_digest, notes
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10 preserved
+
+====================================================================================================
+ONGLET: WORKBOOK_AUDIT_V11
+CLASSIFICATION: NON CLASSÉ
+STATUT DOCUMENTAIRE: OBSERVÉ/DÉRIVÉ SELON quality_status
+LIGNES_DOCUMENTEES: 66
+GRAIN: non tabulaire / voir titre
+CLÉ PRIMAIRE: non déclarée
+CLÉS ÉTRANGÈRES: aucune déclarée
+COLONNES: sheet, classification, grain, primary_key, foreign_keys, data_rows, populated_columns, formula_cells, sources, coverage_period, geographic_level, quality_status, duplicate_primary_keys, missing_primary_keys, known_limitations, origin_version
+SOURCES: voir cellules/onglet SOURCES
+COUVERTURE TEMPORELLE: non calculée
+NIVEAU GÉOGRAPHIQUE: non déclaré
+QUALITÉ: voir données/QA
+LIMITATIONS: aucune limitation synthétique déclarée
+ORIGINE: V10
+
+GLOSSAIRE
+geo_id: identifiant géographique canonique.
+source_geo_id: identifiant géographique dans une source.
+time_id: identifiant de date ou période.
+party_id: identifiant canonique ou code politique conservé.
+person_id: identifiant de personne avec portée documentée.
+election_id: identifiant du scrutin.
+source_id: identifiant de provenance.
+record_id: identifiant physique d'une observation de fait.
+grain: combinaison minimale d'entités décrite par une ligne.
+dimension conforme: référentiel partagé entre plusieurs tables de faits.
+crosswalk: correspondance versionnée entre clé source et clé canonique.
+lineage: chaîne de provenance et de transformation.
+valid_votes: somme dérivée des voix partisanes publiées.
+turnout: taux de participation publié par la source communale.
+HHI: somme des carrés des parts de voix.
+ENP: nombre effectif de partis, 10000/HHI sur parts 0–100.
+swing: différence de part entre deux élections.
+volatilité de Pedersen: demi-somme des variations absolues de parts.
+largest_party: parti ayant le plus d'élus observés.
+president_party: parti du président du conseil identifié.
+quality_status: niveau de confiance ou nature dérivée d'une ligne.

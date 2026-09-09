@@ -11,3 +11,4 @@ Ce répertoire contient des données non versionnées. Seul ce contrat est suivi
 
 Les chemins, empreintes et dimensions attendus sont définis dans `metadata/source_manifest.json`. `ELECTIONS_DATA_DIR` permet de placer cette arborescence sur un autre volume sans modifier le code.
 
+Les sources HCP promues par V11 résident sous `raw/hcp/rgph/2014/` et `raw/hcp/rgph/2024/`. Une promotion déplace les octets qualifiés sans les transformer; les candidats restés `NO_GO` demeurent sous `staging/`.

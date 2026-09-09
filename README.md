@@ -1,6 +1,6 @@
 # Morocco Electoral Data Warehouse
 
-Warehouse quantitatif consacré aux élections, à la représentation et à la gouvernance territoriale au Maroc. La release analytique actuelle est V10; V9 reste une baseline immuable.
+Warehouse quantitatif consacré aux élections, à la représentation et à la gouvernance territoriale au Maroc. La release analytique actuelle est V11; V9 et V10 restent des baselines immuables.
 
 ## Principes
 
@@ -16,13 +16,14 @@ Warehouse quantitatif consacré aux élections, à la représentation et à la g
 - `data/` : données locales ignorées par Git ; voir son README pour le contrat des zones.
 - `docs/v9/ontology/` : les 15 documents UTF-8 de l’ontologie V9.
 - `docs/v10/ontology/` : les 15 documents UTF-8 de l’ontologie V10.
+- `docs/v11/ontology/` : les 15 documents UTF-8 de l’ontologie V11.
 - `docs/research/` : rapports de qualification et baseline QA générée.
 - `docs/architecture/` : règles de dépendance et flux futurs.
 - `metadata/` : provenance physique des sources et backlog GitHub.
 - `database/` et `infrastructure/postgres/` : contrats réservés à V13.
 - `tests/unit/`, `tests/integration/` et `tests/fixtures/synthetic/` : stratégie de test.
 
-V10 contient 67 onglets. Elle conserve 32 513 mandats locaux et produit 32 512 identités locales Unicode prudentes, avec 44 groupes ambigus audités. Les cinq variantes géographiques sont validées et les deux écarts de sièges sont expliqués comme vacances datées, sans imputation d’élu.
+V11 contient 67 onglets. Elle préserve intégralement V10 et ajoute à `FACT_OBSERVATION` les 1 538 populations légales 2014 et les 1 538 populations municipales 2024 validées par V10-QA-3. Aucun des 25 couples indicateur-millésime `NO_GO` n’est ingéré.
 
 ## Installation
 
@@ -50,11 +51,15 @@ python -m morocco_elections build v9
 python -m morocco_elections docs v9
 python -m morocco_elections build v10
 python -m morocco_elections docs v10
+python -m morocco_elections build v11
+python -m morocco_elections docs v11
 python -m morocco_elections validate --mode full --release v10 --baseline v9
+python -m morocco_elections validate --mode full --release v11 --baseline v10
 python -m morocco_elections quality baseline --release v10 --as-of 2026-09-08
 python -m morocco_elections qualify electoral-denominators --baseline v10 --as-of 2026-09-08
 python -m morocco_elections qualify local-presidencies --baseline v10 --as-of 2026-09-08
 python -m morocco_elections qualify hcp-indicators --baseline v10 --as-of 2026-09-08
+python -m morocco_elections quality baseline --release v11 --as-of 2026-09-08
 python -m morocco_elections github publish-backlog
 ```
 
@@ -66,7 +71,7 @@ La qualification V10-QA-1 exige 3 076 inscrits communaux directement publiés. S
 
 La qualification V10-QA-2 évalue séparément les 135 présidences communales non résolues. Une commune passe uniquement avec une preuve officielle ou deux sources secondaires indépendantes établissant la personne et son parti; aucune présidence n'est déduite d'une tête de liste ou du plus grand parti.
 
-La qualification V10-QA-3 évalue chaque couple indicateur HCP × millésime au regard des 1 538 unités V10. Elle sépare les valeurs observées des formules dérivées, refuse l'interpolation et décide séparément de la comparabilité 2014–2024. Les classeurs candidats restent sous `data/staging/v10qa3/`, hors Git.
+La qualification V10-QA-3 évalue chaque couple indicateur HCP × millésime au regard des 1 538 unités V10. V11 promeut uniquement les deux apports nets validés : `population_legal` 2014 et `population_municipal` 2024. La population légale 2024 sert de contrôle exact et n’est pas dupliquée.
 
 ## Compatibilité V9
 

@@ -1,7 +1,7 @@
 {
-  "schema_version": 3,
-  "warehouse_version": "V10",
-  "last_verified": "2026-09-07",
+  "schema_version": 4,
+  "warehouse_version": "V11",
+  "last_verified": "2026-09-08",
   "sources": [
     {
       "source_id": "SRC_TAFRA_COMM2015_RAW_V9",
@@ -97,6 +97,38 @@
       "rows": 1541,
       "columns": 8,
       "status": "local_reference"
+    },
+    {
+      "source_id": "SRC_HCP_RGPH2014_INDIVIDUALS_V11",
+      "previous_local_path": "data/staging/v10qa3/source_candidates/rgph2014_individus.xlsx",
+      "local_path": "data/raw/hcp/rgph/2014/rgph2014_individus.xlsx",
+      "source_url": "https://www.hcp.ma/file/230045/",
+      "producer": "Haut-Commissariat au Plan",
+      "license": "official public; attribution retained; source file not redistributed",
+      "version": "RGPH 2014",
+      "sha256": "c20c1f7d08c1089bf4610f81a0eac89516a278fddb24b8577588284e2fc9a2d0",
+      "byte_size": 11296286,
+      "grain": "entité géographique × indicateur individuel",
+      "rows": 1981,
+      "columns": 171,
+      "sheet_index": 0,
+      "status": "ingested_partial_go_only"
+    },
+    {
+      "source_id": "SRC_HCP_RGPH2024_INDICATORS_V11",
+      "previous_local_path": "data/staging/v10qa3/source_candidates/rgph2024_indicateurs.xlsx",
+      "local_path": "data/raw/hcp/rgph/2024/rgph2024_indicateurs.xlsx",
+      "source_url": "https://www.hcp.ma/file/242671/",
+      "producer": "Haut-Commissariat au Plan",
+      "license": "official public; attribution retained; source file not redistributed",
+      "version": "RGPH 2024",
+      "sha256": "f3d96fcae3c10a2c194b2fe97ee8352a242fb3f36b1b63d4d2a7006176dc7c3e",
+      "byte_size": 7597863,
+      "grain": "entité géographique × indicateur démographique ou socio-économique",
+      "rows": 2019,
+      "columns": 191,
+      "sheet_index": 0,
+      "status": "ingested_partial_go_only"
     }
   ],
   "artifacts": [
@@ -123,6 +155,14 @@
       "local_path": "data/exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx",
       "sha256": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
       "byte_size": 17817641,
+      "sheet_count": 67,
+      "status": "local_export"
+    },
+    {
+      "artifact_id": "WAREHOUSE_V11_EXPORT",
+      "local_path": "data/exports/excel/v11/Morocco_Electoral_Data_Warehouse_V11.xlsx",
+      "sha256": "a201a214752e6cdc5eb9e80e5913aba9c9e574f11c21cb2460af966ff6bd8dd3",
+      "byte_size": 18021426,
       "sheet_count": 67,
       "status": "local_export"
     }
@@ -168,6 +208,9 @@
     {"file_id": "WAREHOUSE_V8", "previous_local_path": "Morocco_Electoral_Data_Warehouse_V8.xlsx", "local_path": "data/legacy/excel/v8/Morocco_Electoral_Data_Warehouse_V8.xlsx", "sha256": "01edd16fe6ef53a11239b2c7b49985dda4584d41bf07e27e97be7c80c17a38eb", "byte_size": 274171, "kind": "legacy_artifact", "sheets": 53},
     {"file_id": "WAREHOUSE_V9", "previous_local_path": "Morocco_Electoral_Data_Warehouse_V9.xlsx", "local_path": "data/exports/excel/v9/Morocco_Electoral_Data_Warehouse_V9.xlsx", "sha256": "a4a3c90e26f45d46d85f11fea4e686d21e2ebc71f415f49e3ff1852e5ebd38a8", "byte_size": 13835530, "kind": "export_artifact", "sheets": 64},
     {"file_id": "WAREHOUSE_V10", "previous_local_path": null, "local_path": "data/exports/excel/v10/Morocco_Electoral_Data_Warehouse_V10.xlsx", "sha256": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6", "byte_size": 17817641, "kind": "export_artifact", "sheets": 67},
+    {"file_id": "HCP_RGPH2014_INDIVIDUALS_V11", "previous_local_path": "data/staging/v10qa3/source_candidates/rgph2014_individus.xlsx", "local_path": "data/raw/hcp/rgph/2014/rgph2014_individus.xlsx", "sha256": "c20c1f7d08c1089bf4610f81a0eac89516a278fddb24b8577588284e2fc9a2d0", "byte_size": 11296286, "kind": "raw", "rows": 1981, "columns": 171},
+    {"file_id": "HCP_RGPH2024_INDICATORS_V11", "previous_local_path": "data/staging/v10qa3/source_candidates/rgph2024_indicateurs.xlsx", "local_path": "data/raw/hcp/rgph/2024/rgph2024_indicateurs.xlsx", "sha256": "f3d96fcae3c10a2c194b2fe97ee8352a242fb3f36b1b63d4d2a7006176dc7c3e", "byte_size": 7597863, "kind": "raw", "rows": 2019, "columns": 191},
+    {"file_id": "WAREHOUSE_V11", "previous_local_path": null, "local_path": "data/exports/excel/v11/Morocco_Electoral_Data_Warehouse_V11.xlsx", "sha256": "a201a214752e6cdc5eb9e80e5913aba9c9e574f11c21cb2460af966ff6bd8dd3", "byte_size": 18021426, "kind": "export_artifact", "sheets": 67},
     {"file_id": "FILE_EVIDENCE_HCP_RGPH2014_CODES", "previous_local_path": null, "local_path": "data/raw/evidence/v10/HCP_RGPH2014_codes.pdf", "sha256": "e4be135515f7ca72ac0b3a7dfaecd0ff1265911c978c317895c8ba0ec527393e", "byte_size": 1692920, "kind": "evidence"},
     {"file_id": "FILE_EVIDENCE_SGG_BO_7037", "previous_local_path": null, "local_path": "data/raw/evidence/v10/BO_7037_Ar.pdf", "sha256": "f41faa09cdf00616f7bbd386b577089bc4cf4deac096db7ebbb0d268fc273fbe", "byte_size": 629157, "kind": "evidence"}
   ]

@@ -22,7 +22,7 @@ def configure_paths(data_dir: str | Path | None = None) -> None:
     base.OUTPUT_DIR = paths.documentation_v10
     base.VERSION = "V10"
     base.AUDIT_SHEET = "WORKBOOK_AUDIT_V10"
-    base.STATUS_LEGEND = base.STATUS_LEGEND.replace("V9", "V10")
+    base.STATUS_LEGEND = base.STATUS_LEGEND.replace("V9", "V10").replace("V11", "V10")
 
 
 def _adapt(docs: dict[str, str], model: dict) -> dict[str, str]:

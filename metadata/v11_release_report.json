@@ -1,0 +1,55 @@
+{
+  "release": "V11",
+  "baseline": "V10",
+  "generated_on": "2026-09-08",
+  "status": "validated",
+  "workbooks": {
+    "V8": "01edd16fe6ef53a11239b2c7b49985dda4584d41bf07e27e97be7c80c17a38eb",
+    "V9": "a4a3c90e26f45d46d85f11fea4e686d21e2ebc71f415f49e3ff1852e5ebd38a8",
+    "V10": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "V11": "a201a214752e6cdc5eb9e80e5913aba9c9e574f11c21cb2460af966ff6bd8dd3"
+  },
+  "source_hashes": {
+    "SRC_HCP_RGPH2014_INDIVIDUALS_V11": "c20c1f7d08c1089bf4610f81a0eac89516a278fddb24b8577588284e2fc9a2d0",
+    "SRC_HCP_RGPH2024_INDICATORS_V11": "f3d96fcae3c10a2c194b2fe97ee8352a242fb3f36b1b63d4d2a7006176dc7c3e"
+  },
+  "volumes": {
+    "sheets": 67,
+    "FACT_OBSERVATION_V10": 127,
+    "FACT_OBSERVATION_V11": 3203,
+    "population_legal_2014": 1538,
+    "population_municipal_2024": 1538
+  },
+  "controls": {
+    "population_legal_2014_sum": 33848242,
+    "population_municipal_2024_sum": 36490591,
+    "population_legal_2024_sum": 36828330,
+    "population_legal_2024_differences": 0,
+    "no_go_ingested": 0,
+    "derived_values_ingested": 0,
+    "electoral_panels_changed": false
+  },
+  "allowed_changed_sheets": [
+    "DATA_COVERAGE",
+    "DATA_DICTIONARY",
+    "FACT_OBSERVATION",
+    "QUALITY_CONTROL",
+    "README",
+    "SOURCES",
+    "WORKBOOK_AUDIT_V11"
+  ],
+  "actual_changed_sheets": [
+    "DATA_COVERAGE",
+    "DATA_DICTIONARY",
+    "FACT_OBSERVATION",
+    "QUALITY_CONTROL",
+    "README",
+    "SOURCES",
+    "WORKBOOK_AUDIT_V11"
+  ],
+  "integrity": {
+    "v10_unchanged": true,
+    "source_hashes_unchanged": true,
+    "deterministic_export": true
+  }
+}
