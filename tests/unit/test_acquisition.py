@@ -8,9 +8,11 @@ import openpyxl
 from morocco_elections.sources.acquisition import (
     CATALOG_PATH,
     acquire,
+    build_inventory,
     load_catalog,
     profile_file,
     validate_catalog,
+    validate_inventory,
 )
 
 
@@ -136,3 +138,26 @@ def test_acquire_rejects_unexpected_format_before_raw_promotion(tmp_path: Path) 
         catalog_path=catalog_path,
     ) == 1
     assert not list(data_root.glob("raw/**/*"))
+
+
+def test_inventory_is_deterministic_and_contains_no_raw_rows(tmp_path: Path) -> None:
+    catalog_path = _catalog(tmp_path)
+    candidate = tmp_path / "candidate.csv"
+    candidate.write_text("geo_id,value\nMA-TEST,secret-row-value\n", encoding="utf-8")
+    data_root = tmp_path / "data"
+    assert acquire(
+        "TEST_SOURCE",
+        input_path=candidate,
+        data_dir=data_root,
+        as_of="2026-09-09",
+        catalog_path=catalog_path,
+    ) == 0
+
+    first = build_inventory(data_root, "2026-09-09")
+    second = build_inventory(data_root, "2026-09-09")
+
+    assert first == second
+    assert validate_inventory(first) == []
+    assert first["record_count"] == 1
+    assert first["records"][0]["tables"][0]["headers"] == ["geo_id", "value"]
+    assert "secret-row-value" not in json.dumps(first)

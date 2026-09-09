@@ -48,6 +48,7 @@ def test_all_structured_commands_are_registered() -> None:
         ("quality", "baseline", "--help"),
         ("github", "publish-backlog", "--help"),
         ("sources", "catalog", "--help"),
+        ("sources", "inventory", "--help"),
         ("sources", "acquire", "--help"),
     ):
         result = run_command(sys.executable, "-m", "morocco_elections", *args)

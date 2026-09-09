@@ -76,6 +76,10 @@ def test_acquisition_catalog_contract() -> None:
     assert validate_project.validate_acquisition_catalog() == []
 
 
+def test_acquisition_inventory_contract() -> None:
+    assert validate_project.validate_acquisition_inventory() == []
+
+
 def test_python_sources_parse() -> None:
     assert validate_project.validate_python_sources() == []
 

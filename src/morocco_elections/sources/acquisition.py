@@ -19,6 +19,7 @@ from morocco_elections.provenance import sha256_file
 
 
 CATALOG_PATH = PROJECT_ROOT / "metadata" / "acquisition_catalog.json"
+INVENTORY_PATH = PROJECT_ROOT / "metadata" / "acquisition_inventory.json"
 DOMAINS = {
     "elections",
     "parliament",
@@ -128,6 +129,156 @@ def catalog_summary(catalog_path: str | Path | None = None) -> int:
         "SOURCE_CATALOG_OK "
         f"candidates={len(candidates)} "
         + " ".join(f"{state.lower()}={count}" for state, count in by_state.items())
+    )
+    return 0
+
+
+def build_inventory(data_dir: str | Path | None, as_of: str) -> dict:
+    date.fromisoformat(as_of)
+    paths = get_paths(data_dir)
+    records: list[dict] = []
+    for record_path in sorted(paths.data_root.glob("raw/**/acquisition.json")):
+        try:
+            local = json.loads(record_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise AcquisitionError(f"Sidecar d'acquisition illisible: {record_path}: {exc}") from exc
+        profile = local.get("profile", {})
+        digest = str(profile.get("sha256", ""))
+        original_filename = str(local.get("original_filename", ""))
+        payload_path = record_path.parent / original_filename
+        if not re.fullmatch(r"[0-9a-f]{64}", digest) or not payload_path.is_file():
+            raise AcquisitionError(f"Sidecar ou payload incomplet: {record_path}")
+        if sha256_file(payload_path) != digest or payload_path.stat().st_size != profile.get("byte_size"):
+            raise AcquisitionError(f"Empreinte ou taille divergente: {payload_path}")
+        relative_path = Path("data") / payload_path.relative_to(paths.data_root)
+        tables = [
+            {
+                "name": table.get("name"),
+                "rows": table.get("rows"),
+                "columns": table.get("columns"),
+                "headers": table.get("headers", []),
+            }
+            for table in profile.get("sheets", [])
+        ]
+        records.append(
+            {
+                "acquisition_id": f"{local['source_id']}:{digest}",
+                "source_id": local["source_id"],
+                "title": local["title"],
+                "domain": local["domain"],
+                "producer": local["producer"],
+                "target_period": local["target_period"],
+                "reuse_status": local["reuse_status"],
+                "retrieved_at": local["retrieved_at"],
+                "initial_url": local.get("initial_url"),
+                "final_url": local.get("final_url"),
+                "etag": local.get("etag"),
+                "last_modified": local.get("last_modified"),
+                "local_path": relative_path.as_posix(),
+                "original_filename": original_filename,
+                "sha256": digest,
+                "byte_size": profile["byte_size"],
+                "format": profile["format"],
+                "profile_status": profile["status"],
+                "tables": tables,
+                "classification": local["classification"],
+                "canonical_ingestion_authorized": local["canonical_ingestion_authorized"],
+            }
+        )
+    records.sort(key=lambda item: (item["source_id"], item["sha256"]))
+    return {
+        "schema_version": 1,
+        "baseline_release": "V12",
+        "generated_on": as_of,
+        "record_count": len(records),
+        "total_bytes": sum(item["byte_size"] for item in records),
+        "records": records,
+    }
+
+
+def validate_inventory(inventory: dict) -> list[str]:
+    errors: list[str] = []
+    if inventory.get("schema_version") != 1 or inventory.get("baseline_release") != "V12":
+        errors.append("racine invalide: schema_version=1 et baseline_release=V12 attendus")
+    try:
+        date.fromisoformat(str(inventory.get("generated_on")))
+    except ValueError:
+        errors.append("generated_on doit être une date ISO")
+    records = inventory.get("records")
+    if not isinstance(records, list) or not records:
+        return [*errors, "records doit être une liste non vide"]
+    required = {
+        "acquisition_id",
+        "source_id",
+        "title",
+        "domain",
+        "producer",
+        "target_period",
+        "reuse_status",
+        "retrieved_at",
+        "local_path",
+        "original_filename",
+        "sha256",
+        "byte_size",
+        "format",
+        "profile_status",
+        "tables",
+        "classification",
+        "canonical_ingestion_authorized",
+    }
+    seen: set[str] = set()
+    for index, record in enumerate(records):
+        label = f"records[{index}]"
+        if not isinstance(record, dict):
+            errors.append(f"{label}: objet attendu")
+            continue
+        missing = sorted(required - record.keys())
+        if missing:
+            errors.append(f"{label}: champs absents: {', '.join(missing)}")
+        acquisition_id = record.get("acquisition_id")
+        if not acquisition_id or acquisition_id in seen:
+            errors.append(f"{label}: acquisition_id vide ou dupliqué")
+        else:
+            seen.add(acquisition_id)
+        if record.get("domain") not in DOMAINS:
+            errors.append(f"{label}: domaine inconnu")
+        if record.get("classification") not in CLASSIFICATIONS:
+            errors.append(f"{label}: classification inconnue")
+        if record.get("canonical_ingestion_authorized") is not False:
+            errors.append(f"{label}: une acquisition inventoriée ne peut autoriser l'ingestion")
+        if not re.fullmatch(r"[0-9a-f]{64}", str(record.get("sha256", ""))):
+            errors.append(f"{label}: SHA-256 invalide")
+        if not isinstance(record.get("byte_size"), int) or record.get("byte_size", 0) <= 0:
+            errors.append(f"{label}: byte_size positif attendu")
+        local_path = Path(str(record.get("local_path", "")))
+        if local_path.is_absolute() or ".." in local_path.parts or local_path.parts[:2] != ("data", "raw"):
+            errors.append(f"{label}: local_path doit rester sous data/raw")
+    if inventory.get("record_count") != len(records):
+        errors.append("record_count incohérent")
+    if inventory.get("total_bytes") != sum(item.get("byte_size", 0) for item in records if isinstance(item, dict)):
+        errors.append("total_bytes incohérent")
+    return errors
+
+
+def generate_inventory(
+    *, data_dir: str | Path | None = None, as_of: str | None = None, output: str | Path | None = None
+) -> int:
+    if not as_of:
+        print("SOURCE_INVENTORY_FAILED: --as-of est obligatoire pour une génération déterministe")
+        return 1
+    try:
+        inventory = build_inventory(data_dir, as_of)
+        errors = validate_inventory(inventory)
+        if errors:
+            raise AcquisitionError("; ".join(errors))
+        output_path = Path(output) if output else INVENTORY_PATH
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(inventory, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    except (AcquisitionError, OSError, ValueError) as exc:
+        print(f"SOURCE_INVENTORY_FAILED: {exc}")
+        return 1
+    print(
+        f"SOURCE_INVENTORY_OK records={inventory['record_count']} bytes={inventory['total_bytes']} output={output_path}"
     )
     return 0
 

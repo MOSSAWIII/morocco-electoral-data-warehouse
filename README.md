@@ -79,6 +79,7 @@ python -m morocco_elections validate --mode ci
 python -m morocco_elections validate --mode full
 python -m morocco_elections sources catalog
 python -m morocco_elections sources acquire --source-id <ID_CATALOGUE> --input <fichier> --as-of AAAA-MM-JJ
+python -m morocco_elections sources inventory --as-of AAAA-MM-JJ
 python -m morocco_elections build v9
 python -m morocco_elections docs v9
 python -m morocco_elections build v10

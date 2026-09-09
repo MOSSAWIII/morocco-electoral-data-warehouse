@@ -18,6 +18,7 @@ ROOT = PROJECT_ROOT
 MANIFEST_PATH = get_paths().source_manifest
 BACKLOG_PATH = get_paths().github_backlog
 ACQUISITION_CATALOG_PATH = PROJECT_ROOT / "metadata" / "acquisition_catalog.json"
+ACQUISITION_INVENTORY_PATH = PROJECT_ROOT / "metadata" / "acquisition_inventory.json"
 V10_REPORT_PATH = PROJECT_ROOT / "metadata" / "v10_release_report.json"
 V11_REPORT_PATH = PROJECT_ROOT / "metadata" / "v11_release_report.json"
 V12_QUALIFICATION_PATH = PROJECT_ROOT / "metadata" / "v12_parliament_qualification.json"
@@ -266,6 +267,24 @@ def validate_acquisition_catalog() -> list[str]:
     except RuntimeError as exc:
         return [str(exc)]
     return [f"Catalogue d'acquisition: {error}" for error in validate_catalog(catalog)]
+
+
+def validate_acquisition_inventory(data_dir: str | Path | None = None, full: bool = False) -> list[str]:
+    from morocco_elections.sources.acquisition import build_inventory, validate_inventory
+
+    try:
+        inventory = json.loads(ACQUISITION_INVENTORY_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"Inventaire d'acquisition illisible: {exc}"]
+    errors = [f"Inventaire d'acquisition: {error}" for error in validate_inventory(inventory)]
+    if full and not errors:
+        try:
+            rebuilt = build_inventory(data_dir, str(inventory["generated_on"]))
+        except RuntimeError as exc:
+            return [f"Inventaire d'acquisition: {exc}"]
+        if rebuilt != inventory:
+            errors.append("Inventaire d'acquisition non reproductible depuis les RAW locaux")
+    return errors
 
 
 def validate_v10_release_report(manifest: dict) -> list[str]:
@@ -1152,6 +1171,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_manifest(manifest))
     errors.extend(validate_backlog())
     errors.extend(validate_acquisition_catalog())
+    errors.extend(validate_acquisition_inventory())
     errors.extend(validate_v10_release_report(manifest))
     errors.extend(validate_v11_release_report(manifest))
     errors.extend(validate_v12_qualification(manifest))
@@ -1178,6 +1198,8 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
             errors.extend(validate_hcp_indicator_artifacts(data_dir, full=True))
         if not errors:
             errors.extend(validate_v11_quality_baseline_artifacts(data_dir, full=True))
+        if not errors:
+            errors.extend(validate_acquisition_inventory(data_dir, full=True))
     return errors
 
 
