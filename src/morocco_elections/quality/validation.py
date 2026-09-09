@@ -19,6 +19,7 @@ MANIFEST_PATH = get_paths().source_manifest
 BACKLOG_PATH = get_paths().github_backlog
 ACQUISITION_CATALOG_PATH = PROJECT_ROOT / "metadata" / "acquisition_catalog.json"
 ACQUISITION_INVENTORY_PATH = PROJECT_ROOT / "metadata" / "acquisition_inventory.json"
+ONTOLOGY_PATH = PROJECT_ROOT / "metadata" / "ontology_v1.json"
 V10_REPORT_PATH = PROJECT_ROOT / "metadata" / "v10_release_report.json"
 V11_REPORT_PATH = PROJECT_ROOT / "metadata" / "v11_release_report.json"
 V12_QUALIFICATION_PATH = PROJECT_ROOT / "metadata" / "v12_parliament_qualification.json"
@@ -285,6 +286,16 @@ def validate_acquisition_inventory(data_dir: str | Path | None = None, full: boo
         if rebuilt != inventory:
             errors.append("Inventaire d'acquisition non reproductible depuis les RAW locaux")
     return errors
+
+
+def validate_ontology_contract() -> list[str]:
+    from morocco_elections.ontology import load_ontology, validate_ontology
+
+    try:
+        ontology = load_ontology(ONTOLOGY_PATH)
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"Ontologie V1 illisible: {exc}"]
+    return [f"Ontologie V1: {error}" for error in validate_ontology(ontology)]
 
 
 def validate_v10_release_report(manifest: dict) -> list[str]:
@@ -1172,6 +1183,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_backlog())
     errors.extend(validate_acquisition_catalog())
     errors.extend(validate_acquisition_inventory())
+    errors.extend(validate_ontology_contract())
     errors.extend(validate_v10_release_report(manifest))
     errors.extend(validate_v11_release_report(manifest))
     errors.extend(validate_v12_qualification(manifest))

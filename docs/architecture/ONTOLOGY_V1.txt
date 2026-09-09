@@ -1,0 +1,57 @@
+ONTOLOGIE V1 — CONTRAT LOGIQUE DU WAREHOUSE ÉLECTORAL MAROCAIN
+
+Version : 1.0.0
+Baseline observée : V12
+Source de vérité machine : metadata/ontology_v1.json
+
+OBJECTIF
+
+L'ontologie V1 définit un seul modèle logique pour les données électorales,
+territoriales, institutionnelles et socio-économiques. Elle ne remplace pas les
+releases V9–V12 et ne charge aucune nouvelle donnée. Excel, CSV, Parquet,
+DuckDB et, si nécessaire, PostgreSQL devront exposer les mêmes faits.
+
+NOYAU
+
+Les dimensions conformes sont : territoire, temps, élection, course électorale,
+parti, personne, institution, rôle, type d'activité, thème, indicateur, programme
+et source/preuve.
+
+`contest_id` représente une course électorale datée : circonscription, liste
+locale, régionale ou nationale. Il relie le scrutin, le territoire, le type de
+liste et la version de découpage. Il évite de confondre une entité administrative
+avec une circonscription électorale.
+
+Les faits cibles sont : résultat électoral, mobilisation, candidature, mandat,
+gouvernance locale, activité parlementaire, observation territoriale et programme
+public. Les structures V12 correspondantes restent indiquées dans le JSON; un
+statut PARTIAL ou PLANNED interdit de prétendre que le contrat cible est déjà
+entièrement implémenté.
+
+IDENTITÉS
+
+Chaque source conserve ses propres identifiants et libellés. Le crosswalk commun
+relie une clé source à une clé canonique avec méthode, confiance, preuve, revue et
+validité. Un code inconnu ou une personne ambiguë reste non résolu. Un nom seul ne
+constitue jamais une clé de jointure.
+
+TEMPS
+
+Les dates d'événement, de validité, d'observation, de publication et de récupération
+ont des sens distincts. Une affiliation, un mandat, une fonction, une institution
+ou un découpage pouvant changer doit porter sa période propre. Une valeur HCP 2024
+ne devient jamais une valeur électorale 2021 par simple jointure.
+
+CUBES
+
+Sept cubes sont dérivés des faits : résultats électoraux, mobilisation, carrières
+politiques, activité parlementaire, gouvernance locale, indicateurs territoriaux
+et programmes publics. Ils sont des vues analytiques reproductibles, jamais des
+sources de correction du canonique.
+
+RÈGLE DE LIVRAISON
+
+Une future intégration doit d'abord déclarer le grain du fait, les dimensions
+référencées, les identifiants source, les dates pertinentes, la preuve et les
+mesures observées ou dérivées. Toute extension compatible ajoute un concept ou
+une relation; elle ne réinterprète pas silencieusement les identifiants existants.

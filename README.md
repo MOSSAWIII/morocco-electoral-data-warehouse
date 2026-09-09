@@ -32,8 +32,8 @@ Le cap d'expansion, de normalisation et de publication est défini dans le [road
 - `docs/v11/ontology/` : les 15 documents UTF-8 de l’ontologie V11.
 - `docs/v12/ontology/` : l’unique documentation d’entrée de la release courante V12 (15 documents UTF-8).
 - `docs/research/` : preuves historiques des qualifications et baselines QA ; elles ne constituent pas la roadmap active.
-- `docs/architecture/` : règles de dépendance et flux futurs.
-- `metadata/` : provenance physique des sources et backlog GitHub.
+- `docs/architecture/` : règles de dépendance, flux et synthèse lisible de l'ontologie V1.
+- `metadata/` : provenance physique, backlog GitHub et contrat machine-readable `ontology_v1.json`.
 - `database/` et `infrastructure/postgres/` : contrats d'une option PostgreSQL future.
 - `tests/unit/`, `tests/integration/` et `tests/fixtures/synthetic/` : stratégie de test.
 
@@ -54,6 +54,14 @@ Commencer par [`docs/v12/ontology/00_INDEX_ET_MODE_EMPLOI.txt`](docs/v12/ontolog
 - `PARLIAMENTARY_QUESTIONS` est au grain `source × question écrite`.
 
 Avant tout calcul de taux, vérifier dans le dictionnaire que le dénominateur est réellement publié. Une clé nullable, notamment `PARLIAMENTARY_QUESTIONS.person_id`, ne doit jamais être remplacée par un rapprochement implicite.
+
+Le contrat logique destiné aux prochaines intégrations se trouve dans
+[`metadata/ontology_v1.json`](metadata/ontology_v1.json), avec une synthèse dans
+[`docs/architecture/ONTOLOGY_V1.txt`](docs/architecture/ONTOLOGY_V1.txt). Il
+introduit notamment `contest_id` pour distinguer une course électorale datée
+d'une simple entité administrative. Son existence ne signifie pas que toutes
+les structures cibles sont déjà alimentées : leur maturité est déclarée
+`CURRENT`, `PARTIAL` ou `PLANNED`.
 
 ## Installation
 
