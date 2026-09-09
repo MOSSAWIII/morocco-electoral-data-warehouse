@@ -49,10 +49,11 @@ def test_all_structured_commands_are_registered() -> None:
         assert result.returncode == 0, result.stdout + result.stderr
 
 
-def test_v10_versions_are_registered() -> None:
-    for command in ("build", "docs"):
-        result = run_command(sys.executable, "-m", "morocco_elections", command, "v10", "--help")
-        assert result.returncode == 0, result.stdout + result.stderr
+def test_release_versions_are_registered() -> None:
+    for version in ("v9", "v10", "v11"):
+        for command in ("build", "docs"):
+            result = run_command(sys.executable, "-m", "morocco_elections", command, version, "--help")
+            assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_full_mode_reports_missing_override_without_writing(tmp_path: Path) -> None:
@@ -79,6 +80,22 @@ def test_quality_baseline_reports_missing_v10(tmp_path: Path) -> None:
         "baseline",
         "--release",
         "v10",
+        "--data-dir",
+        str(tmp_path),
+    )
+    assert result.returncode == 1
+    assert "QUALITY_BASELINE_FAILED" in result.stdout
+
+
+def test_v11_quality_baseline_reports_missing_workbook(tmp_path: Path) -> None:
+    result = run_command(
+        sys.executable,
+        "-m",
+        "morocco_elections",
+        "quality",
+        "baseline",
+        "--release",
+        "v11",
         "--data-dir",
         str(tmp_path),
     )

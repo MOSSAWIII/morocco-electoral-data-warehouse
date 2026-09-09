@@ -1,0 +1,42 @@
+﻿TEMPS, CYCLES ET ÉLECTIONS
+==========================
+
+VERSION           : V11
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V11.xlsx
+DATE DE GÉNÉRATION: 2026-09-08
+PÉRIMÈTRE         : Hiérarchie temporelle et validité longitudinale.
+RENVOIS           : 03_DIMENSIONS_CONFORMES.txt, 04_HIERARCHIE_GEOGRAPHIQUE.txt, 13_METRIQUES_DERIVEES_ET_REGLES_TEMPORELLES.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V11.
+DÉRIVÉ        : valeur calculée à partir de données V11 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+DIM_TIME contient 17 lignes et DIM_ELECTION 9 lignes.
+
+NIVEAUX TEMPORELS
+- date exacte : time_id au format date lorsque disponible;
+- année : référence censitaire, budgétaire ou statistique;
+- campagne : campaign_start, campaign_end et campaign_phase;
+- scrutin : election_date et election_id;
+- cycle : electoral_cycle;
+- législature : parlement/legislature, par exemple 2007-2011 à 2021-2026;
+- validité : valid_from et valid_to.
+
+DISCIPLINE
+1. Une variable doit conserver son année d'observation réelle.
+2. Une jointure à une élection renseigne election_year et temporal_distance.
+3. temporal_join_method appartient à : exact_year, previous_observation,
+   next_observation, interpolated ou census_reference.
+4. Une valeur RGPH 2024 jointe à 2015 reste une référence 2024, distance 9.
+5. La même valeur jointe à 2021 reste une référence 2024, distance 3.
+6. Une législature est une période; elle ne doit pas être réduite à son année de début.
+7. Un mandat de remplacement conserve dateEntree et dateSortie propres.
+
+FRONTIÈRES
+Le découpage utilisé est compatible avec le cadre administratif en vigueur depuis
+2015, mais temporal_boundary_status doit rester consulté. Une homonymie ou une
+continuité de nom ne prouve pas à elle seule une continuité de périmètre.

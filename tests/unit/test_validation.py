@@ -13,9 +13,9 @@ from morocco_elections.quality import validation as validate_project  # noqa: E4
 def test_manifest_contract() -> None:
     manifest = validate_project.load_manifest()
     assert validate_project.validate_manifest(manifest) == []
-    assert len(manifest["sources"]) == 6
-    assert len(manifest["artifacts"]) == 3
-    assert len(manifest["physical_files"]) == 22
+    assert len(manifest["sources"]) == 8
+    assert len(manifest["artifacts"]) == 4
+    assert len(manifest["physical_files"]) == 25
     assert len(manifest["evidence"]) == 2
 
 
@@ -27,6 +27,11 @@ def test_documentation_contract() -> None:
 def test_v10_release_report_contract() -> None:
     manifest = validate_project.load_manifest()
     assert validate_project.validate_v10_release_report(manifest) == []
+
+
+def test_v11_release_report_contract() -> None:
+    manifest = validate_project.load_manifest()
+    assert validate_project.validate_v11_release_report(manifest) == []
 
 
 def test_v11a_artifact_contract() -> None:
@@ -47,6 +52,10 @@ def test_electoral_denominators_contract() -> None:
 
 def test_hcp_indicators_contract() -> None:
     assert validate_project.validate_hcp_indicator_artifacts() == []
+
+
+def test_v11_quality_baseline_contract() -> None:
+    assert validate_project.validate_v11_quality_baseline_artifacts() == []
 
 
 def test_github_backlog_contract() -> None:

@@ -1,0 +1,52 @@
+﻿HIÉRARCHIE GÉOGRAPHIQUE
+=======================
+
+VERSION           : V11
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V11.xlsx
+DATE DE GÉNÉRATION: 2026-09-08
+PÉRIMÈTRE         : Niveaux territoriaux, parentés et règles de forage.
+RENVOIS           : 03_DIMENSIONS_CONFORMES.txt, 05_CROSSWALKS_ET_IDENTITES.txt, 12_REGLES_D_INTEGRITE_ET_JOINTURE.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V11.
+DÉRIVÉ        : valeur calculée à partir de données V11 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+HIÉRARCHIE CANONIQUE
+MAR
+  → MA-xx                         région
+    → MA-xx-xxx                   province ou préfecture
+      → MA-xx-xxx-xxxx            commune ou arrondissement
+        → circonscription communale, lorsque disponible
+        → fraction, cible future
+          → douar, cible future
+
+OBSERVÉ
+- DIM_GEO contient 1666 lignes, incluant les niveaux historiques et canoniques.
+- Le référentiel électoral canonique couvre 1 538 unités : 1 497 communes et
+  41 arrondissements selon la structure HCP exploitée par V10.
+- CROSSWALK_GEO contient 3076 lignes : deux raccords
+  élection-spécifiques pour chacune des 1 538 unités.
+
+RÈGLES DE PARENTÉ
+- parent_geo_id doit exister dans DIM_GEO, sauf racine explicitement admise.
+- Une commune/arrondissement a exactement une province/préfecture pour une période donnée.
+- Une province/préfecture a exactement une région pour une période donnée.
+- Un changement de frontière impose une nouvelle période de validité ou un statut de compatibilité temporelle.
+- Une circonscription n'est pas assimilée à une commune, même si leurs noms coïncident.
+- Un douar ne devient jamais grain électoral sans résultat électoral réellement publié à ce niveau.
+
+JOINTURES AUTORISÉES
+Fait canonique.geo_id → DIM_GEO.geo_id.
+Clé TAFRA idCommune → CROSSWALK_GEO.source_geo_id → canonical_geo_id.
+canonical_geo_id → DIM_GEO.geo_id.
+
+JOINTURES INTERDITES
+- commune seule;
+- commune sans province/préfecture;
+- correspondance fuzzy sans parent géographique;
+- code administratif historique interprété comme code courant sans validité;
+- arrondissement agrégé avec sa commune mère sans règle d'agrégation explicite.

@@ -101,8 +101,8 @@
     },
     {
       "title": "Ajouter les indicateurs HCP communaux 2014–2024",
-      "state": "open",
-      "close_reason": null,
+      "state": "closed",
+      "close_reason": "completed",
       "milestone": "V11 — Pouvoir local et socio-économie",
       "labels": ["data", "source", "qa"],
       "depends_on": ["Valider les cinq crosswalks géographiques et les deux écarts de sièges"],
