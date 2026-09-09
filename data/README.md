@@ -5,7 +5,7 @@ Ce répertoire contient des données non versionnées. Seul ce contrat est suivi
 - `raw/` : octets sources immuables, classés par producteur et domaine.
 - `legacy/` : entrées historiques nécessaires à la reproductibilité, notamment V8.
 - `staging/` : données décodées et normalisées, recréables depuis RAW.
-- `processed/` : tables canoniques intermédiaires avant chargement PostgreSQL.
+- `processed/` : tables canoniques intermédiaires indépendantes du moteur de stockage.
 - `exports/` : produits dérivés, notamment les classeurs Excel.
 - `tmp/` : travail temporaire supprimable.
 

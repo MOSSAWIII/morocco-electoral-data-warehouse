@@ -11,6 +11,7 @@ from typing import Any
 import pandas as pd
 
 from morocco_elections.config import get_paths
+from morocco_elections.provenance import sha256_file
 
 EXPECTED_SHEETS = ["donnees", "dictionnaire", "notes"]
 EXPECTED_COLUMNS = [
@@ -48,14 +49,6 @@ class Contract:
     expected_columns: int = 38
     expected_units: int = 116
     expected_years: tuple[int, ...] = (2020, 2021, 2022, 2023)
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def _plain(value: Any) -> Any:

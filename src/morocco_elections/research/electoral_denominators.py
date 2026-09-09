@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 from datetime import date
@@ -10,6 +9,7 @@ from typing import Any
 import pandas as pd
 
 from morocco_elections.config import PROJECT_ROOT, get_paths
+from morocco_elections.provenance import sha256_file
 
 
 EXPECTED_ROWS = 1_538
@@ -105,14 +105,6 @@ RESEARCH_SOURCES = [
         "candidate_status": "known_missing",
     },
 ]
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def _check(check_id: str, passed: bool, observed: Any, expected: Any, note: str = "") -> dict[str, Any]:

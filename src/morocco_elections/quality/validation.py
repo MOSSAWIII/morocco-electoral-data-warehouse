@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import ast
-import hashlib
 import json
 import re
 import subprocess
@@ -13,6 +12,7 @@ from typing import Iterable
 import openpyxl
 
 from morocco_elections.config import PROJECT_ROOT, get_paths, resolve_manifest_path
+from morocco_elections.provenance import sha256_file as sha256
 
 ROOT = PROJECT_ROOT
 MANIFEST_PATH = get_paths().source_manifest
@@ -139,14 +139,6 @@ REQUIRED_EVIDENCE_FIELDS = {"evidence_id", "local_path", "source_url", "publishe
 
 class ValidationError(RuntimeError):
     pass
-
-
-def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def load_manifest(path: Path | None = None) -> dict:

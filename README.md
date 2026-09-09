@@ -5,10 +5,21 @@ Warehouse quantitatif consacré aux élections, à la représentation et à la g
 ## Principes
 
 - Les RAW sont immuables et restent hors de Git.
-- Le flux autorisé est `RAW → STAGING → PROCESSED → POSTGRESQL → EXPORTS`.
-- PostgreSQL deviendra la couche canonique ; Excel restera un produit d’export.
+- Le flux actuel est `RAW → STAGING → TABLES CANONIQUES VERSIONNÉES → EXPORTS`.
+- PostgreSQL reste une option d'exploitation future, à déclencher sur un besoin concret ; Excel est l'export analytique actuel.
 - Toute donnée est qualifiée : `OBSERVÉ`, `DÉRIVÉ`, `STRUCTURE VIDE`, `PILOTE` ou `BLOQUÉ`.
 - Une valeur absente n’est jamais reconstruite sans source et une métrique dérivée n’est jamais présentée comme officielle.
+
+## Produit final
+
+Le projet vise quatre produits complémentaires, dans cet ordre :
+
+1. des données électorales canoniques et versionnées ;
+2. une provenance et des limites scientifiques explicites ;
+3. un accès simple pour les analystes ;
+4. des analyses de référence démontrant ce que les données permettent réellement de conclure.
+
+La qualité protège ces produits, mais n'est pas un produit autonome. Le succès se mesure aux questions analytiques correctement traitées, pas au nombre de tables, documents ou contrôles.
 
 ## Organisation
 
@@ -17,10 +28,10 @@ Warehouse quantitatif consacré aux élections, à la représentation et à la g
 - `docs/v9/ontology/` : les 15 documents UTF-8 de l’ontologie V9.
 - `docs/v10/ontology/` : les 15 documents UTF-8 de l’ontologie V10.
 - `docs/v11/ontology/` : les 15 documents UTF-8 de l’ontologie V11.
-- `docs/research/` : rapports de qualification et baseline QA générée.
+- `docs/research/` : preuves historiques des qualifications et baselines QA ; elles ne constituent pas la roadmap active.
 - `docs/architecture/` : règles de dépendance et flux futurs.
 - `metadata/` : provenance physique des sources et backlog GitHub.
-- `database/` et `infrastructure/postgres/` : contrats réservés à V13.
+- `database/` et `infrastructure/postgres/` : contrats d'une option PostgreSQL future.
 - `tests/unit/`, `tests/integration/` et `tests/fixtures/synthetic/` : stratégie de test.
 
 V11 contient 67 onglets. Elle préserve intégralement V10 et ajoute à `FACT_OBSERVATION` les 1 538 populations légales 2014 et les 1 538 populations municipales 2024 validées par V10-QA-3. Aucun des 25 couples indicateur-millésime `NO_GO` n’est ingéré.
@@ -63,15 +74,21 @@ python -m morocco_elections quality baseline --release v11 --as-of 2026-09-08
 python -m morocco_elections github publish-backlog
 ```
 
-Le mode `ci` fonctionne sans données. Le mode `full` vérifie les empreintes, volumes, documents, 67 onglets V10 et différences autorisées par rapport à V9 sans écrire de fichier.
+Le mode `ci` fonctionne sans données. Le mode `full` vérifie les empreintes, volumes, documents, onglets et différences autorisées de la release demandée sans écrire de fichier.
 
-La baseline V10-QA écrit `metadata/v10_quality_baseline.json`, source de vérité machine, puis génère `docs/research/V10_QUALITY_BASELINE.txt`. Elle ne modifie ni V10 ni les RAW et n'attribue aucune note globale.
+Les commandes de qualification restent disponibles pour reproduire les décisions historiques. Elles ne doivent être relancées ou étendues qu'en présence d'une nouvelle source ou preuve crédible. Une qualification `NO_GO` ne déclenche ni release ni export.
 
-La qualification V10-QA-1 exige 3 076 inscrits communaux directement publiés. Sans source officielle complète pour 2015 et 2021, elle produit `NO_GO` sans reconstruire ni ingérer de valeur.
+## Cap actuel
 
-La qualification V10-QA-2 évalue séparément les 135 présidences communales non résolues. Une commune passe uniquement avec une preuve officielle ou deux sources secondaires indépendantes établissant la personne et son parti; aucune présidence n'est déduite d'une tête de liste ou du plus grand parti.
+La roadmap active est volontairement limitée :
 
-La qualification V10-QA-3 évalue chaque couple indicateur HCP × millésime au regard des 1 538 unités V10. V11 promeut uniquement les deux apports nets validés : `population_legal` 2014 et `population_municipal` 2024. La population légale 2024 sert de contrôle exact et n’est pas dupliquée.
+1. produire des analyses de référence à partir de V11 ;
+2. qualifier une nouvelle source seulement après avoir confirmé son accessibilité, sa provenance et son potentiel — les questions parlementaires sont le prochain candidat ;
+3. préparer PostgreSQL seulement lorsqu'un besoin d'interrogation, de collaboration ou de performance le justifie.
+
+Watchlist passive, sans développement en l'absence de preuve nouvelle : inscrits communaux 2015–2021, 135 présidences non résolues, conseils communaux 2015 et SMIIG. Les 25 couples HCP restés `NO_GO` ne sont pas chargés.
+
+Règles de proportionnalité : une release correspond à un changement des données canoniques ou de leur schéma ; un qualificateur complet suppose une source candidate crédible ; une abstraction partagée suppose au moins deux usages réels ; un seul chantier principal de données est conduit à la fois.
 
 ## Compatibilité V9
 
@@ -92,4 +109,4 @@ Les chemins attendus sont définis dans `metadata/source_manifest.json`. RAW, V8
 
 La branche `main` reçoit les changements par pull request après réussite de la CI. Utiliser `research/...` pour les qualifications, `feat/...` ou `fix/...` pour les fonctions métier et `chore/...` pour l’infrastructure.
 
-Le backlog hors ligne définit sept chantiers et quatre jalons dans `metadata/github_backlog.json`. Sa publication restera différée jusqu’à la création d’un dépôt GitHub distant.
+Le backlog versionné définit huit issues et quatre jalons dans `metadata/github_backlog.json`. Le dépôt distant est privé ; le backlog sert de registre de pilotage et se publie avec `python -m morocco_elections github publish-backlog`.
