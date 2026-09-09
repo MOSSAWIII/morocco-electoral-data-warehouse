@@ -66,6 +66,7 @@ python -m morocco_elections build v11
 python -m morocco_elections docs v11
 python -m morocco_elections validate --mode full --release v10 --baseline v9
 python -m morocco_elections validate --mode full --release v11 --baseline v10
+python -m morocco_elections analyze v11
 python -m morocco_elections quality baseline --release v10 --as-of 2026-09-08
 python -m morocco_elections qualify electoral-denominators --baseline v10 --as-of 2026-09-08
 python -m morocco_elections qualify local-presidencies --baseline v10 --as-of 2026-09-08
@@ -77,6 +78,8 @@ python -m morocco_elections github publish-backlog
 Le mode `ci` fonctionne sans données. Le mode `full` vérifie les empreintes, volumes, documents, onglets et différences autorisées de la release demandée sans écrire de fichier.
 
 Les commandes de qualification restent disponibles pour reproduire les décisions historiques. Elles ne doivent être relancées ou étendues qu'en présence d'une nouvelle source ou preuve crédible. Une qualification `NO_GO` ne déclenche ni release ni export.
+
+`analyze v11` lit le classeur validé sans rien écrire et exécute cinq analyses de référence. Chaque résultat affiche son périmètre et sa limitation scientifique ; `--format json` fournit la même sortie sous forme structurée.
 
 ## Cap actuel
 

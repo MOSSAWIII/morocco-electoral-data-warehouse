@@ -21,6 +21,11 @@ def build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--release", choices=("v9", "v10", "v11", "all"), default="all")
     validate.add_argument("--baseline", choices=("v9", "v10"))
 
+    analyze = commands.add_parser("analyze", help="Exécuter les analyses de référence d'une release validée")
+    analyze.add_argument("version", choices=("v11",))
+    analyze.add_argument("--data-dir")
+    analyze.add_argument("--format", choices=("text", "json"), default="text")
+
     qualify = commands.add_parser("qualify", help="Qualifier une source candidate sans l'ingérer")
     qualification = qualify.add_subparsers(dest="qualification", required=True)
     councils = qualification.add_parser("councils-2015", help="Qualifier les conseils communaux de 2015")
@@ -105,6 +110,10 @@ def main(argv: list[str] | None = None) -> int:
         from morocco_elections.quality.validation import report
 
         return report(mode=args.mode, data_dir=args.data_dir, release=args.release, baseline=args.baseline)
+    if args.command == "analyze" and args.version == "v11":
+        from morocco_elections.analysis.v11 import run
+
+        return run(data_dir=args.data_dir, output_format=args.format)
     if args.command == "qualify" and args.qualification == "councils-2015":
         from morocco_elections.research.councils_2015 import qualify_candidate
 
