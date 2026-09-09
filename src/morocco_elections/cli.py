@@ -107,6 +107,14 @@ def build_parser() -> argparse.ArgumentParser:
     acquire.add_argument("--as-of")
     acquire.add_argument("--data-dir")
     acquire.add_argument("--catalog")
+    electoral_profile = source_commands.add_parser(
+        "profile-electoral-archives", help="Profiler les sept archives électorales acquises pour V13"
+    )
+    electoral_profile.add_argument("--baseline", choices=("v12",), default="v12")
+    electoral_profile.add_argument("--as-of", required=True)
+    electoral_profile.add_argument("--data-dir")
+    electoral_profile.add_argument("--output")
+    electoral_profile.add_argument("--report-output")
     return parser
 
 
@@ -245,5 +253,15 @@ def main(argv: list[str] | None = None) -> int:
             as_of=args.as_of,
             data_dir=args.data_dir,
             catalog_path=args.catalog,
+        )
+    if args.command == "sources" and args.source_command == "profile-electoral-archives":
+        from morocco_elections.research.electoral_archives import generate
+
+        return generate(
+            data_dir=args.data_dir,
+            as_of=args.as_of,
+            baseline=args.baseline,
+            output=args.output,
+            report_output=args.report_output,
         )
     raise AssertionError("Commande non gérée")
