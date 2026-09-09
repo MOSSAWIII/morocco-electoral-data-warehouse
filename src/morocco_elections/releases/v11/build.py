@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 import zipfile
@@ -12,6 +11,7 @@ import openpyxl
 
 from morocco_elections.config import PROJECT_ROOT, get_paths
 from morocco_elections.legacy.v9 import build as legacy
+from morocco_elections.provenance import sha256_file
 from morocco_elections.research import hcp_indicators as hcp
 
 
@@ -33,14 +33,6 @@ ALLOWED_CHANGED_SHEETS = {
     "QUALITY_CONTROL",
     "WORKBOOK_AUDIT_V11",
 }
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def _save_deterministic(workbook: openpyxl.Workbook, target: Path) -> None:

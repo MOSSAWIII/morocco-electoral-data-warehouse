@@ -1,4 +1,3 @@
 # PostgreSQL local
 
-Le futur environnement Docker Compose de V13 sera défini ici. Aucun service ni volume de base n’est créé pendant la réorganisation.
-
+Un environnement Docker Compose sera défini ici uniquement si le besoin PostgreSQL est confirmé. Aucun service ni volume de base n’est actuellement requis.

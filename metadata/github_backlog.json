@@ -9,17 +9,17 @@
     },
     {
       "title": "V11 — Pouvoir local et socio-économie",
-      "description": "Composition 2015, SMIIG, gouvernance communale et indicateurs HCP.",
+      "description": "Indicateurs HCP livrés en v11.0.0 ; conseils 2015 et SMIIG conservés en watchlist bloquée jusqu’à preuve nouvelle.",
       "state": "open"
     },
     {
       "title": "V12 — Activité parlementaire",
-      "description": "Questions parlementaires et trajectoires longitudinales d’activité.",
+      "description": "Qualification puis, uniquement en cas de source crédible, questions parlementaires et trajectoires longitudinales d’activité.",
       "state": "open"
     },
     {
       "title": "V13 — Canonique PostgreSQL",
-      "description": "PostgreSQL devient la source canonique et Excel un export reproductible.",
+      "description": "Option d’industrialisation à déclencher lorsqu’un besoin concret d’exploitation justifie PostgreSQL.",
       "state": "open"
     }
   ],
@@ -123,7 +123,8 @@
       "depends_on": ["Corriger les identités locales sans altérer les RAW"],
       "blocks": [],
       "acceptance": [
-        "Les ressources 2017–2023 sont inventoriées, téléchargées et empreintées.",
+        "Une source candidate crédible, accessible et réutilisable est identifiée avant le développement d’un qualificateur complet.",
+        "La qualification conclut GO avant toute ingestion des ressources 2017–2023.",
         "Chaque question conserve sa date, son auteur, son groupe, son destinataire, son statut et sa source.",
         "Le rattachement à DIM_PERSON est déterministe ou explicitement non résolu.",
         "Les trajectoires sont calculées par personne × législature × période avec dénominateurs et nullités documentés."
@@ -145,6 +146,7 @@
       ],
       "blocks": [],
       "acceptance": [
+        "Un besoin concret d’interrogation, de collaboration ou de performance est documenté avant le démarrage de la migration.",
         "Docker démarre une instance PostgreSQL locale reproductible sans secret versionné.",
         "Les migrations créent dimensions, crosswalks, faits, provenance et QA avec contraintes explicites.",
         "Les chargements sont idempotents et conservent les empreintes des RAW.",

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 from datetime import date, datetime
@@ -10,6 +9,7 @@ from typing import Any
 import pandas as pd
 
 from morocco_elections.config import PROJECT_ROOT, get_paths
+from morocco_elections.provenance import sha256_file
 
 
 EXPECTED_UNRESOLVED = 135
@@ -60,14 +60,6 @@ RESEARCH_SOURCES = [
         "finding": "Piste secondaire seulement; deux origines indépendantes sont nécessaires en l'absence de preuve officielle.",
     },
 ]
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def _records(workbook: Path, sheet: str) -> pd.DataFrame:

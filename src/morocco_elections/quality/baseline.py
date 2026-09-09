@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import hashlib
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -9,6 +8,7 @@ from typing import Any
 import openpyxl
 
 from morocco_elections.config import PROJECT_ROOT, get_paths
+from morocco_elections.provenance import sha256_file as _sha256
 
 
 QUALITY_STATUSES = {"COMPLET", "PARTIEL", "BLOQUÉ", "NON ÉVALUÉ"}
@@ -31,14 +31,6 @@ def _records(workbook: openpyxl.Workbook, sheet_name: str) -> list[dict[str, Any
 
 def _count_rows(workbook: openpyxl.Workbook, sheet_name: str) -> int:
     return sum(1 for row in workbook[sheet_name].iter_rows(min_row=5, values_only=True) if any(value is not None for value in row))
-
-
-def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def _as_int(value: Any) -> int:

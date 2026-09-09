@@ -8,7 +8,7 @@ La protection serveur de `main` n'est pas disponible pour ce dépôt privé avec
 2. Créer une branche `chore/<sujet>`, `research/<sujet>`, `feat/<sujet>` ou `fix/<sujet>`.
 3. Limiter chaque pull request à un changement cohérent.
 4. Exécuter `python -m morocco_elections validate --mode ci` et les tests.
-5. Exécuter aussi `--mode full` pour toute modification touchant le modèle, les sources, les volumes ou la documentation V9.
+5. Exécuter aussi `--mode full` pour toute modification touchant le modèle, les sources, les volumes ou la documentation d'une release.
 6. Pousser uniquement la branche de travail et ouvrir une pull request vers `main`.
 7. Fusionner par squash uniquement après réussite de la CI et revue de la provenance, puis supprimer la branche distante.
 
@@ -25,7 +25,15 @@ Même le propriétaire du dépôt suit ce flux. Une urgence ne justifie pas de c
 ## Versions
 
 - `v9.0.0` : baseline GitHub du warehouse V9.
-- `V10` : identités locales et intégrité.
-- `V11` : pouvoir local, SMIIG, résultats 2015 et indicateurs HCP.
-- `V12` : questions et trajectoires parlementaires.
-- `V13` : PostgreSQL canonique et Excel comme export.
+- `v10.0.0` : identités locales, crosswalks et intégrité des sièges.
+- `v11.0.0` : ingestion minimale des deux indicateurs HCP validés.
+- V12 n'est envisagée qu'après qualification d'une source parlementaire crédible.
+- PostgreSQL reste différé jusqu'à la démonstration d'un besoin concret.
+
+## Proportionnalité
+
+- Ne pas créer de release pour une qualification ou un résultat `NO_GO`.
+- Ne pas développer de qualificateur complet sans source candidate crédible.
+- Ne pas rouvrir un chantier bloqué sans preuve nouvelle.
+- Préférer une règle locale claire à une abstraction sans usages répétés.
+- Limiter une pull request à une amélioration directement reliée au produit final.
