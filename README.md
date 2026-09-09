@@ -21,6 +21,8 @@ Le projet vise quatre produits complémentaires, dans cet ordre :
 
 La qualité protège ces produits, mais n'est pas un produit autonome. Le succès se mesure aux questions analytiques correctement traitées, pas au nombre de tables, documents ou contrôles.
 
+Le cap d'expansion, de normalisation et de publication est défini dans le [roadmap du warehouse](docs/ROADMAP.md). Il applique une règle simple : collecter largement dans les RAW, puis intégrer strictement dans un modèle canonique unique.
+
 ## Organisation
 
 - `src/morocco_elections/` : package, domaines, qualité, stockage, exports et compatibilité V9.
@@ -75,6 +77,8 @@ Un argument `--data-dir` a priorité sur cette variable.
 ```powershell
 python -m morocco_elections validate --mode ci
 python -m morocco_elections validate --mode full
+python -m morocco_elections sources catalog
+python -m morocco_elections sources acquire --source-id <ID_CATALOGUE> --input <fichier> --as-of AAAA-MM-JJ
 python -m morocco_elections build v9
 python -m morocco_elections docs v9
 python -m morocco_elections build v10
@@ -99,6 +103,8 @@ python -m morocco_elections github publish-backlog
 
 Le mode `ci` fonctionne sans données. Le mode `full` vérifie les empreintes, volumes, documents, onglets et différences autorisées de la release demandée sans écrire de fichier.
 
+`sources acquire` accepte un fichier local avec `--input` ou une URL HTTP(S) avec `--url`. La commande conserve les octets sous `data/raw/<domaine>/acquisitions/`, calcule leur empreinte, inventorie leur structure et écrit un enregistrement local. Ce dépôt RAW ne constitue jamais une autorisation d'ingestion canonique.
+
 Les commandes de qualification restent disponibles pour reproduire les décisions historiques. Elles ne doivent être relancées ou étendues qu'en présence d'une nouvelle source ou preuve crédible. Une qualification `NO_GO` ne déclenche ni release ni export.
 
 `analyze v11` lit le classeur validé sans rien écrire et exécute cinq analyses de référence. Chaque résultat affiche son périmètre et sa limitation scientifique ; `--format json` fournit la même sortie sous forme structurée.
@@ -107,9 +113,10 @@ Les commandes de qualification restent disponibles pour reproduire les décision
 
 La roadmap active est volontairement limitée :
 
-1. utiliser V12 pour des analyses de référence sans créer de produit parallèle ;
-2. ajouter une nouvelle source seulement si elle est déjà accessible, traçable, réutilisable et raccordable ;
-3. préparer PostgreSQL seulement lorsqu'un besoin d'interrogation, de collaboration ou de performance le justifie.
+1. acquérir et profiler par lots les sources électorales, parlementaires et territoriales prometteuses ;
+2. ajuster l'ontologie et les registres d'identités sur les structures réellement observées ;
+3. intégrer seulement les sources traçables, réutilisables et raccordables qui apportent une capacité analytique ;
+4. préparer PostgreSQL seulement lorsqu'un besoin d'interrogation, de collaboration ou de performance le justifie.
 
 Watchlist passive, sans développement en l'absence de preuve nouvelle : inscrits communaux 2015–2021, 135 présidences non résolues, conseils communaux 2015 et SMIIG. Les 25 couples HCP restés `NO_GO` ne sont pas chargés.
 

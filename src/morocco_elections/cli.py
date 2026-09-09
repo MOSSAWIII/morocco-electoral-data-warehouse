@@ -89,6 +89,20 @@ def build_parser() -> argparse.ArgumentParser:
     backlog = github_commands.add_parser("publish-backlog", help="Publier les jalons et issues")
     backlog.add_argument("--repo")
     backlog.add_argument("--dry-run", action="store_true")
+
+    sources = commands.add_parser("sources", help="Cataloguer et acquérir des sources sans les ingérer")
+    source_commands = sources.add_subparsers(dest="source_command", required=True)
+    catalog = source_commands.add_parser("catalog", help="Valider et résumer le catalogue d'acquisition")
+    catalog.add_argument("--catalog")
+    acquire = source_commands.add_parser("acquire", help="Conserver et profiler une source dans les RAW immuables")
+    acquire.add_argument("--source-id", required=True)
+    source_input = acquire.add_mutually_exclusive_group(required=True)
+    source_input.add_argument("--url")
+    source_input.add_argument("--input")
+    acquire.add_argument("--filename")
+    acquire.add_argument("--as-of")
+    acquire.add_argument("--data-dir")
+    acquire.add_argument("--catalog")
     return parser
 
 
@@ -208,4 +222,20 @@ def main(argv: list[str] | None = None) -> int:
         from morocco_elections.github.backlog import publish
 
         return publish(repo=args.repo, dry_run=args.dry_run)
+    if args.command == "sources" and args.source_command == "catalog":
+        from morocco_elections.sources.acquisition import catalog_summary
+
+        return catalog_summary(catalog_path=args.catalog)
+    if args.command == "sources" and args.source_command == "acquire":
+        from morocco_elections.sources.acquisition import acquire
+
+        return acquire(
+            source_id=args.source_id,
+            url=args.url,
+            input_path=args.input,
+            filename=args.filename,
+            as_of=args.as_of,
+            data_dir=args.data_dir,
+            catalog_path=args.catalog,
+        )
     raise AssertionError("Commande non gérée")

@@ -72,6 +72,10 @@ def test_github_backlog_contract() -> None:
     assert len(backlog["issues"]) == 8
 
 
+def test_acquisition_catalog_contract() -> None:
+    assert validate_project.validate_acquisition_catalog() == []
+
+
 def test_python_sources_parse() -> None:
     assert validate_project.validate_python_sources() == []
 

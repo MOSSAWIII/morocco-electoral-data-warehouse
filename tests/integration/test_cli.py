@@ -47,9 +47,17 @@ def test_all_structured_commands_are_registered() -> None:
         ("qualify", "hcp-indicators", "--help"),
         ("quality", "baseline", "--help"),
         ("github", "publish-backlog", "--help"),
+        ("sources", "catalog", "--help"),
+        ("sources", "acquire", "--help"),
     ):
         result = run_command(sys.executable, "-m", "morocco_elections", *args)
         assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_source_catalog_runs_without_local_data() -> None:
+    result = run_command(sys.executable, "-m", "morocco_elections", "sources", "catalog")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "SOURCE_CATALOG_OK" in result.stdout
 
 
 def test_release_versions_are_registered() -> None:
