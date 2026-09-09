@@ -186,12 +186,27 @@ def build_inventory(data_dir: str | Path | None, as_of: str) -> dict:
             }
         )
     records.sort(key=lambda item: (item["source_id"], item["sha256"]))
+    hashes: dict[str, list[str]] = {}
+    for record in records:
+        hashes.setdefault(record["sha256"], []).append(record["acquisition_id"])
+    duplicate_payloads = [
+        {"sha256": digest, "acquisition_ids": sorted(acquisition_ids)}
+        for digest, acquisition_ids in sorted(hashes.items())
+        if len({item.split(":", 1)[0] for item in acquisition_ids}) > 1
+    ]
+    profile_issues = [
+        {"acquisition_id": record["acquisition_id"], "profile_status": record["profile_status"]}
+        for record in records
+        if record["profile_status"] != "PROFILED"
+    ]
     return {
         "schema_version": 1,
         "baseline_release": "V12",
         "generated_on": as_of,
         "record_count": len(records),
         "total_bytes": sum(item["byte_size"] for item in records),
+        "duplicate_payloads": duplicate_payloads,
+        "profile_issues": profile_issues,
         "records": records,
     }
 
@@ -257,6 +272,10 @@ def validate_inventory(inventory: dict) -> list[str]:
         errors.append("record_count incohérent")
     if inventory.get("total_bytes") != sum(item.get("byte_size", 0) for item in records if isinstance(item, dict)):
         errors.append("total_bytes incohérent")
+    if not isinstance(inventory.get("duplicate_payloads"), list):
+        errors.append("duplicate_payloads doit être une liste")
+    if not isinstance(inventory.get("profile_issues"), list):
+        errors.append("profile_issues doit être une liste")
     return errors
 
 
@@ -298,6 +317,20 @@ def _candidate(catalog: dict, source_id: str) -> dict:
 
 
 def _detect_format(path: Path) -> str:
+    with path.open("rb") as stream:
+        signature = stream.read(8)
+    if signature.startswith(b"%PDF"):
+        return "pdf"
+    if signature == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1":
+        return "xls"
+    if signature.startswith(b"PK"):
+        try:
+            with zipfile.ZipFile(path) as archive:
+                if "xl/workbook.xml" in archive.namelist():
+                    return "xlsx"
+        except zipfile.BadZipFile:
+            pass
+        return "zip"
     suffix = path.suffix.lower().lstrip(".")
     return {"xlsm": "xlsx", "tsv": "csv"}.get(suffix, suffix or "binary")
 
