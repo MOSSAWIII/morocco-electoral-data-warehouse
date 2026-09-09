@@ -15,12 +15,14 @@ class ProjectPaths:
     documentation_v9: Path
     documentation_v10: Path
     documentation_v11: Path
+    documentation_v12: Path
     source_manifest: Path
     github_backlog: Path
     v8_workbook: Path
     v9_workbook: Path
     v10_workbook: Path
     v11_workbook: Path
+    v12_workbook: Path
     comm2015: Path
     comm2021: Path
     council2021: Path
@@ -28,6 +30,7 @@ class ProjectPaths:
     hcp_population_2024: Path
     hcp_individuals_2014: Path
     hcp_indicators_2024: Path
+    parliament_questions_2023_sources: tuple[Path, ...]
     v11a_candidate_metadata: Path
     v11a_decision_report: Path
     v11_smiig_candidate_metadata: Path
@@ -50,12 +53,14 @@ def get_paths(data_dir: str | Path | None = None) -> ProjectPaths:
         documentation_v9=PROJECT_ROOT / "docs" / "v9" / "ontology",
         documentation_v10=PROJECT_ROOT / "docs" / "v10" / "ontology",
         documentation_v11=PROJECT_ROOT / "docs" / "v11" / "ontology",
+        documentation_v12=PROJECT_ROOT / "docs" / "v12" / "ontology",
         source_manifest=PROJECT_ROOT / "metadata" / "source_manifest.json",
         github_backlog=PROJECT_ROOT / "metadata" / "github_backlog.json",
         v8_workbook=data_root / "legacy" / "excel" / "v8" / "Morocco_Electoral_Data_Warehouse_V8.xlsx",
         v9_workbook=data_root / "exports" / "excel" / "v9" / "Morocco_Electoral_Data_Warehouse_V9.xlsx",
         v10_workbook=data_root / "exports" / "excel" / "v10" / "Morocco_Electoral_Data_Warehouse_V10.xlsx",
         v11_workbook=data_root / "exports" / "excel" / "v11" / "Morocco_Electoral_Data_Warehouse_V11.xlsx",
+        v12_workbook=data_root / "exports" / "excel" / "v12" / "Morocco_Electoral_Data_Warehouse_V12.xlsx",
         comm2015=data_root / "raw" / "tafra" / "communal_results" / "2015" / "communes-elections-2015-1-0.xlsx",
         comm2021=data_root / "raw" / "tafra" / "communal_results" / "2021" / "communes-elections-2021-1-0.xlsx",
         council2021=data_root / "raw" / "tafra" / "local_councils" / "2021" / "communes-elus-2021-1-1.xlsx",
@@ -63,6 +68,15 @@ def get_paths(data_dir: str | Path | None = None) -> ProjectPaths:
         hcp_population_2024=data_root / "raw" / "hcp" / "rgph" / "2024" / "hcp_population_legale_rgph2024.xlsx",
         hcp_individuals_2014=data_root / "raw" / "hcp" / "rgph" / "2014" / "rgph2014_individus.xlsx",
         hcp_indicators_2024=data_root / "raw" / "hcp" / "rgph" / "2024" / "rgph2024_indicateurs.xlsx",
+        parliament_questions_2023_sources=tuple(
+            data_root / "raw" / "parliament" / "questions" / "written" / "2023" / name
+            for name in (
+                "questions_written_april_2023.xlsx",
+                "questions_written_apr_oct_2023.xlsx",
+                "questions_written_october_2023.xlsx",
+                "questions_written_2023_2024.xlsx",
+            )
+        ),
         v11a_candidate_metadata=PROJECT_ROOT / "metadata" / "v11a_source_candidates.json",
         v11a_decision_report=PROJECT_ROOT / "docs" / "research" / "V11A_DECISION_2015_COUNCILS.txt",
         v11_smiig_candidate_metadata=PROJECT_ROOT / "metadata" / "v11_smiig_source_candidates.json",

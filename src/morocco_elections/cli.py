@@ -8,21 +8,21 @@ def build_parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", required=True)
 
     build = commands.add_parser("build", help="Construire un export du warehouse")
-    build.add_argument("version", choices=("v9", "v10", "v11"))
+    build.add_argument("version", choices=("v9", "v10", "v11", "v12"))
     build.add_argument("--data-dir")
 
     docs = commands.add_parser("docs", help="Générer la documentation")
-    docs.add_argument("version", choices=("v9", "v10", "v11"))
+    docs.add_argument("version", choices=("v9", "v10", "v11", "v12"))
     docs.add_argument("--data-dir")
 
     validate = commands.add_parser("validate", help="Valider le dépôt et les données locales")
     validate.add_argument("--mode", choices=("ci", "full"), default="ci")
     validate.add_argument("--data-dir")
-    validate.add_argument("--release", choices=("v9", "v10", "v11", "all"), default="all")
-    validate.add_argument("--baseline", choices=("v9", "v10"))
+    validate.add_argument("--release", choices=("v9", "v10", "v11", "v12", "all"), default="all")
+    validate.add_argument("--baseline", choices=("v9", "v10", "v11"))
 
     analyze = commands.add_parser("analyze", help="Exécuter les analyses de référence d'une release validée")
-    analyze.add_argument("version", choices=("v11",))
+    analyze.add_argument("version", choices=("v11", "v12"))
     analyze.add_argument("--data-dir")
     analyze.add_argument("--format", choices=("text", "json"), default="text")
 
@@ -68,6 +68,12 @@ def build_parser() -> argparse.ArgumentParser:
     hcp.add_argument("--data-dir")
     hcp.add_argument("--metadata-output")
     hcp.add_argument("--decision-output")
+    parliament = qualification.add_parser("parliament", help="Qualifier les questions parlementaires écrites")
+    parliament.add_argument("--candidate", action="append", dest="candidates")
+    parliament.add_argument("--baseline", choices=("v11",), default="v11")
+    parliament.add_argument("--as-of", default="2026-09-09")
+    parliament.add_argument("--output")
+    parliament.add_argument("--data-dir")
 
     quality = commands.add_parser("quality", help="Produire des artefacts de qualité transversaux")
     quality_commands = quality.add_subparsers(dest="quality_command", required=True)
@@ -93,8 +99,10 @@ def main(argv: list[str] | None = None) -> int:
             from morocco_elections.legacy.v9.build import main as build_release
         elif args.version == "v10":
             from morocco_elections.releases.v10.build import main as build_release
-        else:
+        elif args.version == "v11":
             from morocco_elections.releases.v11.build import main as build_release
+        else:
+            from morocco_elections.releases.v12.build import main as build_release
         build_release(data_dir=args.data_dir)
         return 0
     if args.command == "docs":
@@ -102,8 +110,10 @@ def main(argv: list[str] | None = None) -> int:
             from morocco_elections.legacy.v9.documentation import main as generate_docs
         elif args.version == "v10":
             from morocco_elections.releases.v10.documentation import main as generate_docs
-        else:
+        elif args.version == "v11":
             from morocco_elections.releases.v11.documentation import main as generate_docs
+        else:
+            from morocco_elections.releases.v12.documentation import main as generate_docs
         generate_docs(data_dir=args.data_dir)
         return 0
     if args.command == "validate":
@@ -112,6 +122,10 @@ def main(argv: list[str] | None = None) -> int:
         return report(mode=args.mode, data_dir=args.data_dir, release=args.release, baseline=args.baseline)
     if args.command == "analyze" and args.version == "v11":
         from morocco_elections.analysis.v11 import run
+
+        return run(data_dir=args.data_dir, output_format=args.format)
+    if args.command == "analyze" and args.version == "v12":
+        from morocco_elections.analysis.v12 import run
 
         return run(data_dir=args.data_dir, output_format=args.format)
     if args.command == "qualify" and args.qualification == "councils-2015":
@@ -168,6 +182,16 @@ def main(argv: list[str] | None = None) -> int:
             as_of=args.as_of,
             metadata_output=args.metadata_output,
             decision_output=args.decision_output,
+            data_dir=args.data_dir,
+        )
+    if args.command == "qualify" and args.qualification == "parliament":
+        from morocco_elections.research.parliamentary_questions import qualify
+
+        return qualify(
+            candidates=args.candidates,
+            baseline=args.baseline,
+            as_of=args.as_of,
+            output=args.output,
             data_dir=args.data_dir,
         )
     if args.command == "quality" and args.quality_command == "baseline":

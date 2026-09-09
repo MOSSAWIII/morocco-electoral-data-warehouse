@@ -1,0 +1,55 @@
+{
+  "release": "V12",
+  "baseline": "V11",
+  "generated_on": "2026-09-09",
+  "status": "validated",
+  "scope_status": "PARTIAL",
+  "workbooks": {
+    "V8": "01edd16fe6ef53a11239b2c7b49985dda4584d41bf07e27e97be7c80c17a38eb",
+    "V9": "a4a3c90e26f45d46d85f11fea4e686d21e2ebc71f415f49e3ff1852e5ebd38a8",
+    "V10": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "V11": "a201a214752e6cdc5eb9e80e5913aba9c9e574f11c21cb2460af966ff6bd8dd3",
+    "V12": "47bf735ffe8624906ca050ead6606f9022da652e8be05e1f7dc68575d487d31f"
+  },
+  "source_hashes": {
+    "SRC_PARLIAMENT_WRITTEN_APRIL_2023_V12": "928bebd277aefa24b42d43e75a23620c81ec46579207384b1a2fc38582829e91",
+    "SRC_PARLIAMENT_WRITTEN_APR_OCT_2023_V12": "61922bf3cf00dffe2c88c8a0db0cc38113cdb49e45a9fd6cb455ca009802efdd",
+    "SRC_PARLIAMENT_WRITTEN_OCTOBER_2023_V12": "98d8da0f594fc86fe03fde8cb4c72fe62330df5f6b0bdd6094fdde8534da7af3",
+    "SRC_PARLIAMENT_WRITTEN_OCT_APR_2023_2024_V12": "76e63ade33a3421c8b336c103eeb8710c6e939294cb23f51fc929fc8a644cbc9"
+  },
+  "volumes": {
+    "sheets": 68,
+    "PARLIAMENTARY_QUESTIONS": 5589
+  },
+  "controls": {
+    "unique_question_ids": 5589,
+    "identity_rows_linked": 5453,
+    "identity_rows_unlinked": 136,
+    "answered_rows": 3015,
+    "unanswered_rows": 2574,
+    "fuzzy_matches": 0
+  },
+  "allowed_changed_sheets": [
+    "DATA_COVERAGE",
+    "DATA_DICTIONARY",
+    "PARLIAMENTARY_QUESTIONS",
+    "QUALITY_CONTROL",
+    "README",
+    "SOURCES",
+    "WORKBOOK_AUDIT_V12"
+  ],
+  "actual_changed_sheets": [
+    "DATA_COVERAGE",
+    "DATA_DICTIONARY",
+    "PARLIAMENTARY_QUESTIONS",
+    "QUALITY_CONTROL",
+    "README",
+    "SOURCES",
+    "WORKBOOK_AUDIT_V12"
+  ],
+  "integrity": {
+    "v11_reconstructed_from_sources": true,
+    "source_hashes_unchanged": true,
+    "deterministic_export": true
+  }
+}

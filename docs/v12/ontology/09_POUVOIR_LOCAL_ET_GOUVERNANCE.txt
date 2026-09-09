@@ -1,0 +1,50 @@
+﻿POUVOIR LOCAL ET GOUVERNANCE
+============================
+
+VERSION           : V12
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V12.xlsx
+DATE DE GÉNÉRATION: 2026-09-09
+PÉRIMÈTRE         : Sièges, présidences, exécutifs et contrôle communal.
+RENVOIS           : 07_FAITS_ELECTORAUX_ET_MOBILISATION.txt, 08_PERSONNES_MANDATS_ET_REPRESENTATION.txt, 12_REGLES_D_INTEGRITE_ET_JOINTURE.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V12.
+DÉRIVÉ        : valeur calculée à partir de données V12 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+LOCAL_COUNCIL_CONTROL
+OBSERVÉ/DÉRIVÉ: 6003 lignes commune × parti pour 2021.
+party_seats correspond au nombre de lignes d'élus du parti dans la commune.
+seat_rank ordonne ces effectifs. largest_party_flag identifie le ou les maxima.
+
+DISTINCTIONS OBLIGATOIRES
+- winner dans RESULTS : parti ayant le plus de voix publiées.
+- largest_party : parti ayant le plus d'élus observés au conseil.
+- president_party : parti du président identifié avec un rôle non incertain.
+- executive parties : partis possédant des membres aux rôles exécutifs observés.
+Ces quatre notions peuvent diverger et ne doivent jamais être fusionnées.
+
+PRÉSIDENCE
+OBSERVÉ: 1 403 communes ont un président identifié avec flagRole=0.
+BLOQUÉ: 135 présidences restent non résolues; president_party reste NULL.
+Il est interdit de remplacer president_party par largest_party.
+
+RÉCONCILIATION DES SIÈGES
+OBSERVÉ: deux communes ont 15 élus pour 16 sièges légaux; une vacance documentée réconcilie chacune :
+- idCommune 770;
+- idCommune 817.
+Les lignes sources sont conservées et l'écart national est -2.
+
+GOUVERNANCE
+Les champs governance_score et control_change restent NULL lorsqu'aucune source
+ne permet leur calcul. Les données SMIIG sont une priorité future; leur arrivée
+devra produire une observation commune × année, jointe au parti de contrôle sans
+interprétation causale prématurée.
+
+RÉCONCILIATION V10
+idCommune 770: 15 élus + 1 vacance documentée = 16 sièges légaux.
+idCommune 817: 15 élus + 1 vacance documentée = 16 sièges légaux.
+Différence observée: -2. Différence réconciliée: 0. Aucun élu n'est imputé.

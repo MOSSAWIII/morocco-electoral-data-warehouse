@@ -1,0 +1,148 @@
+﻿MÉTRIQUES DÉRIVÉES ET RÈGLES TEMPORELLES
+========================================
+
+VERSION           : V12
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V12.xlsx
+DATE DE GÉNÉRATION: 2026-09-09
+PÉRIMÈTRE         : Formules, dénominateurs, nullité et comparabilité.
+RENVOIS           : 06_TEMPS_CYCLES_ET_ELECTIONS.txt, 07_FAITS_ELECTORAUX_ET_MOBILISATION.txt, 12_REGLES_D_INTEGRITE_ET_JOINTURE.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V12.
+DÉRIVÉ        : valeur calculée à partir de données V12 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+RÈGLES DES MÉTRIQUES DÉRIVÉES
+
+MÉTRIQUE: valid_votes
+FORMULE: Σ_p votes_p
+DÉNOMINATEUR/PÉRIMÈTRE: toutes les colonnes partisanes publiées de la commune-élection
+RÈGLE NULL: NULL si aucune voix publiée
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: vote_share
+FORMULE: 100 × votes_p / valid_votes
+DÉNOMINATEUR/PÉRIMÈTRE: valid_votes
+RÈGLE NULL: NULL si valid_votes est NULL ou 0
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: rank
+FORMULE: 1 + nombre de partis ayant strictement plus de voix
+DÉNOMINATEUR/PÉRIMÈTRE: ensemble des partis observés dans la commune-élection
+RÈGLE NULL: NULL si votes est NULL
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: winner
+FORMULE: 1 si rank=1, sinon 0
+DÉNOMINATEUR/PÉRIMÈTRE: rang calculable
+RÈGLE NULL: NULL si rang non calculable
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: victory_margin_votes
+FORMULE: votes_top1 - votes_top2
+DÉNOMINATEUR/PÉRIMÈTRE: deux partis classables
+RÈGLE NULL: NULL pour les non-vainqueurs ou moins de deux partis
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: victory_margin_pp
+FORMULE: 100 × victory_margin_votes / valid_votes
+DÉNOMINATEUR/PÉRIMÈTRE: valid_votes
+RÈGLE NULL: NULL si valid_votes est NULL ou 0
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: abstention_rate
+FORMULE: 100 - turnout_rate
+DÉNOMINATEUR/PÉRIMÈTRE: turnout_rate source
+RÈGLE NULL: NULL si turnout_rate est NULL
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: party_seat_share
+FORMULE: 100 × party_seats / Σ_p party_seats
+DÉNOMINATEUR/PÉRIMÈTRE: élus observés du conseil
+RÈGLE NULL: NULL si total observé est 0
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: hhi
+FORMULE: Σ_p vote_share_p²
+DÉNOMINATEUR/PÉRIMÈTRE: parts complètes sur échelle 0–100
+RÈGLE NULL: NULL si parts incomplètes
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: enp
+FORMULE: 10000 / hhi
+DÉNOMINATEUR/PÉRIMÈTRE: HHI sur échelle 0–100
+RÈGLE NULL: NULL si HHI est NULL ou 0
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: swing_pp
+FORMULE: share_2021 - share_2015
+DÉNOMINATEUR/PÉRIMÈTRE: même geo_id et même party_id temporel
+RÈGLE NULL: NULL si une part est absente
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: vote_change
+FORMULE: votes_2021 - votes_2015
+DÉNOMINATEUR/PÉRIMÈTRE: même geo_id et party_id
+RÈGLE NULL: NULL si une valeur est absente
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: vote_change_pct
+FORMULE: 100 × (votes_2021 - votes_2015) / votes_2015
+DÉNOMINATEUR/PÉRIMÈTRE: votes_2015
+RÈGLE NULL: NULL si votes_2015 est NULL ou 0
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: turnout_change_pp
+FORMULE: turnout_2021 - turnout_2015
+DÉNOMINATEUR/PÉRIMÈTRE: deux taux source comparables
+RÈGLE NULL: NULL si un taux est absent
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: pedersen_volatility
+FORMULE: 0.5 × Σ_p |share_p,2021 - share_p,2015|
+DÉNOMINATEUR/PÉRIMÈTRE: union des codes politiques temporels
+RÈGLE NULL: NULL si un dénominateur communal est incomplet
+STATUT: DÉRIVÉ
+
+MÉTRIQUE: temporal_distance
+FORMULE: observation_year - election_year
+DÉNOMINATEUR/PÉRIMÈTRE: deux années explicites
+RÈGLE NULL: NULL si une année est absente
+STATUT: DÉRIVÉ
+
+
+RÈGLES TEMPORELLES
+- previous_vote_share exige la même commune canonique et le même code politique défendable.
+- entered_market/exited_market décrivent la présence d'un code source, pas nécessairement la naissance ou dissolution juridique d'un parti.
+- AGD 2015 et AFG 2021 restent distincts sans crosswalk politique documenté.
+- SAP/SAP2/SAP3 ne portent pas une identité longitudinale stable.
+- seats_2015, seat_change et control_change restent NULL dans V10.
+- population_reference utilise temporal_join_method=census_reference,
+  observation_year=2024 et temporal_distance explicite.
+
+PRÉCAUTIONS D'AGRÉGATION
+Recalculer HHI, ENP, parts et marges à partir des voix agrégées. Ne jamais faire
+la moyenne simple des indices communaux pour obtenir un indice régional sans
+définir une pondération et un objet analytique distinct.
+
+MÉTRIQUE: party_seat_share_legal
+FORMULE: 100 × party_seats / legal_seat_count
+DÉNOMINATEUR/PÉRIMÈTRE: sièges légaux publiés de la commune
+RÈGLE NULL: NULL si legal_seat_count est NULL ou 0
+STATUT: DÉRIVÉ
+
+
+RÈGLES TEMPORELLES V11-HCP
+- 2014 vers élection 2015: CONDITIONNELLE, référence antérieure d'un an.
+- 2024 vers élection 2015: INTERDITE.
+- 2014 ou 2024 vers élection 2021: CONDITIONNELLE avec année et distance explicites.
+- Aucune interpolation et aucune valeur artificiellement qualifiée de « 2021 ».
+
+
+MÉTRIQUES PARLEMENTAIRES V12
+question_count = COUNT(DISTINCT question_id) dans un périmètre source déclaré.
+answered_question_count = COUNT(DISTINCT question_id) où response_date n'est pas NULL.
+response_rate = 100 × answered_question_count / question_count; NULL si question_count=0.
+Ces métriques sont DÉRIVÉES et ne deviennent jamais des indicateurs officiels.
