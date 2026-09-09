@@ -186,12 +186,39 @@ def build_inventory(data_dir: str | Path | None, as_of: str) -> dict:
             }
         )
     records.sort(key=lambda item: (item["source_id"], item["sha256"]))
+    hashes: dict[str, list[str]] = {}
+    for record in records:
+        hashes.setdefault(record["sha256"], []).append(record["acquisition_id"])
+    duplicate_payloads = [
+        {"sha256": digest, "acquisition_ids": sorted(acquisition_ids)}
+        for digest, acquisition_ids in sorted(hashes.items())
+        if len({item.split(":", 1)[0] for item in acquisition_ids}) > 1
+    ]
+    profile_issues = [
+        {"acquisition_id": record["acquisition_id"], "profile_status": record["profile_status"]}
+        for record in records
+        if record["profile_status"] != "PROFILED"
+    ]
+    structural_issues = [
+        {
+            "acquisition_id": record["acquisition_id"],
+            "table": table["name"],
+            "issue": "EXCESSIVE_COLUMN_SPAN",
+            "observed_columns": table["columns"],
+        }
+        for record in records
+        for table in record["tables"]
+        if isinstance(table.get("columns"), int) and table["columns"] > 512
+    ]
     return {
         "schema_version": 1,
         "baseline_release": "V12",
         "generated_on": as_of,
         "record_count": len(records),
         "total_bytes": sum(item["byte_size"] for item in records),
+        "duplicate_payloads": duplicate_payloads,
+        "profile_issues": profile_issues,
+        "structural_issues": structural_issues,
         "records": records,
     }
 
@@ -257,6 +284,12 @@ def validate_inventory(inventory: dict) -> list[str]:
         errors.append("record_count incohérent")
     if inventory.get("total_bytes") != sum(item.get("byte_size", 0) for item in records if isinstance(item, dict)):
         errors.append("total_bytes incohérent")
+    if not isinstance(inventory.get("duplicate_payloads"), list):
+        errors.append("duplicate_payloads doit être une liste")
+    if not isinstance(inventory.get("profile_issues"), list):
+        errors.append("profile_issues doit être une liste")
+    if not isinstance(inventory.get("structural_issues"), list):
+        errors.append("structural_issues doit être une liste")
     return errors
 
 
@@ -298,20 +331,47 @@ def _candidate(catalog: dict, source_id: str) -> dict:
 
 
 def _detect_format(path: Path) -> str:
+    with path.open("rb") as stream:
+        signature = stream.read(8)
+    if signature.startswith(b"%PDF"):
+        return "pdf"
+    if signature == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1":
+        return "xls"
+    if signature.startswith(b"PK"):
+        try:
+            with zipfile.ZipFile(path) as archive:
+                if "xl/workbook.xml" in archive.namelist():
+                    return "xlsx"
+        except zipfile.BadZipFile:
+            pass
+        return "zip"
     suffix = path.suffix.lower().lstrip(".")
     return {"xlsm": "xlsx", "tsv": "csv"}.get(suffix, suffix or "binary")
 
 
 def _profile_xlsx(path: Path) -> dict:
+    def populated_width(row: tuple) -> int:
+        for position in range(len(row), 0, -1):
+            if row[position - 1] is not None:
+                return position
+        return 0
+
     workbook = openpyxl.load_workbook(path, read_only=True, data_only=True)
     sheets: list[dict] = []
     try:
         for worksheet in workbook.worksheets:
             iterator = worksheet.iter_rows(values_only=True)
             first = next(iterator, ())
-            columns = [str(value).strip() if value is not None else "" for value in first]
-            rows = sum(1 for row in iterator if any(value is not None for value in row))
-            sheets.append({"name": worksheet.title, "rows": rows, "columns": len(first), "headers": columns})
+            header_width = populated_width(first)
+            width = header_width
+            rows = 0
+            for row in iterator:
+                row_width = populated_width(row)
+                if row_width:
+                    rows += 1
+                    width = max(width, row_width)
+            headers = [str(value).strip() if value is not None else "" for value in first[:header_width]]
+            sheets.append({"name": worksheet.title, "rows": rows, "columns": width, "headers": headers})
     finally:
         workbook.close()
     return {"status": "PROFILED", "sheet_count": len(sheets), "sheets": sheets}

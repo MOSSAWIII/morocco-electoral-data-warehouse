@@ -79,6 +79,16 @@ def test_profile_xlsx_inventories_sheets_columns_and_rows(tmp_path: Path) -> Non
     }
 
 
+def test_profile_detects_legacy_xls_magic_despite_xlsx_suffix(tmp_path: Path) -> None:
+    path = tmp_path / "mislabelled.xlsx"
+    path.write_bytes(b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1" + b"\x00" * 24)
+
+    profile = profile_file(path)
+
+    assert profile["format"] == "xls"
+    assert profile["status"] == "FORMAT_RECOGNIZED_PROFILE_NOT_AVAILABLE"
+
+
 def test_acquire_local_file_is_immutable_profiled_and_idempotent(tmp_path: Path) -> None:
     catalog_path = _catalog(tmp_path)
     input_path = tmp_path / "candidate.csv"
@@ -159,5 +169,33 @@ def test_inventory_is_deterministic_and_contains_no_raw_rows(tmp_path: Path) -> 
     assert first == second
     assert validate_inventory(first) == []
     assert first["record_count"] == 1
+    assert first["duplicate_payloads"] == []
+    assert first["profile_issues"] == []
+    assert first["structural_issues"] == []
     assert first["records"][0]["tables"][0]["headers"] == ["geo_id", "value"]
     assert "secret-row-value" not in json.dumps(first)
+
+
+def test_inventory_flags_identical_payload_across_source_families(tmp_path: Path) -> None:
+    catalog_path = _catalog(tmp_path)
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    second = dict(catalog["candidates"][0])
+    second["source_id"] = "SECOND_SOURCE"
+    catalog["candidates"].append(second)
+    catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+    candidate = tmp_path / "candidate.csv"
+    candidate.write_text("id\n1\n", encoding="utf-8")
+    data_root = tmp_path / "data"
+
+    for source_id in ("TEST_SOURCE", "SECOND_SOURCE"):
+        assert acquire(
+            source_id,
+            input_path=candidate,
+            data_dir=data_root,
+            as_of="2026-09-09",
+            catalog_path=catalog_path,
+        ) == 0
+
+    inventory = build_inventory(data_root, "2026-09-09")
+    assert len(inventory["duplicate_payloads"]) == 1
+    assert len(inventory["duplicate_payloads"][0]["acquisition_ids"]) == 2
