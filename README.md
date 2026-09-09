@@ -39,6 +39,20 @@ V12 contient 68 onglets. Elle préserve les faits V11 et ajoute `PARLIAMENTARY_Q
 
 La commande `build v12` reconstruit le classeur depuis les RAW, les décisions versionnées et le bootstrap historique V8. Elle ne lit aucun classeur V9, V10 ou V11 comme entrée. V8 reste temporairement nécessaire pour les tables héritées dont les sources physiques ne sont pas encore disponibles séparément ; cette dépendance est explicite et n'entraîne plus une chaîne de releases.
 
+## Point d’entrée de la release courante
+
+Commencer par [`docs/v12/ontology/00_INDEX_ET_MODE_EMPLOI.txt`](docs/v12/ontology/00_INDEX_ET_MODE_EMPLOI.txt). Les tables centrales sont volontairement peu nombreuses :
+
+- `DIM_GEO`, `DIM_TIME`, `DIM_PARTY`, `DIM_PERSON` et `DIM_ELECTION` portent les clés partagées ;
+- `RESULTS` est au grain `commune × parti × élection` ;
+- `COMMUNE_ELECTION_PANEL` est au grain `commune × élection` ;
+- `LOCAL_MANDATES` et `PARLIAMENTARY_MANDATES` portent les mandats observés ;
+- `LOCAL_COUNCIL_CONTROL` sépare résultat électoral et contrôle communal ;
+- `FACT_OBSERVATION` porte les observations socio-économiques longues avec leur millésime réel ;
+- `PARLIAMENTARY_QUESTIONS` est au grain `source × question écrite`.
+
+Avant tout calcul de taux, vérifier dans le dictionnaire que le dénominateur est réellement publié. Une clé nullable, notamment `PARLIAMENTARY_QUESTIONS.person_id`, ne doit jamais être remplacée par un rapprochement implicite.
+
 ## Installation
 
 ```powershell
