@@ -94,6 +94,10 @@ def build_parser() -> argparse.ArgumentParser:
     source_commands = sources.add_subparsers(dest="source_command", required=True)
     catalog = source_commands.add_parser("catalog", help="Valider et résumer le catalogue d'acquisition")
     catalog.add_argument("--catalog")
+    inventory = source_commands.add_parser("inventory", help="Consolider les profils RAW dans un inventaire partageable")
+    inventory.add_argument("--as-of", required=True)
+    inventory.add_argument("--data-dir")
+    inventory.add_argument("--output")
     acquire = source_commands.add_parser("acquire", help="Conserver et profiler une source dans les RAW immuables")
     acquire.add_argument("--source-id", required=True)
     source_input = acquire.add_mutually_exclusive_group(required=True)
@@ -226,6 +230,10 @@ def main(argv: list[str] | None = None) -> int:
         from morocco_elections.sources.acquisition import catalog_summary
 
         return catalog_summary(catalog_path=args.catalog)
+    if args.command == "sources" and args.source_command == "inventory":
+        from morocco_elections.sources.acquisition import generate_inventory
+
+        return generate_inventory(data_dir=args.data_dir, as_of=args.as_of, output=args.output)
     if args.command == "sources" and args.source_command == "acquire":
         from morocco_elections.sources.acquisition import acquire
 
