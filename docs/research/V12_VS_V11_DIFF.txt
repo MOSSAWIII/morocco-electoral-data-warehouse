@@ -1,0 +1,23 @@
+V12 — RAPPORT D'ÉCARTS AVEC V11
+
+DATE : 2026-09-09
+V11 SHA-256 : a201a214752e6cdc5eb9e80e5913aba9c9e574f11c21cb2460af966ff6bd8dd3
+V12 SHA-256 : 47bf735ffe8624906ca050ead6606f9022da652e8be05e1f7dc68575d487d31f
+
+CHANGEMENTS AUTORISÉS ET OBSERVÉS
+- DATA_COVERAGE
+- DATA_DICTIONARY
+- PARLIAMENTARY_QUESTIONS
+- QUALITY_CONTROL
+- README
+- SOURCES
+- WORKBOOK_AUDIT_V12
+
+VOLUMES ET LIMITES
+- Questions écrites observées : 5589
+- Identités raccordées exactement : 5453
+- Identités non raccordées : 136
+- Questions avec date de réponse : 3015
+- Couverture : quatre segments officiels du cycle 2023–2024; aucune extrapolation à toute l'activité parlementaire.
+
+V11 et tous les RAW antérieurs sont restés inchangés.

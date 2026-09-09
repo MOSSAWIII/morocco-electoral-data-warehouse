@@ -19,6 +19,9 @@ MANIFEST_PATH = get_paths().source_manifest
 BACKLOG_PATH = get_paths().github_backlog
 V10_REPORT_PATH = PROJECT_ROOT / "metadata" / "v10_release_report.json"
 V11_REPORT_PATH = PROJECT_ROOT / "metadata" / "v11_release_report.json"
+V12_QUALIFICATION_PATH = PROJECT_ROOT / "metadata" / "v12_parliament_qualification.json"
+V12_REPORT_PATH = PROJECT_ROOT / "metadata" / "v12_release_report.json"
+V12_DIFF_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V12_VS_V11_DIFF.txt"
 V11A_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11a_source_candidates.json"
 V11A_DECISION_PATH = PROJECT_ROOT / "docs" / "research" / "V11A_DECISION_2015_COUNCILS.txt"
 SMIIG_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11_smiig_source_candidates.json"
@@ -38,6 +41,7 @@ DOCUMENTATION_DIRS = {
     "v9": get_paths().documentation_v9,
     "v10": get_paths().documentation_v10,
     "v11": get_paths().documentation_v11,
+    "v12": get_paths().documentation_v12,
 }
 EXPECTED_DOCUMENTS = [
     "00_INDEX_ET_MODE_EMPLOI.txt",
@@ -134,6 +138,7 @@ EXPECTED_V10_VOLUMES = {
     "COUNCIL_SEAT_STATUS_V10": 1538,
 }
 EXPECTED_V11_VOLUMES = {**EXPECTED_V10_VOLUMES, "FACT_OBSERVATION": 3_203}
+EXPECTED_V12_VOLUMES = {**EXPECTED_V11_VOLUMES, "PARLIAMENTARY_QUESTIONS": 5_589}
 REQUIRED_EVIDENCE_FIELDS = {"evidence_id", "local_path", "source_url", "publisher", "sha256", "byte_size", "status"}
 
 
@@ -153,8 +158,8 @@ def validate_manifest(manifest: dict) -> list[str]:
     errors: list[str] = []
     if manifest.get("schema_version") != 4:
         errors.append("metadata/source_manifest.json: schema_version doit valoir 4")
-    if manifest.get("warehouse_version") != "V11":
-        errors.append("metadata/source_manifest.json: warehouse_version doit valoir V11")
+    if manifest.get("warehouse_version") != "V12":
+        errors.append("metadata/source_manifest.json: warehouse_version doit valoir V12")
 
     sources = manifest.get("sources")
     artifacts = manifest.get("artifacts")
@@ -166,8 +171,8 @@ def validate_manifest(manifest: dict) -> list[str]:
     if not isinstance(artifacts, list) or not artifacts:
         errors.append("Le manifeste doit contenir une liste artifacts non vide")
         artifacts = []
-    if not isinstance(physical_files, list) or len(physical_files) != 25:
-        errors.append("Le manifeste doit inventorier exactement 25 fichiers physiques")
+    if not isinstance(physical_files, list) or len(physical_files) != 30:
+        errors.append("Le manifeste doit inventorier exactement 30 fichiers physiques")
         physical_files = []
     if not isinstance(evidence, list) or len(evidence) != 2:
         errors.append("Le manifeste doit inventorier exactement deux preuves officielles V10")
@@ -307,6 +312,81 @@ def validate_v11_release_report(manifest: dict) -> list[str]:
         errors.append("Liste des onglets V11 modifiés incohérente")
     if diff_report != v11.render_diff_report(report):
         errors.append("Rapport TXT V11/V10 désynchronisé du JSON")
+    return errors
+
+
+def validate_v12_qualification(manifest: dict) -> list[str]:
+    try:
+        report = json.loads(V12_QUALIFICATION_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"Qualification parlementaire V12 illisible: {exc}"]
+    errors: list[str] = []
+    if report.get("schema_version") != 1 or report.get("phase") != "V12-PARLIAMENT-QUALIFICATION":
+        errors.append("Qualification parlementaire V12: métadonnées racine invalides")
+    if report.get("decision") != "GO" or report.get("failures"):
+        errors.append("Qualification parlementaire V12: décision GO sans échec attendue")
+    gate = report.get("gate", {})
+    for key in ("accessible", "provenance_identified", "reuse_authorized", "grain_usable", "identities_linkable"):
+        if gate.get(key) is not True:
+            errors.append(f"Qualification parlementaire V12: gate non validé {key}")
+    profile = report.get("profile", {})
+    expected = {
+        "rows": 5_589,
+        "columns": 9,
+        "unique_question_keys": 5_589,
+        "answered_rows": 3_015,
+        "unanswered_rows": 2_574,
+        "identity_rows_exact_unique": 5_453,
+        "identity_rows_ambiguous": 0,
+        "identity_rows_unmatched": 136,
+    }
+    for key, value in expected.items():
+        if profile.get(key) != value:
+            errors.append(f"Qualification parlementaire V12: profil incohérent {key}")
+    resources = report.get("resources", [])
+    manifest_sources = {item["source_id"]: item for item in manifest.get("sources", [])}
+    if len(resources) != 4:
+        errors.append("Qualification parlementaire V12: quatre ressources attendues")
+    for resource in resources:
+        source = manifest_sources.get(resource.get("source_id"))
+        if not source or source.get("sha256") != resource.get("sha256") or source.get("byte_size") != resource.get("byte_size"):
+            errors.append(f"Qualification parlementaire V12: manifeste incohérent pour {resource.get('source_id')}")
+    return errors
+
+
+def validate_v12_release_report(manifest: dict) -> list[str]:
+    from morocco_elections.releases.v12 import build as v12
+
+    try:
+        report = json.loads(V12_REPORT_PATH.read_text(encoding="utf-8"))
+        diff_report = V12_DIFF_REPORT_PATH.read_text(encoding="utf-8-sig")
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"Rapport V12 illisible: {exc}"]
+    errors: list[str] = []
+    if report.get("release") != "V12" or report.get("baseline") != "V11" or report.get("status") != "validated":
+        errors.append("Le rapport de release doit décrire V12 validé contre V11")
+    artifacts = {item["artifact_id"]: item for item in manifest.get("artifacts", [])}
+    for version in ("V8", "V9", "V10", "V11", "V12"):
+        artifact = artifacts.get(f"WAREHOUSE_{version}_{'INPUT' if version == 'V8' else 'EXPORT'}")
+        if not artifact or report.get("workbooks", {}).get(version) != artifact.get("sha256"):
+            errors.append(f"Empreinte {version} incohérente dans le rapport V12")
+    if report.get("volumes", {}).get("sheets") != 68 or report.get("volumes", {}).get("PARLIAMENTARY_QUESTIONS") != 5_589:
+        errors.append("Volumes principaux V12 incohérents")
+    expected_controls = {
+        "unique_question_ids": 5_589,
+        "identity_rows_linked": 5_453,
+        "identity_rows_unlinked": 136,
+        "answered_rows": 3_015,
+        "unanswered_rows": 2_574,
+        "fuzzy_matches": 0,
+    }
+    for key, expected in expected_controls.items():
+        if report.get("controls", {}).get(key) != expected:
+            errors.append(f"Contrôle V12 incohérent: {key}")
+    if set(report.get("actual_changed_sheets", [])) != v12.ALLOWED_CHANGED_SHEETS:
+        errors.append("Liste des onglets V12 modifiés incohérente")
+    if diff_report != v12.render_diff_report(report):
+        errors.append("Rapport TXT V12/V11 désynchronisé du JSON")
     return errors
 
 
@@ -639,6 +719,24 @@ def compare_v11_to_v10(data_dir: str | Path | None = None) -> list[str]:
     return errors
 
 
+def compare_v12_to_v11(data_dir: str | Path | None = None) -> list[str]:
+    from morocco_elections.releases.v12.build import ALLOWED_CHANGED_SHEETS, compare_v12_to_v11 as compare
+
+    paths = get_paths(data_dir)
+    if not paths.v11_workbook.is_file() or not paths.v12_workbook.is_file():
+        return ["Comparaison V11/V12 impossible: un classeur est absent"]
+    try:
+        changed, unexpected = compare(paths.v11_workbook, paths.v12_workbook)
+    except RuntimeError as exc:
+        return [str(exc)]
+    errors = []
+    if unexpected:
+        errors.append(f"Différences V11/V12 non autorisées: {unexpected}")
+    if set(changed) != ALLOWED_CHANGED_SHEETS:
+        errors.append(f"Liste réelle des changements V12 incorrecte: {changed}")
+    return errors
+
+
 def validate_full(manifest: dict, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> list[str]:
     errors: list[str] = []
     for record in [*manifest["physical_files"], *manifest["evidence"]]:
@@ -669,6 +767,8 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None, release: s
             if artifact["artifact_id"] == "WAREHOUSE_V10_EXPORT"
             else EXPECTED_V11_VOLUMES
             if artifact["artifact_id"] == "WAREHOUSE_V11_EXPORT"
+            else EXPECTED_V12_VOLUMES
+            if artifact["artifact_id"] == "WAREHOUSE_V12_EXPORT"
             else {}
         )
         for sheet_name, expected in volumes.items():
@@ -762,6 +862,27 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None, release: s
         if sha256(paths.v11_workbook) != before_hash:
             errors.append("Le V11 a été modifié pendant la validation")
         errors.extend(compare_v11_to_v10(data_dir))
+    if release in {"v12", "all"} and paths.v12_workbook.is_file():
+        from morocco_elections.releases.v12 import documentation as module12
+
+        module12.configure_paths(data_dir)
+        module12.base.GENERATED_ON = _recorded_documentation_date(DOCUMENTATION_DIRS["v12"])
+        before_hash = sha256(paths.v12_workbook)
+        model = module12.base.load_model()
+        generated, _ = module12.base.build_docs(model)
+        generated = module12._adapt(generated, model)
+        try:
+            module12._validate(model, generated, before_hash)
+        except RuntimeError as exc:
+            errors.append(str(exc))
+        for name, content in generated.items():
+            expected = content.replace("\r\n", "\n").rstrip() + "\n"
+            actual = (DOCUMENTATION_DIRS["v12"] / name).read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+            if actual != expected:
+                errors.append(f"Documentation désynchronisée du V12: {name}")
+        if sha256(paths.v12_workbook) != before_hash:
+            errors.append("Le V12 a été modifié pendant la validation")
+        errors.extend(compare_v12_to_v11(data_dir))
     return errors
 
 
@@ -1021,6 +1142,8 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_backlog())
     errors.extend(validate_v10_release_report(manifest))
     errors.extend(validate_v11_release_report(manifest))
+    errors.extend(validate_v12_qualification(manifest))
+    errors.extend(validate_v12_release_report(manifest))
     errors.extend(validate_v11a_artifacts())
     errors.extend(validate_smiig_artifacts())
     errors.extend(validate_quality_baseline_artifacts())
@@ -1059,11 +1182,11 @@ def report(mode: str, data_dir: str | Path | None = None, release: str = "all", 
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Valide le dépôt et les releases locales V9/V10/V11.")
+    parser = argparse.ArgumentParser(description="Valide le dépôt et les releases locales V9/V10/V11/V12.")
     parser.add_argument("--mode", choices=("ci", "full"), default="ci")
     parser.add_argument("--data-dir")
-    parser.add_argument("--release", choices=("v9", "v10", "v11", "all"), default="all")
-    parser.add_argument("--baseline", choices=("v9", "v10"))
+    parser.add_argument("--release", choices=("v9", "v10", "v11", "v12", "all"), default="all")
+    parser.add_argument("--baseline", choices=("v9", "v10", "v11"))
     args = parser.parse_args(argv)
     return report(args.mode, args.data_dir, args.release, args.baseline)
 

@@ -13,9 +13,9 @@ from morocco_elections.quality import validation as validate_project  # noqa: E4
 def test_manifest_contract() -> None:
     manifest = validate_project.load_manifest()
     assert validate_project.validate_manifest(manifest) == []
-    assert len(manifest["sources"]) == 8
-    assert len(manifest["artifacts"]) == 4
-    assert len(manifest["physical_files"]) == 25
+    assert len(manifest["sources"]) == 12
+    assert len(manifest["artifacts"]) == 5
+    assert len(manifest["physical_files"]) == 30
     assert len(manifest["evidence"]) == 2
 
 
@@ -32,6 +32,12 @@ def test_v10_release_report_contract() -> None:
 def test_v11_release_report_contract() -> None:
     manifest = validate_project.load_manifest()
     assert validate_project.validate_v11_release_report(manifest) == []
+
+
+def test_v12_release_and_qualification_contracts() -> None:
+    manifest = validate_project.load_manifest()
+    assert validate_project.validate_v12_qualification(manifest) == []
+    assert validate_project.validate_v12_release_report(manifest) == []
 
 
 def test_v11a_artifact_contract() -> None:

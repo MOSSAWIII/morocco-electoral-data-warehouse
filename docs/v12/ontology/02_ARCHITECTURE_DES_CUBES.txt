@@ -1,0 +1,80 @@
+﻿ARCHITECTURE DES CUBES
+======================
+
+VERSION           : V12
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V12.xlsx
+DATE DE GÉNÉRATION: 2026-09-09
+PÉRIMÈTRE         : Grains, dimensions, mesures et règles d'agrégation.
+RENVOIS           : 03_DIMENSIONS_CONFORMES.txt, 07_FAITS_ELECTORAUX_ET_MOBILISATION.txt, 13_METRIQUES_DERIVEES_ET_REGLES_TEMPORELLES.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V12.
+DÉRIVÉ        : valeur calculée à partir de données V12 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+CUBE CENTRAL A — COMMUNE × PARTI × ÉLECTION
+Table de restitution : ANALYTICAL_PANEL.
+Grain : une ligne par geo_id × party_id × election_id.
+Volume : 22054 lignes.
+Dimensions conformes : DIM_GEO, DIM_PARTY, DIM_ELECTION, DIM_TIME.
+Mesures : party_votes, vote_share, rank, winner, seats, seat_share,
+previous_vote_share, swing_pp, vote_change et seat_change.
+Population : population_reference est une référence RGPH 2024, jamais une
+observation contemporaine de 2015 ou 2021.
+
+CUBE CENTRAL B — COMMUNE × ÉLECTION
+Table de restitution : COMMUNE_ELECTION_PANEL.
+Grain : une ligne par geo_id × election_id.
+Volume : 3076 lignes = 1 538 unités × 2 scrutins.
+Mesures : turnout, winning_share, margins, hhi, enp et volatility.
+Attributs de pouvoir 2021 : largest_party et president_party, sans les confondre.
+
+CUBE DES TRANSITIONS
+ELECTORAL_TRANSITIONS_2015_2021 : commune × parti, 14555 lignes.
+COMMUNE_TRANSITION_PANEL : commune, 1538 lignes.
+Le cube compare 2015 à 2021 mais laisse les sièges 2015 et control_change à NULL.
+
+CUBE DES MANDATS LOCAUX
+LOCAL_MANDATES : personne locale prudente × commune × circonscription × mandat.
+LOCAL_COUNCIL_CONTROL : commune × parti × élection.
+Les effectifs observés sont additionnables par parti. Deux vacances documentées
+expliquent l'écart brut de deux sièges; le total réconcilié est exact.
+
+CUBE PARLEMENTAIRE
+PARLIAMENTARY_MANDATES : personne × législature × siège × période de mandat.
+idPerson est stable; idSiege peut être partagé par des remplaçants successifs.
+
+CUBE SOCIO-ÉCONOMIQUE
+Grain cible : geo_id × time_id. Les faits résident notamment dans POPULATION,
+SOCIAL_HUMAN, LIVING_CONDITIONS, DIGITAL_ACCESS et FACT_OBSERVATION.
+La couverture communale exhaustive actuelle concerne surtout POPULATION 2024.
+
+ADDITIVITÉ
+- Additif : votes et effectifs d'élus, seulement sur des partitions sans doublon.
+- Semi-additif : population, sièges, inscrits et stocks; ne pas sommer dans le temps.
+- Non additif : taux, parts, HHI, ENP, rang, marge en points et volatilité.
+- Recalcul obligatoire après agrégation : toute part ou indice dérivé.
+
+CHEMINS DE FORAGE
+Région → province/préfecture → commune/arrondissement.
+Cycle → élection → parti → résultat.
+Personne → mandat → législature/circonscription.
+Commune → conseil → parti → président/exécutif.
+
+
+CUBE HCP V11
+Grain: geo_id × time_id × metric_id dans FACT_OBSERVATION.
+Mesures OBSERVÉES: population_legal en 2014 et population_municipal en 2024.
+La mesure est additive géographiquement uniquement dans le périmètre des 1 538 unités
+analytiques; elle n'est jamais additive entre millésimes.
+
+
+FAIT PARLEMENTAIRE V12
+Table: PARLIAMENTARY_QUESTIONS.
+Grain: source_id × source_question_number, matérialisé par question_id.
+Dimensions autorisées: person_id et party_id seulement lorsqu'un raccord exact existe,
+date de dépôt, période source et ministère destinataire. Le nombre de questions est additif
+sur des ensembles de question_id disjoints; il ne prouve ni présence ni assiduité.

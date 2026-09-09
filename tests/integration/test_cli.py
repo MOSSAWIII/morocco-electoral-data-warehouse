@@ -38,6 +38,8 @@ def test_all_structured_commands_are_registered() -> None:
         ("docs", "--help"),
         ("validate", "--help"),
         ("analyze", "v11", "--help"),
+        ("analyze", "v12", "--help"),
+        ("qualify", "parliament", "--help"),
         ("qualify", "councils-2015", "--help"),
         ("qualify", "smiig", "--help"),
         ("qualify", "electoral-denominators", "--help"),
@@ -51,7 +53,7 @@ def test_all_structured_commands_are_registered() -> None:
 
 
 def test_release_versions_are_registered() -> None:
-    for version in ("v9", "v10", "v11"):
+    for version in ("v9", "v10", "v11", "v12"):
         for command in ("build", "docs"):
             result = run_command(sys.executable, "-m", "morocco_elections", command, version, "--help")
             assert result.returncode == 0, result.stdout + result.stderr

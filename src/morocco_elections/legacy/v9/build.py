@@ -738,6 +738,7 @@ def audit_workbook(wb, v8_sheetnames):
         "RAW_COMM2015_FULL": "source commune row", "RAW_COMM2021_FULL": "source commune row", "RAW_COUNCIL2021_FULL": "source elected-person row",
         "RAW_MPS_FULL": "source MP seat spell", "RAW_HCP_RGPH2024_FULL": "literal source worksheet row", "CROSSWALK_GEO": "source geography × election",
         "CROSSWALK_PARTY": "source code × source system/year",
+        "PARLIAMENTARY_QUESTIONS": "source × parliamentary question",
     }
     headers = ["sheet", "classification", "grain", "primary_key", "foreign_keys", "data_rows", "populated_columns", "formula_cells", "sources", "coverage_period", "geographic_level", "quality_status", "duplicate_primary_keys", "missing_primary_keys", "known_limitations", "origin_version"]
     rows = []
@@ -752,7 +753,7 @@ def audit_workbook(wb, v8_sheetnames):
             header_row = 1
             hdr = list(next(ws.iter_rows(min_row=header_row, max_row=header_row, max_col=ws.max_column, values_only=True)))
         data = [list(vals) for vals in ws.iter_rows(min_row=header_row + 1, max_row=ws.max_row, max_col=ws.max_column, values_only=True) if any(v is not None for v in vals)]
-        key_candidates = ["record_id", "geo_id", "time_id", "party_id", "person_id", "election_id", "source_id", "metric_id", "mandate_id", "local_mandate_id", "issue_id", "dataset_id"]
+        key_candidates = ["question_id", "record_id", "geo_id", "time_id", "party_id", "person_id", "election_id", "source_id", "metric_id", "mandate_id", "local_mandate_id", "issue_id", "dataset_id"]
         pk = next((k for k in key_candidates if k in hdr), hdr[0] if hdr else None)
         fk = [str(h) for h in hdr if isinstance(h, str) and h.endswith("_id") and h != pk]
         dup = missing = None

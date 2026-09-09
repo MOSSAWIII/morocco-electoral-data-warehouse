@@ -1,6 +1,6 @@
 # Morocco Electoral Data Warehouse
 
-Warehouse quantitatif consacré aux élections, à la représentation et à la gouvernance territoriale au Maroc. La release analytique actuelle est V11; V9 et V10 restent des baselines immuables.
+Warehouse quantitatif consacré aux élections, à la représentation et à la gouvernance territoriale au Maroc. La release analytique actuelle est V12; V9, V10 et V11 restent des baselines immuables.
 
 ## Principes
 
@@ -28,15 +28,16 @@ La qualité protège ces produits, mais n'est pas un produit autonome. Le succè
 - `docs/v9/ontology/` : les 15 documents UTF-8 de l’ontologie V9.
 - `docs/v10/ontology/` : les 15 documents UTF-8 de l’ontologie V10.
 - `docs/v11/ontology/` : les 15 documents UTF-8 de l’ontologie V11.
+- `docs/v12/ontology/` : l’unique documentation d’entrée de la release courante V12 (15 documents UTF-8).
 - `docs/research/` : preuves historiques des qualifications et baselines QA ; elles ne constituent pas la roadmap active.
 - `docs/architecture/` : règles de dépendance et flux futurs.
 - `metadata/` : provenance physique des sources et backlog GitHub.
 - `database/` et `infrastructure/postgres/` : contrats d'une option PostgreSQL future.
 - `tests/unit/`, `tests/integration/` et `tests/fixtures/synthetic/` : stratégie de test.
 
-V11 contient 67 onglets. Elle préserve intégralement V10 et ajoute à `FACT_OBSERVATION` les 1 538 populations légales 2014 et les 1 538 populations municipales 2024 validées par V10-QA-3. Aucun des 25 couples indicateur-millésime `NO_GO` n’est ingéré.
+V12 contient 68 onglets. Elle préserve les faits V11 et ajoute `PARLIAMENTARY_QUESTIONS` : 5 589 questions écrites officielles couvrant quatre segments du cycle 2023–2024. Parmi elles, 5 453 sont raccordées exactement à une identité V11 et 136 restent explicitement non raccordées. Ce périmètre partiel ne représente ni les questions orales ni toute l’activité parlementaire.
 
-La commande `build v11` reconstruit désormais le classeur depuis les RAW, les décisions versionnées et le bootstrap historique V8. Elle ne lit aucun classeur V9, V10 ou V11 comme entrée. V8 reste temporairement nécessaire pour les tables héritées dont les sources physiques ne sont pas encore disponibles séparément ; cette dépendance est explicite et n'entraîne plus une chaîne de releases.
+La commande `build v12` reconstruit le classeur depuis les RAW, les décisions versionnées et le bootstrap historique V8. Elle ne lit aucun classeur V9, V10 ou V11 comme entrée. V8 reste temporairement nécessaire pour les tables héritées dont les sources physiques ne sont pas encore disponibles séparément ; cette dépendance est explicite et n'entraîne plus une chaîne de releases.
 
 ## Installation
 
@@ -66,8 +67,13 @@ python -m morocco_elections build v10
 python -m morocco_elections docs v10
 python -m morocco_elections build v11
 python -m morocco_elections docs v11
+python -m morocco_elections qualify parliament --baseline v11 --as-of 2026-09-09
+python -m morocco_elections build v12
+python -m morocco_elections docs v12
+python -m morocco_elections analyze v12
 python -m morocco_elections validate --mode full --release v10 --baseline v9
 python -m morocco_elections validate --mode full --release v11 --baseline v10
+python -m morocco_elections validate --mode full --release v12 --baseline v11
 python -m morocco_elections analyze v11
 python -m morocco_elections quality baseline --release v10 --as-of 2026-09-08
 python -m morocco_elections qualify electoral-denominators --baseline v10 --as-of 2026-09-08
@@ -87,8 +93,8 @@ Les commandes de qualification restent disponibles pour reproduire les décision
 
 La roadmap active est volontairement limitée :
 
-1. produire des analyses de référence à partir de V11 ;
-2. qualifier une nouvelle source seulement après avoir confirmé son accessibilité, sa provenance et son potentiel — les questions parlementaires sont le prochain candidat ;
+1. utiliser V12 pour des analyses de référence sans créer de produit parallèle ;
+2. ajouter une nouvelle source seulement si elle est déjà accessible, traçable, réutilisable et raccordable ;
 3. préparer PostgreSQL seulement lorsqu'un besoin d'interrogation, de collaboration ou de performance le justifie.
 
 Watchlist passive, sans développement en l'absence de preuve nouvelle : inscrits communaux 2015–2021, 135 présidences non résolues, conseils communaux 2015 et SMIIG. Les 25 couples HCP restés `NO_GO` ne sont pas chargés.

@@ -12,3 +12,5 @@ Ce répertoire contient des données non versionnées. Seul ce contrat est suivi
 Les chemins, empreintes et dimensions attendus sont définis dans `metadata/source_manifest.json`. `ELECTIONS_DATA_DIR` permet de placer cette arborescence sur un autre volume sans modifier le code.
 
 Les sources HCP promues par V11 résident sous `raw/hcp/rgph/2014/` et `raw/hcp/rgph/2024/`. Une promotion déplace les octets qualifiés sans les transformer; les candidats restés `NO_GO` demeurent sous `staging/`.
+
+Les quatre ressources parlementaires promues par V12 résident sous `raw/parliament/questions/written/2023/`. Elles restent dans leurs octets officiels d'origine; V12 ne copie dans la table canonique que leur contenu observé et ses clés de raccordement explicites.
