@@ -9,6 +9,8 @@ Ce répertoire contient des données non versionnées. Seul ce contrat est suivi
 - `exports/` : produits dérivés, notamment les classeurs Excel.
 - `tmp/` : travail temporaire supprimable.
 
+Les acquisitions génériques sont placées sous `raw/<domaine>/acquisitions/<source_id>/<préfixe_sha256>/`. Chaque version contient les octets originaux et un `acquisition.json` local avec provenance et profil. Deux fichiers différents ne peuvent donc jamais s'écraser. Leur présence en RAW ne vaut pas validation ni ingestion dans le warehouse.
+
 Les chemins, empreintes et dimensions attendus sont définis dans `metadata/source_manifest.json`. `ELECTIONS_DATA_DIR` permet de placer cette arborescence sur un autre volume sans modifier le code.
 
 Les sources HCP promues par V11 résident sous `raw/hcp/rgph/2014/` et `raw/hcp/rgph/2024/`. Une promotion déplace les octets qualifiés sans les transformer; les candidats restés `NO_GO` demeurent sous `staging/`.

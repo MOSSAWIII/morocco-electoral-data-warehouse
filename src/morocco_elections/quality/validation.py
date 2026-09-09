@@ -17,6 +17,7 @@ from morocco_elections.provenance import sha256_file as sha256
 ROOT = PROJECT_ROOT
 MANIFEST_PATH = get_paths().source_manifest
 BACKLOG_PATH = get_paths().github_backlog
+ACQUISITION_CATALOG_PATH = PROJECT_ROOT / "metadata" / "acquisition_catalog.json"
 V10_REPORT_PATH = PROJECT_ROOT / "metadata" / "v10_release_report.json"
 V11_REPORT_PATH = PROJECT_ROOT / "metadata" / "v11_release_report.json"
 V12_QUALIFICATION_PATH = PROJECT_ROOT / "metadata" / "v12_parliament_qualification.json"
@@ -255,6 +256,16 @@ def validate_backlog() -> list[str]:
         if unknown_blocks:
             errors.append(f"Issue {issue.get('title')}: blocages inconnus {sorted(unknown_blocks)}")
     return errors
+
+
+def validate_acquisition_catalog() -> list[str]:
+    from morocco_elections.sources.acquisition import load_catalog, validate_catalog
+
+    try:
+        catalog = load_catalog(ACQUISITION_CATALOG_PATH)
+    except RuntimeError as exc:
+        return [str(exc)]
+    return [f"Catalogue d'acquisition: {error}" for error in validate_catalog(catalog)]
 
 
 def validate_v10_release_report(manifest: dict) -> list[str]:
@@ -1140,6 +1151,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors = []
     errors.extend(validate_manifest(manifest))
     errors.extend(validate_backlog())
+    errors.extend(validate_acquisition_catalog())
     errors.extend(validate_v10_release_report(manifest))
     errors.extend(validate_v11_release_report(manifest))
     errors.extend(validate_v12_qualification(manifest))
