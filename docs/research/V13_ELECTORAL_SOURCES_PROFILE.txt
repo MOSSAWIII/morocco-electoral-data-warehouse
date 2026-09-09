@@ -1,0 +1,33 @@
+V13 — PROFIL CONSOLIDÉ DES ARCHIVES ÉLECTORALES
+
+Baseline : V12
+Date d'observation : 2026-09-09
+Sources : 7
+Ingestion autorisée : NON
+
+MATRICE
+
+Source | Grain | Période | Couverture | Clés | Provenance/limites | Destination
+TAFRA_LEGISLATIVE_RESULTS_2002 | idCirconscription × typeListe | 2002 | 91/91 lignes; 91 unités | idCirconscription, typeListe | La notice déclare la source primaire incomplète, la source secondaire erronée et les petits partis absents. 84 cellules parti sont vides; elles ne seront pas converties en zéro sans règle source explicite. Le dictionnaire et les en-têtes physiques ne concordent pas exactement. | ARCHIVE_ONLY
+TAFRA_LEGISLATIVE_RESULTS_2007 | idCirconscription × typeListe | 2007 | 95/95 lignes; 95 unités | idCirconscription, typeListe | Les 30 sièges de la liste nationale ne figurent pas dans nSieges. 1748 cellules parti sont vides; elles ne seront pas converties en zéro sans règle source explicite. Le dictionnaire et les en-têtes physiques ne concordent pas exactement. 4 codes partisans nécessitent un crosswalk ou une qualification temporelle. | CANONICAL_CANDIDATE
+TAFRA_LEGISLATIVE_RESULTS_2011 | idCirconscription × typeListe | 2011 | 92/92 lignes; 92 unités | idCirconscription, typeListe | Les données ont été partagées par deux chercheurs et ne constituent pas une publication officielle primaire. Les 90 sièges de la liste nationale ne figurent pas dans nSieges. | CANONICAL_CANDIDATE
+TAFRA_LEGISLATIVE_RESULTS_2016 | idCirconscription × typeListe | 2016 | 184/184 lignes; 184 unités | idCirconscription, typeListe | nInscrits et pctNuls sont entièrement vides. nSieges est vide pour les lignes de liste nationale; le total renseigné couvre 305 sièges locaux. 1601 cellules parti sont vides; elles ne seront pas converties en zéro sans règle source explicite. | CANONICAL_CANDIDATE
+TAFRA_LEGISLATIVE_RESULTS_2021 | idCirconscription × typeListe | 2021 | 104/104 lignes; 104 unités | idCirconscription, typeListe | nInscrits est entièrement vide. invalide est constant à zéro alors que la notice indique que les votes nuls ne sont pas publiés; ce champ est inutilisable. 1415 cellules parti sont vides; elles ne seront pas converties en zéro sans règle source explicite. | CANONICAL_CANDIDATE
+TAFRA_REGIONAL_RESULTS_2015 | source_geo_unit | 2015 | 82/82 lignes; 82 unités | source_geo_unit | nInscrits, nVotants et pctNuls sont entièrement vides. 1566 cellules parti sont vides; elles ne seront pas converties en zéro sans règle source explicite. | CANONICAL_CANDIDATE
+TAFRA_REGIONAL_RESULTS_2021 | source_geo_unit | 2021 | 82/82 lignes; 82 unités | source_geo_unit | nInscrits et invalide sont entièrement vides. 1419 cellules parti sont vides; elles ne seront pas converties en zéro sans règle source explicite. | CANONICAL_CANDIDATE
+
+CONTRÔLES STRUCTURELS
+
+- TAFRA_LEGISLATIVE_RESULTS_2002: doublons=0; clés manquantes=0; partis=9; codes non raccordés=0; sièges fichier=295; total scrutin V12=325; colonnes vides=aucune.
+- TAFRA_LEGISLATIVE_RESULTS_2007: doublons=0; clés manquantes=0; partis=38; codes non raccordés=4; sièges fichier=295; total scrutin V12=325; colonnes vides=aucune.
+- TAFRA_LEGISLATIVE_RESULTS_2011: doublons=0; clés manquantes=0; partis=19; codes non raccordés=0; sièges fichier=305; total scrutin V12=395; colonnes vides=aucune.
+- TAFRA_LEGISLATIVE_RESULTS_2016: doublons=0; clés manquantes=0; partis=28; codes non raccordés=0; sièges fichier=305; total scrutin V12=395; colonnes vides=nInscrits,pctNuls.
+- TAFRA_LEGISLATIVE_RESULTS_2021: doublons=0; clés manquantes=0; partis=30; codes non raccordés=0; sièges fichier=395; total scrutin V12=395; colonnes vides=nInscrits.
+- TAFRA_REGIONAL_RESULTS_2015: doublons=0; clés manquantes=0; partis=30; codes non raccordés=0; sièges fichier=678; total scrutin V12=678; colonnes vides=nInscrits,nVotants,pctNuls.
+- TAFRA_REGIONAL_RESULTS_2021: doublons=0; clés manquantes=0; partis=31; codes non raccordés=0; sièges fichier=678; total scrutin V12=678; colonnes vides=nInscrits,invalide.
+
+DÉCISION
+
+Six sources sont des candidats canoniques à qualifier par crosswalks; 2002 reste ARCHIVE_ONLY.
+Aucune source n'est encore autorisée à rejoindre V13.
+Prochain gate : Construire les crosswalks geo_id, party_id, election_id et contest_id pour les six CANONICAL_CANDIDATE.
