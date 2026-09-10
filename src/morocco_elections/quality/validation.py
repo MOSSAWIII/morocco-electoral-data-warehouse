@@ -22,6 +22,8 @@ ACQUISITION_INVENTORY_PATH = PROJECT_ROOT / "metadata" / "acquisition_inventory.
 ONTOLOGY_PATH = PROJECT_ROOT / "metadata" / "ontology_v1.json"
 V13_SOURCE_PROFILE_PATH = PROJECT_ROOT / "metadata" / "v13_electoral_sources_profile.json"
 V13_SOURCE_PROFILE_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V13_ELECTORAL_SOURCES_PROFILE.txt"
+V13_IDENTITY_REGISTRY_PATH = PROJECT_ROOT / "metadata" / "v13_identity_registry.json"
+V13_IDENTITY_REGISTRY_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V13_IDENTITY_REGISTRY.txt"
 V10_REPORT_PATH = PROJECT_ROOT / "metadata" / "v10_release_report.json"
 V11_REPORT_PATH = PROJECT_ROOT / "metadata" / "v11_release_report.json"
 V12_QUALIFICATION_PATH = PROJECT_ROOT / "metadata" / "v12_parliament_qualification.json"
@@ -319,6 +321,38 @@ def validate_v13_source_profile(data_dir: str | Path | None = None, full: bool =
         else:
             if rebuilt != profile:
                 errors.append("Profil V13 non reproductible depuis les RAW et V12 locaux")
+    return errors
+
+
+def validate_v13_identity_registry(data_dir: str | Path | None = None, full: bool = False) -> list[str]:
+    from morocco_elections.domains.identity import registry as identity_registry
+
+    try:
+        registry = json.loads(V13_IDENTITY_REGISTRY_PATH.read_text(encoding="utf-8"))
+        report = V13_IDENTITY_REGISTRY_REPORT_PATH.read_text(encoding="utf-8")
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"Registre d'identités V13 illisible: {exc}"]
+    errors = [f"Registre V13: {error}" for error in identity_registry.validate_registry(registry)]
+    try:
+        inventory = json.loads(ACQUISITION_INVENTORY_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"Registre V13: inventaire d'acquisition illisible: {exc}")
+    else:
+        acquisition_ids = {item.get("acquisition_id") for item in inventory.get("records", [])}
+        evidence_ids = {item.get("evidence_id") for item in registry.get("crosswalks", [])}
+        unknown_evidence = evidence_ids - acquisition_ids
+        if unknown_evidence:
+            errors.append(f"Registre V13: preuves absentes de l'inventaire: {sorted(unknown_evidence)}")
+    if report != identity_registry.render_report(registry):
+        errors.append("Registre V13: rapport TXT désynchronisé du JSON")
+    if full and not errors:
+        try:
+            rebuilt = identity_registry.build_registry(data_dir, str(registry["as_of"]), "v12")
+        except (OSError, RuntimeError, ValueError) as exc:
+            errors.append(f"Registre V13: reconstruction impossible: {exc}")
+        else:
+            if rebuilt != registry:
+                errors.append("Registre V13 non reproductible depuis les RAW et V12 locaux")
     return errors
 
 
@@ -1209,6 +1243,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_acquisition_inventory())
     errors.extend(validate_ontology_contract())
     errors.extend(validate_v13_source_profile())
+    errors.extend(validate_v13_identity_registry())
     errors.extend(validate_v10_release_report(manifest))
     errors.extend(validate_v11_release_report(manifest))
     errors.extend(validate_v12_qualification(manifest))
@@ -1239,6 +1274,8 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
             errors.extend(validate_acquisition_inventory(data_dir, full=True))
         if not errors:
             errors.extend(validate_v13_source_profile(data_dir, full=True))
+        if not errors:
+            errors.extend(validate_v13_identity_registry(data_dir, full=True))
     return errors
 
 
