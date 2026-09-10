@@ -1,0 +1,70 @@
+﻿PIPELINE RAW → NORMALIZED → FACT → ANALYTICAL
+=============================================
+
+VERSION           : V13
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V13.xlsx
+DATE DE GÉNÉRATION: 2026-09-10
+PÉRIMÈTRE         : Flux d'ingestion, lineage et non-altération.
+RENVOIS           : 00_INDEX_ET_MODE_EMPLOI.txt, 12_REGLES_D_INTEGRITE_ET_JOINTURE.txt, 14_CATALOGUE_COMPLET_DES_ONGLETS.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V13.
+DÉRIVÉ        : valeur calculée à partir de données V13 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+PIPELINE OBLIGATOIRE
+SOURCE EXTERNE
+  → RAW immuable
+  → profil et dictionnaire source
+  → dimensions/crosswalks
+  → faits normalisés
+  → panels analytiques
+  → QA et couverture
+
+RAW OBSERVÉ
+RAW_COMM2015_FULL: 1538 lignes, 45 colonnes.
+RAW_COMM2021_FULL: 1538 lignes, 56 colonnes.
+RAW_COUNCIL2021_FULL: 32513 lignes, 18 colonnes.
+RAW_MPS_FULL: 1654 lignes, 24 colonnes.
+RAW_HCP_RGPH2024_FULL: disposition littérale du classeur officiel HCP.
+
+RÈGLES RAW
+- Ne pas renommer, supprimer, remplir ou corriger une colonne brute.
+- Toute correction appartient à une couche normalisée et doit être traçable.
+- Les fichiers sources restent conservés hors du classeur et leurs SHA-256 sont dans SOURCES.
+- Un sample ou miroir nettoyé ne remplace pas un fichier original complet.
+
+NORMALISATION
+- Les identifiants TAFRA deviennent des clés source, pas des geo_id canoniques.
+- Les codes de parti sont résolus par CROSSWALK_PARTY avec période.
+- Les noms de personne locale produisent des identités prudentes limitées à la commune.
+- Les valeurs nulles restent nulles; zéro n'est créé que si sa signification source est prouvée.
+
+LINEAGE MINIMALE
+source_id, source_url, publication_date, retrieval_date, quality_status et notes.
+Les états recommandés sont verified, provisional, derived et low_confidence.
+
+CONTRÔLES DE GOUVERNANCE
+SOURCES décrit la provenance. SOURCE_DOWNLOADS décrit les ressources physiques.
+RAW_IMPORT_QUEUE décrit le backlog. DATA_COVERAGE décrit la couverture.
+QUALITY_CONTROL conserve toute anomalie. WORKBOOK_AUDIT_V10 inventorie le classeur.
+
+
+LINEAGE V11-HCP
+RAW HCP officiels locaux → raccordement exact V10 → gate V10-QA-3 → FACT_OBSERVATION.
+Les classeurs RAW restent hors Git. Aucun RAW n'est embarqué dans une nouvelle feuille.
+
+
+LINEAGE V12
+Quatre XLSX officiels data.gov.ma → contrôle de schéma et de grain → raccord Unicode exact
+aux mandats 2021–2026 → PARLIAMENTARY_QUESTIONS → export Excel. Les RAW restent hors Git.
+La release est reconstruite depuis V8 + RAW + décisions versionnées, sans lire V9, V10 ou V11.
+
+
+LINEAGE V13
+Six XLSX acquis avec SHA-256 → profil consolidé → registre d'identités → qualification
+source × mesure → faits canoniques. V12 est reconstruite depuis ses sources avant ajout des
+tables V13; le classeur V12 existant n'est ni lu comme bootstrap ni modifié.

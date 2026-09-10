@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "ontology_version": "1.0.0",
-  "baseline_release": "V12",
+  "ontology_version": "1.1.0",
+  "baseline_release": "V13",
   "language": "fr",
   "purpose": "Contrat logique stable pour relier les données électorales marocaines sans dépendre d'un format de stockage.",
   "principles": [
@@ -13,7 +13,7 @@
     "Les cubes sont dérivés des faits canoniques et ne deviennent pas une seconde source de vérité."
   ],
   "maturity_levels": {
-    "CURRENT": "Concept présent dans V12 et réutilisable.",
+    "CURRENT": "Concept présent dans V13 et réutilisable.",
     "PARTIAL": "Concept présent, mais contrat ou couverture encore incomplet.",
     "PLANNED": "Concept requis par des sources profilées, pas encore canonique."
   },
@@ -49,8 +49,9 @@
       "dimension_id": "electoral_contest",
       "canonical_id": "contest_id",
       "definition": "Course électorale datée: circonscription, liste locale, régionale ou nationale.",
-      "maturity": "PLANNED",
+      "maturity": "CURRENT",
       "v12_tables": [],
+      "v13_tables": ["DIM_ELECTORAL_CONTEST"],
       "identity_rule": "election_id, code source de circonscription, type de liste, territoire et version de découpage.",
       "temporal_fields": ["valid_from", "valid_to", "boundary_version"]
     },
@@ -167,6 +168,7 @@
       "dimensions": ["electoral_contest", "party", "election", "territory", "source_evidence"],
       "maturity": "PARTIAL",
       "v12_tables": ["RESULTS"],
+      "v13_tables": ["FACT_ELECTION_RESULT"],
       "observed_measures": ["votes", "seats"],
       "derived_measures": ["vote_share", "seat_share", "rank", "margin_votes", "margin_pp"],
       "rules": ["Les voix et sièges restent associés au type de liste publié.", "Une part exige un dénominateur documenté au même contest_id."]
@@ -178,8 +180,9 @@
       "dimensions": ["electoral_contest", "election", "territory", "source_evidence"],
       "maturity": "PARTIAL",
       "v12_tables": ["MOBILISATION", "ELECTORATE"],
-      "observed_measures": ["registered_voters", "voters", "valid_votes", "invalid_votes", "blank_votes"],
-      "derived_measures": ["turnout_rate", "abstention_rate", "valid_vote_rate"],
+      "v13_tables": ["FACT_ELECTORAL_MOBILIZATION"],
+      "observed_measures": ["contest_seats", "registered_voters", "voters", "valid_votes", "invalid_votes", "blank_votes", "turnout_rate", "invalid_vote_rate"],
+      "derived_measures": ["abstention_rate", "valid_vote_rate"],
       "rules": ["Chaque taux cite son numérateur et son dénominateur.", "Une colonne physiquement vide reste indisponible."]
     },
     {

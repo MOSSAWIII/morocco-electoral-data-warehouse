@@ -1,0 +1,94 @@
+﻿INDEX ET MODE D'EMPLOI
+======================
+
+VERSION           : V13
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V13.xlsx
+DATE DE GÉNÉRATION: 2026-09-10
+PÉRIMÈTRE         : Corpus documentaire complet de V10.
+RENVOIS           : 01_ONTOLOGIE_ELECTORALE_GLOBALE.txt, 02_ARCHITECTURE_DES_CUBES.txt, 03_DIMENSIONS_CONFORMES.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V13.
+DÉRIVÉ        : valeur calculée à partir de données V13 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+Ce corpus décrit l'ontologie, les cubes, les hiérarchies, les règles de jointure,
+les métriques et la gouvernance des données du warehouse V10. Il ne remplace pas
+le classeur : le classeur reste l'unique source de vérité exécutable.
+
+ORDRE DE LECTURE RECOMMANDÉ
+1. Ontologie globale.
+2. Architecture des cubes.
+3. Dimensions conformes et hiérarchie géographique.
+4. Faits électoraux, personnes et pouvoir local.
+5. Pipeline, intégrité, métriques et règles temporelles.
+6. Catalogue exhaustif des 67 onglets.
+
+CONVENTIONS
+- Les identifiants techniques sont reproduits sans traduction.
+- NULL signifie absent ou non calculable, jamais zéro implicite.
+- Une part est exprimée sur l'échelle 0–100 sauf mention explicite.
+- Une ligne RAW n'est jamais corrigée silencieusement.
+- Une relation temporelle doit conserver observation_year, election_year,
+  temporal_distance et temporal_join_method lorsqu'ils existent.
+- Les anciens onglets SAMPLE/PILOT restent historiques et ne remplacent jamais
+  les tables FULL ou les panels V10.
+- DÉRIVÉ: le person_id local V10 est Unicode, déterministe et de portée prudente;
+  toute analyse doit respecter source+commune+circonscription+parti.
+
+LISTE DES DOCUMENTS
+01. 00_INDEX_ET_MODE_EMPLOI.txt
+02. 01_ONTOLOGIE_ELECTORALE_GLOBALE.txt
+03. 02_ARCHITECTURE_DES_CUBES.txt
+04. 03_DIMENSIONS_CONFORMES.txt
+05. 04_HIERARCHIE_GEOGRAPHIQUE.txt
+06. 05_CROSSWALKS_ET_IDENTITES.txt
+07. 06_TEMPS_CYCLES_ET_ELECTIONS.txt
+08. 07_FAITS_ELECTORAUX_ET_MOBILISATION.txt
+09. 08_PERSONNES_MANDATS_ET_REPRESENTATION.txt
+10. 09_POUVOIR_LOCAL_ET_GOUVERNANCE.txt
+11. 10_SOCIO_ECONOMIE_CAMPAGNE_INFORMATION.txt
+12. 11_PIPELINE_RAW_NORMALIZED_FACT_ANALYTICAL.txt
+13. 12_REGLES_D_INTEGRITE_ET_JOINTURE.txt
+14. 13_METRIQUES_DERIVEES_ET_REGLES_TEMPORELLES.txt
+15. 14_CATALOGUE_COMPLET_DES_ONGLETS.txt
+EMPREINTE DE LA SOURCE
+----------------------
+SHA-256 V10: 35f5f12b55a603c05c7230b701d0a629dbd78b697b49da177cdf7a3419770332
+Nombre d'onglets: 71
+Nombre de documents: 15
+
+STRUCTURES VIDES
+----------------
+STRUCTURE VIDE: LOCAL_FINANCE, POLITICAL_ACTIVITY, SHOCKS
+
+PILOTES CONSERVÉS
+-----------------
+PILOTE: ANALYTICAL_PANEL_PILOT_2015, COMMUNE_ELECTION_PANEL_PILOT, COUNCIL2021_SAMPLE_STATS, COUNCIL_COMPOSITION_2021_PILOT, MICRO_COMM2015_ANALYTICS, RAW_COMM2015_SAMPLE, RAW_COUNCIL2021_SAMPLE, RAW_MPS_SAMPLE
+
+ÉTAT V10
+Les cinq variantes géographiques et les deux écarts de sièges sont résolus avec preuve. Restent BLOQUÉS: nInscrits, sièges 2015, 135 présidences et historique partisan parlementaire complet.
+
+
+ÉTAT V11-HCP
+OBSERVÉ: 1 538 populations légales 2014 et 1 538 populations municipales 2024
+sont ajoutées à FACT_OBSERVATION. Les 25 autres décisions V10-QA-3 restent NO_GO.
+La population légale 2024 de POPULATION concorde cellule par cellule avec la nouvelle
+publication officielle et n'est pas dupliquée dans FACT_OBSERVATION.
+
+
+ÉTAT V12 — ACTIVITÉ PARLEMENTAIRE
+OBSERVÉ: 5 589 questions parlementaires écrites issues de quatre ressources officielles
+du cycle 2023–2024. 5 453 lignes sont raccordées exactement à une identité V11;
+136 restent non raccordées et aucune correspondance floue n'est appliquée.
+PÉRIMÈTRE PARTIEL: les questions orales et les autres périodes ne sont pas incluses.
+
+
+ÉTAT V13 — CŒUR ÉLECTORAL MULTI-SCRUTINS
+OBSERVÉ: 639 courses électorales, 10 883 résultats contest × parti et 639 lignes de
+mobilisation provenant de six archives qualifiées. Les législatives 2007, 2011, 2016,
+2021 et les régionales 2015, 2021 rejoignent le canonique dans leurs seuls périmètres GO.
+ARCHIVE_ONLY: le fichier législatif 2002 reste exclu des faits canoniques.

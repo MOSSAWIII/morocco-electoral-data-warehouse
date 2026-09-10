@@ -1,0 +1,72 @@
+{
+  "release": "V13",
+  "baseline": "V12",
+  "generated_on": "2026-09-10",
+  "status": "validated",
+  "scope_status": "PARTIAL",
+  "workbooks": {
+    "V8": "01edd16fe6ef53a11239b2c7b49985dda4584d41bf07e27e97be7c80c17a38eb",
+    "V9": "a4a3c90e26f45d46d85f11fea4e686d21e2ebc71f415f49e3ff1852e5ebd38a8",
+    "V10": "47df47a0efd0d8c21b545f65bbfa00906a762717a7ccbee6c256ba020b2de3f6",
+    "V11": "a201a214752e6cdc5eb9e80e5913aba9c9e574f11c21cb2460af966ff6bd8dd3",
+    "V12": "47bf735ffe8624906ca050ead6606f9022da652e8be05e1f7dc68575d487d31f",
+    "V13": "35f5f12b55a603c05c7230b701d0a629dbd78b697b49da177cdf7a3419770332"
+  },
+  "source_hashes": {
+    "TAFRA_LEGISLATIVE_RESULTS_2007": "5239da6f76de3e3d4dfa6402d6c4ce1bdf3da2ceaeb5f9769390a907c548e5e0",
+    "TAFRA_LEGISLATIVE_RESULTS_2011": "2152a4581364da51ebff3afa6320d334e2e180aa4319399a033b296fe94e7f8c",
+    "TAFRA_LEGISLATIVE_RESULTS_2016": "38f3031b423957050d7c32f0d521952b397f5f41f8f224f30faeb5d7c56b1ba9",
+    "TAFRA_LEGISLATIVE_RESULTS_2021": "ffef1b78ae6b2dd4397e8837e094e991d9630787870b5724ee2bed5931374545",
+    "TAFRA_REGIONAL_RESULTS_2015": "a68bb617ca8f07f94e06167add8c49c3db2345d20570e56b5ab4066b0a89fc18",
+    "TAFRA_REGIONAL_RESULTS_2021": "0fa1c2c0bd9bd6fa5df513f65bb0ad61ab91b89c87a94d92cdeec0c5d5317bbd"
+  },
+  "decision_hashes": {
+    "identity_registry": "f7c8de684c7c4da47aeebf98c22ff99adb3948bb2aa7f6fa6a903ae9206d22df",
+    "electoral_qualification": "3b0cf62bb18442d634a3e458a559933d6e3d6148b38219de964ab4d60462b7d0"
+  },
+  "volumes": {
+    "sheets": 71,
+    "DIM_ELECTORAL_CONTEST": 639,
+    "FACT_ELECTION_RESULT": 10883,
+    "FACT_ELECTORAL_MOBILIZATION": 639
+  },
+  "controls": {
+    "new_geo_entities": 159,
+    "new_party_entities": 4,
+    "unique_result_ids": 10883,
+    "unique_contest_ids": 639,
+    "technical_zero_imputations": 0,
+    "archive_2002_rows_ingested": 0
+  },
+  "allowed_changed_sheets": [
+    "DATA_COVERAGE",
+    "DATA_DICTIONARY",
+    "DIM_ELECTORAL_CONTEST",
+    "DIM_GEO",
+    "DIM_PARTY",
+    "FACT_ELECTION_RESULT",
+    "FACT_ELECTORAL_MOBILIZATION",
+    "QUALITY_CONTROL",
+    "README",
+    "SOURCES",
+    "WORKBOOK_AUDIT_V13"
+  ],
+  "actual_changed_sheets": [
+    "DATA_COVERAGE",
+    "DATA_DICTIONARY",
+    "DIM_ELECTORAL_CONTEST",
+    "DIM_GEO",
+    "DIM_PARTY",
+    "FACT_ELECTION_RESULT",
+    "FACT_ELECTORAL_MOBILIZATION",
+    "QUALITY_CONTROL",
+    "README",
+    "SOURCES",
+    "WORKBOOK_AUDIT_V13"
+  ],
+  "integrity": {
+    "v12_reconstructed_from_sources": true,
+    "source_hashes_unchanged": true,
+    "deterministic_export": true
+  }
+}

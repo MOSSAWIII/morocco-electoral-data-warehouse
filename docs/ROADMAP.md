@@ -4,7 +4,7 @@
 
 Le projet construit un socle ouvert, profond et cohérent pour relier territoires, élections, partis, personnes, mandats, gouvernance, activité parlementaire et contexte socio-économique. Il n'existe qu'un produit logique : les formats Excel, CSV, Parquet, DuckDB ou SQL sont des accès différents aux mêmes faits canoniques.
 
-La release courante est V12. V9 à V12 restent immuables. La suite suit ce flux :
+La release courante est V13. V9 à V12 restent immuables. La suite suit ce flux :
 
 ```text
 SOURCES → RAW IMMUTABLES → PROFILAGE → IDENTITÉS/CROSSWALKS
@@ -55,7 +55,7 @@ L'ontologie commune reste petite : territoire, élection, parti/alliance, person
 
 Les relations temporelles portent `valid_from`, `valid_to`, `observation_date`, `publication_date` et `retrieved_at` selon leur nature. Cela s'applique notamment aux découpages, affiliations, mandats, fonctions, présidences et compositions institutionnelles.
 
-L'ontologie V1 sera figée après profilage d'un premier lot représentatif, puis étendue sans casser les identifiants existants.
+L'ontologie V1.1 est matérialisée par V13 pour le cœur électoral; elle sera étendue sans casser les identifiants existants.
 
 ## Phase 4 — Registre d'identités
 

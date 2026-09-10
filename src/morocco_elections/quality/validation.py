@@ -31,6 +31,8 @@ V11_REPORT_PATH = PROJECT_ROOT / "metadata" / "v11_release_report.json"
 V12_QUALIFICATION_PATH = PROJECT_ROOT / "metadata" / "v12_parliament_qualification.json"
 V12_REPORT_PATH = PROJECT_ROOT / "metadata" / "v12_release_report.json"
 V12_DIFF_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V12_VS_V11_DIFF.txt"
+V13_REPORT_PATH = PROJECT_ROOT / "metadata" / "v13_release_report.json"
+V13_DIFF_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V13_VS_V12_DIFF.txt"
 V11A_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11a_source_candidates.json"
 V11A_DECISION_PATH = PROJECT_ROOT / "docs" / "research" / "V11A_DECISION_2015_COUNCILS.txt"
 SMIIG_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11_smiig_source_candidates.json"
@@ -51,6 +53,7 @@ DOCUMENTATION_DIRS = {
     "v10": get_paths().documentation_v10,
     "v11": get_paths().documentation_v11,
     "v12": get_paths().documentation_v12,
+    "v13": get_paths().documentation_v13,
 }
 EXPECTED_DOCUMENTS = [
     "00_INDEX_ET_MODE_EMPLOI.txt",
@@ -148,6 +151,12 @@ EXPECTED_V10_VOLUMES = {
 }
 EXPECTED_V11_VOLUMES = {**EXPECTED_V10_VOLUMES, "FACT_OBSERVATION": 3_203}
 EXPECTED_V12_VOLUMES = {**EXPECTED_V11_VOLUMES, "PARLIAMENTARY_QUESTIONS": 5_589}
+EXPECTED_V13_VOLUMES = {
+    **EXPECTED_V12_VOLUMES,
+    "DIM_ELECTORAL_CONTEST": 639,
+    "FACT_ELECTION_RESULT": 10_883,
+    "FACT_ELECTORAL_MOBILIZATION": 639,
+}
 REQUIRED_EVIDENCE_FIELDS = {"evidence_id", "local_path", "source_url", "publisher", "sha256", "byte_size", "status"}
 
 
@@ -165,10 +174,10 @@ def load_manifest(path: Path | None = None) -> dict:
 
 def validate_manifest(manifest: dict) -> list[str]:
     errors: list[str] = []
-    if manifest.get("schema_version") != 4:
-        errors.append("metadata/source_manifest.json: schema_version doit valoir 4")
-    if manifest.get("warehouse_version") != "V12":
-        errors.append("metadata/source_manifest.json: warehouse_version doit valoir V12")
+    if manifest.get("schema_version") != 5:
+        errors.append("metadata/source_manifest.json: schema_version doit valoir 5")
+    if manifest.get("warehouse_version") != "V13":
+        errors.append("metadata/source_manifest.json: warehouse_version doit valoir V13")
 
     sources = manifest.get("sources")
     artifacts = manifest.get("artifacts")
@@ -180,8 +189,8 @@ def validate_manifest(manifest: dict) -> list[str]:
     if not isinstance(artifacts, list) or not artifacts:
         errors.append("Le manifeste doit contenir une liste artifacts non vide")
         artifacts = []
-    if not isinstance(physical_files, list) or len(physical_files) != 30:
-        errors.append("Le manifeste doit inventorier exactement 30 fichiers physiques")
+    if not isinstance(physical_files, list) or len(physical_files) != 37:
+        errors.append("Le manifeste doit inventorier exactement 37 fichiers physiques")
         physical_files = []
     if not isinstance(evidence, list) or len(evidence) != 2:
         errors.append("Le manifeste doit inventorier exactement deux preuves officielles V10")
@@ -515,6 +524,59 @@ def validate_v12_release_report(manifest: dict) -> list[str]:
         errors.append("Liste des onglets V12 modifiés incohérente")
     if diff_report != v12.render_diff_report(report):
         errors.append("Rapport TXT V12/V11 désynchronisé du JSON")
+    return errors
+
+
+def validate_v13_release_report(manifest: dict) -> list[str]:
+    from morocco_elections.releases.v13 import build as v13
+
+    try:
+        report = json.loads(V13_REPORT_PATH.read_text(encoding="utf-8"))
+        diff_report = V13_DIFF_REPORT_PATH.read_text(encoding="utf-8-sig")
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"Rapport V13 illisible: {exc}"]
+    errors: list[str] = []
+    if report.get("release") != "V13" or report.get("baseline") != "V12" or report.get("status") != "validated":
+        errors.append("Le rapport de release doit décrire V13 validé contre V12")
+    artifacts = {item["artifact_id"]: item for item in manifest.get("artifacts", [])}
+    for version in ("V8", "V9", "V10", "V11", "V12", "V13"):
+        artifact = artifacts.get(f"WAREHOUSE_{version}_{'INPUT' if version == 'V8' else 'EXPORT'}")
+        if not artifact or report.get("workbooks", {}).get(version) != artifact.get("sha256"):
+            errors.append(f"Empreinte {version} incohérente dans le rapport V13")
+    manifest_sources = {item["source_id"]: item for item in manifest.get("sources", [])}
+    if len(report.get("source_hashes", {})) != 6:
+        errors.append("Six sources électorales V13 sont attendues")
+    for source_id, digest in report.get("source_hashes", {}).items():
+        if manifest_sources.get(source_id, {}).get("sha256") != digest:
+            errors.append(f"Source V13 absente ou incohérente dans le manifeste: {source_id}")
+    expected_volumes = {
+        "sheets": 71,
+        "DIM_ELECTORAL_CONTEST": 639,
+        "FACT_ELECTION_RESULT": 10_883,
+        "FACT_ELECTORAL_MOBILIZATION": 639,
+    }
+    for key, expected in expected_volumes.items():
+        if report.get("volumes", {}).get(key) != expected:
+            errors.append(f"Volume V13 incohérent: {key}")
+    expected_controls = {
+        "new_geo_entities": 159,
+        "new_party_entities": 4,
+        "unique_result_ids": 10_883,
+        "unique_contest_ids": 639,
+        "technical_zero_imputations": 0,
+        "archive_2002_rows_ingested": 0,
+    }
+    for key, expected in expected_controls.items():
+        if report.get("controls", {}).get(key) != expected:
+            errors.append(f"Contrôle V13 incohérent: {key}")
+    if set(report.get("actual_changed_sheets", [])) != v13.ALLOWED_CHANGED_SHEETS:
+        errors.append("Liste des onglets V13 modifiés incohérente")
+    if report.get("decision_hashes", {}).get("identity_registry") != sha256(V13_IDENTITY_REGISTRY_PATH):
+        errors.append("Empreinte du registre d'identités incohérente dans V13")
+    if report.get("decision_hashes", {}).get("electoral_qualification") != sha256(V13_ELECTORAL_QUALIFICATION_PATH):
+        errors.append("Empreinte de la qualification électorale incohérente dans V13")
+    if diff_report != v13.render_diff_report(report):
+        errors.append("Rapport TXT V13/V12 désynchronisé du JSON")
     return errors
 
 
@@ -865,6 +927,24 @@ def compare_v12_to_v11(data_dir: str | Path | None = None) -> list[str]:
     return errors
 
 
+def compare_v13_to_v12(data_dir: str | Path | None = None) -> list[str]:
+    from morocco_elections.releases.v13.build import ALLOWED_CHANGED_SHEETS, compare_v13_to_v12 as compare
+
+    paths = get_paths(data_dir)
+    if not paths.v12_workbook.is_file() or not paths.v13_workbook.is_file():
+        return ["Comparaison V12/V13 impossible: un classeur est absent"]
+    try:
+        changed, unexpected = compare(paths.v12_workbook, paths.v13_workbook)
+    except RuntimeError as exc:
+        return [str(exc)]
+    errors = []
+    if unexpected:
+        errors.append(f"Différences V12/V13 non autorisées: {unexpected}")
+    if set(changed) != ALLOWED_CHANGED_SHEETS:
+        errors.append(f"Liste réelle des changements V13 incorrecte: {changed}")
+    return errors
+
+
 def validate_full(manifest: dict, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> list[str]:
     errors: list[str] = []
     for record in [*manifest["physical_files"], *manifest["evidence"]]:
@@ -897,6 +977,8 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None, release: s
             if artifact["artifact_id"] == "WAREHOUSE_V11_EXPORT"
             else EXPECTED_V12_VOLUMES
             if artifact["artifact_id"] == "WAREHOUSE_V12_EXPORT"
+            else EXPECTED_V13_VOLUMES
+            if artifact["artifact_id"] == "WAREHOUSE_V13_EXPORT"
             else {}
         )
         for sheet_name, expected in volumes.items():
@@ -1011,6 +1093,27 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None, release: s
         if sha256(paths.v12_workbook) != before_hash:
             errors.append("Le V12 a été modifié pendant la validation")
         errors.extend(compare_v12_to_v11(data_dir))
+    if release in {"v13", "all"} and paths.v13_workbook.is_file():
+        from morocco_elections.releases.v13 import documentation as module13
+
+        module13.configure_paths(data_dir)
+        module13.base.GENERATED_ON = _recorded_documentation_date(DOCUMENTATION_DIRS["v13"])
+        before_hash = sha256(paths.v13_workbook)
+        model = module13.base.load_model()
+        generated, _ = module13.base.build_docs(model)
+        generated = module13._adapt(generated, model)
+        try:
+            module13._validate(model, generated, before_hash)
+        except RuntimeError as exc:
+            errors.append(str(exc))
+        for name, content in generated.items():
+            expected = content.replace("\r\n", "\n").rstrip() + "\n"
+            actual = (DOCUMENTATION_DIRS["v13"] / name).read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+            if actual != expected:
+                errors.append(f"Documentation désynchronisée du V13: {name}")
+        if sha256(paths.v13_workbook) != before_hash:
+            errors.append("Le V13 a été modifié pendant la validation")
+        errors.extend(compare_v13_to_v12(data_dir))
     return errors
 
 
@@ -1278,6 +1381,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_v11_release_report(manifest))
     errors.extend(validate_v12_qualification(manifest))
     errors.extend(validate_v12_release_report(manifest))
+    errors.extend(validate_v13_release_report(manifest))
     errors.extend(validate_v11a_artifacts())
     errors.extend(validate_smiig_artifacts())
     errors.extend(validate_quality_baseline_artifacts())
@@ -1322,11 +1426,11 @@ def report(mode: str, data_dir: str | Path | None = None, release: str = "all", 
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Valide le dépôt et les releases locales V9/V10/V11/V12.")
+    parser = argparse.ArgumentParser(description="Valide le dépôt et les releases locales V9 à V13.")
     parser.add_argument("--mode", choices=("ci", "full"), default="ci")
     parser.add_argument("--data-dir")
-    parser.add_argument("--release", choices=("v9", "v10", "v11", "v12", "all"), default="all")
-    parser.add_argument("--baseline", choices=("v9", "v10", "v11"))
+    parser.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "all"), default="all")
+    parser.add_argument("--baseline", choices=("v9", "v10", "v11", "v12"))
     args = parser.parse_args(argv)
     return report(args.mode, args.data_dir, args.release, args.baseline)
 

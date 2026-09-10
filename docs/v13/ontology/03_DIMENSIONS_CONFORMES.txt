@@ -1,0 +1,73 @@
+﻿DIMENSIONS CONFORMES
+====================
+
+VERSION           : V13
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V13.xlsx
+DATE DE GÉNÉRATION: 2026-09-10
+PÉRIMÈTRE         : Contrats des cinq dimensions maîtres.
+RENVOIS           : 04_HIERARCHIE_GEOGRAPHIQUE.txt, 05_CROSSWALKS_ET_IDENTITES.txt, 12_REGLES_D_INTEGRITE_ET_JOINTURE.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V13.
+DÉRIVÉ        : valeur calculée à partir de données V13 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+PRINCIPE
+Les dimensions conformes donnent le même sens aux clés utilisées dans plusieurs faits. Une clé absente ne doit jamais être remplacée par un libellé libre.
+
+DIM_GEO
+-------
+STATUT: OBSERVÉ
+LIGNES: 1825
+GRAIN: geographic entity
+CLÉ PRIMAIRE: geo_id
+COLONNES: geo_id, geo_name, geo_type, parent_geo_id, region_name, province_prefecture, constituency_name, commune_name, district_arrondissement, fraction, douar, urban_rural, latitude, longitude, boundary_version, valid_from, valid_to, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+
+DIM_TIME
+--------
+STATUT: OBSERVÉ
+LIGNES: 17
+GRAIN: time/date
+CLÉ PRIMAIRE: time_id
+COLONNES: time_id, date, year, quarter, month, week, day, period_type, campaign_phase, legislature, electoral_cycle, valid_from, valid_to, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+
+DIM_PARTY
+---------
+STATUT: OBSERVÉ
+LIGNES: 57
+GRAIN: party/alliance
+CLÉ PRIMAIRE: party_id
+COLONNES: party_id, party_name_fr, party_name_ar, acronym, alliance_id, founded_year, dissolved_year, legal_status, color_or_symbol, leader_person_id, parliamentary_group, valid_from, valid_to, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+
+DIM_PERSON
+----------
+STATUT: OBSERVÉ
+LIGNES: 33697
+GRAIN: person identity
+CLÉ PRIMAIRE: party_id
+COLONNES: person_id, full_name, gender, birth_year, age_at_event, occupation, education_level, party_id, role, incumbent_flag, first_elected_year, mandates_count, valid_from, valid_to, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+
+DIM_ELECTION
+------------
+STATUT: OBSERVÉ
+LIGNES: 9
+GRAIN: election
+CLÉ PRIMAIRE: election_id
+COLONNES: election_id, election_name, election_type, election_date, cycle_year, chamber_or_level, electoral_system, total_seats, campaign_start, campaign_end, official_results_date, legal_framework_version, source_id, source_url, publication_date, retrieval_date, quality_status, notes
+
+RÈGLES COMMUNES
+---------------
+1. geo_id, time_id, party_id, person_id et election_id sont les identifiants canoniques.
+2. Les libellés servent à l'affichage, jamais à une jointure autonome.
+3. valid_from/valid_to encadrent la validité; NULL valid_to signifie fin ouverte, pas éternité prouvée.
+4. source_id et quality_status accompagnent toute valeur de référence importante.
+5. Une clé source reste distincte d'une clé canonique.
+6. Une relation parti-personne dans DIM_PERSON est descriptive du dernier ou principal état disponible; elle ne remplace pas PERSON_PARTY_HISTORY.
+
+
+DIMENSIONS V13
+DIM_ELECTORAL_CONTEST contient 639 contest_id uniques. DIM_GEO reçoit 159 territoires
+historiques ou provisoires datés. DIM_PARTY reçoit quatre partis ou alliances historiques
+provisoires. Ces ajouts garantissent les clés étrangères sans affirmer d'équivalence moderne.
