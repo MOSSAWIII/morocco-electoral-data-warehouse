@@ -63,7 +63,7 @@ def test_source_catalog_runs_without_local_data() -> None:
 
 
 def test_release_versions_are_registered() -> None:
-    for version in ("v9", "v10", "v11", "v12"):
+    for version in ("v9", "v10", "v11", "v12", "v13"):
         for command in ("build", "docs"):
             result = run_command(sys.executable, "-m", "morocco_elections", command, version, "--help")
             assert result.returncode == 0, result.stdout + result.stderr

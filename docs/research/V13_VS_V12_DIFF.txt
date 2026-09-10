@@ -1,0 +1,31 @@
+V13 — RAPPORT D'ÉCARTS AVEC V12
+
+DATE : 2026-09-10
+V12 SHA-256 : 47bf735ffe8624906ca050ead6606f9022da652e8be05e1f7dc68575d487d31f
+V13 SHA-256 : 35f5f12b55a603c05c7230b701d0a629dbd78b697b49da177cdf7a3419770332
+
+CHANGEMENTS AUTORISÉS ET OBSERVÉS
+- DATA_COVERAGE
+- DATA_DICTIONARY
+- DIM_ELECTORAL_CONTEST
+- DIM_GEO
+- DIM_PARTY
+- FACT_ELECTION_RESULT
+- FACT_ELECTORAL_MOBILIZATION
+- QUALITY_CONTROL
+- README
+- SOURCES
+- WORKBOOK_AUDIT_V13
+
+VOLUMES
+- Courses électorales : 639
+- Résultats contest × parti : 10883
+- Mobilisation contest : 639
+- Territoires historiques/provisoires ajoutés : 159
+- Partis ou alliances provisoires ajoutés : 4
+
+LIMITES
+- LEG2002 reste hors du canonique.
+- Les cellules partisanes absentes ne sont pas transformées en zéro.
+- Les contests 2007/2011 restent liés à leur découpage historique.
+- V12 et ses sources antérieures sont restés inchangés.

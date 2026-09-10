@@ -1,0 +1,59 @@
+﻿ONTOLOGIE ÉLECTORALE GLOBALE
+============================
+
+VERSION           : V13
+CLASSEUR SOURCE   : Morocco_Electoral_Data_Warehouse_V13.xlsx
+DATE DE GÉNÉRATION: 2026-09-10
+PÉRIMÈTRE         : Entités, événements et relations conceptuelles de V10.
+RENVOIS           : 02_ARCHITECTURE_DES_CUBES.txt, 11_PIPELINE_RAW_NORMALIZED_FACT_ANALYTICAL.txt, 14_CATALOGUE_COMPLET_DES_ONGLETS.txt
+
+STATUTS DOCUMENTAIRES
+OBSERVÉ       : donnée effectivement présente dans V13.
+DÉRIVÉ        : valeur calculée à partir de données V13 traçables.
+STRUCTURE VIDE: schéma existant, mais aucune ligne de données chargée.
+PILOTE        : ancien échantillon conservé pour mémoire ou validation.
+BLOQUÉ        : donnée ou relation empêchée par une limitation QA explicite.
+
+
+L'ontologie modélise l'élection marocaine comme une chaîne de faits reliés par
+des dimensions conformes :
+
+TERRITOIRE
+  → POPULATION ET CONDITIONS SOCIO-ÉCONOMIQUES
+  → ÉLECTORAT
+  → OFFRE POLITIQUE
+  → CAMPAGNE ET INFORMATION
+  → MOBILISATION
+  → VOTE
+  → SIÈGES ET REPRÉSENTATION
+  → CONTRÔLE POLITIQUE
+  → GOUVERNANCE ET ACTION PUBLIQUE
+  → ÉLECTION SUIVANTE
+
+Les nœuds ne sont pas tous remplis au même niveau. POPULATION, RESULTS,
+MOBILISATION, LOCAL_MANDATES et PARLIAMENTARY_MANDATES portent des observations.
+POLITICAL_ACTIVITY, LOCAL_FINANCE et SHOCKS sont des STRUCTURES VIDES dans V10.
+
+UNITÉS ONTOLOGIQUES FONDAMENTALES
+- Lieu : geo_id, hiérarchisé et versionné.
+- Temps : time_id, année, date, cycle et législature.
+- Organisation politique : party_id, incluant partis, alliances et codes source.
+- Personne : person_id, stable pour les députés TAFRA et déterministe au niveau local;
+  sa portée locale prudente interdit les rapprochements sans preuve externe.
+- Scrutin : election_id.
+- Provenance : source_id.
+- Observation : record_id, observation_id ou identifiant de mandat.
+
+RELATIONS CAUSALES NON AUTORISÉES
+Le warehouse permet des associations longitudinales, mais aucune table V10 ne
+prouve qu'une condition socio-économique cause un vote, qu'une campagne cause
+une mobilisation ou qu'une gouvernance cause une réélection. Toute analyse de
+ce type doit rester descriptive tant qu'un protocole causal séparé n'existe pas.
+
+VOLUMES CENTRAUX OBSERVÉS
+-------------------------
+OBSERVÉ RESULTS: 22379 lignes totales, dont 22 054 lignes communales V10.
+OBSERVÉ LOCAL_MANDATES: 32513 lignes.
+OBSERVÉ PARLIAMENTARY_MANDATES: 1654 lignes.
+DÉRIVÉ ELECTORAL_TRANSITIONS_2015_2021: 14555 lignes.
+DÉRIVÉ COMMUNE_ELECTION_PANEL: 3076 lignes.

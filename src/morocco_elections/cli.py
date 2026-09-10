@@ -8,18 +8,18 @@ def build_parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", required=True)
 
     build = commands.add_parser("build", help="Construire un export du warehouse")
-    build.add_argument("version", choices=("v9", "v10", "v11", "v12"))
+    build.add_argument("version", choices=("v9", "v10", "v11", "v12", "v13"))
     build.add_argument("--data-dir")
 
     docs = commands.add_parser("docs", help="Générer la documentation")
-    docs.add_argument("version", choices=("v9", "v10", "v11", "v12"))
+    docs.add_argument("version", choices=("v9", "v10", "v11", "v12", "v13"))
     docs.add_argument("--data-dir")
 
     validate = commands.add_parser("validate", help="Valider le dépôt et les données locales")
     validate.add_argument("--mode", choices=("ci", "full"), default="ci")
     validate.add_argument("--data-dir")
-    validate.add_argument("--release", choices=("v9", "v10", "v11", "v12", "all"), default="all")
-    validate.add_argument("--baseline", choices=("v9", "v10", "v11"))
+    validate.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "all"), default="all")
+    validate.add_argument("--baseline", choices=("v9", "v10", "v11", "v12"))
 
     analyze = commands.add_parser("analyze", help="Exécuter les analyses de référence d'une release validée")
     analyze.add_argument("version", choices=("v11", "v12"))
@@ -143,8 +143,10 @@ def main(argv: list[str] | None = None) -> int:
             from morocco_elections.releases.v10.build import main as build_release
         elif args.version == "v11":
             from morocco_elections.releases.v11.build import main as build_release
-        else:
+        elif args.version == "v12":
             from morocco_elections.releases.v12.build import main as build_release
+        else:
+            from morocco_elections.releases.v13.build import main as build_release
         build_release(data_dir=args.data_dir)
         return 0
     if args.command == "docs":
@@ -154,8 +156,10 @@ def main(argv: list[str] | None = None) -> int:
             from morocco_elections.releases.v10.documentation import main as generate_docs
         elif args.version == "v11":
             from morocco_elections.releases.v11.documentation import main as generate_docs
-        else:
+        elif args.version == "v12":
             from morocco_elections.releases.v12.documentation import main as generate_docs
+        else:
+            from morocco_elections.releases.v13.documentation import main as generate_docs
         generate_docs(data_dir=args.data_dir)
         return 0
     if args.command == "validate":

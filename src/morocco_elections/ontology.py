@@ -17,10 +17,10 @@ def load_ontology(path: str | Path | None = None) -> dict:
 
 def validate_ontology(ontology: dict) -> list[str]:
     errors: list[str] = []
-    if ontology.get("schema_version") != 1 or ontology.get("ontology_version") != "1.0.0":
+    if ontology.get("schema_version") != 1 or ontology.get("ontology_version") != "1.1.0":
         errors.append("version de l'ontologie invalide")
-    if ontology.get("baseline_release") != "V12":
-        errors.append("la baseline de l'ontologie doit être V12")
+    if ontology.get("baseline_release") != "V13":
+        errors.append("la baseline de l'ontologie doit être V13")
     if not ontology.get("principles") or set(ontology.get("maturity_levels", {})) != MATURITY_LEVELS:
         errors.append("principes ou niveaux de maturité incomplets")
 

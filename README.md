@@ -1,6 +1,6 @@
 # Morocco Electoral Data Warehouse
 
-Warehouse quantitatif consacré aux élections, à la représentation et à la gouvernance territoriale au Maroc. La release analytique actuelle est V12; V9, V10 et V11 restent des baselines immuables.
+Warehouse quantitatif consacré aux élections, à la représentation et à la gouvernance territoriale au Maroc. La release analytique actuelle est V13; V9 à V12 restent des baselines immuables.
 
 ## Principes
 
@@ -30,20 +30,21 @@ Le cap d'expansion, de normalisation et de publication est défini dans le [road
 - `docs/v9/ontology/` : les 15 documents UTF-8 de l’ontologie V9.
 - `docs/v10/ontology/` : les 15 documents UTF-8 de l’ontologie V10.
 - `docs/v11/ontology/` : les 15 documents UTF-8 de l’ontologie V11.
-- `docs/v12/ontology/` : l’unique documentation d’entrée de la release courante V12 (15 documents UTF-8).
+- `docs/v12/ontology/` : la documentation historique immuable de V12 (15 documents UTF-8).
+- `docs/v13/ontology/` : la documentation de la release courante V13 (15 documents UTF-8).
 - `docs/research/` : preuves historiques des qualifications et baselines QA ; elles ne constituent pas la roadmap active.
 - `docs/architecture/` : règles de dépendance, flux et synthèse lisible de l'ontologie V1.
 - `metadata/` : provenance physique, backlog GitHub et contrat machine-readable `ontology_v1.json`.
 - `database/` et `infrastructure/postgres/` : contrats d'une option PostgreSQL future.
 - `tests/unit/`, `tests/integration/` et `tests/fixtures/synthetic/` : stratégie de test.
 
-V12 contient 68 onglets. Elle préserve les faits V11 et ajoute `PARLIAMENTARY_QUESTIONS` : 5 589 questions écrites officielles couvrant quatre segments du cycle 2023–2024. Parmi elles, 5 453 sont raccordées exactement à une identité V11 et 136 restent explicitement non raccordées. Ce périmètre partiel ne représente ni les questions orales ni toute l’activité parlementaire.
+V13 contient 71 onglets. Elle préserve V12 et ajoute 639 courses électorales, 10 883 résultats `contest × parti` et 639 observations de mobilisation pour les législatives 2007–2021 et les régionales 2015–2021. Le fichier 2002 reste `ARCHIVE_ONLY`; les cellules absentes restent `NULL` et les découpages 2007/2011 demeurent historiques.
 
 La commande `build v12` reconstruit le classeur depuis les RAW, les décisions versionnées et le bootstrap historique V8. Elle ne lit aucun classeur V9, V10 ou V11 comme entrée. V8 reste temporairement nécessaire pour les tables héritées dont les sources physiques ne sont pas encore disponibles séparément ; cette dépendance est explicite et n'entraîne plus une chaîne de releases.
 
 ## Point d’entrée de la release courante
 
-Commencer par [`docs/v12/ontology/00_INDEX_ET_MODE_EMPLOI.txt`](docs/v12/ontology/00_INDEX_ET_MODE_EMPLOI.txt). Les tables centrales sont volontairement peu nombreuses :
+Commencer par [`docs/v13/ontology/00_INDEX_ET_MODE_EMPLOI.txt`](docs/v13/ontology/00_INDEX_ET_MODE_EMPLOI.txt). Les tables centrales sont volontairement peu nombreuses :
 
 - `DIM_GEO`, `DIM_TIME`, `DIM_PARTY`, `DIM_PERSON` et `DIM_ELECTION` portent les clés partagées ;
 - `RESULTS` est au grain `commune × parti × élection` ;
@@ -52,6 +53,7 @@ Commencer par [`docs/v12/ontology/00_INDEX_ET_MODE_EMPLOI.txt`](docs/v12/ontolog
 - `LOCAL_COUNCIL_CONTROL` sépare résultat électoral et contrôle communal ;
 - `FACT_OBSERVATION` porte les observations socio-économiques longues avec leur millésime réel ;
 - `PARLIAMENTARY_QUESTIONS` est au grain `source × question écrite`.
+- `DIM_ELECTORAL_CONTEST` décrit chaque course datée et son découpage ; `FACT_ELECTION_RESULT` et `FACT_ELECTORAL_MOBILIZATION` portent le nouveau cœur multi-scrutins.
 
 Avant tout calcul de taux, vérifier dans le dictionnaire que le dénominateur est réellement publié. Une clé nullable, notamment `PARLIAMENTARY_QUESTIONS.person_id`, ne doit jamais être remplacée par un rapprochement implicite.
 
@@ -100,10 +102,13 @@ python -m morocco_elections docs v11
 python -m morocco_elections qualify parliament --baseline v11 --as-of 2026-09-09
 python -m morocco_elections build v12
 python -m morocco_elections docs v12
+python -m morocco_elections build v13
+python -m morocco_elections docs v13
 python -m morocco_elections analyze v12
 python -m morocco_elections validate --mode full --release v10 --baseline v9
 python -m morocco_elections validate --mode full --release v11 --baseline v10
 python -m morocco_elections validate --mode full --release v12 --baseline v11
+python -m morocco_elections validate --mode full --release v13 --baseline v12
 python -m morocco_elections analyze v11
 python -m morocco_elections quality baseline --release v10 --as-of 2026-09-08
 python -m morocco_elections qualify electoral-denominators --baseline v10 --as-of 2026-09-08

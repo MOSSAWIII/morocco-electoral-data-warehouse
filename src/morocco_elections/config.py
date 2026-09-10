@@ -16,6 +16,7 @@ class ProjectPaths:
     documentation_v10: Path
     documentation_v11: Path
     documentation_v12: Path
+    documentation_v13: Path
     source_manifest: Path
     github_backlog: Path
     v8_workbook: Path
@@ -23,6 +24,7 @@ class ProjectPaths:
     v10_workbook: Path
     v11_workbook: Path
     v12_workbook: Path
+    v13_workbook: Path
     comm2015: Path
     comm2021: Path
     council2021: Path
@@ -54,6 +56,7 @@ def get_paths(data_dir: str | Path | None = None) -> ProjectPaths:
         documentation_v10=PROJECT_ROOT / "docs" / "v10" / "ontology",
         documentation_v11=PROJECT_ROOT / "docs" / "v11" / "ontology",
         documentation_v12=PROJECT_ROOT / "docs" / "v12" / "ontology",
+        documentation_v13=PROJECT_ROOT / "docs" / "v13" / "ontology",
         source_manifest=PROJECT_ROOT / "metadata" / "source_manifest.json",
         github_backlog=PROJECT_ROOT / "metadata" / "github_backlog.json",
         v8_workbook=data_root / "legacy" / "excel" / "v8" / "Morocco_Electoral_Data_Warehouse_V8.xlsx",
@@ -61,6 +64,7 @@ def get_paths(data_dir: str | Path | None = None) -> ProjectPaths:
         v10_workbook=data_root / "exports" / "excel" / "v10" / "Morocco_Electoral_Data_Warehouse_V10.xlsx",
         v11_workbook=data_root / "exports" / "excel" / "v11" / "Morocco_Electoral_Data_Warehouse_V11.xlsx",
         v12_workbook=data_root / "exports" / "excel" / "v12" / "Morocco_Electoral_Data_Warehouse_V12.xlsx",
+        v13_workbook=data_root / "exports" / "excel" / "v13" / "Morocco_Electoral_Data_Warehouse_V13.xlsx",
         comm2015=data_root / "raw" / "tafra" / "communal_results" / "2015" / "communes-elections-2015-1-0.xlsx",
         comm2021=data_root / "raw" / "tafra" / "communal_results" / "2021" / "communes-elections-2021-1-0.xlsx",
         council2021=data_root / "raw" / "tafra" / "local_councils" / "2021" / "communes-elus-2021-1-1.xlsx",

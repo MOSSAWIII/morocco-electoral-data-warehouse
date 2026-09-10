@@ -1,7 +1,7 @@
 {
-  "schema_version": 4,
-  "warehouse_version": "V12",
-  "last_verified": "2026-09-09",
+  "schema_version": 5,
+  "warehouse_version": "V13",
+  "last_verified": "2026-09-10",
   "sources": [
     {
       "source_id": "SRC_TAFRA_COMM2015_RAW_V9",
@@ -113,6 +113,96 @@
       "columns": 171,
       "sheet_index": 0,
       "status": "ingested_partial_go_only"
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "local_path": "data/raw/elections/acquisitions/TAFRA_LEGISLATIVE_RESULTS_2007/5239da6f76de/parlement-elections-2007-1-0.xlsx",
+      "source_url": "https://open.africa/dataset/1f48eeec-ff94-46a2-ae8e-ed56b66dd529/resource/0ec47fad-4f8a-4753-b107-82b0cc76d94c/download/parlement-elections-2007-1-0.xlsx",
+      "producer": "TAFRA; archive du portail elections2007.gov.ma",
+      "license": "Creative Commons Attribution annoncée par openAFRICA; filiation officielle à confirmer au niveau des champs",
+      "version": "élections législatives 2007",
+      "sha256": "5239da6f76de3e3d4dfa6402d6c4ce1bdf3da2ceaeb5f9769390a907c548e5e0",
+      "byte_size": 36049,
+      "grain": "circonscription × type de liste",
+      "rows": 95,
+      "columns": 53,
+      "sheet_index": 0,
+      "status": "ingested_qualified_scope"
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "local_path": "data/raw/elections/acquisitions/TAFRA_LEGISLATIVE_RESULTS_2011/2152a4581364/parlement-elections-2011-1-0.xlsx",
+      "source_url": "https://open.africa/dataset/cb7a294b-9569-4647-b35e-3b1cb6c8028e/resource/59229632-d062-4e1a-afff-b344b6afdae7/download/parlement-elections-2011-1-0.xlsx",
+      "producer": "TAFRA; données partagées par Olivier Deau et David Goeury",
+      "license": "Creative Commons Attribution annoncée par openAFRICA; ce n'est pas une publication officielle primaire",
+      "version": "élections législatives 2011",
+      "sha256": "2152a4581364da51ebff3afa6320d334e2e180aa4319399a033b296fe94e7f8c",
+      "byte_size": 35419,
+      "grain": "circonscription × type de liste",
+      "rows": 92,
+      "columns": 34,
+      "sheet_index": 0,
+      "status": "ingested_qualified_scope"
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "local_path": "data/raw/elections/acquisitions/TAFRA_LEGISLATIVE_RESULTS_2016/38f3031b4239/parlement-elections-2016-1-1.xlsx",
+      "source_url": "https://open.africa/dataset/6bf3208e-7e01-456f-9ed8-ff8977e49585/resource/6c4000e1-5359-43fd-b941-399af34ee54a/download/parlement-elections-2016-1-1.xlsx",
+      "producer": "TAFRA / elections.ma / Fédération de la Gauche Démocratique",
+      "license": "Creative Commons Attribution annoncée par openAFRICA; inscrits et votes nuls non publiés",
+      "version": "élections législatives 2016",
+      "sha256": "38f3031b423957050d7c32f0d521952b397f5f41f8f224f30faeb5d7c56b1ba9",
+      "byte_size": 48941,
+      "grain": "circonscription × type de liste",
+      "rows": 184,
+      "columns": 43,
+      "sheet_index": 0,
+      "status": "ingested_qualified_scope"
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "local_path": "data/raw/elections/acquisitions/TAFRA_LEGISLATIVE_RESULTS_2021/ffef1b78ae6b/parlement-elections-2021-1-0.xlsx",
+      "source_url": "https://open.africa/dataset/595d69a4-c7fc-4e9d-beeb-5d7fc9ec78e5/resource/cf341829-cd2c-4baa-b679-2b2ee1c1e333/download/parlement-elections-2021-1-0.xlsx",
+      "producer": "TAFRA / elections.ma",
+      "license": "Creative Commons Attribution annoncée par openAFRICA; inscrits et votes nuls non publiés",
+      "version": "élections législatives 2021",
+      "sha256": "ffef1b78ae6b2dd4397e8837e094e991d9630787870b5724ee2bed5931374545",
+      "byte_size": 36810,
+      "grain": "circonscription × type de liste",
+      "rows": 104,
+      "columns": 54,
+      "sheet_index": 0,
+      "status": "ingested_qualified_scope"
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2015",
+      "local_path": "data/raw/elections/acquisitions/TAFRA_REGIONAL_RESULTS_2015/a68bb617ca8f/regions-elections-2015-1-0.xlsx",
+      "source_url": "https://open.africa/dataset/f70d0f66-9904-4023-9d5f-ae2106a5bf78/resource/74dbefd7-a849-4d39-9cef-6260ee796329/download/regions-elections-2015-1-0.xlsx",
+      "producer": "TAFRA / elections.ma",
+      "license": "Creative Commons Attribution annoncée par openAFRICA; inscrits et votes nuls non publiés",
+      "version": "élections régionales 2015",
+      "sha256": "a68bb617ca8f07f94e06167add8c49c3db2345d20570e56b5ab4066b0a89fc18",
+      "byte_size": 28396,
+      "grain": "préfecture, province ou préfecture d'arrondissements",
+      "rows": 82,
+      "columns": 44,
+      "sheet_index": 0,
+      "status": "ingested_qualified_scope"
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2021",
+      "local_path": "data/raw/elections/acquisitions/TAFRA_REGIONAL_RESULTS_2021/0fa1c2c0bd9b/regional-elections-2021-1-0.xlsx",
+      "source_url": "https://open.africa/dataset/5facdf30-6a31-4e12-926f-1e0446530000/resource/15efb1f2-5a72-4001-9f6e-70cf4a6e6948/download/regional-elections-2021-1-0.xlsx.xlsx",
+      "producer": "TAFRA / elections.ma",
+      "license": "Creative Commons Attribution annoncée par openAFRICA; inscrits et votes nuls non publiés",
+      "version": "élections régionales 2021",
+      "sha256": "0fa1c2c0bd9bd6fa5df513f65bb0ad61ab91b89c87a94d92cdeec0c5d5317bbd",
+      "byte_size": 29625,
+      "grain": "préfecture, province ou préfecture d'arrondissements",
+      "rows": 82,
+      "columns": 52,
+      "sheet_index": 0,
+      "status": "ingested_qualified_scope"
     },
     {
       "source_id": "SRC_PARLIAMENT_WRITTEN_APRIL_2023_V12",
@@ -237,6 +327,14 @@
       "byte_size": 20649556,
       "sheet_count": 68,
       "status": "local_export"
+    },
+    {
+      "artifact_id": "WAREHOUSE_V13_EXPORT",
+      "local_path": "data/exports/excel/v13/Morocco_Electoral_Data_Warehouse_V13.xlsx",
+      "sha256": "35f5f12b55a603c05c7230b701d0a629dbd78b697b49da177cdf7a3419770332",
+      "byte_size": 21812869,
+      "sheet_count": 71,
+      "status": "local_export"
     }
   ],
   "evidence": [
@@ -288,6 +386,13 @@
     {"file_id": "PARLIAMENT_WRITTEN_OCTOBER_2023_V12", "previous_local_path": "data/staging/v12_parliament/source_candidates/questions_written_october_2023.xlsx", "local_path": "data/raw/parliament/questions/written/2023/questions_written_october_2023.xlsx", "sha256": "98d8da0f594fc86fe03fde8cb4c72fe62330df5f6b0bdd6094fdde8534da7af3", "byte_size": 615241, "kind": "raw", "rows": 1211, "columns": 9},
     {"file_id": "PARLIAMENT_WRITTEN_OCT_APR_2023_2024_V12", "previous_local_path": "data/staging/v12_parliament/source_candidates/questions_written_2023_2024.xlsx", "local_path": "data/raw/parliament/questions/written/2023/questions_written_2023_2024.xlsx", "sha256": "76e63ade33a3421c8b336c103eeb8710c6e939294cb23f51fc929fc8a644cbc9", "byte_size": 413961, "kind": "raw", "rows": 738, "columns": 9},
     {"file_id": "WAREHOUSE_V12", "previous_local_path": null, "local_path": "data/exports/excel/v12/Morocco_Electoral_Data_Warehouse_V12.xlsx", "sha256": "47bf735ffe8624906ca050ead6606f9022da652e8be05e1f7dc68575d487d31f", "byte_size": 20649556, "kind": "export_artifact", "sheets": 68},
+    {"file_id": "TAFRA_LEGISLATIVE_RESULTS_2007_V13", "previous_local_path": null, "local_path": "data/raw/elections/acquisitions/TAFRA_LEGISLATIVE_RESULTS_2007/5239da6f76de/parlement-elections-2007-1-0.xlsx", "sha256": "5239da6f76de3e3d4dfa6402d6c4ce1bdf3da2ceaeb5f9769390a907c548e5e0", "byte_size": 36049, "kind": "raw", "rows": 95, "columns": 53},
+    {"file_id": "TAFRA_LEGISLATIVE_RESULTS_2011_V13", "previous_local_path": null, "local_path": "data/raw/elections/acquisitions/TAFRA_LEGISLATIVE_RESULTS_2011/2152a4581364/parlement-elections-2011-1-0.xlsx", "sha256": "2152a4581364da51ebff3afa6320d334e2e180aa4319399a033b296fe94e7f8c", "byte_size": 35419, "kind": "raw", "rows": 92, "columns": 34},
+    {"file_id": "TAFRA_LEGISLATIVE_RESULTS_2016_V13", "previous_local_path": null, "local_path": "data/raw/elections/acquisitions/TAFRA_LEGISLATIVE_RESULTS_2016/38f3031b4239/parlement-elections-2016-1-1.xlsx", "sha256": "38f3031b423957050d7c32f0d521952b397f5f41f8f224f30faeb5d7c56b1ba9", "byte_size": 48941, "kind": "raw", "rows": 184, "columns": 43},
+    {"file_id": "TAFRA_LEGISLATIVE_RESULTS_2021_V13", "previous_local_path": null, "local_path": "data/raw/elections/acquisitions/TAFRA_LEGISLATIVE_RESULTS_2021/ffef1b78ae6b/parlement-elections-2021-1-0.xlsx", "sha256": "ffef1b78ae6b2dd4397e8837e094e991d9630787870b5724ee2bed5931374545", "byte_size": 36810, "kind": "raw", "rows": 104, "columns": 54},
+    {"file_id": "TAFRA_REGIONAL_RESULTS_2015_V13", "previous_local_path": null, "local_path": "data/raw/elections/acquisitions/TAFRA_REGIONAL_RESULTS_2015/a68bb617ca8f/regions-elections-2015-1-0.xlsx", "sha256": "a68bb617ca8f07f94e06167add8c49c3db2345d20570e56b5ab4066b0a89fc18", "byte_size": 28396, "kind": "raw", "rows": 82, "columns": 44},
+    {"file_id": "TAFRA_REGIONAL_RESULTS_2021_V13", "previous_local_path": null, "local_path": "data/raw/elections/acquisitions/TAFRA_REGIONAL_RESULTS_2021/0fa1c2c0bd9b/regional-elections-2021-1-0.xlsx", "sha256": "0fa1c2c0bd9bd6fa5df513f65bb0ad61ab91b89c87a94d92cdeec0c5d5317bbd", "byte_size": 29625, "kind": "raw", "rows": 82, "columns": 52},
+    {"file_id": "WAREHOUSE_V13", "previous_local_path": null, "local_path": "data/exports/excel/v13/Morocco_Electoral_Data_Warehouse_V13.xlsx", "sha256": "35f5f12b55a603c05c7230b701d0a629dbd78b697b49da177cdf7a3419770332", "byte_size": 21812869, "kind": "export_artifact", "sheets": 71},
     {"file_id": "FILE_EVIDENCE_HCP_RGPH2014_CODES", "previous_local_path": null, "local_path": "data/raw/evidence/v10/HCP_RGPH2014_codes.pdf", "sha256": "e4be135515f7ca72ac0b3a7dfaecd0ff1265911c978c317895c8ba0ec527393e", "byte_size": 1692920, "kind": "evidence"},
     {"file_id": "FILE_EVIDENCE_SGG_BO_7037", "previous_local_path": null, "local_path": "data/raw/evidence/v10/BO_7037_Ar.pdf", "sha256": "f41faa09cdf00616f7bbd386b577089bc4cf4deac096db7ebbb0d268fc273fbe", "byte_size": 629157, "kind": "evidence"}
   ]
