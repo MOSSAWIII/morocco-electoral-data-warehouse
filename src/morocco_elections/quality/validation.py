@@ -24,6 +24,8 @@ V13_SOURCE_PROFILE_PATH = PROJECT_ROOT / "metadata" / "v13_electoral_sources_pro
 V13_SOURCE_PROFILE_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V13_ELECTORAL_SOURCES_PROFILE.txt"
 V13_IDENTITY_REGISTRY_PATH = PROJECT_ROOT / "metadata" / "v13_identity_registry.json"
 V13_IDENTITY_REGISTRY_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V13_IDENTITY_REGISTRY.txt"
+V13_ELECTORAL_QUALIFICATION_PATH = PROJECT_ROOT / "metadata" / "v13_electoral_qualification.json"
+V13_ELECTORAL_QUALIFICATION_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V13_ELECTORAL_QUALIFICATION.txt"
 V10_REPORT_PATH = PROJECT_ROOT / "metadata" / "v10_release_report.json"
 V11_REPORT_PATH = PROJECT_ROOT / "metadata" / "v11_release_report.json"
 V12_QUALIFICATION_PATH = PROJECT_ROOT / "metadata" / "v12_parliament_qualification.json"
@@ -353,6 +355,33 @@ def validate_v13_identity_registry(data_dir: str | Path | None = None, full: boo
         else:
             if rebuilt != registry:
                 errors.append("Registre V13 non reproductible depuis les RAW et V12 locaux")
+    return errors
+
+
+def validate_v13_electoral_qualification() -> list[str]:
+    from morocco_elections.research import electoral_qualification
+
+    try:
+        qualification = json.loads(V13_ELECTORAL_QUALIFICATION_PATH.read_text(encoding="utf-8"))
+        report = V13_ELECTORAL_QUALIFICATION_REPORT_PATH.read_text(encoding="utf-8")
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"Qualification électorale V13 illisible: {exc}"]
+    errors = [
+        f"Qualification électorale V13: {error}"
+        for error in electoral_qualification.validate_qualification(qualification)
+    ]
+    if report != electoral_qualification.render_report(qualification):
+        errors.append("Qualification électorale V13: rapport TXT désynchronisé du JSON")
+    if not errors:
+        try:
+            rebuilt = electoral_qualification.build_qualification(
+                str(qualification["as_of"]), str(qualification["baseline_release"])
+            )
+        except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+            errors.append(f"Qualification électorale V13: reconstruction impossible: {exc}")
+        else:
+            if rebuilt != qualification:
+                errors.append("Qualification électorale V13 non reproductible depuis le profil et le registre")
     return errors
 
 
@@ -1244,6 +1273,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_ontology_contract())
     errors.extend(validate_v13_source_profile())
     errors.extend(validate_v13_identity_registry())
+    errors.extend(validate_v13_electoral_qualification())
     errors.extend(validate_v10_release_report(manifest))
     errors.extend(validate_v11_release_report(manifest))
     errors.extend(validate_v12_qualification(manifest))
