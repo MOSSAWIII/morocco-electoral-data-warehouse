@@ -1,0 +1,676 @@
+{
+  "schema_version": 1,
+  "phase": "V13_ELECTORAL_QUALIFICATION",
+  "baseline_release": "V12",
+  "as_of": "2026-09-10",
+  "scope": "Qualification groupée des sept archives électorales déjà acquises et profilées.",
+  "decision_vocabulary": [
+    "GO",
+    "NO_GO"
+  ],
+  "source_count": 7,
+  "counts": {
+    "go_sources": 6,
+    "no_go_sources": 1,
+    "go_measure_scopes": 23,
+    "no_go_measure_scopes": 26
+  },
+  "evidence": {
+    "source_profile": "metadata/v13_electoral_sources_profile.json",
+    "identity_registry": "metadata/v13_identity_registry.json",
+    "acquisition_source_ids": [
+      "TAFRA_LEGISLATIVE_RESULTS_2002",
+      "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "TAFRA_REGIONAL_RESULTS_2015",
+      "TAFRA_REGIONAL_RESULTS_2021"
+    ]
+  },
+  "source_decisions": [
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2002",
+      "election_id": "LEG2002",
+      "decision": "NO_GO",
+      "source_rows": 91,
+      "contest_count": 0,
+      "crosswalk_count": 0,
+      "crosswalk_review_statuses": {},
+      "evidence_sha256": "18caf7f7c23779f9bb2c0e31a6b9ed9ba48cee0266e5987df0b48474ac28a26a",
+      "reason": "Archive incomplète et contradictoire selon sa propre notice; conservation documentaire uniquement.",
+      "restrictions": [
+        "84 cellules partisanes vides restent NULL et ne signifient jamais zéro.",
+        "Le total nSieges couvre 295 sièges publiés, soit 30 de moins que le total national V12.",
+        "La notice déclare la source primaire incomplète, la source secondaire erronée et les petits partis absents.",
+        "84 cellules parti sont vides; elles ne seront pas converties en zéro sans règle source explicite.",
+        "Le dictionnaire et les en-têtes physiques ne concordent pas exactement."
+      ]
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "election_id": "LEG2007",
+      "decision": "GO",
+      "source_rows": 95,
+      "contest_count": 95,
+      "crosswalk_count": 124,
+      "crosswalk_review_statuses": {
+        "automatic": 34,
+        "boundary_bridge_required": 61,
+        "manual_review_required": 5,
+        "source_defined": 24
+      },
+      "evidence_sha256": "5239da6f76de3e3d4dfa6402d6c4ce1bdf3da2ceaeb5f9769390a907c548e5e0",
+      "reason": "Valeurs publiées exploitables dans le périmètre local historique, sans imputation des cellules vides.",
+      "restrictions": [
+        "Les faits restent attachés au découpage historique; comparaison avec le découpage actuel interdite sans bridge validé.",
+        "5 codes partisans restent provisoires; ils sont conservés séparément et ne doivent pas être fusionnés implicitement.",
+        "1748 cellules partisanes vides restent NULL et ne signifient jamais zéro.",
+        "Le total nSieges couvre 295 sièges publiés, soit 30 de moins que le total national V12."
+      ]
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "election_id": "LEG2011",
+      "decision": "GO",
+      "source_rows": 92,
+      "contest_count": 92,
+      "crosswalk_count": 118,
+      "crosswalk_review_statuses": {
+        "automatic": 20,
+        "boundary_bridge_required": 74,
+        "source_defined": 24
+      },
+      "evidence_sha256": "2152a4581364da51ebff3afa6320d334e2e180aa4319399a033b296fe94e7f8c",
+      "reason": "Valeurs publiées structurellement cohérentes; provenance secondaire à conserver dans chaque fait.",
+      "restrictions": [
+        "Les faits restent attachés au découpage historique; comparaison avec le découpage actuel interdite sans bridge validé.",
+        "Le total nSieges couvre 305 sièges publiés, soit 90 de moins que le total national V12.",
+        "La source n'est pas une publication officielle primaire; sa provenance secondaire doit rester visible."
+      ]
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "election_id": "LEG2016",
+      "decision": "GO",
+      "source_rows": 184,
+      "contest_count": 184,
+      "crosswalk_count": 123,
+      "crosswalk_review_statuses": {
+        "automatic": 115,
+        "source_defined": 8
+      },
+      "evidence_sha256": "38f3031b423957050d7c32f0d521952b397f5f41f8f224f30faeb5d7c56b1ba9",
+      "reason": "Votes et mesures publiées utilisables; inscrits et pourcentage de votes nuls absents.",
+      "restrictions": [
+        "1601 cellules partisanes vides restent NULL et ne signifient jamais zéro.",
+        "Le total nSieges couvre 305 sièges publiés, soit 90 de moins que le total national V12."
+      ]
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "election_id": "LEG2021",
+      "decision": "GO",
+      "source_rows": 104,
+      "contest_count": 104,
+      "crosswalk_count": 125,
+      "crosswalk_review_statuses": {
+        "automatic": 117,
+        "source_defined": 8
+      },
+      "evidence_sha256": "ffef1b78ae6b2dd4397e8837e094e991d9630787870b5724ee2bed5931374545",
+      "reason": "Votes, sièges et participation publiés utilisables; inscrits absents et champ invalide non publié.",
+      "restrictions": [
+        "1415 cellules partisanes vides restent NULL et ne signifient jamais zéro."
+      ]
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2015",
+      "election_id": "REG2015",
+      "decision": "GO",
+      "source_rows": 82,
+      "contest_count": 82,
+      "crosswalk_count": 125,
+      "crosswalk_review_statuses": {
+        "automatic": 117,
+        "source_defined": 8
+      },
+      "evidence_sha256": "a68bb617ca8f07f94e06167add8c49c3db2345d20570e56b5ab4066b0a89fc18",
+      "reason": "Votes, sièges, participation et suffrages valides publiés et structurellement cohérents.",
+      "restrictions": [
+        "1566 cellules partisanes vides restent NULL et ne signifient jamais zéro."
+      ]
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2021",
+      "election_id": "REG2021",
+      "decision": "GO",
+      "source_rows": 82,
+      "contest_count": 82,
+      "crosswalk_count": 126,
+      "crosswalk_review_statuses": {
+        "automatic": 118,
+        "source_defined": 8
+      },
+      "evidence_sha256": "0fa1c2c0bd9bd6fa5df513f65bb0ad61ab91b89c87a94d92cdeec0c5d5317bbd",
+      "reason": "Votes, sièges et participation publiés utilisables; inscrits et votes invalides absents.",
+      "restrictions": [
+        "1419 cellules partisanes vides restent NULL et ne signifient jamais zéro."
+      ]
+    }
+  ],
+  "measure_decisions": [
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2002",
+      "election_id": "LEG2002",
+      "measure_id": "party_votes",
+      "source_field": "colonnes de codes partisans",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Source classée ARCHIVE_ONLY; aucune mesure n'est admise dans le canonique."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2002",
+      "election_id": "LEG2002",
+      "measure_id": "contest_seats",
+      "source_field": "nSieges",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Source classée ARCHIVE_ONLY; aucune mesure n'est admise dans le canonique."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2002",
+      "election_id": "LEG2002",
+      "measure_id": "registered_voters",
+      "source_field": "nInscrits",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Source classée ARCHIVE_ONLY; aucune mesure n'est admise dans le canonique."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2002",
+      "election_id": "LEG2002",
+      "measure_id": "turnout_rate",
+      "source_field": "txParticipation",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Source classée ARCHIVE_ONLY; aucune mesure n'est admise dans le canonique."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2002",
+      "election_id": "LEG2002",
+      "measure_id": "valid_votes",
+      "source_field": "nValides",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Source classée ARCHIVE_ONLY; aucune mesure n'est admise dans le canonique."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2002",
+      "election_id": "LEG2002",
+      "measure_id": "invalid_vote_rate",
+      "source_field": "pctNuls",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Source classée ARCHIVE_ONLY; aucune mesure n'est admise dans le canonique."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2002",
+      "election_id": "LEG2002",
+      "measure_id": "representative_profile",
+      "source_field": "repPctFemmes et répartitions âge/éducation",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Source classée ARCHIVE_ONLY; aucune mesure n'est admise dans le canonique."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "election_id": "LEG2007",
+      "measure_id": "party_votes",
+      "source_field": "colonnes de codes partisans",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Valeurs non nulles directement publiées; les cellules vides sont exclues de toute agrégation exigeant des zéros explicites."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "election_id": "LEG2007",
+      "measure_id": "contest_seats",
+      "source_field": "nSieges",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Capacité des contests renseignés uniquement; le total national complet ne doit pas être déduit de cette source."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "election_id": "LEG2007",
+      "measure_id": "registered_voters",
+      "source_field": "nInscrits",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "election_id": "LEG2007",
+      "measure_id": "turnout_rate",
+      "source_field": "txParticipation",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "election_id": "LEG2007",
+      "measure_id": "valid_votes",
+      "source_field": "nValides",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Aucun champ de suffrages valides directement qualifié dans cette source."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "election_id": "LEG2007",
+      "measure_id": "invalid_vote_rate",
+      "source_field": "pctNuls",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "election_id": "LEG2007",
+      "measure_id": "representative_profile",
+      "source_field": "repPctFemmes et répartitions âge/éducation",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Hors du noyau électoral; un profil de domaine et de précision est encore requis."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "election_id": "LEG2011",
+      "measure_id": "party_votes",
+      "source_field": "colonnes de codes partisans",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "election_id": "LEG2011",
+      "measure_id": "contest_seats",
+      "source_field": "nSieges",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Capacité des contests renseignés uniquement; le total national complet ne doit pas être déduit de cette source."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "election_id": "LEG2011",
+      "measure_id": "registered_voters",
+      "source_field": "nInscrits",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "election_id": "LEG2011",
+      "measure_id": "turnout_rate",
+      "source_field": "txParticipation",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "election_id": "LEG2011",
+      "measure_id": "valid_votes",
+      "source_field": "nValides",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Aucun champ de suffrages valides directement qualifié dans cette source."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "election_id": "LEG2011",
+      "measure_id": "invalid_vote_rate",
+      "source_field": "pctNuls",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "election_id": "LEG2011",
+      "measure_id": "representative_profile",
+      "source_field": "repPctFemmes et répartitions âge/éducation",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Hors du noyau électoral; un profil de domaine et de précision est encore requis."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "election_id": "LEG2016",
+      "measure_id": "party_votes",
+      "source_field": "colonnes de codes partisans",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Valeurs non nulles directement publiées; les cellules vides sont exclues de toute agrégation exigeant des zéros explicites."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "election_id": "LEG2016",
+      "measure_id": "contest_seats",
+      "source_field": "nSieges",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Capacité des contests renseignés uniquement; le total national complet ne doit pas être déduit de cette source."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "election_id": "LEG2016",
+      "measure_id": "registered_voters",
+      "source_field": "nInscrits",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "nInscrits est entièrement vide."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "election_id": "LEG2016",
+      "measure_id": "turnout_rate",
+      "source_field": "txParticipation",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "election_id": "LEG2016",
+      "measure_id": "valid_votes",
+      "source_field": "nValides",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Aucun champ de suffrages valides directement qualifié dans cette source."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "election_id": "LEG2016",
+      "measure_id": "invalid_vote_rate",
+      "source_field": "pctNuls",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ absent, vide ou zéro technique déclaré non publié par la notice."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "election_id": "LEG2016",
+      "measure_id": "representative_profile",
+      "source_field": "repPctFemmes et répartitions âge/éducation",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Hors du noyau électoral; un profil de domaine et de précision est encore requis."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "election_id": "LEG2021",
+      "measure_id": "party_votes",
+      "source_field": "colonnes de codes partisans",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Valeurs non nulles directement publiées; les cellules vides sont exclues de toute agrégation exigeant des zéros explicites."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "election_id": "LEG2021",
+      "measure_id": "contest_seats",
+      "source_field": "nSieges",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "election_id": "LEG2021",
+      "measure_id": "registered_voters",
+      "source_field": "nInscrits",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "nInscrits est entièrement vide."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "election_id": "LEG2021",
+      "measure_id": "turnout_rate",
+      "source_field": "txParticipation",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "election_id": "LEG2021",
+      "measure_id": "valid_votes",
+      "source_field": "nValides",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Aucun champ de suffrages valides directement qualifié dans cette source."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "election_id": "LEG2021",
+      "measure_id": "invalid_vote_rate",
+      "source_field": "pctNuls",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ absent, vide ou zéro technique déclaré non publié par la notice."
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "election_id": "LEG2021",
+      "measure_id": "representative_profile",
+      "source_field": "repPctFemmes et répartitions âge/éducation",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Hors du noyau électoral; un profil de domaine et de précision est encore requis."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2015",
+      "election_id": "REG2015",
+      "measure_id": "party_votes",
+      "source_field": "colonnes de codes partisans",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Valeurs non nulles directement publiées; les cellules vides sont exclues de toute agrégation exigeant des zéros explicites."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2015",
+      "election_id": "REG2015",
+      "measure_id": "contest_seats",
+      "source_field": "nSieges",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2015",
+      "election_id": "REG2015",
+      "measure_id": "registered_voters",
+      "source_field": "nInscrits",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "nInscrits est entièrement vide."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2015",
+      "election_id": "REG2015",
+      "measure_id": "turnout_rate",
+      "source_field": "txParticipation",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2015",
+      "election_id": "REG2015",
+      "measure_id": "valid_votes",
+      "source_field": "nValides",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "nValides est publié et égale exactement la somme des voix partisanes sur toutes les lignes comparées."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2015",
+      "election_id": "REG2015",
+      "measure_id": "invalid_vote_rate",
+      "source_field": "pctNuls",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ absent, vide ou zéro technique déclaré non publié par la notice."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2015",
+      "election_id": "REG2015",
+      "measure_id": "representative_profile",
+      "source_field": "repPctFemmes et répartitions âge/éducation",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Hors du noyau électoral; un profil de domaine et de précision est encore requis."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2021",
+      "election_id": "REG2021",
+      "measure_id": "party_votes",
+      "source_field": "colonnes de codes partisans",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Valeurs non nulles directement publiées; les cellules vides sont exclues de toute agrégation exigeant des zéros explicites."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2021",
+      "election_id": "REG2021",
+      "measure_id": "contest_seats",
+      "source_field": "nSieges",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2021",
+      "election_id": "REG2021",
+      "measure_id": "registered_voters",
+      "source_field": "nInscrits",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "nInscrits est entièrement vide."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2021",
+      "election_id": "REG2021",
+      "measure_id": "turnout_rate",
+      "source_field": "txParticipation",
+      "decision": "GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ directement publié, non vide et structurellement valide dans le profil consolidé."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2021",
+      "election_id": "REG2021",
+      "measure_id": "valid_votes",
+      "source_field": "nValides",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Aucun champ de suffrages valides directement qualifié dans cette source."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2021",
+      "election_id": "REG2021",
+      "measure_id": "invalid_vote_rate",
+      "source_field": "pctNuls",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Champ absent, vide ou zéro technique déclaré non publié par la notice."
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2021",
+      "election_id": "REG2021",
+      "measure_id": "representative_profile",
+      "source_field": "repPctFemmes et répartitions âge/éducation",
+      "decision": "NO_GO",
+      "null_policy": "Conserver NULL; aucune reconstruction et aucune conversion implicite en zéro.",
+      "reason": "Hors du noyau électoral; un profil de domaine et de précision est encore requis."
+    }
+  ],
+  "authorized_for_future_ingestion": [
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2007",
+      "election_id": "LEG2007",
+      "measures": [
+        "party_votes",
+        "contest_seats",
+        "registered_voters",
+        "turnout_rate",
+        "invalid_vote_rate"
+      ]
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2011",
+      "election_id": "LEG2011",
+      "measures": [
+        "party_votes",
+        "contest_seats",
+        "registered_voters",
+        "turnout_rate",
+        "invalid_vote_rate"
+      ]
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2016",
+      "election_id": "LEG2016",
+      "measures": [
+        "party_votes",
+        "contest_seats",
+        "turnout_rate"
+      ]
+    },
+    {
+      "source_id": "TAFRA_LEGISLATIVE_RESULTS_2021",
+      "election_id": "LEG2021",
+      "measures": [
+        "party_votes",
+        "contest_seats",
+        "turnout_rate"
+      ]
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2015",
+      "election_id": "REG2015",
+      "measures": [
+        "party_votes",
+        "contest_seats",
+        "turnout_rate",
+        "valid_votes"
+      ]
+    },
+    {
+      "source_id": "TAFRA_REGIONAL_RESULTS_2021",
+      "election_id": "REG2021",
+      "measures": [
+        "party_votes",
+        "contest_seats",
+        "turnout_rate"
+      ]
+    }
+  ],
+  "ingestion_executed": false,
+  "global_restrictions": [
+    "LEG2002 reste ARCHIVE_ONLY et ne rejoint pas les faits canoniques.",
+    "Les cellules partisanes vides restent inconnues; elles ne valent pas zéro.",
+    "Les géographies 2007 et 2011 restent des snapshots historiques sans équivalence territoriale actuelle implicite.",
+    "nSieges décrit la capacité publiée du contest, pas une attribution de sièges par parti.",
+    "Un taux de participation publié ne permet pas de reconstruire un nombre d'inscrits ou de votants.",
+    "Les profils de représentants régionaux 2021 nécessitent un profil dédié avant toute intégration."
+  ],
+  "next_step": "Construire V13 uniquement avec les mesures GO, puis tester les cubes au grain contest × parti × élection."
+}

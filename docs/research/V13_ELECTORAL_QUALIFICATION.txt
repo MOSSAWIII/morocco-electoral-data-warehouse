@@ -1,0 +1,56 @@
+V13 — QUALIFICATION GROUPÉE DES ARCHIVES ÉLECTORALES
+
+Baseline : V12
+Date d'observation : 2026-09-10
+Ingestion exécutée : NON
+Décisions source : 6 GO / 1 NO_GO
+Périmètres de mesure : 23 GO / 26 NO_GO
+
+DÉCISIONS PAR SOURCE
+
+- LEG2002 (TAFRA_LEGISLATIVE_RESULTS_2002) : NO_GO — Archive incomplète et contradictoire selon sa propre notice; conservation documentaire uniquement.
+  Limite : 84 cellules partisanes vides restent NULL et ne signifient jamais zéro.
+  Limite : Le total nSieges couvre 295 sièges publiés, soit 30 de moins que le total national V12.
+  Limite : La notice déclare la source primaire incomplète, la source secondaire erronée et les petits partis absents.
+  Limite : 84 cellules parti sont vides; elles ne seront pas converties en zéro sans règle source explicite.
+  Limite : Le dictionnaire et les en-têtes physiques ne concordent pas exactement.
+- LEG2007 (TAFRA_LEGISLATIVE_RESULTS_2007) : GO — Valeurs publiées exploitables dans le périmètre local historique, sans imputation des cellules vides.
+  Limite : Les faits restent attachés au découpage historique; comparaison avec le découpage actuel interdite sans bridge validé.
+  Limite : 5 codes partisans restent provisoires; ils sont conservés séparément et ne doivent pas être fusionnés implicitement.
+  Limite : 1748 cellules partisanes vides restent NULL et ne signifient jamais zéro.
+  Limite : Le total nSieges couvre 295 sièges publiés, soit 30 de moins que le total national V12.
+- LEG2011 (TAFRA_LEGISLATIVE_RESULTS_2011) : GO — Valeurs publiées structurellement cohérentes; provenance secondaire à conserver dans chaque fait.
+  Limite : Les faits restent attachés au découpage historique; comparaison avec le découpage actuel interdite sans bridge validé.
+  Limite : Le total nSieges couvre 305 sièges publiés, soit 90 de moins que le total national V12.
+  Limite : La source n'est pas une publication officielle primaire; sa provenance secondaire doit rester visible.
+- LEG2016 (TAFRA_LEGISLATIVE_RESULTS_2016) : GO — Votes et mesures publiées utilisables; inscrits et pourcentage de votes nuls absents.
+  Limite : 1601 cellules partisanes vides restent NULL et ne signifient jamais zéro.
+  Limite : Le total nSieges couvre 305 sièges publiés, soit 90 de moins que le total national V12.
+- LEG2021 (TAFRA_LEGISLATIVE_RESULTS_2021) : GO — Votes, sièges et participation publiés utilisables; inscrits absents et champ invalide non publié.
+  Limite : 1415 cellules partisanes vides restent NULL et ne signifient jamais zéro.
+- REG2015 (TAFRA_REGIONAL_RESULTS_2015) : GO — Votes, sièges, participation et suffrages valides publiés et structurellement cohérents.
+  Limite : 1566 cellules partisanes vides restent NULL et ne signifient jamais zéro.
+- REG2021 (TAFRA_REGIONAL_RESULTS_2021) : GO — Votes, sièges et participation publiés utilisables; inscrits et votes invalides absents.
+  Limite : 1419 cellules partisanes vides restent NULL et ne signifient jamais zéro.
+
+MESURES AUTORISÉES POUR UNE INGESTION FUTURE
+
+- LEG2007 : party_votes, contest_seats, registered_voters, turnout_rate, invalid_vote_rate
+- LEG2011 : party_votes, contest_seats, registered_voters, turnout_rate, invalid_vote_rate
+- LEG2016 : party_votes, contest_seats, turnout_rate
+- LEG2021 : party_votes, contest_seats, turnout_rate
+- REG2015 : party_votes, contest_seats, turnout_rate, valid_votes
+- REG2021 : party_votes, contest_seats, turnout_rate
+
+RÈGLES NON NÉGOCIABLES
+
+- LEG2002 reste ARCHIVE_ONLY et ne rejoint pas les faits canoniques.
+- Les cellules partisanes vides restent inconnues; elles ne valent pas zéro.
+- Les géographies 2007 et 2011 restent des snapshots historiques sans équivalence territoriale actuelle implicite.
+- nSieges décrit la capacité publiée du contest, pas une attribution de sièges par parti.
+- Un taux de participation publié ne permet pas de reconstruire un nombre d'inscrits ou de votants.
+- Les profils de représentants régionaux 2021 nécessitent un profil dédié avant toute intégration.
+
+PROCHAINE ÉTAPE
+
+Construire V13 uniquement avec les mesures GO, puis tester les cubes au grain contest × parti × élection.

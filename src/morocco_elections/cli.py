@@ -74,6 +74,13 @@ def build_parser() -> argparse.ArgumentParser:
     parliament.add_argument("--as-of", default="2026-09-09")
     parliament.add_argument("--output")
     parliament.add_argument("--data-dir")
+    electoral = qualification.add_parser(
+        "electoral-archives", help="Qualifier en bloc les archives électorales profilées pour V13"
+    )
+    electoral.add_argument("--baseline", choices=("v12",), default="v12")
+    electoral.add_argument("--as-of", required=True)
+    electoral.add_argument("--output")
+    electoral.add_argument("--report-output")
 
     quality = commands.add_parser("quality", help="Produire des artefacts de qualité transversaux")
     quality_commands = quality.add_subparsers(dest="quality_command", required=True)
@@ -228,6 +235,15 @@ def main(argv: list[str] | None = None) -> int:
             as_of=args.as_of,
             output=args.output,
             data_dir=args.data_dir,
+        )
+    if args.command == "qualify" and args.qualification == "electoral-archives":
+        from morocco_elections.research.electoral_qualification import generate
+
+        return generate(
+            as_of=args.as_of,
+            baseline=args.baseline,
+            output=args.output,
+            report_output=args.report_output,
         )
     if args.command == "quality" and args.quality_command == "baseline":
         from morocco_elections.quality.baseline import generate

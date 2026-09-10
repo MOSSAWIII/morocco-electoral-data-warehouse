@@ -90,6 +90,7 @@ python -m morocco_elections sources acquire --source-id <ID_CATALOGUE> --input <
 python -m morocco_elections sources inventory --as-of AAAA-MM-JJ
 python -m morocco_elections sources profile-electoral-archives --baseline v12 --as-of AAAA-MM-JJ
 python -m morocco_elections identity build-registry --baseline v12 --as-of AAAA-MM-JJ
+python -m morocco_elections qualify electoral-archives --baseline v12 --as-of AAAA-MM-JJ
 python -m morocco_elections build v9
 python -m morocco_elections docs v9
 python -m morocco_elections build v10

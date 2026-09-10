@@ -149,12 +149,15 @@ Ces noms ne sont pas des engagements rigides. Des domaines peuvent être regroup
 
 ## Prochain enchaînement
 
-1. Compléter le catalogue d'acquisition à partir des portails et archives disponibles.
-2. Collecter par lots le cœur électoral, le Parlement et les données territoriales.
-3. Profiler automatiquement les sources collectées.
-4. Ajuster puis figer l'ontologie V1 sur des données observées.
-5. Généraliser le registre des identités et crosswalks.
-6. Sélectionner la première vague au meilleur rapport valeur/couverture/fiabilité/coût.
-7. Construire V13 uniquement lorsque cette vague apporte une capacité analytique réelle.
+Le premier cycle est désormais réalisé : catalogue, acquisition des sept archives électorales,
+profil consolidé, ontologie V1, registre des identités et qualification groupée. Cette qualification
+autorise six sources dans des périmètres de mesure fermés; 2002 reste `ARCHIVE_ONLY`.
+
+1. Construire les faits électoraux V13 uniquement à partir des 23 périmètres `GO`.
+2. Vérifier les deux cubes centraux `contest × parti × élection` et `contest × élection` par des analyses de référence.
+3. Publier V13 dans un modèle canonique unique, puis en dériver Parquet, CSV, DuckDB et Excel.
+4. Ajouter ensuite une seule vague de données à la fois, choisie selon sa valeur analytique et sa preuve disponible.
+5. Aborder la gouvernance, le territoire/HCP et le Parlement étendu sans faire dépendre un domaine des blocages d'un autre.
+6. Déclencher PostgreSQL seulement lorsqu'un besoin opérationnel mesurable apparaît.
 
 Le projet est réussi lorsqu'une personne extérieure peut relier les données par des identifiants stables, retrouver la source de chaque valeur importante, comprendre les lacunes et exécuter des analyses sans connaître l'histoire interne du dépôt.
