@@ -84,6 +84,15 @@ def build_parser() -> argparse.ArgumentParser:
     baseline.add_argument("--metadata-output")
     baseline.add_argument("--report-output")
 
+    identity = commands.add_parser("identity", help="Construire les registres canoniques d'identités")
+    identity_commands = identity.add_subparsers(dest="identity_command", required=True)
+    registry = identity_commands.add_parser("build-registry", help="Construire le registre électoral V13")
+    registry.add_argument("--baseline", choices=("v12",), default="v12")
+    registry.add_argument("--as-of", required=True)
+    registry.add_argument("--data-dir")
+    registry.add_argument("--output")
+    registry.add_argument("--report-output")
+
     github = commands.add_parser("github", help="Opérations GitHub différées")
     github_commands = github.add_subparsers(dest="github_command", required=True)
     backlog = github_commands.add_parser("publish-backlog", help="Publier les jalons et issues")
@@ -228,6 +237,16 @@ def main(argv: list[str] | None = None) -> int:
             data_dir=args.data_dir,
             as_of=args.as_of,
             metadata_output=args.metadata_output,
+            report_output=args.report_output,
+        )
+    if args.command == "identity" and args.identity_command == "build-registry":
+        from morocco_elections.domains.identity.registry import generate
+
+        return generate(
+            data_dir=args.data_dir,
+            as_of=args.as_of,
+            baseline=args.baseline,
+            output=args.output,
             report_output=args.report_output,
         )
     if args.command == "github" and args.github_command == "publish-backlog":

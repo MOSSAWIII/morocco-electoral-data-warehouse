@@ -1,0 +1,35 @@
+V13 — REGISTRE CANONIQUE DES IDENTITÉS ÉLECTORALES
+
+Version : 1.0.0
+Baseline : V12
+Date d'observation : 2026-09-10
+Ingestion autorisée : NON
+
+VOLUMES
+
+Crosswalks : 741
+Courses électorales : 639
+Nouvelles entités provisoires : 163
+Par type : {"election": 6, "party_or_alliance": 176, "territory": 559}
+Par statut de revue : {"automatic": 521, "boundary_bridge_required": 135, "manual_review_required": 5, "source_defined": 80}
+Libellés portant déjà un caractère de remplacement : 0
+
+RÈGLES APPLIQUÉES
+
+- election_id relie exactement type, année et date officielle déjà présents dans V12.
+- contest_id est déterministe pour election_id × type de liste × identifiant source.
+- Les géographies postérieures au découpage 2015 utilisent un raccord exact et unique quand il existe.
+- Les unités 2007–2011 restent des snapshots historiques tant que leur frontière n'est pas validée.
+- Les huit préfectures d'arrondissements de Casablanca ne sont pas réduites à un arrondissement.
+- Les codes partisans source sont conservés; deux partis et deux alliances historiques restent provisoires.
+
+LIMITES
+
+- Les unités administratives de 2007 et 2011 sont conservées comme snapshots historiques; leurs ponts vers le découpage courant restent à valider.
+- Huit préfectures d'arrondissements de Casablanca sont des entités agrégées distinctes des arrondissements qui les composent.
+- Quatre codes politiques historiques de 2007 créent deux partis et deux alliances provisoires à confirmer.
+- Le registre normalise les identités mais n'autorise pas encore l'ingestion des faits V13.
+
+PROCHAIN GATE
+
+Valider les ponts géographiques historiques et les quatre entités partisanes de 2007, puis qualifier les faits source.

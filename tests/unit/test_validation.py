@@ -88,6 +88,10 @@ def test_v13_electoral_source_profile_contract() -> None:
     assert validate_project.validate_v13_source_profile() == []
 
 
+def test_v13_identity_registry_contract() -> None:
+    assert validate_project.validate_v13_identity_registry() == []
+
+
 def test_python_sources_parse() -> None:
     assert validate_project.validate_python_sources() == []
 
