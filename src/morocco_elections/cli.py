@@ -26,6 +26,13 @@ def build_parser() -> argparse.ArgumentParser:
     analyze.add_argument("--data-dir")
     analyze.add_argument("--format", choices=("text", "json"), default="text")
 
+    export = commands.add_parser("export", help="Produire un paquet de diffusion ouvert")
+    export.add_argument("version", choices=("v13",))
+    export.add_argument("--data-dir")
+    export.add_argument("--output-dir")
+    export.add_argument("--manifest-output")
+    export.add_argument("--readme-output")
+
     qualify = commands.add_parser("qualify", help="Qualifier une source candidate sans l'ingérer")
     qualification = qualify.add_subparsers(dest="qualification", required=True)
     councils = qualification.add_parser("councils-2015", help="Qualifier les conseils communaux de 2015")
@@ -178,6 +185,15 @@ def main(argv: list[str] | None = None) -> int:
         from morocco_elections.analysis.v13 import run
 
         return run(data_dir=args.data_dir, output_format=args.format)
+    if args.command == "export" and args.version == "v13":
+        from morocco_elections.exports.open_v13 import run
+
+        return run(
+            data_dir=args.data_dir,
+            output_dir=args.output_dir,
+            manifest_output=args.manifest_output,
+            readme_output=args.readme_output,
+        )
     if args.command == "qualify" and args.qualification == "councils-2015":
         from morocco_elections.research.councils_2015 import qualify_candidate
 

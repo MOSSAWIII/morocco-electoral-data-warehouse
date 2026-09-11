@@ -45,6 +45,10 @@ def test_v13_release_contract() -> None:
     assert validate_project.validate_v13_release_report(manifest) == []
 
 
+def test_v13_open_distribution_contract() -> None:
+    assert validate_project.validate_v13_open_distribution() == []
+
+
 def test_v11a_artifact_contract() -> None:
     assert validate_project.validate_v11a_artifacts() == []
 

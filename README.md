@@ -106,6 +106,7 @@ python -m morocco_elections build v13
 python -m morocco_elections docs v13
 python -m morocco_elections analyze v12
 python -m morocco_elections analyze v13
+python -m morocco_elections export v13
 python -m morocco_elections validate --mode full --release v10 --baseline v9
 python -m morocco_elections validate --mode full --release v11 --baseline v10
 python -m morocco_elections validate --mode full --release v12 --baseline v11
@@ -120,6 +121,8 @@ python -m morocco_elections github publish-backlog
 ```
 
 Le mode `ci` fonctionne sans données. Le mode `full` vérifie les empreintes, volumes, documents, onglets et différences autorisées de la release demandée sans écrire de fichier.
+
+`export v13` produit localement, sous `data/exports/open/v13/`, le même noyau électoral non nominatif en CSV, Parquet et DuckDB. Le paquet contient son manifeste, ses checksums et un README; aucun RAW n'est copié dans la diffusion.
 
 `sources acquire` accepte un fichier local avec `--input` ou une URL HTTP(S) avec `--url`. La commande conserve les octets sous `data/raw/<domaine>/acquisitions/`, calcule leur empreinte, inventorie leur structure et écrit un enregistrement local. Ce dépôt RAW ne constitue jamais une autorisation d'ingestion canonique.
 

@@ -33,6 +33,8 @@ V12_REPORT_PATH = PROJECT_ROOT / "metadata" / "v12_release_report.json"
 V12_DIFF_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V12_VS_V11_DIFF.txt"
 V13_REPORT_PATH = PROJECT_ROOT / "metadata" / "v13_release_report.json"
 V13_DIFF_REPORT_PATH = PROJECT_ROOT / "docs" / "research" / "V13_VS_V12_DIFF.txt"
+V13_OPEN_DISTRIBUTION_PATH = PROJECT_ROOT / "metadata" / "v13_open_distribution.json"
+V13_OPEN_README_PATH = PROJECT_ROOT / "docs" / "publication" / "V13_OPEN_DATA_README.txt"
 V11A_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11a_source_candidates.json"
 V11A_DECISION_PATH = PROJECT_ROOT / "docs" / "research" / "V11A_DECISION_2015_COUNCILS.txt"
 SMIIG_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11_smiig_source_candidates.json"
@@ -577,6 +579,74 @@ def validate_v13_release_report(manifest: dict) -> list[str]:
         errors.append("Empreinte de la qualification électorale incohérente dans V13")
     if diff_report != v13.render_diff_report(report):
         errors.append("Rapport TXT V13/V12 désynchronisé du JSON")
+    return errors
+
+
+def validate_v13_open_distribution(data_dir: str | Path | None = None, full: bool = False) -> list[str]:
+    from morocco_elections.exports import open_v13
+
+    errors: list[str] = []
+    if not V13_OPEN_DISTRIBUTION_PATH.is_file() or not V13_OPEN_README_PATH.is_file():
+        return ["V13 open: manifeste ou README suivi absent"]
+    try:
+        metadata = json.loads(V13_OPEN_DISTRIBUTION_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"V13 open: manifeste illisible: {exc}"]
+    errors.extend(f"V13 open: {error}" for error in open_v13.validate_manifest(metadata))
+    release = json.loads(V13_REPORT_PATH.read_text(encoding="utf-8"))
+    if metadata.get("source_workbook_sha256") != release.get("workbooks", {}).get("V13"):
+        errors.append("V13 open: empreinte du classeur source incohérente")
+    if V13_OPEN_README_PATH.read_text(encoding="utf-8") != open_v13.render_readme(metadata):
+        errors.append("V13 open: README désynchronisé du manifeste")
+    if not full or errors:
+        return errors
+
+    root = get_paths(data_dir).data_root / "exports" / "open" / "v13"
+    local_manifest = root / "manifest.json"
+    local_readme = root / "README.txt"
+    checksum_path = root / "checksums.sha256"
+    database_path = root / "morocco_elections_v13.duckdb"
+    for required in (local_manifest, local_readme, checksum_path, database_path):
+        if not required.is_file():
+            errors.append(f"V13 open: fichier local absent: {required}")
+    if errors:
+        return errors
+    if json.loads(local_manifest.read_text(encoding="utf-8")) != metadata:
+        errors.append("V13 open: manifeste local désynchronisé")
+    if local_readme.read_text(encoding="utf-8") != open_v13.render_readme(metadata):
+        errors.append("V13 open: README local désynchronisé")
+    expected_checksums: list[str] = []
+    for item in metadata["files"]:
+        path = root / item["path"]
+        if not path.is_file():
+            errors.append(f"V13 open: fichier absent: {item['path']}")
+            continue
+        digest = sha256(path)
+        digest_mismatch = "sha256" in item and digest != item["sha256"]
+        size_mismatch = "byte_size" in item and path.stat().st_size != item["byte_size"]
+        if size_mismatch or digest_mismatch:
+            errors.append(f"V13 open: empreinte ou taille divergente: {item['path']}")
+        expected_checksums.append(f"{digest}  {item['path']}\n")
+    expected_checksums.append(f"{sha256(local_manifest)}  manifest.json\n")
+    if checksum_path.read_text(encoding="utf-8") != "".join(expected_checksums):
+        errors.append("V13 open: checksums.sha256 désynchronisé")
+
+    import duckdb
+
+    connection = duckdb.connect(str(database_path), read_only=True)
+    try:
+        for table in metadata["tables"]:
+            count = connection.execute(f'SELECT COUNT(*) FROM "{table["table_name"]}"').fetchone()[0]
+            if count != table["rows"]:
+                errors.append(f"V13 open: volume DuckDB divergent: {table['table_name']}")
+        orphan_results = connection.execute(
+            "SELECT COUNT(*) FROM fact_election_result r "
+            "LEFT JOIN dim_electoral_contest c USING (contest_id) WHERE c.contest_id IS NULL"
+        ).fetchone()[0]
+        if orphan_results:
+            errors.append("V13 open: résultats sans contest_id dans DuckDB")
+    finally:
+        connection.close()
     return errors
 
 
@@ -1382,6 +1452,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
     errors.extend(validate_v12_qualification(manifest))
     errors.extend(validate_v12_release_report(manifest))
     errors.extend(validate_v13_release_report(manifest))
+    errors.extend(validate_v13_open_distribution())
     errors.extend(validate_v11a_artifacts())
     errors.extend(validate_smiig_artifacts())
     errors.extend(validate_quality_baseline_artifacts())
@@ -1410,6 +1481,8 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "all", bas
             errors.extend(validate_v13_source_profile(data_dir, full=True))
         if not errors:
             errors.extend(validate_v13_identity_registry(data_dir, full=True))
+        if not errors and release in {"v13", "all"}:
+            errors.extend(validate_v13_open_distribution(data_dir, full=True))
     return errors
 
 
