@@ -39,6 +39,7 @@ def test_all_structured_commands_are_registered() -> None:
         ("validate", "--help"),
         ("analyze", "v11", "--help"),
         ("analyze", "v12", "--help"),
+        ("analyze", "v13", "--help"),
         ("qualify", "parliament", "--help"),
         ("qualify", "electoral-archives", "--help"),
         ("qualify", "councils-2015", "--help"),

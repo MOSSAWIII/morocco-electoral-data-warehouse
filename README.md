@@ -105,6 +105,7 @@ python -m morocco_elections docs v12
 python -m morocco_elections build v13
 python -m morocco_elections docs v13
 python -m morocco_elections analyze v12
+python -m morocco_elections analyze v13
 python -m morocco_elections validate --mode full --release v10 --baseline v9
 python -m morocco_elections validate --mode full --release v11 --baseline v10
 python -m morocco_elections validate --mode full --release v12 --baseline v11
