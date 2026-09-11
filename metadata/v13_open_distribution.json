@@ -1,0 +1,874 @@
+{
+  "schema_version": 1,
+  "release": "V13",
+  "generated_on": "2026-09-11",
+  "publication_status": "READY_LOCAL_NOT_PUBLISHED",
+  "source_workbook_sha256": "35f5f12b55a603c05c7230b701d0a629dbd78b697b49da177cdf7a3419770332",
+  "scope": "Noyau électoral non nominatif V13 et dimensions/provenance nécessaires à ses jointures.",
+  "formats": [
+    "CSV",
+    "Parquet",
+    "DuckDB"
+  ],
+  "tables": [
+    {
+      "table_name": "dim_geo",
+      "source_sheet": "DIM_GEO",
+      "rows": 1825,
+      "columns": [
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "parent_geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "region_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "province_prefecture",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "constituency_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "commune_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "district_arrondissement",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "fraction",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "douar",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "urban_rural",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "latitude",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "longitude",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "boundary_version",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_from",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_to",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "publication_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "retrieval_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "geo_id"
+      ]
+    },
+    {
+      "table_name": "dim_party",
+      "source_sheet": "DIM_PARTY",
+      "rows": 57,
+      "columns": [
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_name_fr",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_name_ar",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "acronym",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "alliance_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "founded_year",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "dissolved_year",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legal_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "color_or_symbol",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "leader_person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "parliamentary_group",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_from",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_to",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "publication_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "retrieval_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "party_id"
+      ]
+    },
+    {
+      "table_name": "dim_election",
+      "source_sheet": "DIM_ELECTION",
+      "rows": 9,
+      "columns": [
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "cycle_year",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "chamber_or_level",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "electoral_system",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "total_seats",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "campaign_start",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "campaign_end",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "official_results_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legal_framework_version",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "publication_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "retrieval_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "election_id"
+      ]
+    },
+    {
+      "table_name": "dim_electoral_contest",
+      "source_sheet": "DIM_ELECTORAL_CONTEST",
+      "rows": 639,
+      "columns": [
+        {
+          "name": "contest_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "region_geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "list_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_contest_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_label",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "normalized_label",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "boundary_version",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_from",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_to",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "evidence_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "identity_review_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "contest_id"
+      ]
+    },
+    {
+      "table_name": "fact_election_result",
+      "source_sheet": "FACT_ELECTION_RESULT",
+      "rows": 10883,
+      "columns": [
+        {
+          "name": "result_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "contest_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "votes",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "seats",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "evidence_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_row",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "source_party_code",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "identity_review_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "result_id"
+      ]
+    },
+    {
+      "table_name": "fact_electoral_mobilization",
+      "source_sheet": "FACT_ELECTORAL_MOBILIZATION",
+      "rows": 639,
+      "columns": [
+        {
+          "name": "contest_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "contest_seats",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "registered_voters",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "voters",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_votes",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "invalid_votes",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "blank_votes",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "turnout_rate",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "invalid_vote_rate",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "evidence_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_row",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "contest_id"
+      ]
+    },
+    {
+      "table_name": "sources",
+      "source_sheet": "SOURCES",
+      "rows": 61,
+      "columns": [
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "publisher",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "domain",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "coverage_start",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "coverage_end",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_granularity",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "temporal_frequency",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "access_method",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "license",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "reliability_score",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "last_checked",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "source_id"
+      ]
+    },
+    {
+      "table_name": "data_dictionary",
+      "source_sheet": "DATA_DICTIONARY",
+      "rows": 292,
+      "columns": [
+        {
+          "name": "metric_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "domain",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "metric_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "definition",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "data_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "preferred_geo_granularity",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "preferred_temporal_frequency",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "primary_fact_sheet",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "required_keys",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "candidate_sources",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "collection_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "priority",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_rule",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "metric_id"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "csv/dim_geo.csv",
+      "byte_size": 633466,
+      "sha256": "a996d113b9bf85259bdbd7759c71d6dc1397bd8bd0be952d08caca65f051468e"
+    },
+    {
+      "path": "csv/dim_party.csv",
+      "byte_size": 12480,
+      "sha256": "2ec02dee1138d07a8dc86ecf49eadc232fdd8a51f0d00ff43a2d1cf007002859"
+    },
+    {
+      "path": "csv/dim_election.csv",
+      "byte_size": 2592,
+      "sha256": "588bb57524c096f91739abab6ea0f5fbbc63bcf251dd18c47a260e0c2659cf75"
+    },
+    {
+      "path": "csv/dim_electoral_contest.csv",
+      "byte_size": 255073,
+      "sha256": "39150d6ef8869b37bc66685d5deb308ea2306279da134f00c478c14d7c7eb1c7"
+    },
+    {
+      "path": "csv/fact_election_result.csv",
+      "byte_size": 4006137,
+      "sha256": "af195179921600aa099a3b9d57a7a3165d757d1dd4bb23d3d6df0eb4aed108e2"
+    },
+    {
+      "path": "csv/fact_electoral_mobilization.csv",
+      "byte_size": 215872,
+      "sha256": "d20acba07361188870e1409016505f73cf09581b76f77563704eb4574943c4e7"
+    },
+    {
+      "path": "csv/sources.csv",
+      "byte_size": 27413,
+      "sha256": "907dd7e1ac453dda529d3ec50f3e4f7766c5beff606c44909b0d2a248bae01f3"
+    },
+    {
+      "path": "csv/data_dictionary.csv",
+      "byte_size": 94243,
+      "sha256": "2044139197b70191cd70b2ab2bfbed18ce5f340253b4a5ed33ea256d26081cc8"
+    },
+    {
+      "path": "parquet/dim_geo.parquet",
+      "byte_size": 64569,
+      "sha256": "b253b38def4e0b814e74ee1d977e5a75ca3181fcf06659292c592750dbc98eda"
+    },
+    {
+      "path": "parquet/dim_party.parquet",
+      "byte_size": 7713,
+      "sha256": "a965a1ebe75dc6bab63ff4740d6cdce6507d55562f1d9d90c544d358389d49cf"
+    },
+    {
+      "path": "parquet/dim_election.parquet",
+      "byte_size": 6573,
+      "sha256": "134bf2ed4ceb9e00c5a67a07afb550d4b7086b70c6f508d9e46c2b733ac1d617"
+    },
+    {
+      "path": "parquet/dim_electoral_contest.parquet",
+      "byte_size": 18663,
+      "sha256": "8251ee4bd1a183559873c074690401310476a3e9ac75e2e906c45118f7d976b5"
+    },
+    {
+      "path": "parquet/fact_election_result.parquet",
+      "byte_size": 305708,
+      "sha256": "64ddda500e5cc58c62c0f2f838e8ef6e61ab33479282db886c7b1f5f6f1d4cfc"
+    },
+    {
+      "path": "parquet/fact_electoral_mobilization.parquet",
+      "byte_size": 20058,
+      "sha256": "2da84ce9181b70ea278a182f147bdead28368c5a5b1c92f23bcc7d5510cd6e81"
+    },
+    {
+      "path": "parquet/sources.parquet",
+      "byte_size": 15602,
+      "sha256": "70f8ea488744e9f3669fc12661efa03ea6e59531fb3d93d78df7a15648ba7776"
+    },
+    {
+      "path": "parquet/data_dictionary.parquet",
+      "byte_size": 14557,
+      "sha256": "a81a7320829b0ffc67b9d2beeb5725bc5b8a5845b974614415b3f957b5dad9d3"
+    },
+    {
+      "path": "morocco_elections_v13.duckdb",
+      "binary_reproducible": false,
+      "byte_size_reproducible": false,
+      "content_sha256": "a54544f85e86c091c3fcb404a6694012c165001011b8738425abcaa1a9515b60"
+    },
+    {
+      "path": "README.txt",
+      "byte_size": 1807,
+      "sha256": "6167414f7132f7b0089e612441703dc987b80cb1f61fb5a5559960704dc80b9e"
+    }
+  ],
+  "license_rule": "Consulter la table sources; attribution et conditions sont conservées source par source."
+}
