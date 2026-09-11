@@ -22,7 +22,7 @@ def build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--baseline", choices=("v9", "v10", "v11", "v12"))
 
     analyze = commands.add_parser("analyze", help="Exécuter les analyses de référence d'une release validée")
-    analyze.add_argument("version", choices=("v11", "v12"))
+    analyze.add_argument("version", choices=("v11", "v12", "v13"))
     analyze.add_argument("--data-dir")
     analyze.add_argument("--format", choices=("text", "json"), default="text")
 
@@ -172,6 +172,10 @@ def main(argv: list[str] | None = None) -> int:
         return run(data_dir=args.data_dir, output_format=args.format)
     if args.command == "analyze" and args.version == "v12":
         from morocco_elections.analysis.v12 import run
+
+        return run(data_dir=args.data_dir, output_format=args.format)
+    if args.command == "analyze" and args.version == "v13":
+        from morocco_elections.analysis.v13 import run
 
         return run(data_dir=args.data_dir, output_format=args.format)
     if args.command == "qualify" and args.qualification == "councils-2015":
