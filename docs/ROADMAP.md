@@ -11,6 +11,8 @@ SOURCES → RAW IMMUTABLES → PROFILAGE → IDENTITÉS/CROSSWALKS
         → FAITS CANONIQUES → CUBES → EXPORTS/ANALYSES
 ```
 
+État courant : le cœur électoral V13, ses analyses de référence et son paquet local CSV/Parquet/DuckDB sont réalisés. Le prochain résultat attendu est une première publication utilisable, après décision sur les licences et la visibilité du dépôt.
+
 ## Règles de conduite
 
 - Acquérir largement, intégrer strictement.
@@ -128,7 +130,7 @@ Une release publique contient le canonique, le dictionnaire, l'ontologie, la pro
 
 - Parquet : diffusion canonique compacte.
 - CSV : compatibilité universelle.
-- Excel : inspection et usage courant.
+- Excel : export local d'inspection et d'usage courant, distinct du paquet Git léger.
 - DuckDB : interrogation locale de tous les fichiers.
 - PostgreSQL : service ultérieur si un besoin réel apparaît.
 
@@ -140,7 +142,7 @@ La migration commence seulement si collaboration simultanée, API, mises à jour
 
 ## Releases indicatives
 
-- **V13 — Cœur électoral étendu** : nouvelles élections, candidatures, mobilisation ou découpages.
+- **V13 — Cœur électoral étendu** : réalisée; élections, mobilisation, découpages historiques et diffusion multi-format.
 - **V14 — Gouvernance territoriale** : présidences, conseils, fonctions, budgets ou programmes suffisamment prouvés.
 - **V15 — Territoire enrichi** : HCP, finances et équipements comparables dans le temps.
 - **V16 — Parlement étendu** : périodes et formes d'activité supplémentaires, trajectoires consolidées.
@@ -149,15 +151,11 @@ Ces noms ne sont pas des engagements rigides. Des domaines peuvent être regroup
 
 ## Prochain enchaînement
 
-Le premier cycle est désormais réalisé : catalogue, acquisition des sept archives électorales,
-profil consolidé, ontologie V1, registre des identités et qualification groupée. Cette qualification
-autorise six sources dans des périmètres de mesure fermés; 2002 reste `ARCHIVE_ONLY`.
-
-1. Construire les faits électoraux V13 uniquement à partir des 23 périmètres `GO`.
-2. Vérifier les deux cubes centraux `contest × parti × élection` et `contest × élection` par des analyses de référence.
-3. Publier V13 dans un modèle canonique unique, puis en dériver Parquet, CSV, DuckDB et Excel.
-4. Ajouter ensuite une seule vague de données à la fois, choisie selon sa valeur analytique et sa preuve disponible.
-5. Aborder la gouvernance, le territoire/HCP et le Parlement étendu sans faire dépendre un domaine des blocages d'un autre.
+1. Fixer les licences et la visibilité, puis publier le paquet V13 déjà construit.
+2. Vérifier qu'une personne extérieure peut télécharger, comprendre et interroger V13 en moins de dix minutes.
+3. Corriger les éventuels problèmes d'usage sans modifier les faits canoniques.
+4. Sélectionner une seule nouvelle source crédible selon sa valeur analytique, sa couverture et son coût d'intégration.
+5. Étendre ensuite la gouvernance, le territoire/HCP ou le Parlement sans réactiver les sources bloquées faute de preuve.
 6. Déclencher PostgreSQL seulement lorsqu'un besoin opérationnel mesurable apparaît.
 
 Le projet est réussi lorsqu'une personne extérieure peut relier les données par des identifiants stables, retrouver la source de chaque valeur importante, comprendre les lacunes et exécuter des analyses sans connaître l'histoire interne du dépôt.

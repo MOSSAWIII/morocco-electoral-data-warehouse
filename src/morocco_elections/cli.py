@@ -11,21 +11,6 @@ def build_parser() -> argparse.ArgumentParser:
     build.add_argument("version", choices=("v9", "v10", "v11", "v12", "v13"))
     build.add_argument("--data-dir")
 
-    docs = commands.add_parser("docs", help="Générer la documentation")
-    docs.add_argument("version", choices=("v9", "v10", "v11", "v12", "v13"))
-    docs.add_argument("--data-dir")
-
-    validate = commands.add_parser("validate", help="Valider le dépôt et les données locales")
-    validate.add_argument("--mode", choices=("ci", "full"), default="ci")
-    validate.add_argument("--data-dir")
-    validate.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "all"), default="all")
-    validate.add_argument("--baseline", choices=("v9", "v10", "v11", "v12"))
-
-    analyze = commands.add_parser("analyze", help="Exécuter les analyses de référence d'une release validée")
-    analyze.add_argument("version", choices=("v11", "v12", "v13"))
-    analyze.add_argument("--data-dir")
-    analyze.add_argument("--format", choices=("text", "json"), default="text")
-
     export = commands.add_parser("export", help="Produire un paquet de diffusion ouvert")
     export.add_argument("version", choices=("v13",))
     export.add_argument("--data-dir")
@@ -33,7 +18,48 @@ def build_parser() -> argparse.ArgumentParser:
     export.add_argument("--manifest-output")
     export.add_argument("--readme-output")
 
-    qualify = commands.add_parser("qualify", help="Qualifier une source candidate sans l'ingérer")
+    analyze = commands.add_parser("analyze", help="Exécuter les analyses de référence d'une release validée")
+    analyze.add_argument("version", choices=("v11", "v12", "v13"))
+    analyze.add_argument("--data-dir")
+    analyze.add_argument("--format", choices=("text", "json"), default="text")
+
+    validate = commands.add_parser("validate", help="Valider le dépôt et les données locales")
+    validate.add_argument("--mode", choices=("ci", "full"), default="ci")
+    validate.add_argument("--data-dir")
+    validate.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "all"), default="v13")
+    validate.add_argument("--baseline", choices=("v9", "v10", "v11", "v12"))
+
+    sources = commands.add_parser("sources", help="Cataloguer et acquérir des sources sans les ingérer")
+    source_commands = sources.add_subparsers(dest="source_command", required=True)
+    catalog = source_commands.add_parser("catalog", help="Valider et résumer le catalogue d'acquisition")
+    catalog.add_argument("--catalog")
+    inventory = source_commands.add_parser("inventory", help="Consolider les profils RAW dans un inventaire partageable")
+    inventory.add_argument("--as-of", required=True)
+    inventory.add_argument("--data-dir")
+    inventory.add_argument("--output")
+    acquire = source_commands.add_parser("acquire", help="Conserver et profiler une source dans les RAW immuables")
+    acquire.add_argument("--source-id", required=True)
+    source_input = acquire.add_mutually_exclusive_group(required=True)
+    source_input.add_argument("--url")
+    source_input.add_argument("--input")
+    acquire.add_argument("--filename")
+    acquire.add_argument("--as-of")
+    acquire.add_argument("--data-dir")
+    acquire.add_argument("--catalog")
+    electoral_profile = source_commands.add_parser(
+        "profile-electoral-archives", help="Profiler les sept archives électorales acquises pour V13"
+    )
+    electoral_profile.add_argument("--baseline", choices=("v12",), default="v12")
+    electoral_profile.add_argument("--as-of", required=True)
+    electoral_profile.add_argument("--data-dir")
+    electoral_profile.add_argument("--output")
+    electoral_profile.add_argument("--report-output")
+
+    docs = commands.add_parser("docs", help="Historique: générer la documentation d'une release")
+    docs.add_argument("version", choices=("v9", "v10", "v11", "v12", "v13"))
+    docs.add_argument("--data-dir")
+
+    qualify = commands.add_parser("qualify", help="Historique: reproduire une qualification de source")
     qualification = qualify.add_subparsers(dest="qualification", required=True)
     councils = qualification.add_parser("councils-2015", help="Qualifier les conseils communaux de 2015")
     councils.add_argument("--candidate", required=True)
@@ -89,7 +115,7 @@ def build_parser() -> argparse.ArgumentParser:
     electoral.add_argument("--output")
     electoral.add_argument("--report-output")
 
-    quality = commands.add_parser("quality", help="Produire des artefacts de qualité transversaux")
+    quality = commands.add_parser("quality", help="Historique: reproduire une baseline qualité")
     quality_commands = quality.add_subparsers(dest="quality_command", required=True)
     baseline = quality_commands.add_parser("baseline", help="Générer la baseline V10-QA")
     baseline.add_argument("--release", choices=("v10", "v11"), default="v10")
@@ -98,7 +124,7 @@ def build_parser() -> argparse.ArgumentParser:
     baseline.add_argument("--metadata-output")
     baseline.add_argument("--report-output")
 
-    identity = commands.add_parser("identity", help="Construire les registres canoniques d'identités")
+    identity = commands.add_parser("identity", help="Historique: reproduire un registre d'identités")
     identity_commands = identity.add_subparsers(dest="identity_command", required=True)
     registry = identity_commands.add_parser("build-registry", help="Construire le registre électoral V13")
     registry.add_argument("--baseline", choices=("v12",), default="v12")
@@ -107,37 +133,12 @@ def build_parser() -> argparse.ArgumentParser:
     registry.add_argument("--output")
     registry.add_argument("--report-output")
 
-    github = commands.add_parser("github", help="Opérations GitHub différées")
+    github = commands.add_parser("github", help="Historique: republier le backlog initial")
     github_commands = github.add_subparsers(dest="github_command", required=True)
     backlog = github_commands.add_parser("publish-backlog", help="Publier les jalons et issues")
     backlog.add_argument("--repo")
     backlog.add_argument("--dry-run", action="store_true")
 
-    sources = commands.add_parser("sources", help="Cataloguer et acquérir des sources sans les ingérer")
-    source_commands = sources.add_subparsers(dest="source_command", required=True)
-    catalog = source_commands.add_parser("catalog", help="Valider et résumer le catalogue d'acquisition")
-    catalog.add_argument("--catalog")
-    inventory = source_commands.add_parser("inventory", help="Consolider les profils RAW dans un inventaire partageable")
-    inventory.add_argument("--as-of", required=True)
-    inventory.add_argument("--data-dir")
-    inventory.add_argument("--output")
-    acquire = source_commands.add_parser("acquire", help="Conserver et profiler une source dans les RAW immuables")
-    acquire.add_argument("--source-id", required=True)
-    source_input = acquire.add_mutually_exclusive_group(required=True)
-    source_input.add_argument("--url")
-    source_input.add_argument("--input")
-    acquire.add_argument("--filename")
-    acquire.add_argument("--as-of")
-    acquire.add_argument("--data-dir")
-    acquire.add_argument("--catalog")
-    electoral_profile = source_commands.add_parser(
-        "profile-electoral-archives", help="Profiler les sept archives électorales acquises pour V13"
-    )
-    electoral_profile.add_argument("--baseline", choices=("v12",), default="v12")
-    electoral_profile.add_argument("--as-of", required=True)
-    electoral_profile.add_argument("--data-dir")
-    electoral_profile.add_argument("--output")
-    electoral_profile.add_argument("--report-output")
     return parser
 
 

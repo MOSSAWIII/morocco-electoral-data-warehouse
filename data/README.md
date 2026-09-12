@@ -6,7 +6,7 @@ Ce répertoire contient des données non versionnées. Seul ce contrat est suivi
 - `legacy/` : entrées historiques nécessaires à la reproductibilité, notamment V8.
 - `staging/` : données décodées et normalisées, recréables depuis RAW.
 - `processed/` : tables canoniques intermédiaires indépendantes du moteur de stockage.
-- `exports/` : produits dérivés, notamment les classeurs Excel.
+- `exports/` : produits dérivés, notamment Excel et le paquet V13 CSV/Parquet/DuckDB.
 - `tmp/` : travail temporaire supprimable.
 
 Les acquisitions génériques sont placées sous `raw/<domaine>/acquisitions/<source_id>/<préfixe_sha256>/`. Chaque version contient les octets originaux et un `acquisition.json` local avec provenance et profil. Deux fichiers différents ne peuvent donc jamais s'écraser. Leur présence en RAW ne vaut pas validation ni ingestion dans le warehouse.

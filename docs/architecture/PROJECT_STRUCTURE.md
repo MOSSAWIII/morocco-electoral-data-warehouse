@@ -1,47 +1,35 @@
 # Architecture du projet
 
-## Flux autorisé
+## Flux unique
 
-`RAW → STAGING → TABLES CANONIQUES VERSIONNÉES → EXPORTS`
+```text
+RAW → STAGING → TABLES CANONIQUES VERSIONNÉES → EXPORTS ET ANALYSES
+```
 
-RAW est immuable. STAGING décode et normalise sans décision analytique. La couche canonique applique les identités, crosswalks et règles métier. Les classeurs Excel sont actuellement les exports analytiques reproductibles.
+Une couche dépend uniquement des couches situées à sa gauche. Les RAW sont immuables; un export ne peut jamais réalimenter la construction canonique.
 
-PostgreSQL est un adaptateur de stockage possible, pas une condition de vérité des données. Sa mise en œuvre commencera lorsqu'un besoin d'interrogation, de collaboration ou de performance sera documenté. Elle ne changera ni les grains ni les règles métier canoniques.
+## Release opérationnelle
 
-Une couche peut dépendre uniquement des couches situées à sa gauche. Un export ne peut jamais alimenter RAW, STAGING ou la couche canonique.
+V13 est reconstruite à partir des sources physiques, des décisions versionnées et de V8 comme bootstrap des tables historiques qui ne disposent pas encore de sources séparées. Les modules V9 à V12 restent dans `legacy/` et `releases/` parce que V13 les réexécute en mémoire et vérifie leurs empreintes; leurs anciens classeurs ne deviennent pas des entrées canoniques.
 
-## Construction courante
+Le paquet V13 est exposé par Excel pour l'inspection locale et par CSV, Parquet et DuckDB pour la diffusion. Ces formats portent les mêmes tables et règles.
 
-V12 est reconstruite à partir des RAW disponibles, des décisions versionnées et de V8 comme bootstrap historique. Aucun classeur V9, V10, V11 ou V12 n'est une entrée de construction. Les reconstructions intermédiaires sont temporaires, vérifiées par leurs SHA-256 historiques puis supprimées.
+## Responsabilités
 
-V8 ne sera retirée qu'après récupération ou qualification séparée des sources physiques des tables qu'elle porte encore. Elle ne doit pas être remplacée par une extraction canonique non sourcée qui déplacerait simplement la dépendance.
+- `domains/elections` : faits électoraux multi-scrutins et identifiants de courses.
+- `domains/identity` : normalisation Unicode, identifiants et registre de correspondance.
+- `domains/geography` et `domains/governance` : décisions manuelles versionnées nécessaires à V10–V13.
+- `releases` et `legacy` : reconstruction déterministe de l'historique jusqu'à V13.
+- `sources` : catalogue, acquisition immuable et profilage.
+- `exports` : formats d'accès sans règle métier concurrente.
+- `analysis` : analyses de référence en lecture seule.
+- `quality` : invariants, empreintes, relations et limites scientifiques.
+- `research` : qualificateurs historiques conservés pour reproduire les décisions.
 
-## Domaines
-
-- `identity` : clés de personnes, normalisation Unicode, collisions et décisions de désambiguïsation.
-- `geography` : DIM_GEO, découpages temporels, crosswalks et preuves de revue manuelle.
-- `elections` : électorat, offre, mobilisation, résultats, sièges et transitions.
-- `governance` : conseils, présidences, exécutifs communaux et SMIIG.
-- `socioeconomics` : population et indicateurs HCP avec validité temporelle.
-- `parliament` : mandats, questions et trajectoires d’activité.
-
-## Dépendances techniques
-
-- `domains` ne dépend pas d’Excel, de PostgreSQL ou d’un chemin local.
-- `storage` adapte les fichiers et, si le besoin est confirmé, PostgreSQL aux contrats des domaines.
-- `quality` contrôle schémas, volumes, clés, provenance et non-altération.
-- `exports` lit la couche canonique et produit des artefacts ; il ne contient aucune règle métier primaire.
-- `legacy/v9` conserve la reproductibilité du classeur V9 jusqu’à son remplacement contrôlé.
-
-## Règles de proportionnalité
-
-- Une release est créée uniquement lorsque les données canoniques ou leur schéma changent.
-- Une recherche conclue `NO_GO` reste une preuve historique et ne crée pas de release.
-- Un qualificateur complet n'est développé qu'après identification d'une source candidate crédible.
-- Un chantier bloqué n'est rouvert qu'avec une preuve nouvelle.
-- Une abstraction partagée doit répondre à au moins deux usages réels.
-- La QA protège les données ; elle ne remplace ni le produit analytique ni la roadmap.
+Les espaces PostgreSQL vides ont été retirés. Ils seront créés seulement si un besoin opérationnel mesurable apparaît.
 
 ## Configuration
 
-Les arguments CLI ont priorité sur `ELECTIONS_DATA_DIR`, qui a priorité sur `<repo>/data`. Aucun chemin absolu ni secret n’est versionné.
+Les arguments CLI ont priorité sur `ELECTIONS_DATA_DIR`, qui a priorité sur `<repo>/data`. Aucun chemin absolu ni secret n'est versionné.
+
+Une release correspond à un changement du canonique ou de son schéma. Une collecte, un `NO_GO` ou une nouvelle idée d'architecture ne crée pas de release.
