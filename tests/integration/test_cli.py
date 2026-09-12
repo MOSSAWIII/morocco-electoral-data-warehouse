@@ -24,7 +24,7 @@ def test_structured_cli_validation() -> None:
     result = run_command(sys.executable, "-m", "morocco_elections", "validate", "--mode", "ci")
     assert result.returncode == 0, result.stdout + result.stderr
     assert "VALIDATION_OK" in result.stdout
-    assert "release=v14 documents=0" in result.stdout
+    assert "release=v14.1 documents=0" in result.stdout
 
 
 def test_legacy_wrappers_expose_help() -> None:

@@ -12,7 +12,7 @@ def build_parser() -> argparse.ArgumentParser:
     build.add_argument("--data-dir")
 
     export = commands.add_parser("export", help="Produire un paquet de diffusion ouvert")
-    export.add_argument("version", choices=("v13", "v14"))
+    export.add_argument("version", choices=("v13", "v14", "v14.1"))
     export.add_argument("--data-dir")
     export.add_argument("--output-dir")
     export.add_argument("--manifest-output")
@@ -26,8 +26,8 @@ def build_parser() -> argparse.ArgumentParser:
     validate = commands.add_parser("validate", help="Valider le dépôt et les données locales")
     validate.add_argument("--mode", choices=("ci", "full"), default="ci")
     validate.add_argument("--data-dir")
-    validate.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "v14", "all"), default="v14")
-    validate.add_argument("--baseline", choices=("v9", "v10", "v11", "v12", "v13"))
+    validate.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "v14", "v14.1", "all"), default="v14.1")
+    validate.add_argument("--baseline", choices=("v9", "v10", "v11", "v12", "v13", "v14"))
 
     sources = commands.add_parser("sources", help="Cataloguer et acquérir des sources sans les ingérer")
     source_commands = sources.add_subparsers(dest="source_command", required=True)
@@ -197,6 +197,15 @@ def main(argv: list[str] | None = None) -> int:
         )
     if args.command == "export" and args.version == "v14":
         from morocco_elections.exports.open_v14 import run
+
+        return run(
+            data_dir=args.data_dir,
+            output_dir=args.output_dir,
+            manifest_output=args.manifest_output,
+            readme_output=args.readme_output,
+        )
+    if args.command == "export" and args.version == "v14.1":
+        from morocco_elections.exports.open_v14_1 import run
 
         return run(
             data_dir=args.data_dir,

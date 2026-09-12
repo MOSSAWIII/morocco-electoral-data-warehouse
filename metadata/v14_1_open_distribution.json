@@ -1,0 +1,3480 @@
+{
+  "schema_version": 1,
+  "release": "V14.1",
+  "baseline_release": "V14",
+  "generated_on": "2026-09-12",
+  "publication_status": "PUBLIC_BETA",
+  "scope_status": "PARTIAL_PUBLISHED_RESOURCES",
+  "scope": "Correction de validité analytique du corpus public V14, sans nouvelle donnée source.",
+  "coverage_interpretation": "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR",
+  "public_name_policy": "PSEUDONYMIZED_SOURCE_AUTHORS; REPRODUCIBLE_LINKS_REQUIRE_OFFICIAL_SOURCE_ACCESS",
+  "controls": {
+    "published_question_count": 65748,
+    "published_response_date_count": 30257,
+    "person_period_exposure_rows": 23424,
+    "person_period_zero_question_rows": 20285,
+    "coverage_rows": 61,
+    "coverage_complete_rows": 0,
+    "outlier_review_status": "reviewed_valid"
+  },
+  "tables": [
+    {
+      "table_name": "dim_geo",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 1825,
+      "columns": [
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "parent_geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "region_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "province_prefecture",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "constituency_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "commune_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "district_arrondissement",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "fraction",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "douar",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "urban_rural",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "latitude",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "longitude",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "boundary_version",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_from",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_to",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "publication_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "retrieval_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "geo_id"
+      ]
+    },
+    {
+      "table_name": "dim_party",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 57,
+      "columns": [
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_name_fr",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_name_ar",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "acronym",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "alliance_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "founded_year",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "dissolved_year",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legal_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "color_or_symbol",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "leader_person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "parliamentary_group",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_from",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_to",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "publication_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "retrieval_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "party_id"
+      ]
+    },
+    {
+      "table_name": "dim_time",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 17,
+      "columns": [
+        {
+          "name": "time_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "year",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "quarter",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "month",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "week",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "day",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "period_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "campaign_phase",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legislature",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "electoral_cycle",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_from",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_to",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "publication_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "retrieval_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "time_id"
+      ]
+    },
+    {
+      "table_name": "dim_election",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 9,
+      "columns": [
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "cycle_year",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "chamber_or_level",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "electoral_system",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "total_seats",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "campaign_start",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "campaign_end",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "official_results_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legal_framework_version",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "publication_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "retrieval_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "election_id"
+      ]
+    },
+    {
+      "table_name": "dim_electoral_contest",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 3715,
+      "columns": [
+        {
+          "name": "contest_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "region_geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "list_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_contest_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_label",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "normalized_label",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "boundary_version",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_from",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_to",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "evidence_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "identity_review_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "contest_id"
+      ]
+    },
+    {
+      "table_name": "dim_person_public",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 1185,
+      "columns": [
+        {
+          "name": "person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "gender",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "birth_year",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "incumbent_flag",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "first_elected_year",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "mandates_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "valid_from",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_to",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "person_id"
+      ]
+    },
+    {
+      "table_name": "fact_election_result",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 10883,
+      "columns": [
+        {
+          "name": "result_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "contest_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "votes",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "seats",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "evidence_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_row",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "source_party_code",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "identity_review_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "result_id"
+      ]
+    },
+    {
+      "table_name": "fact_electoral_mobilization",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 639,
+      "columns": [
+        {
+          "name": "contest_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "contest_seats",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "registered_voters",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "voters",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_votes",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "invalid_votes",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "blank_votes",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "turnout_rate",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "invalid_vote_rate",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "evidence_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_row",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "contest_id"
+      ]
+    },
+    {
+      "table_name": "fact_communal_election_result",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 22054,
+      "columns": [
+        {
+          "name": "contest_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "year",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "votes",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "vote_share",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "rank",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "winner_flag",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "seats",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "seat_share",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "previous_vote_share",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "swing_pp",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "vote_change",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "seat_change",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "fact_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "contest_id",
+        "party_id"
+      ]
+    },
+    {
+      "table_name": "fact_commune_election_summary",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 3076,
+      "columns": [
+        {
+          "name": "contest_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "year",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "turnout_rate",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "winner_party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "winning_vote_share",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "runner_up_party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "victory_margin_votes",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "victory_margin_pp",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "hhi",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "enp",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "volatility",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "largest_party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "president_party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "control_change",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "population_reference",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "observation_year",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "election_year",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "temporal_distance",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "temporal_join_method",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "poverty",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "unemployment",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "urban_rural",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "migration",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "fact_status",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "contest_id"
+      ]
+    },
+    {
+      "table_name": "fact_observation",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 3203,
+      "columns": [
+        {
+          "name": "observation_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "indicator_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "value_numeric",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "value_text",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "time_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "election_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "date_start",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "date_end",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_granularity",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "temporal_granularity",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "method",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "publication_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "retrieval_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "observation_id"
+      ]
+    },
+    {
+      "table_name": "fact_parliamentary_mandate",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 1654,
+      "columns": [
+        {
+          "name": "mandate_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "gender",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legislature",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_seat_id",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "source_constituency_id",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "constituency",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "province",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "parliamentary_group",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "start_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "end_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "entry_reason",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "exit_reason",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "replacement_procedure",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "active_at_source_date",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "mandate_id"
+      ]
+    },
+    {
+      "table_name": "sources",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 61,
+      "columns": [
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "publisher",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "domain",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "coverage_start",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "coverage_end",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "geo_granularity",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "temporal_frequency",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "access_method",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "license",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "reliability_score",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "last_checked",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "source_id"
+      ]
+    },
+    {
+      "table_name": "dim_indicator",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 335,
+      "columns": [
+        {
+          "name": "indicator_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "domain",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "metric_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "definition",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "data_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "preferred_geo_granularity",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "preferred_temporal_frequency",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "primary_fact_sheet",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "required_keys",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "candidate_sources",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "collection_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "priority",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_rule",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "indicator_id"
+      ]
+    },
+    {
+      "table_name": "data_dictionary",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 292,
+      "columns": [
+        {
+          "name": "metric_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "domain",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "metric_name",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "definition",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "data_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "preferred_geo_granularity",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "preferred_temporal_frequency",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "primary_fact_sheet",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "required_keys",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "candidate_sources",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "collection_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "priority",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_rule",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "metric_id"
+      ]
+    },
+    {
+      "table_name": "dim_parliamentary_period",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 30,
+      "columns": [
+        {
+          "name": "period_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legislature_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legislature",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "period_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "period_label_ar",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "start_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "end_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "date_semantics",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "observed_deposit_start",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "observed_deposit_end",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "official_start_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "official_end_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "boundary_method",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "period_id"
+      ]
+    },
+    {
+      "table_name": "dim_institution",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 94,
+      "columns": [
+        {
+          "name": "institution_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "institution_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "institution_name_ar",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "institution_key",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "institution_id"
+      ]
+    },
+    {
+      "table_name": "dim_parliamentary_subject",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 58806,
+      "columns": [
+        {
+          "name": "subject_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "subject_ar",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "subject_key",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "subject_id"
+      ]
+    },
+    {
+      "table_name": "dim_parliamentary_group",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 19,
+      "columns": [
+        {
+          "name": "group_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legislature",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "group_name_ar_raw",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "group_key",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "group_id"
+      ]
+    },
+    {
+      "table_name": "dim_parliamentary_source",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 59,
+      "columns": [
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_family_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "producer",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "license",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "retrieved_at",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "sha256",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "byte_size",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "coverage_start",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "coverage_end",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "observed_through_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "session_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "coverage_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "coverage_reason",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "source_id"
+      ]
+    },
+    {
+      "table_name": "fact_parliamentary_question",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 65748,
+      "columns": [
+        {
+          "name": "question_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "question_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_question_number",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "deposit_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legislature",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "period_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "institution_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "subject_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "question_text_ar",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "response_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "quality_status",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "question_id"
+      ]
+    },
+    {
+      "table_name": "fact_parliamentary_response",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 30257,
+      "columns": [
+        {
+          "name": "response_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "question_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "response_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "response_status",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "response_id"
+      ]
+    },
+    {
+      "table_name": "bridge_question_author",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 65748,
+      "columns": [
+        {
+          "name": "question_author_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "question_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "affiliation_method",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "author_source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "author_role",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "coauthor_parsing_status",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "question_author_id"
+      ]
+    },
+    {
+      "table_name": "bridge_question_source",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 66974,
+      "columns": [
+        {
+          "name": "question_source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "question_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_row",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "source_sha256",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "question_source_id"
+      ]
+    },
+    {
+      "table_name": "analytical_parliamentary_trajectory",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 3142,
+      "columns": [
+        {
+          "name": "trajectory_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legislature",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "period_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "question_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "first_deposit_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "last_deposit_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "derivation_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "published_question_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "published_response_date_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "published_response_date_rate_pct",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "party_assignment_method",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "trajectory_id"
+      ]
+    },
+    {
+      "table_name": "dim_legislature",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 2,
+      "columns": [
+        {
+          "name": "legislature_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legislature",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "chamber",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "start_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "end_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "boundary_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_url",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "legislature_id"
+      ]
+    },
+    {
+      "table_name": "dim_parliamentary_source_author",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 1622,
+      "columns": [
+        {
+          "name": "author_source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legislature",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "identity_match_method",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "identity_scope",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "author_source_id"
+      ]
+    },
+    {
+      "table_name": "analytical_parliamentary_coverage",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 61,
+      "columns": [
+        {
+          "name": "coverage_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "chamber",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "legislature",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "calendar_year",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "session_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "question_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "expected_file_count",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "found_file_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "observed_deposit_start",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "observed_deposit_end",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "published_question_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "coverage_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "justification",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "coverage_id"
+      ]
+    },
+    {
+      "table_name": "bridge_person_parliamentary_affiliation",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 1654,
+      "columns": [
+        {
+          "name": "affiliation_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "mandate_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "party_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_from",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "valid_to",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "validity_method",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_id",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "affiliation_id"
+      ]
+    },
+    {
+      "table_name": "analytical_person_period_exposure",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 23424,
+      "columns": [
+        {
+          "name": "person_period_exposure_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "period_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "question_type",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "observed_mandate_days",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "active_in_observed_window",
+          "type": "bool",
+          "nullable": true
+        },
+        {
+          "name": "published_question_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "published_response_date_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "published_questions_per_100_observed_mandate_days",
+          "type": "double",
+          "nullable": true
+        },
+        {
+          "name": "denominator_status",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "person_period_exposure_id"
+      ]
+    },
+    {
+      "table_name": "parliamentary_outlier_audit",
+      "source_sheet": "V14_1_ANALYTICAL_VALIDITY",
+      "rows": 1,
+      "columns": [
+        {
+          "name": "outlier_audit_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "author_source_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "person_id",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "published_question_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "distinct_question_number_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "distinct_question_text_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "duplicate_text_occurrence_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "distinct_source_count",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "dataset_source_count_reviewed",
+          "type": "int64",
+          "nullable": true
+        },
+        {
+          "name": "annual_published_question_counts_json",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "first_deposit_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "last_deposit_date",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "source_label_nature",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "mandate_link_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "outlier_review_status",
+          "type": "string",
+          "nullable": true
+        },
+        {
+          "name": "treatment",
+          "type": "string",
+          "nullable": true
+        }
+      ],
+      "primary_key": [
+        "outlier_audit_id"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "child_table": "dim_electoral_contest",
+      "child_column": "geo_id",
+      "parent_table": "dim_geo",
+      "parent_column": "geo_id",
+      "nullable": false
+    },
+    {
+      "child_table": "dim_electoral_contest",
+      "child_column": "election_id",
+      "parent_table": "dim_election",
+      "parent_column": "election_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_election_result",
+      "child_column": "contest_id",
+      "parent_table": "dim_electoral_contest",
+      "parent_column": "contest_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_election_result",
+      "child_column": "geo_id",
+      "parent_table": "dim_geo",
+      "parent_column": "geo_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_election_result",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_election_result",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_electoral_mobilization",
+      "child_column": "contest_id",
+      "parent_table": "dim_electoral_contest",
+      "parent_column": "contest_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_electoral_mobilization",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_communal_election_result",
+      "child_column": "contest_id",
+      "parent_table": "dim_electoral_contest",
+      "parent_column": "contest_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_communal_election_result",
+      "child_column": "geo_id",
+      "parent_table": "dim_geo",
+      "parent_column": "geo_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_communal_election_result",
+      "child_column": "election_id",
+      "parent_table": "dim_election",
+      "parent_column": "election_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_communal_election_result",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_communal_election_result",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "geo_id",
+      "parent_table": "dim_geo",
+      "parent_column": "geo_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "contest_id",
+      "parent_table": "dim_electoral_contest",
+      "parent_column": "contest_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "election_id",
+      "parent_table": "dim_election",
+      "parent_column": "election_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "winner_party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "runner_up_party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "largest_party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "president_party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_observation",
+      "child_column": "indicator_id",
+      "parent_table": "dim_indicator",
+      "parent_column": "indicator_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_observation",
+      "child_column": "geo_id",
+      "parent_table": "dim_geo",
+      "parent_column": "geo_id",
+      "nullable": true
+    },
+    {
+      "child_table": "fact_observation",
+      "child_column": "time_id",
+      "parent_table": "dim_time",
+      "parent_column": "time_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_observation",
+      "child_column": "election_id",
+      "parent_table": "dim_election",
+      "parent_column": "election_id",
+      "nullable": true
+    },
+    {
+      "child_table": "fact_observation",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_parliamentary_mandate",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_parliamentary_mandate",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true
+    },
+    {
+      "child_table": "fact_parliamentary_mandate",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_parliamentary_question",
+      "child_column": "period_id",
+      "parent_table": "dim_parliamentary_period",
+      "parent_column": "period_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_parliamentary_question",
+      "child_column": "institution_id",
+      "parent_table": "dim_institution",
+      "parent_column": "institution_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_parliamentary_question",
+      "child_column": "subject_id",
+      "parent_table": "dim_parliamentary_subject",
+      "parent_column": "subject_id",
+      "nullable": false
+    },
+    {
+      "child_table": "fact_parliamentary_response",
+      "child_column": "question_id",
+      "parent_table": "fact_parliamentary_question",
+      "parent_column": "question_id",
+      "nullable": false
+    },
+    {
+      "child_table": "bridge_question_author",
+      "child_column": "question_id",
+      "parent_table": "fact_parliamentary_question",
+      "parent_column": "question_id",
+      "nullable": false
+    },
+    {
+      "child_table": "bridge_question_author",
+      "child_column": "author_source_id",
+      "parent_table": "dim_parliamentary_source_author",
+      "parent_column": "author_source_id",
+      "nullable": false
+    },
+    {
+      "child_table": "bridge_question_author",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": true
+    },
+    {
+      "child_table": "bridge_question_author",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true
+    },
+    {
+      "child_table": "bridge_question_author",
+      "child_column": "group_id",
+      "parent_table": "dim_parliamentary_group",
+      "parent_column": "group_id",
+      "nullable": false
+    },
+    {
+      "child_table": "bridge_question_source",
+      "child_column": "question_id",
+      "parent_table": "fact_parliamentary_question",
+      "parent_column": "question_id",
+      "nullable": false
+    },
+    {
+      "child_table": "bridge_question_source",
+      "child_column": "source_id",
+      "parent_table": "dim_parliamentary_source",
+      "parent_column": "source_id",
+      "nullable": false
+    },
+    {
+      "child_table": "analytical_parliamentary_trajectory",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": false
+    },
+    {
+      "child_table": "analytical_parliamentary_trajectory",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true
+    },
+    {
+      "child_table": "analytical_parliamentary_trajectory",
+      "child_column": "period_id",
+      "parent_table": "dim_parliamentary_period",
+      "parent_column": "period_id",
+      "nullable": false
+    },
+    {
+      "child_table": "dim_parliamentary_period",
+      "child_column": "legislature_id",
+      "parent_table": "dim_legislature",
+      "parent_column": "legislature_id",
+      "nullable": false
+    },
+    {
+      "child_table": "bridge_person_parliamentary_affiliation",
+      "child_column": "mandate_id",
+      "parent_table": "fact_parliamentary_mandate",
+      "parent_column": "mandate_id",
+      "nullable": false
+    },
+    {
+      "child_table": "bridge_person_parliamentary_affiliation",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": false
+    },
+    {
+      "child_table": "bridge_person_parliamentary_affiliation",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true
+    },
+    {
+      "child_table": "bridge_person_parliamentary_affiliation",
+      "child_column": "group_id",
+      "parent_table": "dim_parliamentary_group",
+      "parent_column": "group_id",
+      "nullable": true
+    },
+    {
+      "child_table": "analytical_person_period_exposure",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": false
+    },
+    {
+      "child_table": "analytical_person_period_exposure",
+      "child_column": "period_id",
+      "parent_table": "dim_parliamentary_period",
+      "parent_column": "period_id",
+      "nullable": false
+    },
+    {
+      "child_table": "parliamentary_outlier_audit",
+      "child_column": "author_source_id",
+      "parent_table": "dim_parliamentary_source_author",
+      "parent_column": "author_source_id",
+      "nullable": false
+    },
+    {
+      "child_table": "parliamentary_outlier_audit",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": false
+    }
+  ],
+  "source_payloads": [
+    {
+      "source_id": "SRC_PARLIAMENT_015335FB98E13D46",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "015335fb98e13d4662ed8bb81922ad2ba6b7d6353e8d1181dc4ecd5b85d85182",
+      "byte_size": 993540
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_0C7E8B3A72A277AF",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "0c7e8b3a72a277af9ebb9aad4cc9a5267ab8e6680958462924ea41e1e840aba7",
+      "byte_size": 241114
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_0ED65562AC55CDB8",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_2016_2024",
+      "sha256": "0ed65562ac55cdb8e0c2cff01dbbe5b4828dcd69b407decc4def9fcd51c4d509",
+      "byte_size": 138730
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_1B34A38A1E869C9C",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APRIL_2017_2023",
+      "sha256": "1b34a38a1e869c9ce24a4d19df359abcea4f9c8de57c61c0e8e080245987e465",
+      "byte_size": 333698
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_1E13399DAAD26C0A",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCT_APR_2016_2024",
+      "sha256": "1e13399daad26c0abf66b556fce2a974ca3c099159f2ad88ac5ce50a674599f3",
+      "byte_size": 198045
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_20E65F6B33417EE4",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "20e65f6b33417ee49b8edb61d7a111baab44c04aee39cd95ebe3d8b7919a2b6f",
+      "byte_size": 190957
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_281372531B9C846D",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APRIL_2017_2023",
+      "sha256": "281372531b9c846def4bea2de9f87a563d259c3e03b196c5be17a3588623378f",
+      "byte_size": 401259
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_2E55E79B3AA0767B",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "2e55e79b3aa0767b8872f8b5fbd1b5e6b039f89f260f75ccd8956ca1864ea35e",
+      "byte_size": 133738
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_341CFC5EAA750D2F",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_2016_2024",
+      "sha256": "341cfc5eaa750d2f5911254604aefa7e8ff65edc96475903163f8eb883be74c3",
+      "byte_size": 161550
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_3440E2ED39602CC4",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "3440e2ed39602cc447952de029d692c5a8b3714caa24e61bbfb3a1f9b1456047",
+      "byte_size": 346827
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_3853639733F3836D",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "3853639733f3836de0e1d97316d31e7e18dc05475e04e4405e63d03db9daf792",
+      "byte_size": 12350
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_3D769FDF327A7C18",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "3d769fdf327a7c18423401ec8ca64926cf124bd4e5cfde1896720ad96dc21342",
+      "byte_size": 603177
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_3ED8C9E1D4AA6680",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "3ed8c9e1d4aa66809c5098ea8cb2cd4a8d86007887ec166eea4615f03a9f0805",
+      "byte_size": 12311
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_43DA422010716E07",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCT_APR_2016_2024",
+      "sha256": "43da422010716e07ab6a5d85369a02dc516972558d668d623739aca57a9c014a",
+      "byte_size": 264169
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_4F7236ACF38E1245",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APRIL_2017_2023",
+      "sha256": "4f7236acf38e1245daa185e8909bff9455f9bb344e21b84797df104464b60215",
+      "byte_size": 385091
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_506F54E079FF19EB",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "506f54e079ff19ebec95817b9c09c7b14bce088d9809ef215874f31b85d27b46",
+      "byte_size": 351265
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_513C63C5C377CD2F",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APRIL_2017_2023",
+      "sha256": "513c63c5c377cd2fa60d840ffdee547f0c282f983e0e207f06b16959f4a444a8",
+      "byte_size": 1180767
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_56DC393174282553",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "56dc393174282553fe0fc85f910e9ccad8f540423a47fa5610fcd73d4398ed39",
+      "byte_size": 857470
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_58794D9E50C841B1",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "58794d9e50c841b10a6764bfdb3d16cb9eb0a083331c5f4dd67cb9c7f69c87dc",
+      "byte_size": 65408
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_5CFBB4684F44003A",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "5cfbb4684f44003a9c06ec138f9487d0b800539dbbca345eeef4f6841b2a2d02",
+      "byte_size": 236576
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_61922BF3CF00DFFE",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "61922bf3cf00dffe2c88c8a0db0cc38113cdb49e45a9fd6cb455ca009802efdd",
+      "byte_size": 420706
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_61BE32753D141070",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "61be32753d1410701cc23994d06305bd691ee5008cc3ff0c0549b567d2136283",
+      "byte_size": 47098
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_666E30ACB4B9DC1C",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCT_APR_2016_2024",
+      "sha256": "666e30acb4b9dc1c1272c575f02e09f73fd0331fa0d4ae65aeb0a85607d51a96",
+      "byte_size": 538906
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_6A11BA27C19EDB1C",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "6a11ba27c19edb1c9514ae8e6dd8beaa811f850c21fc3777ba6ffdb7c2bcd99f",
+      "byte_size": 516424
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_739FBE706F99307A",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APRIL_2017_2023",
+      "sha256": "739fbe706f99307a11372e4d838e3b92d2c090674f12535507f228ac34011604",
+      "byte_size": 978989
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_751A35662BC5AB68",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "751a35662bc5ab6814af7a4cf058088519905f09bdd3493fb1c9056d90c50ba2",
+      "byte_size": 374238
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_76E63ADE33A3421C",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCT_APR_2016_2024",
+      "sha256": "76e63ade33a3421c8b336c103eeb8710c6e939294cb23f51fc929fc8a644cbc9",
+      "byte_size": 413961
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_7916A94BD972D23B",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APRIL_2017_2023",
+      "sha256": "7916a94bd972d23b8f35baf7387f66c56cff5036496e779145d8c476a3d63452",
+      "byte_size": 360926
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_7971D01C015420E1",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "7971d01c015420e1a93d2095fd6c7175e43aa053325f1aad2a3cbc731efe770b",
+      "byte_size": 221294
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_8B140AAEEF115E41",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCT_APR_2016_2024",
+      "sha256": "8b140aaeef115e4140e813a95d0d8067b5cb26da7a108cf153bfee3fa0c4dcaa",
+      "byte_size": 482021
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_928BEBD277AEFA24",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APRIL_2017_2023",
+      "sha256": "928bebd277aefa24b42d43e75a23620c81ec46579207384b1a2fc38582829e91",
+      "byte_size": 1139291
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_980739534BACD2F6",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_2016_2024",
+      "sha256": "980739534bacd2f61af3086a4551c34b645c50c7f3944e8694673f5683c21507",
+      "byte_size": 227336
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_98D8DA0F594FC86F",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "98d8da0f594fc86fe03fde8cb4c72fe62330df5f6b0bdd6094fdde8534da7af3",
+      "byte_size": 615241
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_9BB1D1754DCB5C93",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "9bb1d1754dcb5c935bbfe99eb390939a9911d8fb84bea1aba89e7faaa187cf9a",
+      "byte_size": 1140586
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_9F3D1BB1F693024F",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "9f3d1bb1f693024fd77512816d94633eef8d29354ea2764d68f33a8e1820c1c9",
+      "byte_size": 754761
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_A1436C106563A609",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_2016_2024",
+      "sha256": "a1436c106563a6095dbfe81c9e06f7ff053f6ef913d9a97606333fdc0390e951",
+      "byte_size": 25904
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_A4C34951A6E70E14",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_2016_2024",
+      "sha256": "a4c34951a6e70e148a09aee75b07bc297ed51d69648dd8e1bf01a45c87ba8b7a",
+      "byte_size": 100027
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_A791D00EB3683F6F",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "a791d00eb3683f6f1804d1b4b52a82e2bb6041450d09a359e0ce4d042bfcf892",
+      "byte_size": 253021
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_B2008D81C8AC0ABF",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "b2008d81c8ac0abfc806688f9f87f454109719835c58c70c24832b1b5a46bb47",
+      "byte_size": 849361
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_B21544CD4116B3F7",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "b21544cd4116b3f770df8ceba51c96e30b5d5756b3ec1e7ed4b28a9466c6aaa5",
+      "byte_size": 154456
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_BD5F904B6B475B92",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCT_APR_2016_2024",
+      "sha256": "bd5f904b6b475b9279231290aca73bad081e66bb67cef3e81d16ed849b3e8353",
+      "byte_size": 356218
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_BEF5B6936E71DEDC",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "bef5b6936e71dedc856177fd74567404cd4f2224e8608002b9da82b835bdeab4",
+      "byte_size": 490631
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_BF18FACA73A708A9",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APRIL_2017_2023",
+      "sha256": "bf18faca73a708a96cb64b94dd1999c4b6b26a13b89693fd22385f86be4c2b98",
+      "byte_size": 923905
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_CCE4D46787F1C863",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "cce4d46787f1c863b78318435f053bb9f0690be1cc24bb800fb0fdd24f88f361",
+      "byte_size": 1062319
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_D2E5315F9A418C67",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCT_APR_2016_2024",
+      "sha256": "d2e5315f9a418c6725fa626afd03ee3787e52c2fc415be908acb8d5c0c8fbbe5",
+      "byte_size": 78501
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_D42C8CD6FC7445B5",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_2016_2024",
+      "sha256": "d42c8cd6fc7445b541f068f85f6a1b86998169912b477da1fa6a088baa94106d",
+      "byte_size": 89431
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_D59E035A4B0128C2",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APRIL_2017_2023",
+      "sha256": "d59e035a4b0128c2fd38f46c91562697eef8c2b04ec8429b313022ed023fb66d",
+      "byte_size": 531180
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_DDFBAC2EF519AA87",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APRIL_2017_2023",
+      "sha256": "ddfbac2ef519aa8795016f66e0f9b2f1bc0cfe240fa7112d3b88bad9d2501d14",
+      "byte_size": 1013718
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_DE65868B81B70D96",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "de65868b81b70d96f73c097ad9e6427721a2d749cce9ada8215c4ba6086d5391",
+      "byte_size": 397079
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_E3AFD89A71C49AA6",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCT_APR_2016_2024",
+      "sha256": "e3afd89a71c49aa69430207f646e8400086f5a5111d813e27a75c560c3a89c7a",
+      "byte_size": 231659
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_E4FBB3588C08E0B5",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APRIL_2017_2023",
+      "sha256": "e4fbb3588c08e0b5977a2f4c44850c836cd0a1e82efff43e8009948beb962931",
+      "byte_size": 607068
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_EE290C9FF478504A",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_2016_2024",
+      "sha256": "ee290c9ff478504aa52c229ccf80895429d73d74c0b5ff738bb5ef11a85dac16",
+      "byte_size": 215584
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_F08B69256E7E032C",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_2016_2024",
+      "sha256": "f08b69256e7e032cb5cab37502e82e1c83c01ea519eb3718ee8bac346433a6ce",
+      "byte_size": 283826
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_F3D6DFB8FD1705E8",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APRIL_2017_2023",
+      "sha256": "f3d6dfb8fd1705e8991567136a7cfb7377821c5d5bdca9276d9109531626a04c",
+      "byte_size": 1319726
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_F4D3DF2B247888DA",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APRIL_2017_2023",
+      "sha256": "f4d3df2b247888dab5c371b0a57bc2172c5714e664955e172acc739af765aaf0",
+      "byte_size": 700755
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_FA8A9777757DE3A0",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "fa8a9777757de3a0852b5f8b2ffaba693884d873bd778458e1b453387de15e02",
+      "byte_size": 10453
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_FB6CCCE715FDFDD6",
+      "source_family_id": "PARLIAMENT_ORAL_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "fb6ccce715fdfdd67ca6dca1cdc73d99b573bec2945a672687a8ee0671b2d03e",
+      "byte_size": 151992
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_FD589BA483946FA4",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_APR_OCT_2017_2023",
+      "sha256": "fd589ba483946fa4246a93448615b5f2e226863b9930996f8954e38e9a2ea47d",
+      "byte_size": 456543
+    },
+    {
+      "source_id": "SRC_PARLIAMENT_FF52431A40007A20",
+      "source_family_id": "PARLIAMENT_WRITTEN_QUESTIONS_OCTOBER_2016_2023",
+      "sha256": "ff52431a40007a207e5577b5c579f406e5681d4359d5b9d13c8751640f6d7b30",
+      "byte_size": 1240622
+    }
+  ],
+  "deferred_source_dependent_work": [
+    "official_corpus_exhaustiveness",
+    "response_text_and_lifecycle",
+    "official_session_closures",
+    "dynamic_group_membership",
+    "majority_opposition",
+    "ministers",
+    "house_of_councillors",
+    "votes_committees_amendments_proposals",
+    "question_effects",
+    "group_member_days"
+  ],
+  "files": [
+    {
+      "path": "csv/dim_geo.csv",
+      "byte_size": 633466,
+      "sha256": "a996d113b9bf85259bdbd7759c71d6dc1397bd8bd0be952d08caca65f051468e"
+    },
+    {
+      "path": "csv/dim_party.csv",
+      "byte_size": 12480,
+      "sha256": "2ec02dee1138d07a8dc86ecf49eadc232fdd8a51f0d00ff43a2d1cf007002859"
+    },
+    {
+      "path": "csv/dim_time.csv",
+      "byte_size": 1459,
+      "sha256": "9621c0554dc2faf1698614e48af13d28aac42a56e589df40e81ce99d36499cae"
+    },
+    {
+      "path": "csv/dim_election.csv",
+      "byte_size": 2592,
+      "sha256": "588bb57524c096f91739abab6ea0f5fbbc63bcf251dd18c47a260e0c2659cf75"
+    },
+    {
+      "path": "csv/dim_electoral_contest.csv",
+      "byte_size": 1060985,
+      "sha256": "6fc1c981ad139fc2fcbfb561021a2ce82e7348eed1b117c95bba8b288500d056"
+    },
+    {
+      "path": "csv/dim_person_public.csv",
+      "byte_size": 288126,
+      "sha256": "e6103a29fc2e4ea2d9fca71f20d2cf5f6112a55c4d7e3ba4aa328117db3cf727"
+    },
+    {
+      "path": "csv/fact_election_result.csv",
+      "byte_size": 4006137,
+      "sha256": "af195179921600aa099a3b9d57a7a3165d757d1dd4bb23d3d6df0eb4aed108e2"
+    },
+    {
+      "path": "csv/fact_electoral_mobilization.csv",
+      "byte_size": 215872,
+      "sha256": "d20acba07361188870e1409016505f73cf09581b76f77563704eb4574943c4e7"
+    },
+    {
+      "path": "csv/fact_communal_election_result.csv",
+      "byte_size": 6745072,
+      "sha256": "7aec46277cc2180a4b40cced90417df25fed5dcfe9e6083c3904175950626608"
+    },
+    {
+      "path": "csv/fact_commune_election_summary.csv",
+      "byte_size": 1197694,
+      "sha256": "1d4cb3064a6219b37a6674e13125e71e8dd169388e7e9caaba222ad477cf51ba"
+    },
+    {
+      "path": "csv/fact_observation.csv",
+      "byte_size": 1277070,
+      "sha256": "17899e69b77210414382fd4173d082ce80731659a98c667a56de514f9a64182e"
+    },
+    {
+      "path": "csv/fact_parliamentary_mandate.csv",
+      "byte_size": 608093,
+      "sha256": "60cdfaa2a384f152506b5689371838b33686077bbd8a1f3d6beb9a488a6045b4"
+    },
+    {
+      "path": "csv/sources.csv",
+      "byte_size": 27413,
+      "sha256": "907dd7e1ac453dda529d3ec50f3e4f7766c5beff606c44909b0d2a248bae01f3"
+    },
+    {
+      "path": "csv/dim_indicator.csv",
+      "byte_size": 108119,
+      "sha256": "d2ef22805d5f09eaa73da4b9bfe2ee3c486455791841824152a7c2758d1ac8dd"
+    },
+    {
+      "path": "csv/data_dictionary.csv",
+      "byte_size": 94243,
+      "sha256": "2044139197b70191cd70b2ab2bfbed18ce5f340253b4a5ed33ea256d26081cc8"
+    },
+    {
+      "path": "csv/dim_parliamentary_period.csv",
+      "byte_size": 8311,
+      "sha256": "4abbbd1f68bd5646344683b449cb1c560b2a9936e454b90b9a106dd06600d005"
+    },
+    {
+      "path": "csv/dim_institution.csv",
+      "byte_size": 24062,
+      "sha256": "56694dbc6c1a69f4f79d307542034ecc509023277d23b2efa34c666b245c86d9"
+    },
+    {
+      "path": "csv/dim_parliamentary_subject.csv",
+      "byte_size": 15064817,
+      "sha256": "a5a2f2381b5b3e380184c56feb7cf6e7cd9933e9d257970d1df17a295934b320"
+    },
+    {
+      "path": "csv/dim_parliamentary_group.csv",
+      "byte_size": 3061,
+      "sha256": "cc2c226dd4d0c13cff8b2c32ca54644fb3e55fae08d0c36bf31c2ceee7d0e4dd"
+    },
+    {
+      "path": "csv/dim_parliamentary_source.csv",
+      "byte_size": 33741,
+      "sha256": "df050c8386a38e7b381866e1e622134227019da91094884329a19a6db263900f"
+    },
+    {
+      "path": "csv/fact_parliamentary_question.csv",
+      "byte_size": 91746490,
+      "sha256": "42626cfa3beb8ef19a5b2ce71c6d45c8bfcd79ff805327ccb772f7396aa1cc53"
+    },
+    {
+      "path": "csv/fact_parliamentary_response.csv",
+      "byte_size": 4084757,
+      "sha256": "1e52cb660fc4aa37e00097b278087fd1dda98d31262838e569c2cc7f0b56d033"
+    },
+    {
+      "path": "csv/bridge_question_author.csv",
+      "byte_size": 20717310,
+      "sha256": "94284d0f4833fc648d1fce58b1351aaf869d5e020e959923f22ec19b0636ffcd"
+    },
+    {
+      "path": "csv/bridge_question_source.csv",
+      "byte_size": 13413151,
+      "sha256": "3e2c74f02ec2353f2a2852d41291e23ed8be2a77379cd21115c704dc1cf515fe"
+    },
+    {
+      "path": "csv/analytical_parliamentary_trajectory.csv",
+      "byte_size": 774482,
+      "sha256": "581700d7aa2b568c6f36cb5f7beb1c81e0fb763dac07a4936ad14a9fedde1936"
+    },
+    {
+      "path": "csv/dim_legislature.csv",
+      "byte_size": 437,
+      "sha256": "ddcfcaabc59b3da85c271e80db8a5c2c4881f7410fb2f92a7dbb6326d774cb7c"
+    },
+    {
+      "path": "csv/dim_parliamentary_source_author.csv",
+      "byte_size": 230131,
+      "sha256": "de167b0607df896eb307e4415e9365a0f2645390860e007f2e433501e6582bd9"
+    },
+    {
+      "path": "csv/analytical_parliamentary_coverage.csv",
+      "byte_size": 12930,
+      "sha256": "ffcf8842127fb1d3d7dc8ad2a7fc65cf55269d9d897bc8969ddf6744c7bd1610"
+    },
+    {
+      "path": "csv/bridge_person_parliamentary_affiliation.csv",
+      "byte_size": 318181,
+      "sha256": "f053222b6c4c06195b5ee3f9e4f2ae1cbed33c9f53881ed63df517f9aafa8ba0"
+    },
+    {
+      "path": "csv/analytical_person_period_exposure.csv",
+      "byte_size": 4550849,
+      "sha256": "28f504ea71e1b0b6c6413ff78f9df055d877053e34db26d10e31b0179b0a0a62"
+    },
+    {
+      "path": "csv/parliamentary_outlier_audit.csv",
+      "byte_size": 740,
+      "sha256": "325a14b7ac797e527e6345c9cdc347d526c6363c3a84aa6bbb4bf38a5c431895"
+    },
+    {
+      "path": "parquet/dim_geo.parquet",
+      "byte_size": 64569,
+      "sha256": "b253b38def4e0b814e74ee1d977e5a75ca3181fcf06659292c592750dbc98eda"
+    },
+    {
+      "path": "parquet/dim_party.parquet",
+      "byte_size": 7713,
+      "sha256": "a965a1ebe75dc6bab63ff4740d6cdce6507d55562f1d9d90c544d358389d49cf"
+    },
+    {
+      "path": "parquet/dim_time.parquet",
+      "byte_size": 4944,
+      "sha256": "256635d9e14b1d230d6cedcad906071198f94b137091a332df696a2d3c81e1b8"
+    },
+    {
+      "path": "parquet/dim_election.parquet",
+      "byte_size": 6573,
+      "sha256": "134bf2ed4ceb9e00c5a67a07afb550d4b7086b70c6f508d9e46c2b733ac1d617"
+    },
+    {
+      "path": "parquet/dim_electoral_contest.parquet",
+      "byte_size": 60907,
+      "sha256": "e017924e7927546ac42f099a1446e62af60c1be363ae526611519fb9d21fedfb"
+    },
+    {
+      "path": "parquet/dim_person_public.parquet",
+      "byte_size": 10070,
+      "sha256": "5dd6d2936144186bc5136a702064def4bd0eea1f993b257328111f393fa95a1d"
+    },
+    {
+      "path": "parquet/fact_election_result.parquet",
+      "byte_size": 305708,
+      "sha256": "64ddda500e5cc58c62c0f2f838e8ef6e61ab33479282db886c7b1f5f6f1d4cfc"
+    },
+    {
+      "path": "parquet/fact_electoral_mobilization.parquet",
+      "byte_size": 20058,
+      "sha256": "2da84ce9181b70ea278a182f147bdead28368c5a5b1c92f23bcc7d5510cd6e81"
+    },
+    {
+      "path": "parquet/fact_communal_election_result.parquet",
+      "byte_size": 485794,
+      "sha256": "d49b43418ac5cbf2ed4c074a07c247775ad5ae06e53460976121dc906bc0a364"
+    },
+    {
+      "path": "parquet/fact_commune_election_summary.parquet",
+      "byte_size": 183999,
+      "sha256": "1055b416f471c11cfc06b6036150e8a3717402741d334f2ec81e0e31a45c8cfc"
+    },
+    {
+      "path": "parquet/fact_observation.parquet",
+      "byte_size": 41383,
+      "sha256": "37228b59002c132401efeb2d7a3741f3aded91ac1d803760fd693074bf70ca70"
+    },
+    {
+      "path": "parquet/fact_parliamentary_mandate.parquet",
+      "byte_size": 37595,
+      "sha256": "b4f2169959b6f0e5492991ef2666a082e4a31f27b383717c13ff91bc16a65116"
+    },
+    {
+      "path": "parquet/sources.parquet",
+      "byte_size": 15602,
+      "sha256": "70f8ea488744e9f3669fc12661efa03ea6e59531fb3d93d78df7a15648ba7776"
+    },
+    {
+      "path": "parquet/dim_indicator.parquet",
+      "byte_size": 16319,
+      "sha256": "f6f948dba2f490357741dc56a074807664e86e9ad1af42136030a2739839eacf"
+    },
+    {
+      "path": "parquet/data_dictionary.parquet",
+      "byte_size": 14557,
+      "sha256": "a81a7320829b0ffc67b9d2beeb5725bc5b8a5845b974614415b3f957b5dad9d3"
+    },
+    {
+      "path": "parquet/dim_parliamentary_period.parquet",
+      "byte_size": 5841,
+      "sha256": "048dec261ddaa365a7c7102ef22b39e1d032530fdf87993bcf0edcc0fc1380c3"
+    },
+    {
+      "path": "parquet/dim_institution.parquet",
+      "byte_size": 7562,
+      "sha256": "4aabad96cf97e45567b0b956367e20916e4dbc9835526b7cc760f784581e09a3"
+    },
+    {
+      "path": "parquet/dim_parliamentary_subject.parquet",
+      "byte_size": 4553790,
+      "sha256": "6a649bf04a6040784db87bc88b75530818d61f7ae5d978f49bd129e7afd22ed5"
+    },
+    {
+      "path": "parquet/dim_parliamentary_group.parquet",
+      "byte_size": 2809,
+      "sha256": "521bd85d62a44b993082738bf2c8154c42fb8aa504ca345aec3b43072c358e8b"
+    },
+    {
+      "path": "parquet/dim_parliamentary_source.parquet",
+      "byte_size": 11875,
+      "sha256": "03dff2dad3232521c319a3e332931e283f48771f4259574c08e80ca08afd4edf"
+    },
+    {
+      "path": "parquet/fact_parliamentary_question.parquet",
+      "byte_size": 23017732,
+      "sha256": "a49e43795bb1435efe0cce9d30f261f72e7f802e1890e3288d9c075a5ef169e1"
+    },
+    {
+      "path": "parquet/fact_parliamentary_response.parquet",
+      "byte_size": 1122673,
+      "sha256": "67ce861c836e3671e77428474b3457632fa7fceb2293c405ad9f17958fb23b6b"
+    },
+    {
+      "path": "parquet/bridge_question_author.parquet",
+      "byte_size": 2471181,
+      "sha256": "d0c8af71081b71b1003fabd4e978003dd55c7f17f926cb0d33300c56fa8a844c"
+    },
+    {
+      "path": "parquet/bridge_question_source.parquet",
+      "byte_size": 2508137,
+      "sha256": "13f572cc440dfe78c3b0da15eda48d4a7b462d4ad9b4194e5017bd3296041e2e"
+    },
+    {
+      "path": "parquet/analytical_parliamentary_trajectory.parquet",
+      "byte_size": 87154,
+      "sha256": "873bec58a64d63fe462ef99228630f7a332bc1cc859da07f2009e0a358b7af96"
+    },
+    {
+      "path": "parquet/dim_legislature.parquet",
+      "byte_size": 2657,
+      "sha256": "b65668061d9e62d0f5c854cbbee3347796fabc802802dfe87f33865a52dffa6e"
+    },
+    {
+      "path": "parquet/dim_parliamentary_source_author.parquet",
+      "byte_size": 34029,
+      "sha256": "8ba13ce503242310c0d4947b65e1f4500f49dcf29d0424f72126e1a0cfad9938"
+    },
+    {
+      "path": "parquet/analytical_parliamentary_coverage.parquet",
+      "byte_size": 6462,
+      "sha256": "11553e82b5efb675531c611bebde2729aa8655e2a3ce00a1d5da9f29c150e1a7"
+    },
+    {
+      "path": "parquet/bridge_person_parliamentary_affiliation.parquet",
+      "byte_size": 52393,
+      "sha256": "7620bbb4f4b13204519253fa4da133611be642af21f7d763c0b88272091352cc"
+    },
+    {
+      "path": "parquet/analytical_person_period_exposure.parquet",
+      "byte_size": 465848,
+      "sha256": "c19741f01a9d392018b6a9a36e2f53f2b974994dc7795dbd90af45b5c3369a41"
+    },
+    {
+      "path": "parquet/parliamentary_outlier_audit.parquet",
+      "byte_size": 6366,
+      "sha256": "bc6bf46a9731c083b99af7fab7ccd720131b4d834a3233b48280a733f6fbe102"
+    },
+    {
+      "path": "morocco_elections_v14_1.duckdb",
+      "binary_reproducible": false,
+      "byte_size_reproducible": false,
+      "content_sha256": "baa9ea5ba09f1fb4dd5a626336f6513c4031ca10306041041b75ae2ad19d2f5a"
+    },
+    {
+      "path": "README.txt",
+      "byte_size": 1824,
+      "sha256": "85453abec03d3d496291d40d6431dda53ed2aadf4999faa3d65cc387e480d6a1"
+    },
+    {
+      "path": "LICENSE_DATA.md",
+      "byte_size": 1277,
+      "sha256": "33d9bb59d5e64aab82787f970a21c50f3375cd0d9d516021c57d33a3b13a9e82"
+    },
+    {
+      "path": "ATTRIBUTIONS.md",
+      "byte_size": 2587,
+      "sha256": "55e916832c17f8658590f981d1a57d741c565b078cc4a61902eb214c0bfda85c"
+    },
+    {
+      "path": "CITATION.cff",
+      "byte_size": 679,
+      "sha256": "94ec5b9ec92c834d0606dc3be080ce33201db44aa93789ed283fd7a07d2b2901"
+    },
+    {
+      "path": "queries.sql",
+      "byte_size": 1199,
+      "sha256": "2c9d25cbfe0b119aad224c65497c017144efee6c8db92185fbfdfeac70b59b88"
+    }
+  ]
+}

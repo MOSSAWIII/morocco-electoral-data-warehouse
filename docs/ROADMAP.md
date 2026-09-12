@@ -4,14 +4,14 @@
 
 Le projet construit un socle ouvert, profond et cohérent pour relier territoires, élections, partis, personnes, mandats, gouvernance, activité parlementaire et contexte socio-économique. Il n'existe qu'un produit logique : les formats Excel, CSV, Parquet, DuckDB ou SQL sont des accès différents aux mêmes faits canoniques.
 
-La release publique courante est V14. Le classeur V13 reste son socle Excel immuable. La suite suit ce flux :
+La release publique courante est V14.1. Le classeur V13 reste son socle Excel immuable et V14 reste son premier paquet parlementaire immuable. La suite suit ce flux :
 
 ```text
 SOURCES → RAW IMMUTABLES → PROFILAGE → IDENTITÉS/CROSSWALKS
         → FAITS CANONIQUES → CUBES → EXPORTS/ANALYSES
 ```
 
-État courant : le cœur électoral V13 est publié et V14 ajoute l'activité parlementaire longitudinale issue des ressources déjà acquises. La prochaine vague porte sur le territoire HCP.
+État courant : le cœur électoral V13 est publié, V14 ajoute l'activité parlementaire longitudinale et V14.1 en corrige la validité analytique sans nouvelle source. La prochaine vague porte d'abord sur les identités, affiliations et couches analytiques parlementaires démontrables, puis sur le territoire HCP.
 
 ## Règles de conduite
 
@@ -68,7 +68,7 @@ L'ontologie commune reste petite : territoire, élection, parti/alliance, person
 
 Les relations temporelles portent `valid_from`, `valid_to`, `observation_date`, `publication_date` et `retrieved_at` selon leur nature. Cela s'applique notamment aux découpages, affiliations, mandats, fonctions, présidences et compositions institutionnelles.
 
-L'ontologie V1.1 est matérialisée par V13 pour le cœur électoral et étendue dans V14 pour le Parlement, sans casser les identifiants existants.
+L'ontologie V1.1 est matérialisée par V13 pour le cœur électoral, étendue dans V14 pour le Parlement et clarifiée dans V14.1 pour distinguer auteur source, personne, couverture et exposition.
 
 ## Phase 4 — Registre d'identités
 
@@ -154,7 +154,8 @@ La migration commence seulement si collaboration simultanée, API, mises à jour
 ## Releases indicatives
 
 - **V13 — Cœur électoral étendu** : réalisée; élections, mobilisation, découpages historiques et diffusion multi-format.
-- **V14 — Parlement longitudinal** : questions écrites et orales, réponses publiées et trajectoires consolidées.
+- **V14 — Parlement longitudinal** : questions écrites et orales, dates de réponse publiées et trajectoires consolidées.
+- **V14.1 — Validité analytique** : sémantique corrigée, couverture `UNKNOWN`, temps explicite, auteurs source séparés des personnes, exposition et zéros issus des mandats.
 - **V15 — Territoire enrichi** : HCP, établissements économiques, douars, habitat et mobilités selon les grains publiés.
 - **V16 — Complétude électorale ciblée** : dénominateurs, candidatures, sièges, élections partielles et archives exploitables.
 
@@ -162,11 +163,11 @@ Ces noms ne sont pas des engagements rigides. Des domaines peuvent être regroup
 
 ## Prochain enchaînement
 
-1. Publier V14 Parlement et vérifier ses contrôles depuis un environnement vierge.
-2. Intégrer la base HCP CEE communale, puis les douars, sans mélanger leurs grains.
-3. Ajouter ensuite les autres bases HCP une par une selon leur couverture et leur raccordement exact.
-4. Rechercher les lacunes électorales à fort impact, sans chasse généraliste aux archives.
-5. Améliorer les raccordements d'identité uniquement avec des preuves déterministes.
+1. Publier et éprouver V14.1 depuis un environnement vierge.
+2. Améliorer les raccordements d'identité uniquement avec des preuves déterministes.
+3. Historiser affiliations et groupes lorsque leurs intervalles sont documentés.
+4. Ajouter les couches dérivées de sujets, institutions et géographies avec méthode et confiance.
+5. Relier les engagements ministériels déjà acquis, puis reprendre HCP source par source.
 6. Ne réactiver les sources de gouvernance bloquées qu'avec une preuve nouvelle.
 7. Déclencher PostgreSQL seulement lorsqu'un besoin opérationnel mesurable apparaît.
 

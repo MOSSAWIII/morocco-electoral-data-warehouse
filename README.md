@@ -1,8 +1,8 @@
 # Morocco Electoral Data Warehouse
 
-Warehouse électoral marocain ouvert, traçable et directement exploitable. **V14 est la release publique courante.** Elle étend le cœur V13 avec une série parlementaire longitudinale; les releases antérieures restent un historique reproductible.
+Warehouse électoral marocain ouvert, traçable et directement exploitable. **V14.1 est la release publique courante.** Elle corrige la validité analytique de la série parlementaire V14 sans ajouter ni modifier de donnée source; les releases antérieures restent un historique reproductible.
 
-V14 relie un modèle canonique de territoires, élections, partis, personnes, mandats, gouvernance locale, activité parlementaire et observations socio-économiques. Elle conserve le cœur multi-scrutins V13 et expose 65 748 questions écrites ou orales publiées entre 2017 et 2024, 30 257 réponses et 3 142 trajectoires dérivées pour les identités exactement raccordées.
+V14.1 relie un modèle canonique de territoires, élections, partis, personnes, mandats, gouvernance locale, activité parlementaire et observations socio-économiques. Elle conserve le cœur multi-scrutins V13 et expose 65 748 questions écrites ou orales publiées entre 2017 et 2024, dont 30 257 possèdent une date de réponse publiée. Ces nombres décrivent le corpus disponible, pas l'activité exhaustive du Parlement ni un taux réel de réponse gouvernementale.
 
 ## Utilisation courante
 
@@ -13,16 +13,16 @@ python -m pip install -r requirements.txt
 python -m pip install --no-deps --editable .
 
 python -m morocco_elections build v13
-python -m morocco_elections export v14
+python -m morocco_elections export v14.1
 python -m morocco_elections analyze v13
 python -m morocco_elections validate --mode ci
-python -m morocco_elections validate --mode full --release v14 --baseline v13
+python -m morocco_elections validate --mode full --release v14.1 --baseline v14
 ```
 
 Les cinq familles de commandes actives sont `build`, `export`, `analyze`, `validate` et `sources`. Leur aide est disponible avec `python -m morocco_elections <commande> --help`.
 
 - `build v13` reconstruit le dernier classeur Excel, utilisé comme socle stable de l'export ouvert.
-- `export v14` produit le modèle courant non nominatif en CSV, Parquet et DuckDB sous `data/exports/open/v14/`.
+- `export v14.1` produit le modèle courant non nominatif en CSV, Parquet et DuckDB sous `data/exports/open/v14.1/`.
 - `analyze v13` exécute les analyses de référence sans écrire dans le warehouse.
 - `validate --mode ci` contrôle rapidement le dépôt et les contrats actifs sans données locales.
 - `validate --mode full` vérifie aussi les fichiers locaux, leurs empreintes, les volumes, les relations et la comparaison V13/V12.
@@ -32,9 +32,9 @@ La racine des données est `<repo>/data` par défaut. L’argument `--data-dir` 
 
 ## Point d’entrée documentaire
 
-Commencer par [le README du paquet V14](docs/publication/V14_OPEN_DATA_README.txt), puis consulter [l’ontologie du socle V13](docs/v13/ontology/00_INDEX_ET_MODE_EMPLOI.txt). Le contrat machine-readable commun se trouve dans [`metadata/ontology_v1.json`](metadata/ontology_v1.json).
+Commencer par [le README du paquet V14.1](docs/publication/V14_1_OPEN_DATA_README.txt), puis consulter [l’ontologie du socle V13](docs/v13/ontology/00_INDEX_ET_MODE_EMPLOI.txt). Le contrat machine-readable commun se trouve dans [`metadata/ontology_v1.json`](metadata/ontology_v1.json).
 
-Trois requêtes DuckDB parlementaires reproductibles sont fournies dans [`examples/v14_reference_queries.sql`](examples/v14_reference_queries.sql). Les notes de release sont dans [`docs/publication/V14_BETA_RELEASE_NOTES.md`](docs/publication/V14_BETA_RELEASE_NOTES.md).
+Trois requêtes DuckDB parlementaires reproductibles sont fournies dans [`examples/v14_1_reference_queries.sql`](examples/v14_1_reference_queries.sql). Les notes de validité sont dans [`docs/publication/V14_1_RELEASE_NOTES.md`](docs/publication/V14_1_RELEASE_NOTES.md).
 
 ## Licences
 
@@ -57,10 +57,10 @@ Principes non négociables :
 
 ### Roadmap active
 
-1. Publier et éprouver V14 Parlement avec ses licences, attributions et checksums.
-2. Intégrer ensuite une seule vague territoriale HCP à la fois, en commençant par les établissements économiques communaux.
-3. Poursuivre la complétude électorale uniquement sur les lacunes à fort impact analytique.
-4. Préparer PostgreSQL uniquement si collaboration, performance, API ou mises à jour fréquentes le justifient.
+1. Éprouver V14.1 et améliorer les identités parlementaires uniquement avec des preuves déterministes.
+2. Historiser ensuite les affiliations et groupes lorsqu'une source datée permet les dénominateurs de groupe.
+3. Construire les couches dérivées thèmes, institutions et géographies, séparées des textes source.
+4. Intégrer les engagements ministériels acquis, puis reprendre une seule vague HCP à la fois.
 
 La roadmap détaillée est dans [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
@@ -81,7 +81,7 @@ python generate_v9_documentation.py
 
 ## Organisation
 
-- `src/morocco_elections/` : construction du socle V13, export V14, analyses, sources et compatibilité historique ;
+- `src/morocco_elections/` : construction du socle V13, exports V14/V14.1, analyses, sources et compatibilité historique ;
 - `data/` : RAW et exports locaux ignorés par Git ;
 - `docs/publication/` : documentation des paquets publics courants ;
 - `docs/v13/ontology/` : ontologie détaillée du socle Excel canonique ;

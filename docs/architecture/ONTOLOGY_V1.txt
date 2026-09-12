@@ -1,14 +1,14 @@
 ONTOLOGIE V1 — CONTRAT LOGIQUE DU WAREHOUSE ÉLECTORAL MAROCAIN
 
-Version : 1.2.0
-Baseline observée : V14
+Version : 1.3.0
+Baseline observée : V14.1
 Source de vérité machine : metadata/ontology_v1.json
 
 OBJECTIF
 
 L'ontologie V1 définit un seul modèle logique pour les données électorales,
 territoriales, institutionnelles et socio-économiques. Elle ne remplace pas les
-releases V9–V14. Excel, CSV, Parquet,
+releases V9–V14.1. Excel, CSV, Parquet,
 DuckDB et, si nécessaire, PostgreSQL devront exposer les mêmes faits.
 
 NOYAU
@@ -28,8 +28,10 @@ public. Les structures V12 héritées et les structures V13 correspondantes rest
 statut PARTIAL ou PLANNED interdit de prétendre que le contrat cible est déjà
 entièrement implémenté. V13 matérialise DIM_ELECTORAL_CONTEST,
 FACT_ELECTION_RESULT et FACT_ELECTORAL_MOBILIZATION dans leur périmètre qualifié.
-V14 matérialise les questions, réponses, auteurs source, institutions destinataires,
-provenances et trajectoires parlementaires. Une trajectoire n'est produite que
+V14 matérialise les questions, dates de réponse publiées, auteurs source, institutions
+destinataires, provenances et trajectoires parlementaires. V14.1 sépare explicitement
+author_source_id de person_id, ajoute couverture et exposition, et renomme les mesures
+pour qu'elles décrivent uniquement le corpus publié. Une trajectoire n'est produite que
 pour une personne raccordée exactement dans la même législature.
 
 IDENTITÉS
