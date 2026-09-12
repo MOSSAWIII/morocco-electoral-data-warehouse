@@ -30,7 +30,7 @@ DOMAINS = {
     "geography",
     "contextual",
 }
-STATES = {"ACTIVE", "COLLECTING", "WATCHLIST"}
+STATES = {"TO_ACQUIRE", "ACQUIRED", "INTEGRATED", "WATCHLIST"}
 CLASSIFICATIONS = {
     "CANONICAL_CANDIDATE",
     "REFERENCE",
@@ -55,10 +55,10 @@ def load_catalog(path: Path = CATALOG_PATH) -> dict:
 
 def validate_catalog(catalog: dict) -> list[str]:
     errors: list[str] = []
-    if catalog.get("schema_version") != 1:
-        errors.append("schema_version doit valoir 1")
-    if catalog.get("current_warehouse_release") != "V12":
-        errors.append("current_warehouse_release doit valoir V12")
+    if catalog.get("schema_version") != 2:
+        errors.append("schema_version doit valoir 2")
+    if catalog.get("current_warehouse_release") != "V13":
+        errors.append("current_warehouse_release doit valoir V13")
 
     domains = catalog.get("domains")
     if not isinstance(domains, list) or set(domains) != DOMAINS:
@@ -99,6 +99,18 @@ def validate_catalog(catalog: dict) -> list[str]:
             errors.append(f"{label}: domaine inconnu")
         if candidate.get("state") not in STATES:
             errors.append(f"{label}: état inconnu")
+        state = candidate.get("state")
+        inventory_records = candidate.get("inventory_records")
+        if state in {"ACQUIRED", "INTEGRATED"} and (
+            not isinstance(inventory_records, int) or inventory_records <= 0
+        ):
+            errors.append(f"{label}: inventory_records positif requis pour {state}")
+        if state not in {"ACQUIRED", "INTEGRATED"} and "inventory_records" in candidate:
+            errors.append(f"{label}: inventory_records interdit pour {state}")
+        if state == "INTEGRATED" and candidate.get("integration_release") != "V13":
+            errors.append(f"{label}: integration_release=V13 requis pour INTEGRATED")
+        if state != "INTEGRATED" and "integration_release" in candidate:
+            errors.append(f"{label}: integration_release réservé aux sources INTEGRATED")
         if candidate.get("priority") not in {1, 2, 3}:
             errors.append(f"{label}: priorité attendue entre 1 et 3")
         formats = candidate.get("expected_formats")
