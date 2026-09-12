@@ -40,6 +40,16 @@ def test_tracked_open_distribution_contract() -> None:
 
     assert open_v13.validate_manifest(manifest) == []
     assert len(manifest["tables"]) == 8
+    assert manifest["publication_status"] == "PUBLIC_BETA"
+    assert {"LICENSE_DATA.md", "queries.sql"} <= {item["path"] for item in manifest["files"]}
     assert (ROOT / "docs/publication/V13_OPEN_DATA_README.txt").read_text(
         encoding="utf-8"
     ) == open_v13.render_readme(manifest)
+
+
+def test_public_beta_has_three_reference_queries_and_explicit_licenses() -> None:
+    queries = (ROOT / "examples/v13_reference_queries.sql").read_text(encoding="utf-8")
+    assert queries.count(";") == 3
+    assert (ROOT / "LICENSE").read_text(encoding="utf-8").startswith("MIT License")
+    assert "ODbL 1.0" in (ROOT / "LICENSES/DATA.md").read_text(encoding="utf-8")
+    assert "CC BY 4.0" in (ROOT / "LICENSES/DOCUMENTATION.md").read_text(encoding="utf-8")

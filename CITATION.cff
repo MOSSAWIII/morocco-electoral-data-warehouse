@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "Si vous utilisez ce warehouse, merci de citer cette release et les sources indiquées dans la table sources."
+title: "Morocco Electoral Data Warehouse"
+type: dataset
+authors:
+  - name: MOSSAWIII
+version: "13.0.0-beta"
+date-released: 2026-09-12
+repository-code: "https://github.com/MOSSAWIII/morocco-electoral-data-warehouse"
+license: ODbL-1.0
+preferred-citation:
+  type: dataset
+  title: "Morocco Electoral Data Warehouse — V13 public beta"
+  authors:
+    - name: MOSSAWIII
+  version: "13.0.0-beta"
+  date-released: 2026-09-12
+  url: "https://github.com/MOSSAWIII/morocco-electoral-data-warehouse/releases/tag/v13.0.0"
