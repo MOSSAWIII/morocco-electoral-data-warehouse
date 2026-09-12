@@ -9,7 +9,7 @@ def test_repository_ontology_is_valid() -> None:
     ontology = load_ontology()
     assert validate_ontology(ontology) == []
     assert len(ontology["dimensions"]) == 13
-    assert len(ontology["facts"]) == 8
+    assert len(ontology["facts"]) == 9
     assert len(ontology["cubes"]) == 7
 
 

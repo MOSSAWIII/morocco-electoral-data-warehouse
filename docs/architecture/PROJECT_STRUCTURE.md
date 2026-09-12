@@ -12,7 +12,7 @@ Une couche dépend uniquement des couches situées à sa gauche. Les RAW sont im
 
 V13 est reconstruite à partir des sources physiques, des décisions versionnées et de V8 comme bootstrap des tables historiques qui ne disposent pas encore de sources séparées. Les modules V9 à V12 restent dans `legacy/` et `releases/` parce que V13 les réexécute en mémoire et vérifie leurs empreintes; leurs anciens classeurs ne deviennent pas des entrées canoniques.
 
-Le paquet V13 est exposé par Excel pour l'inspection locale et par CSV, Parquet et DuckDB pour la diffusion. Ces formats portent les mêmes tables et règles.
+Le classeur V13 reste l'export Excel d'inspection. Le paquet public V14 reprend son modèle canonique et ajoute le Parlement longitudinal en CSV, Parquet et DuckDB. Ces formats portent les mêmes tables et règles; V14 ne crée pas un second classeur.
 
 ## Responsabilités
 

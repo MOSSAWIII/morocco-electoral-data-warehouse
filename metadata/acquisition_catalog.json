@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "current_warehouse_release": "V13",
+  "current_warehouse_release": "V14",
   "purpose": "Distinguer clairement les sources encore à acquérir, acquises, intégrées et gelées, sans autoriser automatiquement une ingestion canonique.",
   "states": {
     "TO_ACQUIRE": "Source ou famille crédible encore absente des RAW; acquisition à décider après classement du stock existant.",
@@ -255,8 +255,9 @@
       "target_period": "sessions entre octobre et avril, 2016–2024",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACQUIRED",
+      "state": "INTEGRATED",
       "inventory_records": 8,
+      "integration_release": "V14",
       "purpose": "Étendre l'activité parlementaire aux questions orales avec dates et identités observées.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -269,8 +270,9 @@
       "target_period": "sessions d'avril, 2017–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACQUIRED",
+      "state": "INTEGRATED",
       "inventory_records": 7,
+      "integration_release": "V14",
       "purpose": "Compléter les questions orales publiées par session.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -283,8 +285,9 @@
       "target_period": "sessions d'octobre, 2016–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACQUIRED",
+      "state": "INTEGRATED",
       "inventory_records": 8,
+      "integration_release": "V14",
       "purpose": "Compléter les questions orales publiées par session.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -297,8 +300,9 @@
       "target_period": "intersessions avril–octobre, 2017–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACQUIRED",
+      "state": "INTEGRATED",
       "inventory_records": 7,
+      "integration_release": "V14",
       "purpose": "Compléter les questions orales publiées entre sessions.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -311,8 +315,9 @@
       "target_period": "sessions d'avril, 2017–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACQUIRED",
+      "state": "INTEGRATED",
       "inventory_records": 6,
+      "integration_release": "V14",
       "purpose": "Étendre les questions écrites V12 aux sessions historiques.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -325,8 +330,9 @@
       "target_period": "sessions d'octobre, 2016–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACQUIRED",
+      "state": "INTEGRATED",
       "inventory_records": 7,
+      "integration_release": "V14",
       "purpose": "Étendre les questions écrites V12 aux sessions historiques.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -339,8 +345,9 @@
       "target_period": "intersessions avril–octobre, 2017–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACQUIRED",
+      "state": "INTEGRATED",
       "inventory_records": 6,
+      "integration_release": "V14",
       "purpose": "Étendre les questions écrites V12 aux intersessions historiques.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -353,8 +360,9 @@
       "target_period": "intersessions octobre–avril, 2016–2024",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACQUIRED",
+      "state": "INTEGRATED",
       "inventory_records": 7,
+      "integration_release": "V14",
       "purpose": "Étendre les questions écrites V12 aux intersessions historiques.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },

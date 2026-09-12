@@ -1,6 +1,6 @@
 # Politique de licence des données
 
-Le paquet V13 est une base composite. Les droits sur les contenus sources restent régis source par source par la colonne `license` de la table `sources`, par `metadata/source_manifest.json` et par `ATTRIBUTIONS.md`.
+Le paquet V14 est une base composite. Les droits sur les contenus sources restent régis source par source par les tables de sources, par les manifestes versionnés et par `ATTRIBUTIONS.md`.
 
 La structure originale de la base, la sélection des champs et les transformations produites par ce projet sont proposées sous Open Data Commons Open Database License 1.0 (ODbL 1.0) :
 

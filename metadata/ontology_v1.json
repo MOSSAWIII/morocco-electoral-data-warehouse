@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "ontology_version": "1.1.0",
-  "baseline_release": "V13",
+  "ontology_version": "1.2.0",
+  "baseline_release": "V14",
   "language": "fr",
   "purpose": "Contrat logique stable pour relier les données électorales marocaines sans dépendre d'un format de stockage.",
   "principles": [
@@ -13,7 +13,7 @@
     "Les cubes sont dérivés des faits canoniques et ne deviennent pas une seconde source de vérité."
   ],
   "maturity_levels": {
-    "CURRENT": "Concept présent dans V13 et réutilisable.",
+    "CURRENT": "Concept présent dans V14 et réutilisable.",
     "PARTIAL": "Concept présent, mais contrat ou couverture encore incomplet.",
     "PLANNED": "Concept requis par des sources profilées, pas encore canonique."
   },
@@ -77,8 +77,9 @@
       "dimension_id": "institution",
       "canonical_id": "institution_id",
       "definition": "Conseil, chambre, gouvernement, ministère ou autre institution publique.",
-      "maturity": "PLANNED",
+      "maturity": "CURRENT",
       "v12_tables": [],
+      "v14_tables": ["dim_institution"],
       "identity_rule": "Type, niveau, territoire de compétence et période d'existence.",
       "temporal_fields": ["valid_from", "valid_to"]
     },
@@ -95,8 +96,9 @@
       "dimension_id": "activity_type",
       "canonical_id": "activity_type_id",
       "definition": "Nature d'une activité parlementaire ou institutionnelle publiée.",
-      "maturity": "PARTIAL",
+      "maturity": "CURRENT",
       "v12_tables": ["PARLIAMENTARY_QUESTIONS"],
+      "v14_tables": ["fact_parliamentary_question.question_type"],
       "identity_rule": "Type observé et définition source: question écrite, question orale, engagement, proposition, vote ou commission.",
       "temporal_fields": []
     },
@@ -220,14 +222,27 @@
     },
     {
       "fact_id": "parliamentary_activity",
-      "target_table": "FACT_PARLIAMENTARY_ACTIVITY",
-      "grain": ["activity_id"],
+      "target_table": "FACT_PARLIAMENTARY_QUESTION",
+      "grain": ["question_id"],
       "dimensions": ["person", "party", "institution", "activity_type", "topic", "time", "source_evidence"],
       "maturity": "PARTIAL",
       "v12_tables": ["PARLIAMENTARY_QUESTIONS"],
-      "observed_measures": ["submission_date", "response_date", "status", "recipient_institution_id"],
-      "derived_measures": ["response_delay_days", "answered_flag"],
-      "rules": ["L'identité non résolue reste NULL sans supprimer l'activité.", "Les questions écrites et orales conservent leur type source."]
+      "v14_tables": ["fact_parliamentary_question", "fact_parliamentary_response", "bridge_question_author", "bridge_question_source"],
+      "observed_measures": ["deposit_date", "response_date", "response_status", "question_text_ar"],
+      "derived_measures": [],
+      "rules": ["L'identité non résolue reste NULL sans supprimer l'activité.", "Les questions écrites et orales conservent leur type source.", "Le sujet source n'est pas présenté comme une taxonomie canonique."]
+    },
+    {
+      "fact_id": "parliamentary_trajectory",
+      "target_table": "ANALYTICAL_PARLIAMENTARY_TRAJECTORY",
+      "grain": ["person_id", "legislature", "period_id", "question_type"],
+      "dimensions": ["person", "party", "activity_type", "time"],
+      "maturity": "CURRENT",
+      "v12_tables": [],
+      "v14_tables": ["analytical_parliamentary_trajectory"],
+      "observed_measures": [],
+      "derived_measures": ["question_count", "answered_question_count", "response_rate_pct", "first_deposit_date", "last_deposit_date"],
+      "rules": ["Une trajectoire existe seulement pour un person_id raccordé exactement.", "response_rate_pct = 100 × answered_question_count / question_count.", "La couverture des fichiers publiés n'est pas assimilée à l'exhaustivité de l'activité."]
     },
     {
       "fact_id": "observation",
@@ -260,7 +275,8 @@
     {"relation_id": "institution_territory", "from": "institution", "to": "territory", "cardinality": "N:1", "join_key": "geo_id", "temporal": true},
     {"relation_id": "mandate_person", "from": "mandate", "to": "person", "cardinality": "N:1", "join_key": "person_id", "temporal": true},
     {"relation_id": "mandate_institution", "from": "mandate", "to": "institution", "cardinality": "N:1", "join_key": "institution_id", "temporal": true},
-    {"relation_id": "activity_author", "from": "parliamentary_activity", "to": "person", "cardinality": "N:0..1", "join_key": "person_id", "temporal": true},
+    {"relation_id": "activity_author", "from": "parliamentary_activity", "to": "person", "cardinality": "N:0..1", "join_key": "bridge_question_author.person_id", "temporal": true},
+    {"relation_id": "trajectory_person", "from": "parliamentary_trajectory", "to": "person", "cardinality": "N:1", "join_key": "person_id", "temporal": true},
     {"relation_id": "observation_territory", "from": "observation", "to": "territory", "cardinality": "N:1", "join_key": "geo_id", "temporal": true},
     {"relation_id": "fact_evidence", "from": "any_fact", "to": "source_evidence", "cardinality": "N:1..N", "join_key": "evidence_id", "temporal": false}
   ],
@@ -285,9 +301,9 @@
     },
     {
       "cube_id": "parliamentary_activity",
-      "grain": ["person_id", "party_id", "time_id", "activity_type_id", "topic_id"],
-      "facts": ["parliamentary_activity"],
-      "measures": ["activity_count", "answered_count", "response_rate", "response_delay_days"]
+      "grain": ["person_id", "party_id", "period_id", "activity_type_id"],
+      "facts": ["parliamentary_activity", "parliamentary_trajectory"],
+      "measures": ["question_count", "answered_question_count", "response_rate_pct"]
     },
     {
       "cube_id": "local_governance",

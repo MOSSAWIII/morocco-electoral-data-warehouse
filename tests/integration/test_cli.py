@@ -24,7 +24,7 @@ def test_structured_cli_validation() -> None:
     result = run_command(sys.executable, "-m", "morocco_elections", "validate", "--mode", "ci")
     assert result.returncode == 0, result.stdout + result.stderr
     assert "VALIDATION_OK" in result.stdout
-    assert "release=v13 documents=15" in result.stdout
+    assert "release=v14 documents=0" in result.stdout
 
 
 def test_legacy_wrappers_expose_help() -> None:
@@ -42,6 +42,7 @@ def test_all_structured_commands_are_registered() -> None:
         ("analyze", "v12", "--help"),
         ("analyze", "v13", "--help"),
         ("export", "v13", "--help"),
+        ("export", "v14", "--help"),
         ("qualify", "parliament", "--help"),
         ("qualify", "electoral-archives", "--help"),
         ("qualify", "councils-2015", "--help"),

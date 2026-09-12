@@ -57,8 +57,8 @@ def validate_catalog(catalog: dict) -> list[str]:
     errors: list[str] = []
     if catalog.get("schema_version") != 2:
         errors.append("schema_version doit valoir 2")
-    if catalog.get("current_warehouse_release") != "V13":
-        errors.append("current_warehouse_release doit valoir V13")
+    if catalog.get("current_warehouse_release") != "V14":
+        errors.append("current_warehouse_release doit valoir V14")
 
     domains = catalog.get("domains")
     if not isinstance(domains, list) or set(domains) != DOMAINS:
@@ -107,8 +107,8 @@ def validate_catalog(catalog: dict) -> list[str]:
             errors.append(f"{label}: inventory_records positif requis pour {state}")
         if state not in {"ACQUIRED", "INTEGRATED"} and "inventory_records" in candidate:
             errors.append(f"{label}: inventory_records interdit pour {state}")
-        if state == "INTEGRATED" and candidate.get("integration_release") != "V13":
-            errors.append(f"{label}: integration_release=V13 requis pour INTEGRATED")
+        if state == "INTEGRATED" and candidate.get("integration_release") not in {"V13", "V14"}:
+            errors.append(f"{label}: integration_release=V13 ou V14 requis pour INTEGRATED")
         if state != "INTEGRATED" and "integration_release" in candidate:
             errors.append(f"{label}: integration_release réservé aux sources INTEGRATED")
         if candidate.get("priority") not in {1, 2, 3}:

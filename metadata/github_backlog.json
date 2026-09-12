@@ -14,8 +14,8 @@
     },
     {
       "title": "Parlement longitudinal — prochaine extension",
-      "description": "Classer les ressources déjà acquises puis étendre les questions parlementaires sur 2016–2024 sans créer de nouveau qualificateur avant profilage.",
-      "state": "open"
+      "description": "Questions écrites et orales longitudinales intégrées et publiées dans V14, avec trajectoires pour les identités exactement raccordées.",
+      "state": "closed"
     },
     {
       "title": "PostgreSQL — option conditionnelle",
@@ -116,8 +116,8 @@
     },
     {
       "title": "Ingérer les questions parlementaires et construire les trajectoires d’activité",
-      "state": "open",
-      "close_reason": null,
+      "state": "closed",
+      "close_reason": "completed",
       "milestone": "Parlement longitudinal — prochaine extension",
       "labels": ["data", "source", "parliament", "identity"],
       "depends_on": ["Corriger les identités locales sans altérer les RAW"],
