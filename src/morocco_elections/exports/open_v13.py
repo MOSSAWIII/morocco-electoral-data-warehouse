@@ -27,25 +27,137 @@ DATA_LICENSE = PROJECT_ROOT / "LICENSES" / "DATA.md"
 REFERENCE_QUERIES = PROJECT_ROOT / "examples" / "v13_reference_queries.sql"
 
 TABLES = {
-    "dim_geo": ("DIM_GEO", ["geo_id"]),
-    "dim_party": ("DIM_PARTY", ["party_id"]),
-    "dim_election": ("DIM_ELECTION", ["election_id"]),
-    "dim_electoral_contest": ("DIM_ELECTORAL_CONTEST", ["contest_id"]),
-    "fact_election_result": ("FACT_ELECTION_RESULT", ["result_id"]),
-    "fact_electoral_mobilization": ("FACT_ELECTORAL_MOBILIZATION", ["contest_id"]),
-    "sources": ("SOURCES", ["source_id"]),
-    "data_dictionary": ("DATA_DICTIONARY", ["metric_id"]),
+    "dim_geo": {"sheet": "DIM_GEO", "key": ["geo_id"]},
+    "dim_party": {"sheet": "DIM_PARTY", "key": ["party_id"]},
+    "dim_time": {"sheet": "DIM_TIME", "key": ["time_id"]},
+    "dim_election": {"sheet": "DIM_ELECTION", "key": ["election_id"]},
+    "dim_electoral_contest": {"sheet": "DIM_ELECTORAL_CONTEST", "key": ["contest_id"]},
+    "dim_person_public": {
+        "sheet": "DIM_PERSON",
+        "key": ["person_id"],
+        "columns": [
+            "person_id", "gender", "birth_year", "party_id", "role", "incumbent_flag",
+            "first_elected_year", "mandates_count", "valid_from", "valid_to", "source_id",
+            "quality_status", "notes",
+        ],
+    },
+    "fact_election_result": {"sheet": "FACT_ELECTION_RESULT", "key": ["result_id"]},
+    "fact_electoral_mobilization": {
+        "sheet": "FACT_ELECTORAL_MOBILIZATION",
+        "key": ["contest_id"],
+    },
+    "fact_communal_election_result": {
+        "sheet": "ANALYTICAL_PANEL",
+        "key": ["contest_id", "party_id"],
+        "columns": [
+            "contest_id", "geo_id", "election_id", "year", "party_id", "party_votes", "vote_share",
+            "rank", "winner", "seats", "seat_share", "previous_vote_share", "swing_pp",
+            "vote_change", "seat_change", "source_id", "fact_status", "quality_status", "notes",
+        ],
+        "rename": {"party_votes": "votes", "winner": "winner_flag"},
+    },
+    "fact_commune_election_summary": {
+        "sheet": "COMMUNE_ELECTION_PANEL",
+        "key": ["contest_id"],
+        "rename": {
+            "turnout": "turnout_rate",
+            "winner": "winner_party_id",
+            "winning_share": "winning_vote_share",
+            "runner_up": "runner_up_party_id",
+            "margin_votes": "victory_margin_votes",
+            "margin_pp": "victory_margin_pp",
+            "largest_party": "largest_party_id",
+            "president_party": "president_party_id",
+        },
+    },
+    "fact_observation": {
+        "sheet": "FACT_OBSERVATION",
+        "key": ["observation_id"],
+        "rename": {"metric_id": "indicator_id"},
+    },
+    "fact_parliamentary_mandate": {
+        "sheet": "PARLIAMENTARY_MANDATES",
+        "key": ["mandate_id"],
+        "columns": [
+            "mandate_id", "person_id", "gender", "legislature", "source_seat_id",
+            "source_constituency_id", "constituency", "region", "province", "party_id",
+            "parliamentary_group", "start_date", "end_date", "entry_reason", "exit_reason",
+            "replacement_procedure", "active_at_source_date", "source_id", "quality_status", "notes",
+        ],
+    },
+    "fact_parliamentary_activity": {
+        "sheet": "PARLIAMENTARY_QUESTIONS",
+        "key": ["question_id"],
+        "columns": [
+            "question_id", "source_question_number", "question_type", "legislature", "period_raw",
+            "deposit_date", "person_id", "party_id", "ministry_ar_raw", "response_date",
+            "response_status", "source_id", "source_url", "source_row", "identity_match_method",
+            "quality_status", "notes",
+        ],
+    },
+    "sources": {"sheet": "SOURCES", "key": ["source_id"]},
+    "dim_indicator": {
+        "sheet": "DATA_DICTIONARY",
+        "key": ["indicator_id"],
+        "rename": {"metric_id": "indicator_id"},
+    },
+    "data_dictionary": {"sheet": "DATA_DICTIONARY", "key": ["metric_id"]},
+}
+ROW_FILTERS = {
+    "dim_person_public": lambda row: str(row.get("person_id", "")).startswith("TAFRA_MP_"),
 }
 EXPECTED_ROWS = {
     "dim_geo": 1_825,
     "dim_party": 57,
+    "dim_time": 17,
     "dim_election": 9,
-    "dim_electoral_contest": 639,
+    "dim_electoral_contest": 3_715,
+    "dim_person_public": 1_185,
     "fact_election_result": 10_883,
     "fact_electoral_mobilization": 639,
+    "fact_communal_election_result": 22_054,
+    "fact_commune_election_summary": 3_076,
+    "fact_observation": 3_203,
+    "fact_parliamentary_mandate": 1_654,
+    "fact_parliamentary_activity": 5_589,
     "sources": 61,
+    "dim_indicator": 335,
     "data_dictionary": 292,
 }
+RELATIONSHIPS = [
+    ("dim_electoral_contest", "geo_id", "dim_geo", "geo_id", False),
+    ("dim_electoral_contest", "election_id", "dim_election", "election_id", False),
+    ("fact_election_result", "contest_id", "dim_electoral_contest", "contest_id", False),
+    ("fact_election_result", "geo_id", "dim_geo", "geo_id", False),
+    ("fact_election_result", "party_id", "dim_party", "party_id", False),
+    ("fact_election_result", "source_id", "sources", "source_id", False),
+    ("fact_electoral_mobilization", "contest_id", "dim_electoral_contest", "contest_id", False),
+    ("fact_electoral_mobilization", "source_id", "sources", "source_id", False),
+    ("fact_communal_election_result", "contest_id", "dim_electoral_contest", "contest_id", False),
+    ("fact_communal_election_result", "geo_id", "dim_geo", "geo_id", False),
+    ("fact_communal_election_result", "election_id", "dim_election", "election_id", False),
+    ("fact_communal_election_result", "party_id", "dim_party", "party_id", False),
+    ("fact_communal_election_result", "source_id", "sources", "source_id", False),
+    ("fact_commune_election_summary", "geo_id", "dim_geo", "geo_id", False),
+    ("fact_commune_election_summary", "contest_id", "dim_electoral_contest", "contest_id", False),
+    ("fact_commune_election_summary", "election_id", "dim_election", "election_id", False),
+    ("fact_commune_election_summary", "winner_party_id", "dim_party", "party_id", True),
+    ("fact_commune_election_summary", "runner_up_party_id", "dim_party", "party_id", True),
+    ("fact_commune_election_summary", "largest_party_id", "dim_party", "party_id", True),
+    ("fact_commune_election_summary", "president_party_id", "dim_party", "party_id", True),
+    ("fact_commune_election_summary", "source_id", "sources", "source_id", False),
+    ("fact_observation", "indicator_id", "dim_indicator", "indicator_id", False),
+    ("fact_observation", "geo_id", "dim_geo", "geo_id", True),
+    ("fact_observation", "time_id", "dim_time", "time_id", False),
+    ("fact_observation", "election_id", "dim_election", "election_id", True),
+    ("fact_observation", "source_id", "sources", "source_id", False),
+    ("fact_parliamentary_mandate", "person_id", "dim_person_public", "person_id", False),
+    ("fact_parliamentary_mandate", "party_id", "dim_party", "party_id", True),
+    ("fact_parliamentary_mandate", "source_id", "sources", "source_id", False),
+    ("fact_parliamentary_activity", "person_id", "dim_person_public", "person_id", True),
+    ("fact_parliamentary_activity", "party_id", "dim_party", "party_id", True),
+    ("fact_parliamentary_activity", "source_id", "sources", "source_id", False),
+]
 
 
 def _normalize(value: object) -> object:
@@ -81,6 +193,96 @@ def _validate_primary_key(table_name: str, rows: list[dict[str, Any]], key: list
         raise RuntimeError(f"{table_name}: clé primaire vide")
     if len(values) != len(set(values)):
         raise RuntimeError(f"{table_name}: clé primaire dupliquée")
+
+
+def _validate_foreign_keys(tables: dict[str, list[dict[str, Any]]]) -> None:
+    for child_table, child_column, parent_table, parent_column, nullable in RELATIONSHIPS:
+        parent_values = {row.get(parent_column) for row in tables[parent_table]}
+        child_values = [row.get(child_column) for row in tables[child_table]]
+        if not nullable and any(value in (None, "") for value in child_values):
+            raise RuntimeError(f"{child_table}.{child_column}: clé étrangère vide")
+        missing = {value for value in child_values if value not in (None, "") and value not in parent_values}
+        if missing:
+            raise RuntimeError(
+                f"{child_table}.{child_column}: {len(missing)} clé(s) absente(s) de "
+                f"{parent_table}.{parent_column}"
+            )
+
+
+def _complete_indicator_dimension(
+    headers: list[str],
+    dictionary_rows: list[dict[str, Any]],
+    observation_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    existing = {str(row["metric_id"]) for row in dictionary_rows}
+    observations_by_metric: dict[str, list[dict[str, Any]]] = {}
+    for row in observation_rows:
+        observations_by_metric.setdefault(str(row["metric_id"]), []).append(row)
+    completed = list(dictionary_rows)
+    for metric_id in sorted(set(observations_by_metric) - existing):
+        observations = observations_by_metric[metric_id]
+        units = sorted({str(row["unit"]) for row in observations if row.get("unit") not in (None, "")})
+        sources = sorted({str(row["source_id"]) for row in observations if row.get("source_id")})
+        has_numeric = any(row.get("value_numeric") is not None for row in observations)
+        has_text = any(row.get("value_text") not in (None, "") for row in observations)
+        record = {header: None for header in headers}
+        record.update(
+            {
+                "metric_id": metric_id,
+                "domain": "undocumented",
+                "metric_name": metric_id,
+                "definition": None,
+                "data_type": "mixed" if has_numeric and has_text else "numeric" if has_numeric else "text",
+                "unit": units[0] if len(units) == 1 else "mixed" if units else None,
+                "primary_fact_sheet": "FACT_OBSERVATION",
+                "required_keys": "metric_id",
+                "candidate_sources": ";".join(sources),
+                "collection_status": "OBSERVED_UNDOCUMENTED",
+                "quality_rule": "Définition obligatoire avant interprétation analytique.",
+                "notes": "Entrée de conformance dérivée; identifiant observé absent du DATA_DICTIONARY V13.",
+            }
+        )
+        completed.append(record)
+    return completed
+
+
+def _communal_contest_id(row: dict[str, Any]) -> str:
+    return f"CONTEST_{row['election_id']}_COMMUNE_{row['geo_id']}"
+
+
+def _complete_contest_dimension(
+    headers: list[str],
+    contest_rows: list[dict[str, Any]],
+    commune_election_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    completed = list(contest_rows)
+    existing = {str(row["contest_id"]) for row in contest_rows}
+    source_by_election = {
+        "COMM2015": "SRC_TAFRA_COMM2015_RAW_V9",
+        "COMM2021": "SRC_TAFRA_COMM2021_RAW_V9",
+    }
+    for row in commune_election_rows:
+        contest_id = _communal_contest_id(row)
+        if contest_id in existing:
+            raise RuntimeError(f"contest communal dupliqué: {contest_id}")
+        record = {header: None for header in headers}
+        record.update(
+            {
+                "contest_id": contest_id,
+                "election_id": row["election_id"],
+                "geo_id": row["geo_id"],
+                "list_type": "communal",
+                "source_contest_id": row["geo_id"],
+                "source_label": row["geo_id"],
+                "normalized_label": row["geo_id"],
+                "source_id": source_by_election[str(row["election_id"])],
+                "identity_review_status": "canonical_geo_id",
+                "notes": "Contest communal de conformance dérivé du grain commune × élection V13.",
+            }
+        )
+        completed.append(record)
+        existing.add(contest_id)
+    return completed
 
 
 def _write_atomic(path: Path, payload: bytes) -> None:
@@ -142,6 +344,7 @@ def render_readme(manifest: dict) -> str:
             "- Les géographies 2007/2011 restent liées à leur découpage historique.",
             "- Les agrégats doivent rester séparés par élection et type de liste.",
             "- Les conditions de réutilisation sont conservées source par source dans la table sources.",
+            "- dim_indicator ajoute 43 entrées de conformance OBSERVED_UNDOCUMENTED; leur définition reste obligatoire avant interprétation.",
             "- Ce paquet ne contient ni RAW, ni noms de personnes, ni questions parlementaires nominatives.",
             "- Le fichier DuckDB porte un hash logique stable; son checksum binaire local figure dans checksums.sha256.",
             "",
@@ -158,7 +361,22 @@ def validate_manifest(manifest: dict) -> list[str]:
         errors.append("statut de publication invalide")
     tables = manifest.get("tables", [])
     if len(tables) != len(TABLES) or {item.get("table_name") for item in tables} != set(TABLES):
-        errors.append("les huit tables de diffusion sont requises")
+        errors.append(f"les {len(TABLES)} tables de diffusion sont requises")
+    relationships = manifest.get("relationships", [])
+    expected_relationships = {
+        (child, child_column, parent, parent_column, nullable)
+        for child, child_column, parent, parent_column, nullable in RELATIONSHIPS
+    }
+    observed_relationships = {
+        (
+            item.get("child_table"), item.get("child_column"), item.get("parent_table"),
+            item.get("parent_column"), item.get("nullable"),
+        )
+        for item in relationships
+        if isinstance(item, dict)
+    }
+    if observed_relationships != expected_relationships or len(relationships) != len(RELATIONSHIPS):
+        errors.append("relations de clés étrangères incomplètes ou incohérentes")
     files = manifest.get("files", [])
     paths = [item.get("path") for item in files]
     expected_paths = {
@@ -228,10 +446,45 @@ def build_distribution(
 
     workbook = openpyxl.load_workbook(workbook_path, read_only=True, data_only=True)
     table_contracts = []
-    for table_name, (sheet_name, key) in TABLES.items():
+    table_rows: dict[str, list[dict[str, Any]]] = {}
+    for table_name, contract in TABLES.items():
+        sheet_name = contract["sheet"]
+        key = contract["key"]
         headers, rows = rows_from_sheet(workbook[sheet_name])
-        normalized_headers = [str(value) for value in headers]
+        if table_name == "dim_electoral_contest":
+            _, commune_election_rows = rows_from_sheet(workbook["COMMUNE_ELECTION_PANEL"])
+            rows = _complete_contest_dimension(
+                [str(value) for value in headers], rows, commune_election_rows
+            )
+        if table_name == "dim_indicator":
+            _, observation_rows = rows_from_sheet(workbook["FACT_OBSERVATION"])
+            rows = _complete_indicator_dimension([str(value) for value in headers], rows, observation_rows)
+        if table_name in {"fact_communal_election_result", "fact_commune_election_summary"}:
+            source_by_election = {
+                "COMM2015": "SRC_TAFRA_COMM2015_RAW_V9",
+                "COMM2021": "SRC_TAFRA_COMM2021_RAW_V9",
+            }
+            for row in rows:
+                row["contest_id"] = _communal_contest_id(row)
+                row["source_id"] = source_by_election[str(row["election_id"])]
+                row["fact_status"] = "DERIVED_FROM_OBSERVED_RESULTS"
+            headers = ["contest_id", *headers, "source_id", "fact_status"]
+        if table_name in ROW_FILTERS:
+            rows = [row for row in rows if ROW_FILTERS[table_name](row)]
+        selected_columns = contract.get("columns", headers)
+        unknown_columns = set(selected_columns) - set(headers)
+        if unknown_columns:
+            raise RuntimeError(f"{table_name}: colonnes sources absentes: {sorted(unknown_columns)}")
+        rename = contract.get("rename", {})
+        normalized_headers = [rename.get(str(value), str(value)) for value in selected_columns]
+        if len(normalized_headers) != len(set(normalized_headers)):
+            raise RuntimeError(f"{table_name}: colonnes de sortie dupliquées après normalisation")
+        rows = [
+            {rename.get(str(column), str(column)): row.get(column) for column in selected_columns}
+            for row in rows
+        ]
         _validate_primary_key(table_name, rows, key)
+        table_rows[table_name] = rows
         table = rows_to_arrow(normalized_headers, rows)
         _write_table(
             table,
@@ -250,6 +503,7 @@ def build_distribution(
                 "primary_key": key,
             }
         )
+    _validate_foreign_keys(table_rows)
     workbook.close()
 
     database_path = destination / "morocco_elections_v13.duckdb"
@@ -276,9 +530,19 @@ def build_distribution(
         "publication_status": "PUBLIC_BETA",
         "published_on": "2026-09-12",
         "source_workbook_sha256": expected_hash,
-        "scope": "Noyau électoral non nominatif V13 et dimensions/provenance nécessaires à ses jointures.",
+        "scope": "Faits canoniques V13 non nominatifs: élections multi-scrutins, communes 2015–2021, observations territoriales et activité parlementaire.",
         "formats": ["CSV", "Parquet", "DuckDB"],
         "tables": table_contracts,
+        "relationships": [
+            {
+                "child_table": child,
+                "child_column": child_column,
+                "parent_table": parent,
+                "parent_column": parent_column,
+                "nullable": nullable,
+            }
+            for child, child_column, parent, parent_column, nullable in RELATIONSHIPS
+        ],
         "files": [],
         "license_rule": "ODbL 1.0 pour les droits originaux de structure et de compilation détenus par le projet; les contenus tiers restent régis source par source.",
     }
