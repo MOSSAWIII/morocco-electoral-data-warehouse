@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "ontology_version": "1.2.0",
-  "baseline_release": "V14",
+  "ontology_version": "1.3.0",
+  "baseline_release": "V14.1",
   "language": "fr",
   "purpose": "Contrat logique stable pour relier les données électorales marocaines sans dépendre d'un format de stockage.",
   "principles": [
@@ -13,7 +13,7 @@
     "Les cubes sont dérivés des faits canoniques et ne deviennent pas une seconde source de vérité."
   ],
   "maturity_levels": {
-    "CURRENT": "Concept présent dans V14 et réutilisable.",
+    "CURRENT": "Concept présent dans V14.1 et réutilisable.",
     "PARTIAL": "Concept présent, mais contrat ou couverture encore incomplet.",
     "PLANNED": "Concept requis par des sources profilées, pas encore canonique."
   },
@@ -33,6 +33,7 @@
       "definition": "Date, année, session, législature ou période analytique.",
       "maturity": "CURRENT",
       "v12_tables": ["DIM_TIME"],
+      "v14_1_tables": ["dim_legislature", "dim_parliamentary_period"],
       "identity_rule": "Identifiant déterministe de la granularité temporelle déclarée.",
       "temporal_fields": ["date", "year", "valid_from", "valid_to"]
     },
@@ -72,6 +73,16 @@
       "v12_tables": ["DIM_PERSON", "IDENTITY_AUDIT_V10"],
       "identity_rule": "Identifiant source stable ou clé déterministe contextualisée; aucune fusion sur le seul nom.",
       "temporal_fields": []
+    },
+    {
+      "dimension_id": "parliamentary_source_author",
+      "canonical_id": "author_source_id",
+      "definition": "Unité d'auteur telle que publiée par une source, sans présumer qu'elle constitue une identité humaine canonique.",
+      "maturity": "CURRENT",
+      "v12_tables": [],
+      "v14_1_tables": ["dim_parliamentary_source_author", "bridge_question_author"],
+      "identity_rule": "L'identifiant représente le libellé source contextualisé par législature; seul person_id représente une personne canonique prouvée.",
+      "temporal_fields": ["legislature"]
     },
     {
       "dimension_id": "institution",
@@ -240,9 +251,10 @@
       "maturity": "CURRENT",
       "v12_tables": [],
       "v14_tables": ["analytical_parliamentary_trajectory"],
+      "v14_1_tables": ["analytical_parliamentary_trajectory", "analytical_person_period_exposure"],
       "observed_measures": [],
-      "derived_measures": ["question_count", "answered_question_count", "response_rate_pct", "first_deposit_date", "last_deposit_date"],
-      "rules": ["Une trajectoire existe seulement pour un person_id raccordé exactement.", "response_rate_pct = 100 × answered_question_count / question_count.", "La couverture des fichiers publiés n'est pas assimilée à l'exhaustivité de l'activité."]
+      "derived_measures": ["published_question_count", "published_response_date_count", "published_response_date_rate_pct", "observed_mandate_days", "published_questions_per_100_observed_mandate_days", "first_deposit_date", "last_deposit_date"],
+      "rules": ["Une trajectoire existe seulement pour un person_id raccordé exactement.", "published_response_date_rate_pct = 100 × published_response_date_count / published_question_count.", "Une date de réponse publiée ne prouve ni la substance ni la qualité d'une réponse.", "Les zéros de la spine d'exposition proviennent de l'univers des mandats.", "La couverture des fichiers publiés n'est pas assimilée à l'exhaustivité de l'activité."]
     },
     {
       "fact_id": "observation",
@@ -275,7 +287,8 @@
     {"relation_id": "institution_territory", "from": "institution", "to": "territory", "cardinality": "N:1", "join_key": "geo_id", "temporal": true},
     {"relation_id": "mandate_person", "from": "mandate", "to": "person", "cardinality": "N:1", "join_key": "person_id", "temporal": true},
     {"relation_id": "mandate_institution", "from": "mandate", "to": "institution", "cardinality": "N:1", "join_key": "institution_id", "temporal": true},
-    {"relation_id": "activity_author", "from": "parliamentary_activity", "to": "person", "cardinality": "N:0..1", "join_key": "bridge_question_author.person_id", "temporal": true},
+    {"relation_id": "activity_source_author", "from": "parliamentary_activity", "to": "parliamentary_source_author", "cardinality": "N:1..N", "join_key": "bridge_question_author.author_source_id", "temporal": true},
+    {"relation_id": "source_author_person", "from": "parliamentary_source_author", "to": "person", "cardinality": "N:0..1", "join_key": "person_id", "temporal": true},
     {"relation_id": "trajectory_person", "from": "parliamentary_trajectory", "to": "person", "cardinality": "N:1", "join_key": "person_id", "temporal": true},
     {"relation_id": "observation_territory", "from": "observation", "to": "territory", "cardinality": "N:1", "join_key": "geo_id", "temporal": true},
     {"relation_id": "fact_evidence", "from": "any_fact", "to": "source_evidence", "cardinality": "N:1..N", "join_key": "evidence_id", "temporal": false}
@@ -303,7 +316,7 @@
       "cube_id": "parliamentary_activity",
       "grain": ["person_id", "party_id", "period_id", "activity_type_id"],
       "facts": ["parliamentary_activity", "parliamentary_trajectory"],
-      "measures": ["question_count", "answered_question_count", "response_rate_pct"]
+      "measures": ["published_question_count", "published_response_date_count", "published_response_date_rate_pct", "observed_mandate_days", "published_questions_per_100_observed_mandate_days"]
     },
     {
       "cube_id": "local_governance",

@@ -37,6 +37,8 @@ V13_OPEN_DISTRIBUTION_PATH = PROJECT_ROOT / "metadata" / "v13_open_distribution.
 V13_OPEN_README_PATH = PROJECT_ROOT / "docs" / "publication" / "V13_OPEN_DATA_README.txt"
 V14_OPEN_DISTRIBUTION_PATH = PROJECT_ROOT / "metadata" / "v14_open_distribution.json"
 V14_OPEN_README_PATH = PROJECT_ROOT / "docs" / "publication" / "V14_OPEN_DATA_README.txt"
+V14_1_OPEN_DISTRIBUTION_PATH = PROJECT_ROOT / "metadata" / "v14_1_open_distribution.json"
+V14_1_OPEN_README_PATH = PROJECT_ROOT / "docs" / "publication" / "V14_1_OPEN_DATA_README.txt"
 V11A_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11a_source_candidates.json"
 V11A_DECISION_PATH = PROJECT_ROOT / "docs" / "research" / "V11A_DECISION_2015_COUNCILS.txt"
 SMIIG_METADATA_PATH = PROJECT_ROOT / "metadata" / "v11_smiig_source_candidates.json"
@@ -781,6 +783,79 @@ def validate_v14_open_distribution(data_dir: str | Path | None = None, full: boo
         ).fetchone()[0]
         if missing_baseline:
             errors.append("V14 open: des questions V13 ont disparu de la série longitudinale")
+    finally:
+        connection.close()
+    return errors
+
+
+def validate_v14_1_open_distribution(data_dir: str | Path | None = None, full: bool = False) -> list[str]:
+    from morocco_elections.exports import open_v14_1
+
+    errors: list[str] = []
+    try:
+        metadata = json.loads(V14_1_OPEN_DISTRIBUTION_PATH.read_text(encoding="utf-8"))
+        baseline = json.loads(V14_OPEN_DISTRIBUTION_PATH.read_text(encoding="utf-8"))
+        readme = V14_1_OPEN_README_PATH.read_text(encoding="utf-8")
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return [f"V14.1 open: artefact illisible: {exc}"]
+    errors.extend(f"V14.1 open: {error}" for error in open_v14_1.validate_manifest(metadata))
+    if metadata.get("source_payloads") != baseline.get("source_payloads"):
+        errors.append("V14.1 open: les sources V14 ont été modifiées")
+    if readme != open_v14_1.render_readme(metadata):
+        errors.append("V14.1 open: README désynchronisé")
+    if not full or errors:
+        return errors
+
+    root = get_paths(data_dir).data_root / "exports" / "open" / "v14.1"
+    required = [
+        root / "manifest.json", root / "README.txt", root / "checksums.sha256",
+        root / "morocco_elections_v14_1.duckdb",
+    ]
+    for path in required:
+        if not path.is_file():
+            errors.append(f"V14.1 open: fichier local absent: {path}")
+    if errors:
+        return errors
+    if json.loads((root / "manifest.json").read_text(encoding="utf-8")) != metadata:
+        errors.append("V14.1 open: manifeste local désynchronisé")
+    expected_checksums = []
+    for item in metadata["files"]:
+        path = root / item["path"]
+        if not path.is_file():
+            errors.append(f"V14.1 open: fichier absent: {item['path']}")
+            continue
+        digest = sha256(path)
+        if ("sha256" in item and digest != item["sha256"]) or (
+            "byte_size" in item and path.stat().st_size != item["byte_size"]
+        ):
+            errors.append(f"V14.1 open: empreinte ou taille divergente: {item['path']}")
+        expected_checksums.append(f"{digest}  {item['path']}\n")
+    expected_checksums.append(f"{sha256(root / 'manifest.json')}  manifest.json\n")
+    if (root / "checksums.sha256").read_text(encoding="utf-8") != "".join(expected_checksums):
+        errors.append("V14.1 open: checksums.sha256 désynchronisé")
+
+    import duckdb
+
+    connection = duckdb.connect(str(root / "morocco_elections_v14_1.duckdb"), read_only=True)
+    try:
+        for table in metadata["tables"]:
+            count = connection.execute(
+                f'SELECT COUNT(*) FROM "{table["table_name"]}"'
+            ).fetchone()[0]
+            if count != table["rows"]:
+                errors.append(f"V14.1 open: volume DuckDB divergent: {table['table_name']}")
+        invalid_coverage = connection.execute(
+            "SELECT COUNT(*) FROM analytical_parliamentary_coverage "
+            "WHERE expected_file_count IS NULL AND coverage_status <> 'UNKNOWN'"
+        ).fetchone()[0]
+        if invalid_coverage:
+            errors.append("V14.1 open: couverture affirmée sans dénominateur")
+        invalid_exposure = connection.execute(
+            "SELECT COUNT(*) FROM analytical_person_period_exposure "
+            "WHERE observed_mandate_days <= 0 OR published_question_count < 0"
+        ).fetchone()[0]
+        if invalid_exposure:
+            errors.append("V14.1 open: exposition invalide")
     finally:
         connection.close()
     return errors
@@ -1588,7 +1663,7 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "v14", bas
     manifest = load_manifest()
     errors = []
     errors.extend(validate_manifest(manifest))
-    if release in {"v13", "v14", "all"}:
+    if release in {"v13", "v14", "v14.1", "all"}:
         errors.extend(validate_acquisition_catalog())
         errors.extend(validate_acquisition_inventory())
         errors.extend(validate_ontology_contract())
@@ -1597,9 +1672,11 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "v14", bas
         errors.extend(validate_v13_electoral_qualification())
         errors.extend(validate_v13_release_report(manifest))
         errors.extend(validate_v13_open_distribution())
-    if release in {"v14", "all"}:
+    if release in {"v14", "v14.1", "all"}:
         errors.extend(validate_v14_open_distribution())
-    if release in {"v12", "v13", "v14", "all"}:
+    if release in {"v14.1", "all"}:
+        errors.extend(validate_v14_1_open_distribution())
+    if release in {"v12", "v13", "v14", "v14.1", "all"}:
         errors.extend(validate_v12_qualification(manifest))
         errors.extend(validate_v12_release_report(manifest))
     if release in {"v10", "v11", "v12", "all"}:
@@ -1617,11 +1694,14 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "v14", bas
         errors.extend(validate_local_presidency_artifacts())
         errors.extend(validate_hcp_indicator_artifacts())
     errors.extend(validate_python_sources())
-    if release != "v14":
+    if release not in {"v14", "v14.1"}:
         errors.extend(validate_documentation(release))
     errors.extend(validate_repository_files())
     if mode == "full" and not errors:
-        errors.extend(validate_full(manifest, data_dir, release, baseline))
+        if release == "v14.1" and not get_paths(data_dir).v13_workbook.is_file():
+            errors.append(f"V14.1 open: fichier local absent: {get_paths(data_dir).v13_workbook}")
+        if release != "v14.1":
+            errors.extend(validate_full(manifest, data_dir, release, baseline))
         if not errors and release == "all":
             errors.extend(validate_quality_baseline_artifacts(data_dir, full=True))
         if not errors and release == "all":
@@ -1632,16 +1712,18 @@ def run(mode: str, data_dir: str | Path | None = None, release: str = "v14", bas
             errors.extend(validate_hcp_indicator_artifacts(data_dir, full=True))
         if not errors and release in {"v11", "all"}:
             errors.extend(validate_v11_quality_baseline_artifacts(data_dir, full=True))
-        if not errors and release in {"v13", "v14", "all"}:
+        if not errors and release in {"v13", "v14", "v14.1", "all"}:
             errors.extend(validate_acquisition_inventory(data_dir, full=True))
-        if not errors and release in {"v13", "v14", "all"}:
+        if not errors and release in {"v13", "v14", "v14.1", "all"}:
             errors.extend(validate_v13_source_profile(data_dir, full=True))
-        if not errors and release in {"v13", "v14", "all"}:
+        if not errors and release in {"v13", "v14", "v14.1", "all"}:
             errors.extend(validate_v13_identity_registry(data_dir, full=True))
-        if not errors and release in {"v13", "v14", "all"}:
+        if not errors and release in {"v13", "v14", "v14.1", "all"}:
             errors.extend(validate_v13_open_distribution(data_dir, full=True))
-        if not errors and release in {"v14", "all"}:
+        if not errors and release in {"v14", "v14.1", "all"}:
             errors.extend(validate_v14_open_distribution(data_dir, full=True))
+        if not errors and release in {"v14.1", "all"}:
+            errors.extend(validate_v14_1_open_distribution(data_dir, full=True))
     return errors
 
 
@@ -1656,7 +1738,7 @@ def report(mode: str, data_dir: str | Path | None = None, release: str = "v14", 
         len(EXPECTED_DOCUMENTS) * len(DOCUMENTATION_DIRS)
         if release == "all"
         else 0
-        if release == "v14"
+        if release in {"v14", "v14.1"}
         else len(EXPECTED_DOCUMENTS)
     )
     print(f"VALIDATION_OK mode={mode} release={release} documents={document_count}")
@@ -1664,11 +1746,11 @@ def report(mode: str, data_dir: str | Path | None = None, release: str = "v14", 
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Valide le dépôt et les releases locales V9 à V14.")
+    parser = argparse.ArgumentParser(description="Valide le dépôt et les releases locales V9 à V14.1.")
     parser.add_argument("--mode", choices=("ci", "full"), default="ci")
     parser.add_argument("--data-dir")
-    parser.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "v14", "all"), default="v14")
-    parser.add_argument("--baseline", choices=("v9", "v10", "v11", "v12", "v13"))
+    parser.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "v14", "v14.1", "all"), default="v14.1")
+    parser.add_argument("--baseline", choices=("v9", "v10", "v11", "v12", "v13", "v14"))
     args = parser.parse_args(argv)
     return report(args.mode, args.data_dir, args.release, args.baseline)
 
