@@ -13,13 +13,13 @@
       "state": "open"
     },
     {
-      "title": "V12 — Activité parlementaire",
-      "description": "Qualification puis, uniquement en cas de source crédible, questions parlementaires et trajectoires longitudinales d’activité.",
+      "title": "Parlement longitudinal — prochaine extension",
+      "description": "Classer les ressources déjà acquises puis étendre les questions parlementaires sur 2016–2024 sans créer de nouveau qualificateur avant profilage.",
       "state": "open"
     },
     {
-      "title": "V13 — Canonique PostgreSQL",
-      "description": "Option d’industrialisation à déclencher lorsqu’un besoin concret d’exploitation justifie PostgreSQL.",
+      "title": "PostgreSQL — option conditionnelle",
+      "description": "Option différée, sans numéro de release, à déclencher seulement lorsqu’un besoin concret d’exploitation la justifie.",
       "state": "open"
     }
   ],
@@ -118,23 +118,23 @@
       "title": "Ingérer les questions parlementaires et construire les trajectoires d’activité",
       "state": "open",
       "close_reason": null,
-      "milestone": "V12 — Activité parlementaire",
+      "milestone": "Parlement longitudinal — prochaine extension",
       "labels": ["data", "source", "parliament", "identity"],
       "depends_on": ["Corriger les identités locales sans altérer les RAW"],
       "blocks": [],
       "acceptance": [
-        "Une source candidate crédible, accessible et réutilisable est identifiée avant le développement d’un qualificateur complet.",
-        "La qualification conclut GO avant toute ingestion des ressources 2017–2023.",
+        "Les 60 ressources parlementaires déjà acquises sont classées avant toute nouvelle collecte.",
+        "Le périmètre 2016–2024 est dédupliqué et profilé avant toute ingestion supplémentaire.",
         "Chaque question conserve sa date, son auteur, son groupe, son destinataire, son statut et sa source.",
         "Le rattachement à DIM_PERSON est déterministe ou explicitement non résolu.",
         "Les trajectoires sont calculées par personne × législature × période avec dénominateurs et nullités documentés."
       ]
     },
     {
-      "title": "Migrer la couche canonique vers PostgreSQL et générer Excel en export",
+      "title": "PostgreSQL — migrer seulement sur besoin démontré",
       "state": "open",
       "close_reason": null,
-      "milestone": "V13 — Canonique PostgreSQL",
+      "milestone": "PostgreSQL — option conditionnelle",
       "labels": ["data", "qa", "postgresql"],
       "depends_on": [
         "Corriger les identités locales sans altérer les RAW",

@@ -18,8 +18,8 @@ from morocco_elections.sources.acquisition import (
 
 def _catalog(tmp_path: Path) -> Path:
     catalog = {
-        "schema_version": 1,
-        "current_warehouse_release": "V12",
+        "schema_version": 2,
+        "current_warehouse_release": "V13",
         "domains": sorted(
             {
                 "elections",
@@ -42,7 +42,7 @@ def _catalog(tmp_path: Path) -> Path:
                 "target_period": "2021",
                 "expected_formats": ["csv", "xlsx"],
                 "priority": 1,
-                "state": "ACTIVE",
+                "state": "TO_ACQUIRE",
                 "purpose": "Test sans donnée réelle",
                 "reuse_status": "Synthétique",
             }
@@ -55,6 +55,23 @@ def _catalog(tmp_path: Path) -> Path:
 
 def test_repository_acquisition_catalog_is_valid() -> None:
     assert validate_catalog(load_catalog(CATALOG_PATH)) == []
+    catalog = load_catalog(CATALOG_PATH)
+    counts = {
+        state: sum(candidate["state"] == state for candidate in catalog["candidates"])
+        for state in ("TO_ACQUIRE", "ACQUIRED", "INTEGRATED", "WATCHLIST")
+    }
+    assert counts == {"TO_ACQUIRE": 4, "ACQUIRED": 18, "INTEGRATED": 6, "WATCHLIST": 4}
+
+
+def test_repository_inventory_is_fully_classified() -> None:
+    inventory = json.loads(
+        (CATALOG_PATH.parent / "acquisition_inventory.json").read_text(encoding="utf-8")
+    )
+    assert len(inventory["records"]) == 73
+    assert all(record["classification"] != "NOT_EVALUATED" for record in inventory["records"])
+    assert sum(record["classification"] == "CANONICAL_CANDIDATE" for record in inventory["records"]) == 69
+    assert sum(record["classification"] == "REFERENCE" for record in inventory["records"]) == 3
+    assert sum(record["classification"] == "ARCHIVE_ONLY" for record in inventory["records"]) == 1
 
 
 def test_profile_xlsx_inventories_sheets_columns_and_rows(tmp_path: Path) -> None:

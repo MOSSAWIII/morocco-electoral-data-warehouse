@@ -26,11 +26,14 @@ SOURCES → RAW IMMUTABLES → PROFILAGE → IDENTITÉS/CROSSWALKS
 
 ## Phase 1 — Acquisition organisée
 
-Le catalogue [`metadata/acquisition_catalog.json`](../metadata/acquisition_catalog.json) pilote trois états seulement :
+Le catalogue [`metadata/acquisition_catalog.json`](../metadata/acquisition_catalog.json) pilote quatre états factuels :
 
-- `ACTIVE` : source précise et prête à être acquise ;
-- `COLLECTING` : portail ou famille connu, inventaire encore en cours ;
+- `TO_ACQUIRE` : source ou famille crédible encore absente des RAW ;
+- `ACQUIRED` : octets conservés et inventoriés, sans ingestion canonique ;
+- `INTEGRATED` : périmètre qualifié chargé dans la release canonique indiquée ;
 - `WATCHLIST` : chantier gelé jusqu'à une preuve nouvelle.
+
+Au 12 septembre 2026, le catalogue compte 4 familles `TO_ACQUIRE`, 18 sources `ACQUIRED`, 6 sources électorales `INTEGRATED` dans V13 et 4 chantiers en `WATCHLIST`. Les 73 ressources physiques déjà acquises doivent être classées avant toute nouvelle collecte large.
 
 Les domaines de collecte sont : élections, Parlement, gouvernance, partis, HCP, finances locales, géographie et contexte. Une acquisition n'autorise jamais automatiquement l'ingestion canonique. Elle produit un fichier RAW immuable et un profil local ignorés par Git.
 
@@ -38,7 +41,7 @@ Sortie attendue : un patrimoine de sources classées, une carte de couverture et
 
 ## Phase 2 — Profilage transversal
 
-Pour chaque fichier collecté, relever au minimum : format, taille, empreinte, feuilles ou tables, colonnes et volumes. Les qualifications ultérieures ajoutent grain, années, clés candidates, valeurs manquantes, doublons, domaines, données personnelles et compatibilité avec V12.
+Pour chaque fichier collecté, relever au minimum : format, taille, empreinte, feuilles ou tables, colonnes et volumes. Les qualifications ultérieures ajoutent grain, années, clés candidates, valeurs manquantes, doublons, domaines, données personnelles et compatibilité avec V13.
 
 Chaque source est alors classée :
 
@@ -50,6 +53,14 @@ Chaque source est alors classée :
 - `ARCHIVE_ONLY`
 
 Une source ne devient candidate canonique que si producteur, grain, période, clés, réutilisation et limites sont compris.
+
+Le premier classement des 73 ressources acquises donne 69 `CANONICAL_CANDIDATE`, 3 `REFERENCE` et 1 `ARCHIVE_ONLY`; aucune ne reste `NOT_EVALUATED`. Cette classe est un tri de travail, jamais une autorisation d'ingestion. La liste courte est volontairement limitée :
+
+1. les quatre familles de questions écrites parlementaires 2016–2024 déjà acquises (26 fichiers), pour construire une série longitudinale dédupliquée ;
+2. la base communale HCP CEE 2023–2024, pour mesurer son grain et son raccordement territorial ;
+3. la base HCP des douars 2024, pour étendre la hiérarchie géographique seulement après validation exacte des parents.
+
+Les questions orales, engagements ministériels et autres bases HCP restent acquises mais hors de cette liste courte. Elles ne déclenchent aucun développement tant que les trois candidats précédents ne sont pas décidés.
 
 ## Phase 3 — Ontologie V1
 
@@ -154,8 +165,8 @@ Ces noms ne sont pas des engagements rigides. Des domaines peuvent être regroup
 1. Fixer les licences et la visibilité, puis publier le paquet V13 déjà construit.
 2. Vérifier qu'une personne extérieure peut télécharger, comprendre et interroger V13 en moins de dix minutes.
 3. Corriger les éventuels problèmes d'usage sans modifier les faits canoniques.
-4. Sélectionner une seule nouvelle source crédible selon sa valeur analytique, sa couverture et son coût d'intégration.
-5. Étendre ensuite la gouvernance, le territoire/HCP ou le Parlement sans réactiver les sources bloquées faute de preuve.
+4. Classer les 73 ressources déjà acquises et sélectionner une seule source crédible selon sa valeur analytique, sa couverture et son coût d'intégration.
+5. Prioriser l'activité parlementaire longitudinale, puis le territoire/HCP; ne réactiver les sources de gouvernance bloquées qu'avec une preuve nouvelle.
 6. Déclencher PostgreSQL seulement lorsqu'un besoin opérationnel mesurable apparaît.
 
 Le projet est réussi lorsqu'une personne extérieure peut relier les données par des identifiants stables, retrouver la source de chaque valeur importante, comprendre les lacunes et exécuter des analyses sans connaître l'histoire interne du dépôt.

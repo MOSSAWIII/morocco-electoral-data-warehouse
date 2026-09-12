@@ -1,10 +1,11 @@
 {
-  "schema_version": 1,
-  "current_warehouse_release": "V12",
-  "purpose": "Piloter la collecte large sans autoriser automatiquement une ingestion canonique.",
+  "schema_version": 2,
+  "current_warehouse_release": "V13",
+  "purpose": "Distinguer clairement les sources encore à acquérir, acquises, intégrées et gelées, sans autoriser automatiquement une ingestion canonique.",
   "states": {
-    "ACTIVE": "Source précise, accessible et prête à être acquise.",
-    "COLLECTING": "Portail ou famille identifié; fichiers précis encore à inventorier.",
+    "TO_ACQUIRE": "Source ou famille crédible encore absente des RAW; acquisition à décider après classement du stock existant.",
+    "ACQUIRED": "Octets conservés dans les RAW et inventoriés, mais non intégrés au modèle canonique.",
+    "INTEGRATED": "Au moins un périmètre qualifié de la source est chargé dans la release canonique indiquée.",
     "WATCHLIST": "Chantier gelé jusqu'à apparition d'une preuve nouvelle."
   },
   "domains": [
@@ -27,7 +28,7 @@
       "target_period": "avant 2015 et après 2021",
       "expected_formats": ["xlsx", "csv", "pdf", "html"],
       "priority": 1,
-      "state": "COLLECTING",
+      "state": "TO_ACQUIRE",
       "purpose": "Étendre les résultats, candidatures et découpages temporels du cœur électoral.",
       "reuse_status": "À vérifier fichier par fichier"
     },
@@ -40,7 +41,8 @@
       "target_period": "élections législatives 2002",
       "expected_formats": ["xlsx"],
       "priority": 3,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 1,
       "purpose": "Conserver et profiler une archive historique explicitement incomplète, sans lui attribuer une exhaustivité absente.",
       "reuse_status": "Creative Commons Attribution annoncée par openAFRICA; source primaire incomplète et source secondaire signalée comme erronée"
     },
@@ -53,7 +55,9 @@
       "target_period": "élections législatives 2007",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "INTEGRATED",
+      "inventory_records": 1,
+      "integration_release": "V13",
       "purpose": "Étendre l'historique des résultats et de la participation à partir d'une copie archivée du portail officiel de 2007.",
       "reuse_status": "Creative Commons Attribution annoncée par openAFRICA; filiation officielle à confirmer au niveau des champs"
     },
@@ -66,7 +70,9 @@
       "target_period": "élections législatives 2011",
       "expected_formats": ["xlsx"],
       "priority": 2,
-      "state": "ACTIVE",
+      "state": "INTEGRATED",
+      "inventory_records": 1,
+      "integration_release": "V13",
       "purpose": "Profiler une source de recherche historique avant toute décision sur son usage analytique.",
       "reuse_status": "Creative Commons Attribution annoncée par openAFRICA; ce n'est pas une publication officielle primaire"
     },
@@ -79,7 +85,9 @@
       "target_period": "élections législatives 2016",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "INTEGRATED",
+      "inventory_records": 1,
+      "integration_release": "V13",
       "purpose": "Profiler les résultats des listes locales et nationales en conservant leur provenance distincte et les dénominateurs absents.",
       "reuse_status": "Creative Commons Attribution annoncée par openAFRICA; inscrits et votes nuls non publiés"
     },
@@ -92,7 +100,9 @@
       "target_period": "élections régionales 2015",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "INTEGRATED",
+      "inventory_records": 1,
+      "integration_release": "V13",
       "purpose": "Ajouter un candidat régional historique et mesurer sa compatibilité avec les dimensions géographiques et partisanes canoniques.",
       "reuse_status": "Creative Commons Attribution annoncée par openAFRICA; inscrits et votes nuls non publiés"
     },
@@ -105,7 +115,9 @@
       "target_period": "élections législatives 2021",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "INTEGRATED",
+      "inventory_records": 1,
+      "integration_release": "V13",
       "purpose": "Compléter le scrutin législatif 2021 et évaluer son raccordement aux mandats parlementaires canoniques.",
       "reuse_status": "Creative Commons Attribution annoncée par openAFRICA; inscrits et votes nuls non publiés"
     },
@@ -118,7 +130,9 @@
       "target_period": "élections régionales 2021",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "INTEGRATED",
+      "inventory_records": 1,
+      "integration_release": "V13",
       "purpose": "Former avec 2015 une première série régionale comparable après validation des découpages et des partis.",
       "reuse_status": "Creative Commons Attribution annoncée par openAFRICA; inscrits et votes nuls non publiés"
     },
@@ -131,7 +145,7 @@
       "target_period": "législatures disponibles, hors quatre segments V12 déjà intégrés",
       "expected_formats": ["xlsx", "csv", "json", "pdf", "html"],
       "priority": 1,
-      "state": "COLLECTING",
+      "state": "TO_ACQUIRE",
       "purpose": "Ajouter questions orales, propositions, commissions, votes et périodes manquantes lorsqu'ils sont publiés.",
       "reuse_status": "À vérifier fichier par fichier"
     },
@@ -144,7 +158,7 @@
       "target_period": "RGPH 2004, 2014 et 2024; publications communales",
       "expected_formats": ["xlsx", "csv", "sav", "dta", "pdf", "zip"],
       "priority": 1,
-      "state": "COLLECTING",
+      "state": "TO_ACQUIRE",
       "purpose": "Enrichir les observations démographiques, économiques, éducatives et d'habitat au millésime réel.",
       "reuse_status": "À vérifier fichier par fichier"
     },
@@ -157,7 +171,8 @@
       "target_period": "RGPH 2024, douars ruraux",
       "expected_formats": ["pdf"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 1,
       "purpose": "Conserver la publication méthodologique et les contrôles agrégés accompagnant la future base détaillée par douar.",
       "reuse_status": "Publication officielle; conditions de redistribution à confirmer"
     },
@@ -170,7 +185,8 @@
       "target_period": "RGPH 2024, 33 189 douars annoncés",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 1,
       "purpose": "Ajouter le niveau douar et fraction sous les communes rurales après profilage et crosswalk exact.",
       "reuse_status": "Publication officielle; conditions de redistribution à confirmer"
     },
@@ -183,7 +199,8 @@
       "target_period": "RGPH 2024",
       "expected_formats": ["xlsx"],
       "priority": 2,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 1,
       "purpose": "Documenter les mobilités internes à leur grain réellement publié.",
       "reuse_status": "Publication officielle; conditions de redistribution à confirmer"
     },
@@ -196,7 +213,8 @@
       "target_period": "RGPH 2024, communes ou entités urbaines publiées",
       "expected_formats": ["xlsx"],
       "priority": 2,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 1,
       "purpose": "Enrichir l'habitat urbain sans extrapolation aux communes non couvertes.",
       "reuse_status": "Publication officielle; conditions de redistribution à confirmer"
     },
@@ -209,7 +227,8 @@
       "target_period": "RGPH 2024, actifs occupés",
       "expected_formats": ["xlsx"],
       "priority": 2,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 1,
       "purpose": "Mesurer les modes de déplacement domicile-travail au grain communal publié.",
       "reuse_status": "Publication officielle; conditions de redistribution à confirmer"
     },
@@ -222,7 +241,8 @@
       "target_period": "Cartographie des établissements économiques 2023–2024",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 1,
       "purpose": "Ajouter structure et densité des établissements économiques au grain communal publié.",
       "reuse_status": "Publication officielle; conditions de redistribution à confirmer"
     },
@@ -235,7 +255,8 @@
       "target_period": "sessions entre octobre et avril, 2016–2024",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 8,
       "purpose": "Étendre l'activité parlementaire aux questions orales avec dates et identités observées.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -248,7 +269,8 @@
       "target_period": "sessions d'avril, 2017–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 7,
       "purpose": "Compléter les questions orales publiées par session.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -261,7 +283,8 @@
       "target_period": "sessions d'octobre, 2016–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 8,
       "purpose": "Compléter les questions orales publiées par session.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -274,7 +297,8 @@
       "target_period": "intersessions avril–octobre, 2017–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 7,
       "purpose": "Compléter les questions orales publiées entre sessions.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -287,7 +311,8 @@
       "target_period": "sessions d'avril, 2017–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 6,
       "purpose": "Étendre les questions écrites V12 aux sessions historiques.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -300,7 +325,8 @@
       "target_period": "sessions d'octobre, 2016–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 7,
       "purpose": "Étendre les questions écrites V12 aux sessions historiques.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -313,7 +339,8 @@
       "target_period": "intersessions avril–octobre, 2017–2023",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 6,
       "purpose": "Étendre les questions écrites V12 aux intersessions historiques.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -326,7 +353,8 @@
       "target_period": "intersessions octobre–avril, 2016–2024",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 7,
       "purpose": "Étendre les questions écrites V12 aux intersessions historiques.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -339,7 +367,8 @@
       "target_period": "2014",
       "expected_formats": ["xls", "xlsx"],
       "priority": 2,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 1,
       "purpose": "Fournir une référence officielle d'identité et de mandat pour la législature historique.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -352,7 +381,8 @@
       "target_period": "2021–2026",
       "expected_formats": ["xlsx"],
       "priority": 1,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 1,
       "purpose": "Contrôler et enrichir les identités parlementaires de V12 avec une source officielle.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -365,7 +395,8 @@
       "target_period": "2016–2024 selon ressources publiées",
       "expected_formats": ["xlsx"],
       "priority": 2,
-      "state": "ACTIVE",
+      "state": "ACQUIRED",
+      "inventory_records": 2,
       "purpose": "Relier contrôle parlementaire, département ministériel, engagement et suivi publié.",
       "reuse_status": "Open Data Commons Open Database License (ODbL)"
     },
@@ -378,7 +409,7 @@
       "target_period": "années et collectivités publiées",
       "expected_formats": ["xlsx", "csv", "pdf", "html"],
       "priority": 2,
-      "state": "COLLECTING",
+      "state": "TO_ACQUIRE",
       "purpose": "Documenter budgets, comptes, investissements et programmes territoriaux sans supposer une couverture nationale.",
       "reuse_status": "Droit d'accès annoncé; réutilisation à vérifier par document"
     },
