@@ -8,6 +8,11 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from morocco_elections.quality import validation as validate_project  # noqa: E402
+from morocco_elections import __version__  # noqa: E402
+
+
+def test_operational_release_version() -> None:
+    assert __version__ == "13.0.0"
 
 
 def test_manifest_contract() -> None:
@@ -21,6 +26,7 @@ def test_manifest_contract() -> None:
 
 def test_documentation_contract() -> None:
     assert validate_project.validate_documentation() == []
+    assert validate_project.validate_documentation("all") == []
     assert validate_project._recorded_documentation_date(validate_project.DOCUMENTATION_DIRS["v10"]) == "2026-09-07"
 
 

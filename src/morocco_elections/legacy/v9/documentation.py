@@ -192,17 +192,6 @@ def section(title: str, body: str) -> str:
     return f"\n{title}\n{'-' * len(title)}\n{body.strip()}\n"
 
 
-def format_rows(rows, columns):
-    lines = []
-    for row in rows:
-        lines.append(" | ".join(f"{column}={normalize_text(row.get(column)) or 'NULL'}" for column in columns))
-    return "\n".join(lines) if lines else "Aucune ligne."
-
-
-def sheet_count(model, name):
-    return model["sheets"][name]["rows"]
-
-
 def build_docs(model):
     counts = {name: data["rows"] for name, data in model["sheets"].items()}
     empty_sheets = sorted(name for name, data in model["sheets"].items() if data["rows"] == 0)

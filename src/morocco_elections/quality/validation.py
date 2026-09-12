@@ -822,7 +822,7 @@ def validate_python_sources() -> list[str]:
     return errors
 
 
-def validate_documentation(release: str = "all") -> list[str]:
+def validate_documentation(release: str = "v13") -> list[str]:
     errors: list[str] = []
     releases = DOCUMENTATION_DIRS if release == "all" else {release: DOCUMENTATION_DIRS[release]}
     for version, directory in releases.items():
@@ -1015,7 +1015,7 @@ def compare_v13_to_v12(data_dir: str | Path | None = None) -> list[str]:
     return errors
 
 
-def validate_full(manifest: dict, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> list[str]:
+def validate_full(manifest: dict, data_dir: str | Path | None = None, release: str = "v13", baseline: str | None = None) -> list[str]:
     errors: list[str] = []
     for record in [*manifest["physical_files"], *manifest["evidence"]]:
         errors.extend(validate_physical_record(record, data_dir))
@@ -1030,8 +1030,18 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None, release: s
             if actual_rows != source["rows"] or actual_columns != source["columns"]:
                 errors.append(f"{source['source_id']}: dimensions attendues {source['rows']}×{source['columns']}, obtenues {actual_rows}×{actual_columns}")
 
+    selected_artifacts = {
+        "v9": {"WAREHOUSE_V8_INPUT", "WAREHOUSE_V9_EXPORT"},
+        "v10": {"WAREHOUSE_V9_EXPORT", "WAREHOUSE_V10_EXPORT"},
+        "v11": {"WAREHOUSE_V10_EXPORT", "WAREHOUSE_V11_EXPORT"},
+        "v12": {"WAREHOUSE_V8_INPUT", "WAREHOUSE_V11_EXPORT", "WAREHOUSE_V12_EXPORT"},
+        "v13": {"WAREHOUSE_V8_INPUT", "WAREHOUSE_V12_EXPORT", "WAREHOUSE_V13_EXPORT"},
+        "all": {item["artifact_id"] for item in manifest["artifacts"]},
+    }[release]
     for artifact in manifest["artifacts"]:
         errors.extend(validate_physical_record(artifact, data_dir))
+        if artifact["artifact_id"] not in selected_artifacts:
+            continue
         path = resolve_manifest_path(artifact["local_path"], data_dir)
         if not path.is_file():
             continue
@@ -1058,30 +1068,31 @@ def validate_full(manifest: dict, data_dir: str | Path | None = None, release: s
         workbook.close()
 
     paths = get_paths(data_dir)
-    v11a_candidate = paths.data_root / "staging" / "v11a" / "source_candidates" / "communes-elus-2015-1-0.xlsx"
-    if not v11a_candidate.is_file():
-        errors.append(f"V11-A: candidat local absent: {v11a_candidate}")
-    else:
-        v11a_metadata = json.loads(V11A_METADATA_PATH.read_text(encoding="utf-8"))
-        expected_size = v11a_metadata["candidate"]["byte_size"]
-        expected_hash = v11a_metadata["candidate"]["sha256"]
-        if v11a_candidate.stat().st_size != expected_size:
-            errors.append(f"V11-A: taille candidat attendue {expected_size}, obtenue {v11a_candidate.stat().st_size}")
-        actual_hash = sha256(v11a_candidate)
-        if actual_hash != expected_hash:
-            errors.append(f"V11-A: SHA-256 candidat attendu {expected_hash}, obtenu {actual_hash}")
-    smiig_candidate = paths.data_root / "staging" / "v11_smiig" / "source_candidates" / "2024-01-08-dataset-smiig-v2023-communes.xlsx"
-    if not smiig_candidate.is_file():
-        errors.append(f"SMIIG: candidat local absent: {smiig_candidate}")
-    else:
-        smiig_metadata = json.loads(SMIIG_METADATA_PATH.read_text(encoding="utf-8"))
-        expected_size = smiig_metadata["candidate"]["byte_size"]
-        expected_hash = smiig_metadata["candidate"]["sha256"]
-        if smiig_candidate.stat().st_size != expected_size:
-            errors.append(f"SMIIG: taille candidat attendue {expected_size}, obtenue {smiig_candidate.stat().st_size}")
-        actual_hash = sha256(smiig_candidate)
-        if actual_hash != expected_hash:
-            errors.append(f"SMIIG: SHA-256 candidat attendu {expected_hash}, obtenu {actual_hash}")
+    if release == "all":
+        v11a_candidate = paths.data_root / "staging" / "v11a" / "source_candidates" / "communes-elus-2015-1-0.xlsx"
+        if not v11a_candidate.is_file():
+            errors.append(f"V11-A: candidat local absent: {v11a_candidate}")
+        else:
+            v11a_metadata = json.loads(V11A_METADATA_PATH.read_text(encoding="utf-8"))
+            expected_size = v11a_metadata["candidate"]["byte_size"]
+            expected_hash = v11a_metadata["candidate"]["sha256"]
+            if v11a_candidate.stat().st_size != expected_size:
+                errors.append(f"V11-A: taille candidat attendue {expected_size}, obtenue {v11a_candidate.stat().st_size}")
+            actual_hash = sha256(v11a_candidate)
+            if actual_hash != expected_hash:
+                errors.append(f"V11-A: SHA-256 candidat attendu {expected_hash}, obtenu {actual_hash}")
+        smiig_candidate = paths.data_root / "staging" / "v11_smiig" / "source_candidates" / "2024-01-08-dataset-smiig-v2023-communes.xlsx"
+        if not smiig_candidate.is_file():
+            errors.append(f"SMIIG: candidat local absent: {smiig_candidate}")
+        else:
+            smiig_metadata = json.loads(SMIIG_METADATA_PATH.read_text(encoding="utf-8"))
+            expected_size = smiig_metadata["candidate"]["byte_size"]
+            expected_hash = smiig_metadata["candidate"]["sha256"]
+            if smiig_candidate.stat().st_size != expected_size:
+                errors.append(f"SMIIG: taille candidat attendue {expected_size}, obtenue {smiig_candidate.stat().st_size}")
+            actual_hash = sha256(smiig_candidate)
+            if actual_hash != expected_hash:
+                errors.append(f"SMIIG: SHA-256 candidat attendu {expected_hash}, obtenu {actual_hash}")
     if release in {"v9", "all"} and paths.v9_workbook.is_file():
         from morocco_elections.legacy.v9 import documentation as module
         module.configure_paths(data_dir)
@@ -1436,57 +1447,63 @@ def validate_v11_quality_baseline_artifacts(data_dir: str | Path | None = None, 
     return errors
 
 
-def run(mode: str, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> list[str]:
+def run(mode: str, data_dir: str | Path | None = None, release: str = "v13", baseline: str | None = None) -> list[str]:
     manifest = load_manifest()
     errors = []
     errors.extend(validate_manifest(manifest))
-    errors.extend(validate_backlog())
-    errors.extend(validate_acquisition_catalog())
-    errors.extend(validate_acquisition_inventory())
-    errors.extend(validate_ontology_contract())
-    errors.extend(validate_v13_source_profile())
-    errors.extend(validate_v13_identity_registry())
-    errors.extend(validate_v13_electoral_qualification())
-    errors.extend(validate_v10_release_report(manifest))
-    errors.extend(validate_v11_release_report(manifest))
-    errors.extend(validate_v12_qualification(manifest))
-    errors.extend(validate_v12_release_report(manifest))
-    errors.extend(validate_v13_release_report(manifest))
-    errors.extend(validate_v13_open_distribution())
-    errors.extend(validate_v11a_artifacts())
-    errors.extend(validate_smiig_artifacts())
-    errors.extend(validate_quality_baseline_artifacts())
-    errors.extend(validate_electoral_denominator_artifacts())
-    errors.extend(validate_local_presidency_artifacts())
-    errors.extend(validate_hcp_indicator_artifacts())
-    errors.extend(validate_v11_quality_baseline_artifacts())
+    if release in {"v13", "all"}:
+        errors.extend(validate_acquisition_catalog())
+        errors.extend(validate_acquisition_inventory())
+        errors.extend(validate_ontology_contract())
+        errors.extend(validate_v13_source_profile())
+        errors.extend(validate_v13_identity_registry())
+        errors.extend(validate_v13_electoral_qualification())
+        errors.extend(validate_v13_release_report(manifest))
+        errors.extend(validate_v13_open_distribution())
+    if release in {"v12", "v13", "all"}:
+        errors.extend(validate_v12_qualification(manifest))
+        errors.extend(validate_v12_release_report(manifest))
+    if release in {"v10", "v11", "v12", "all"}:
+        errors.extend(validate_v10_release_report(manifest))
+    if release in {"v11", "v12", "all"}:
+        errors.extend(validate_v11_release_report(manifest))
+    if release in {"v11", "all"}:
+        errors.extend(validate_v11_quality_baseline_artifacts())
+    if release == "all":
+        errors.extend(validate_backlog())
+        errors.extend(validate_v11a_artifacts())
+        errors.extend(validate_smiig_artifacts())
+        errors.extend(validate_quality_baseline_artifacts())
+        errors.extend(validate_electoral_denominator_artifacts())
+        errors.extend(validate_local_presidency_artifacts())
+        errors.extend(validate_hcp_indicator_artifacts())
     errors.extend(validate_python_sources())
     errors.extend(validate_documentation(release))
     errors.extend(validate_repository_files())
     if mode == "full" and not errors:
         errors.extend(validate_full(manifest, data_dir, release, baseline))
-        if not errors:
+        if not errors and release == "all":
             errors.extend(validate_quality_baseline_artifacts(data_dir, full=True))
-        if not errors:
+        if not errors and release == "all":
             errors.extend(validate_electoral_denominator_artifacts(data_dir, full=True))
-        if not errors:
+        if not errors and release == "all":
             errors.extend(validate_local_presidency_artifacts(data_dir, full=True))
-        if not errors:
+        if not errors and release == "all":
             errors.extend(validate_hcp_indicator_artifacts(data_dir, full=True))
-        if not errors:
+        if not errors and release in {"v11", "all"}:
             errors.extend(validate_v11_quality_baseline_artifacts(data_dir, full=True))
-        if not errors:
+        if not errors and release in {"v13", "all"}:
             errors.extend(validate_acquisition_inventory(data_dir, full=True))
-        if not errors:
+        if not errors and release in {"v13", "all"}:
             errors.extend(validate_v13_source_profile(data_dir, full=True))
-        if not errors:
+        if not errors and release in {"v13", "all"}:
             errors.extend(validate_v13_identity_registry(data_dir, full=True))
         if not errors and release in {"v13", "all"}:
             errors.extend(validate_v13_open_distribution(data_dir, full=True))
     return errors
 
 
-def report(mode: str, data_dir: str | Path | None = None, release: str = "all", baseline: str | None = None) -> int:
+def report(mode: str, data_dir: str | Path | None = None, release: str = "v13", baseline: str | None = None) -> int:
     errors = run(mode, data_dir, release, baseline)
     if errors:
         print("VALIDATION_FAILED")
@@ -1502,7 +1519,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Valide le dépôt et les releases locales V9 à V13.")
     parser.add_argument("--mode", choices=("ci", "full"), default="ci")
     parser.add_argument("--data-dir")
-    parser.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "all"), default="all")
+    parser.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "all"), default="v13")
     parser.add_argument("--baseline", choices=("v9", "v10", "v11", "v12"))
     args = parser.parse_args(argv)
     return report(args.mode, args.data_dir, args.release, args.baseline)
