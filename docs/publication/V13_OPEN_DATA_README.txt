@@ -22,7 +22,9 @@ DÉMARRAGE RAPIDE
 
 DuckDB: SELECT * FROM fact_election_result LIMIT 10;
 Jointure: fact_election_result.contest_id = dim_electoral_contest.contest_id.
+Trois exemples reproductibles sont fournis dans queries.sql.
 Les checksums sont dans checksums.sha256; le schéma et les volumes sont dans manifest.json.
+La politique de licence du paquet composite est dans LICENSE_DATA.md.
 
 LIMITES ESSENTIELLES
 

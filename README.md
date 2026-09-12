@@ -34,6 +34,16 @@ La racine des données est `<repo>/data` par défaut. L’argument `--data-dir` 
 
 Commencer par [le mode d’emploi V13](docs/v13/ontology/00_INDEX_ET_MODE_EMPLOI.txt). Le [README du paquet ouvert](docs/publication/V13_OPEN_DATA_README.txt) explique l’accès CSV, Parquet et DuckDB. Le contrat machine-readable se trouve dans [`metadata/ontology_v1.json`](metadata/ontology_v1.json).
 
+Trois requêtes DuckDB reproductibles sont fournies dans [`examples/v13_reference_queries.sql`](examples/v13_reference_queries.sql). Les notes de la bêta publique sont dans [`docs/publication/V13_BETA_RELEASE_NOTES.md`](docs/publication/V13_BETA_RELEASE_NOTES.md).
+
+## Licences
+
+- code : MIT, voir [`LICENSE`](LICENSE) ;
+- documentation originale : CC BY 4.0, voir [`LICENSES/DOCUMENTATION.md`](LICENSES/DOCUMENTATION.md) ;
+- base composite et données : politique ODbL/source par source, voir [`LICENSES/DATA.md`](LICENSES/DATA.md) et [`ATTRIBUTIONS.md`](ATTRIBUTIONS.md).
+
+La licence du projet ne remplace pas celle des producteurs. Toute réutilisation doit conserver les identifiants de source et leurs attributions.
+
 Principes non négociables :
 
 - les RAW sont immuables et restent hors de Git ;
@@ -47,9 +57,9 @@ Principes non négociables :
 
 ### Roadmap active
 
-1. Publier le paquet V13 après décision explicite sur les licences et la visibilité du dépôt.
-2. Ajouter une seule vague de données à la fois lorsqu’une source crédible, accessible et raccordable est identifiée.
-3. Étendre ensuite le canonique selon la valeur analytique démontrée : gouvernance, territoire/HCP, puis Parlement.
+1. Publier et éprouver la bêta publique V13 avec ses licences, attributions et checksums.
+2. Classer les ressources déjà acquises et intégrer une seule vague de données à la fois.
+3. Étendre ensuite le canonique selon la valeur analytique démontrée : Parlement longitudinal, puis territoire/HCP.
 4. Préparer PostgreSQL uniquement si collaboration, performance, API ou mises à jour fréquentes le justifient.
 
 La roadmap détaillée est dans [`docs/ROADMAP.md`](docs/ROADMAP.md).

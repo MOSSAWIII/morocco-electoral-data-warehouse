@@ -23,6 +23,8 @@ DEFAULT_OUTPUT = get_paths().data_root / "exports" / "open" / "v13"
 DEFAULT_MANIFEST = PROJECT_ROOT / "metadata" / "v13_open_distribution.json"
 DEFAULT_README = PROJECT_ROOT / "docs" / "publication" / "V13_OPEN_DATA_README.txt"
 RELEASE_REPORT = PROJECT_ROOT / "metadata" / "v13_release_report.json"
+DATA_LICENSE = PROJECT_ROOT / "LICENSES" / "DATA.md"
+REFERENCE_QUERIES = PROJECT_ROOT / "examples" / "v13_reference_queries.sql"
 
 TABLES = {
     "dim_geo": ("DIM_GEO", ["geo_id"]),
@@ -129,7 +131,9 @@ def render_readme(manifest: dict) -> str:
             "",
             "DuckDB: SELECT * FROM fact_election_result LIMIT 10;",
             "Jointure: fact_election_result.contest_id = dim_electoral_contest.contest_id.",
+            "Trois exemples reproductibles sont fournis dans queries.sql.",
             "Les checksums sont dans checksums.sha256; le schéma et les volumes sont dans manifest.json.",
+            "La politique de licence du paquet composite est dans LICENSE_DATA.md.",
             "",
             "LIMITES ESSENTIELLES",
             "",
@@ -150,7 +154,7 @@ def validate_manifest(manifest: dict) -> list[str]:
     errors: list[str] = []
     if manifest.get("schema_version") != 1 or manifest.get("release") != "V13":
         errors.append("version du manifeste de diffusion invalide")
-    if manifest.get("publication_status") != "READY_LOCAL_NOT_PUBLISHED":
+    if manifest.get("publication_status") != "PUBLIC_BETA":
         errors.append("statut de publication invalide")
     tables = manifest.get("tables", [])
     if len(tables) != len(TABLES) or {item.get("table_name") for item in tables} != set(TABLES):
@@ -162,6 +166,8 @@ def validate_manifest(manifest: dict) -> list[str]:
         *(f"parquet/{name}.parquet" for name in TABLES),
         "morocco_elections_v13.duckdb",
         "README.txt",
+        "LICENSE_DATA.md",
+        "queries.sql",
     }
     if set(paths) != expected_paths or len(paths) != len(set(paths)):
         errors.append("inventaire des fichiers de diffusion incohérent")
@@ -211,6 +217,8 @@ def build_distribution(
         *(destination / "parquet" / f"{name}.parquet" for name in TABLES),
         destination / "morocco_elections_v13.duckdb",
         destination / "README.txt",
+        destination / "LICENSE_DATA.md",
+        destination / "queries.sql",
         destination / "manifest.json",
         destination / "checksums.sha256",
     }
@@ -265,21 +273,26 @@ def build_distribution(
         "schema_version": 1,
         "release": "V13",
         "generated_on": GENERATED_ON,
-        "publication_status": "READY_LOCAL_NOT_PUBLISHED",
+        "publication_status": "PUBLIC_BETA",
+        "published_on": "2026-09-12",
         "source_workbook_sha256": expected_hash,
         "scope": "Noyau électoral non nominatif V13 et dimensions/provenance nécessaires à ses jointures.",
         "formats": ["CSV", "Parquet", "DuckDB"],
         "tables": table_contracts,
         "files": [],
-        "license_rule": "Consulter la table sources; attribution et conditions sont conservées source par source.",
+        "license_rule": "ODbL 1.0 pour les droits originaux de structure et de compilation détenus par le projet; les contenus tiers restent régis source par source.",
     }
     readme = render_readme(manifest)
     _write_atomic(destination / "README.txt", readme.encode("utf-8"))
+    _write_atomic(destination / "LICENSE_DATA.md", DATA_LICENSE.read_bytes())
+    _write_atomic(destination / "queries.sql", REFERENCE_QUERIES.read_bytes())
     data_files = [
         *(destination / "csv" / f"{name}.csv" for name in TABLES),
         *(destination / "parquet" / f"{name}.parquet" for name in TABLES),
         database_path,
         destination / "README.txt",
+        destination / "LICENSE_DATA.md",
+        destination / "queries.sql",
     ]
     logical_digest = hashlib.sha256()
     for table_name in TABLES:

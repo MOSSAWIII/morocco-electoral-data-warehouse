@@ -2,7 +2,8 @@
   "schema_version": 1,
   "release": "V13",
   "generated_on": "2026-09-11",
-  "publication_status": "READY_LOCAL_NOT_PUBLISHED",
+  "publication_status": "PUBLIC_BETA",
+  "published_on": "2026-09-12",
   "source_workbook_sha256": "35f5f12b55a603c05c7230b701d0a629dbd78b697b49da177cdf7a3419770332",
   "scope": "Noyau électoral non nominatif V13 et dimensions/provenance nécessaires à ses jointures.",
   "formats": [
@@ -866,9 +867,19 @@
     },
     {
       "path": "README.txt",
-      "byte_size": 1807,
-      "sha256": "6167414f7132f7b0089e612441703dc987b80cb1f61fb5a5559960704dc80b9e"
+      "byte_size": 1938,
+      "sha256": "f20a5b6cb0170152b0fdd32f638408b050ba42998ed8b30f70a7b71a08354a15"
+    },
+    {
+      "path": "LICENSE_DATA.md",
+      "byte_size": 1303,
+      "sha256": "4373215f4b1f842a3ff2922255718c8374bcb9440b0c2dd92d8c5a50b248cf70"
+    },
+    {
+      "path": "queries.sql",
+      "byte_size": 1114,
+      "sha256": "5c6e75a495da49995dd060186a283c01ee1b6a115b09b9fc3188e9ceb21d2779"
     }
   ],
-  "license_rule": "Consulter la table sources; attribution et conditions sont conservées source par source."
+  "license_rule": "ODbL 1.0 pour les droits originaux de structure et de compilation détenus par le projet; les contenus tiers restent régis source par source."
 }
