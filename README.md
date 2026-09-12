@@ -1,8 +1,8 @@
 # Morocco Electoral Data Warehouse
 
-Warehouse électoral marocain ouvert, traçable et directement exploitable. **V13 est la seule release opérationnelle.** Les releases V9 à V12 sont conservées comme historique reproductible et ne constituent plus le parcours normal.
+Warehouse électoral marocain ouvert, traçable et directement exploitable. **V14 est la release publique courante.** Elle étend le cœur V13 avec une série parlementaire longitudinale; les releases antérieures restent un historique reproductible.
 
-V13 relie un modèle canonique de territoires, élections, partis, personnes, mandats, gouvernance locale, activité parlementaire et observations socio-économiques. Son nouveau cœur multi-scrutins contient 639 courses électorales, 10 883 résultats `course × parti` et 639 observations de mobilisation pour les législatives 2007–2021 et les régionales 2015–2021.
+V14 relie un modèle canonique de territoires, élections, partis, personnes, mandats, gouvernance locale, activité parlementaire et observations socio-économiques. Elle conserve le cœur multi-scrutins V13 et expose 65 748 questions écrites ou orales publiées entre 2017 et 2024, 30 257 réponses et 3 142 trajectoires dérivées pour les identités exactement raccordées.
 
 ## Utilisation courante
 
@@ -13,16 +13,16 @@ python -m pip install -r requirements.txt
 python -m pip install --no-deps --editable .
 
 python -m morocco_elections build v13
-python -m morocco_elections export v13
+python -m morocco_elections export v14
 python -m morocco_elections analyze v13
 python -m morocco_elections validate --mode ci
-python -m morocco_elections validate --mode full --release v13 --baseline v12
+python -m morocco_elections validate --mode full --release v14 --baseline v13
 ```
 
 Les cinq familles de commandes actives sont `build`, `export`, `analyze`, `validate` et `sources`. Leur aide est disponible avec `python -m morocco_elections <commande> --help`.
 
-- `build v13` reconstruit le classeur canonique depuis les RAW, les décisions versionnées et le bootstrap historique nécessaire.
-- `export v13` produit le même noyau non nominatif en CSV, Parquet et DuckDB sous `data/exports/open/v13/`.
+- `build v13` reconstruit le dernier classeur Excel, utilisé comme socle stable de l'export ouvert.
+- `export v14` produit le modèle courant non nominatif en CSV, Parquet et DuckDB sous `data/exports/open/v14/`.
 - `analyze v13` exécute les analyses de référence sans écrire dans le warehouse.
 - `validate --mode ci` contrôle rapidement le dépôt et les contrats actifs sans données locales.
 - `validate --mode full` vérifie aussi les fichiers locaux, leurs empreintes, les volumes, les relations et la comparaison V13/V12.
@@ -32,9 +32,9 @@ La racine des données est `<repo>/data` par défaut. L’argument `--data-dir` 
 
 ## Point d’entrée documentaire
 
-Commencer par [le mode d’emploi V13](docs/v13/ontology/00_INDEX_ET_MODE_EMPLOI.txt). Le [README du paquet ouvert](docs/publication/V13_OPEN_DATA_README.txt) explique l’accès CSV, Parquet et DuckDB. Le contrat machine-readable se trouve dans [`metadata/ontology_v1.json`](metadata/ontology_v1.json).
+Commencer par [le README du paquet V14](docs/publication/V14_OPEN_DATA_README.txt), puis consulter [l’ontologie du socle V13](docs/v13/ontology/00_INDEX_ET_MODE_EMPLOI.txt). Le contrat machine-readable commun se trouve dans [`metadata/ontology_v1.json`](metadata/ontology_v1.json).
 
-Trois requêtes DuckDB reproductibles sont fournies dans [`examples/v13_reference_queries.sql`](examples/v13_reference_queries.sql). Les notes de la bêta publique sont dans [`docs/publication/V13_BETA_RELEASE_NOTES.md`](docs/publication/V13_BETA_RELEASE_NOTES.md).
+Trois requêtes DuckDB parlementaires reproductibles sont fournies dans [`examples/v14_reference_queries.sql`](examples/v14_reference_queries.sql). Les notes de release sont dans [`docs/publication/V14_BETA_RELEASE_NOTES.md`](docs/publication/V14_BETA_RELEASE_NOTES.md).
 
 ## Licences
 
@@ -57,9 +57,9 @@ Principes non négociables :
 
 ### Roadmap active
 
-1. Publier et éprouver la bêta publique V13 avec ses licences, attributions et checksums.
-2. Classer les ressources déjà acquises et intégrer une seule vague de données à la fois.
-3. Étendre ensuite le canonique selon la valeur analytique démontrée : Parlement longitudinal, puis territoire/HCP.
+1. Publier et éprouver V14 Parlement avec ses licences, attributions et checksums.
+2. Intégrer ensuite une seule vague territoriale HCP à la fois, en commençant par les établissements économiques communaux.
+3. Poursuivre la complétude électorale uniquement sur les lacunes à fort impact analytique.
 4. Préparer PostgreSQL uniquement si collaboration, performance, API ou mises à jour fréquentes le justifient.
 
 La roadmap détaillée est dans [`docs/ROADMAP.md`](docs/ROADMAP.md).
@@ -70,7 +70,7 @@ Ces sujets ne consomment plus de développement sans preuve nouvelle : inscrits 
 
 ### Historique terminé
 
-V9, V10, V11 et V12, leurs 15 documents respectifs, leurs rapports de release et les décisions de qualification restent immuables. Les anciennes commandes `docs`, `qualify`, `quality`, `identity` et `github` sont conservées pour les reproduire, mais ne font pas partie du parcours courant. Leur index se trouve dans [`docs/research/README.md`](docs/research/README.md).
+V9 à V13, leurs documents, leurs rapports de release et les décisions de qualification restent immuables. Les anciennes commandes `docs`, `qualify`, `quality`, `identity` et `github` sont conservées pour les reproduire, mais ne font pas partie du parcours courant. Leur index se trouve dans [`docs/research/README.md`](docs/research/README.md).
 
 Les wrappers historiques V9 restent disponibles :
 
@@ -81,9 +81,10 @@ python generate_v9_documentation.py
 
 ## Organisation
 
-- `src/morocco_elections/` : construction V13, export, analyses, sources et compatibilité historique ;
+- `src/morocco_elections/` : construction du socle V13, export V14, analyses, sources et compatibilité historique ;
 - `data/` : RAW et exports locaux ignorés par Git ;
-- `docs/v13/ontology/` : documentation opérationnelle courante ;
+- `docs/publication/` : documentation des paquets publics courants ;
+- `docs/v13/ontology/` : ontologie détaillée du socle Excel canonique ;
 - `docs/v9/` à `docs/v12/` et `docs/research/` : mémoire scientifique reproductible ;
 - `metadata/` : contrats actifs, provenance et décisions historiques ;
 - `tests/` : invariants métier, contrats et intégration CLI.

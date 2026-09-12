@@ -12,7 +12,7 @@ from morocco_elections import __version__  # noqa: E402
 
 
 def test_operational_release_version() -> None:
-    assert __version__ == "13.0.0"
+    assert __version__ == "14.0.0"
 
 
 def test_manifest_contract() -> None:
@@ -53,6 +53,10 @@ def test_v13_release_contract() -> None:
 
 def test_v13_open_distribution_contract() -> None:
     assert validate_project.validate_v13_open_distribution() == []
+
+
+def test_v14_open_distribution_contract() -> None:
+    assert validate_project.validate_v14_open_distribution() == []
 
 
 def test_v11a_artifact_contract() -> None:

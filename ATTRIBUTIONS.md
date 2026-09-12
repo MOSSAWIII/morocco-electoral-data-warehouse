@@ -14,6 +14,8 @@ Sources historiques de la baseline V9 :
 
 Le cœur électoral V13 ajoute six archives TAFRA/openAFRICA couvrant les législatives 2007, 2011, 2016 et 2021 ainsi que les régionales 2015 et 2021. Les URLs, empreintes et conditions déclarées sont conservées dans `metadata/source_manifest.json` et dans la table `SOURCES`; seules les mesures autorisées par `metadata/v13_electoral_qualification.json` sont diffusées.
 
+V14 réunit 59 fichiers uniques de questions écrites et orales publiés par le Parlement du Royaume du Maroc via data.gov.ma sous licence ODbL déclarée. Les huit familles, URLs et conditions sont inscrites dans `metadata/acquisition_catalog.json`; chaque fichier diffusé est identifié par son SHA-256 dans `metadata/v14_open_distribution.json` et dans `dim_parliamentary_source`.
+
 Une mention de licence dans ce dépôt décrit la source concernée ; elle ne constitue pas une licence générale du code ou de l'ensemble du warehouse.
 
 La politique applicable au paquet composite est détaillée dans [`LICENSES/DATA.md`](LICENSES/DATA.md); elle ne remplace jamais les droits attachés à chaque contenu source. Les attributions doivent conserver le producteur, le titre ou identifiant de source, l'URL et la licence indiqués dans `SOURCES`. Les transformations du projet ne doivent pas être présentées comme des résultats officiels du producteur source.

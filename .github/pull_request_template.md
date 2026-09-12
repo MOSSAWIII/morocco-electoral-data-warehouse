@@ -20,5 +20,5 @@ Décrire le changement et le grain de données concerné.
 
 - [ ] `python -m morocco_elections validate --mode ci`
 - [ ] `pytest`
-- [ ] `python -m morocco_elections validate --mode full --release v13 --baseline v12` si le modèle, les données ou la documentation changent.
+- [ ] `python -m morocco_elections validate --mode full --release v14 --baseline v13` si le modèle, les données ou la documentation courante changent.
 - [ ] La CI distante est réussie avant fusion par squash.

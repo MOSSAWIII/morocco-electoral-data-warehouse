@@ -4,14 +4,14 @@
 
 Le projet construit un socle ouvert, profond et cohérent pour relier territoires, élections, partis, personnes, mandats, gouvernance, activité parlementaire et contexte socio-économique. Il n'existe qu'un produit logique : les formats Excel, CSV, Parquet, DuckDB ou SQL sont des accès différents aux mêmes faits canoniques.
 
-La release courante est V13. V9 à V12 restent immuables. La suite suit ce flux :
+La release publique courante est V14. Le classeur V13 reste son socle Excel immuable. La suite suit ce flux :
 
 ```text
 SOURCES → RAW IMMUTABLES → PROFILAGE → IDENTITÉS/CROSSWALKS
         → FAITS CANONIQUES → CUBES → EXPORTS/ANALYSES
 ```
 
-État courant : le cœur électoral V13, ses analyses de référence et son paquet local CSV/Parquet/DuckDB sont réalisés. Le prochain résultat attendu est une première publication utilisable, après décision sur les licences et la visibilité du dépôt.
+État courant : le cœur électoral V13 est publié et V14 ajoute l'activité parlementaire longitudinale issue des ressources déjà acquises. La prochaine vague porte sur le territoire HCP.
 
 ## Règles de conduite
 
@@ -33,7 +33,7 @@ Le catalogue [`metadata/acquisition_catalog.json`](../metadata/acquisition_catal
 - `INTEGRATED` : périmètre qualifié chargé dans la release canonique indiquée ;
 - `WATCHLIST` : chantier gelé jusqu'à une preuve nouvelle.
 
-Au 12 septembre 2026, le catalogue compte 4 familles `TO_ACQUIRE`, 18 sources `ACQUIRED`, 6 sources électorales `INTEGRATED` dans V13 et 4 chantiers en `WATCHLIST`. Les 73 ressources physiques déjà acquises doivent être classées avant toute nouvelle collecte large.
+Au 12 septembre 2026, le catalogue compte 4 familles `TO_ACQUIRE`, 10 sources `ACQUIRED`, 14 sources `INTEGRATED` dans V13–V14 et 4 chantiers en `WATCHLIST`. Les 73 ressources physiques acquises sont toutes classées.
 
 Les domaines de collecte sont : élections, Parlement, gouvernance, partis, HCP, finances locales, géographie et contexte. Une acquisition n'autorise jamais automatiquement l'ingestion canonique. Elle produit un fichier RAW immuable et un profil local ignorés par Git.
 
@@ -56,11 +56,11 @@ Une source ne devient candidate canonique que si producteur, grain, période, cl
 
 Le premier classement des 73 ressources acquises donne 69 `CANONICAL_CANDIDATE`, 3 `REFERENCE` et 1 `ARCHIVE_ONLY`; aucune ne reste `NOT_EVALUATED`. Cette classe est un tri de travail, jamais une autorisation d'ingestion. La liste courte est volontairement limitée :
 
-1. les quatre familles de questions écrites parlementaires 2016–2024 déjà acquises (26 fichiers), pour construire une série longitudinale dédupliquée ;
-2. la base communale HCP CEE 2023–2024, pour mesurer son grain et son raccordement territorial ;
-3. la base HCP des douars 2024, pour étendre la hiérarchie géographique seulement après validation exacte des parents.
+1. la base communale HCP CEE 2023–2024 ;
+2. la base HCP des douars et ménages 2024 ;
+3. les bases HCP logement urbain, migration interne et transport domicile-travail, une à la fois.
 
-Les questions orales, engagements ministériels et autres bases HCP restent acquises mais hors de cette liste courte. Elles ne déclenchent aucun développement tant que les trois candidats précédents ne sont pas décidés.
+Les questions écrites et orales sont intégrées dans V14. Les engagements ministériels restent acquis mais hors de la liste courte.
 
 ## Phase 3 — Ontologie V1
 
@@ -68,7 +68,7 @@ L'ontologie commune reste petite : territoire, élection, parti/alliance, person
 
 Les relations temporelles portent `valid_from`, `valid_to`, `observation_date`, `publication_date` et `retrieved_at` selon leur nature. Cela s'applique notamment aux découpages, affiliations, mandats, fonctions, présidences et compositions institutionnelles.
 
-L'ontologie V1.1 est matérialisée par V13 pour le cœur électoral; elle sera étendue sans casser les identifiants existants.
+L'ontologie V1.1 est matérialisée par V13 pour le cœur électoral et étendue dans V14 pour le Parlement, sans casser les identifiants existants.
 
 ## Phase 4 — Registre d'identités
 
@@ -154,19 +154,20 @@ La migration commence seulement si collaboration simultanée, API, mises à jour
 ## Releases indicatives
 
 - **V13 — Cœur électoral étendu** : réalisée; élections, mobilisation, découpages historiques et diffusion multi-format.
-- **V14 — Gouvernance territoriale** : présidences, conseils, fonctions, budgets ou programmes suffisamment prouvés.
-- **V15 — Territoire enrichi** : HCP, finances et équipements comparables dans le temps.
-- **V16 — Parlement étendu** : périodes et formes d'activité supplémentaires, trajectoires consolidées.
+- **V14 — Parlement longitudinal** : questions écrites et orales, réponses publiées et trajectoires consolidées.
+- **V15 — Territoire enrichi** : HCP, établissements économiques, douars, habitat et mobilités selon les grains publiés.
+- **V16 — Complétude électorale ciblée** : dénominateurs, candidatures, sièges, élections partielles et archives exploitables.
 
 Ces noms ne sont pas des engagements rigides. Des domaines peuvent être regroupés lorsqu'un lot cohérent débloque une capacité analytique; une simple collecte ne déclenche jamais une version.
 
 ## Prochain enchaînement
 
-1. Fixer les licences et la visibilité, puis publier le paquet V13 déjà construit.
-2. Vérifier qu'une personne extérieure peut télécharger, comprendre et interroger V13 en moins de dix minutes.
-3. Corriger les éventuels problèmes d'usage sans modifier les faits canoniques.
-4. Classer les 73 ressources déjà acquises et sélectionner une seule source crédible selon sa valeur analytique, sa couverture et son coût d'intégration.
-5. Prioriser l'activité parlementaire longitudinale, puis le territoire/HCP; ne réactiver les sources de gouvernance bloquées qu'avec une preuve nouvelle.
-6. Déclencher PostgreSQL seulement lorsqu'un besoin opérationnel mesurable apparaît.
+1. Publier V14 Parlement et vérifier ses contrôles depuis un environnement vierge.
+2. Intégrer la base HCP CEE communale, puis les douars, sans mélanger leurs grains.
+3. Ajouter ensuite les autres bases HCP une par une selon leur couverture et leur raccordement exact.
+4. Rechercher les lacunes électorales à fort impact, sans chasse généraliste aux archives.
+5. Améliorer les raccordements d'identité uniquement avec des preuves déterministes.
+6. Ne réactiver les sources de gouvernance bloquées qu'avec une preuve nouvelle.
+7. Déclencher PostgreSQL seulement lorsqu'un besoin opérationnel mesurable apparaît.
 
 Le projet est réussi lorsqu'une personne extérieure peut relier les données par des identifiants stables, retrouver la source de chaque valeur importante, comprendre les lacunes et exécuter des analyses sans connaître l'histoire interne du dépôt.

@@ -19,7 +19,7 @@ from morocco_elections.sources.acquisition import (
 def _catalog(tmp_path: Path) -> Path:
     catalog = {
         "schema_version": 2,
-        "current_warehouse_release": "V13",
+        "current_warehouse_release": "V14",
         "domains": sorted(
             {
                 "elections",
@@ -60,7 +60,7 @@ def test_repository_acquisition_catalog_is_valid() -> None:
         state: sum(candidate["state"] == state for candidate in catalog["candidates"])
         for state in ("TO_ACQUIRE", "ACQUIRED", "INTEGRATED", "WATCHLIST")
     }
-    assert counts == {"TO_ACQUIRE": 4, "ACQUIRED": 18, "INTEGRATED": 6, "WATCHLIST": 4}
+    assert counts == {"TO_ACQUIRE": 4, "ACQUIRED": 10, "INTEGRATED": 14, "WATCHLIST": 4}
 
 
 def test_repository_inventory_is_fully_classified() -> None:
