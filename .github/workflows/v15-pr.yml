@@ -35,3 +35,8 @@ jobs:
           python scripts/verify_v15_reproducibility.py \
             "$RUNNER_TEMP/v15-data/exports/open/v15" "$RUNNER_TEMP/v15-second" \
             "$RUNNER_TEMP/first.zip" "$RUNNER_TEMP/v15-data/exports/open/releases/Morocco_Electoral_Data_Warehouse_V15.zip"
+      - name: Prove the independently published consumer path
+        run: |
+          python -m morocco_elections bootstrap --network-only --data-dir "$RUNNER_TEMP/v15-network-consumer"
+          python -m morocco_elections validate --mode public --data-dir "$RUNNER_TEMP/v15-network-consumer"
+          python -m morocco_elections analyze reference --format json --data-dir "$RUNNER_TEMP/v15-network-consumer"
