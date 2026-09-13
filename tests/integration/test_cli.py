@@ -36,11 +36,13 @@ def test_legacy_wrappers_expose_help() -> None:
 def test_all_structured_commands_are_registered() -> None:
     for args in (
         ("build", "--help"),
+        ("bootstrap", "--help"),
         ("docs", "--help"),
         ("validate", "--help"),
         ("analyze", "v11", "--help"),
         ("analyze", "v12", "--help"),
         ("analyze", "v13", "--help"),
+        ("analyze", "reference", "--help"),
         ("export", "v13", "--help"),
         ("export", "v14", "--help"),
         ("qualify", "parliament", "--help"),

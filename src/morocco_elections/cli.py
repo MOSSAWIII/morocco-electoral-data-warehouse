@@ -8,8 +8,14 @@ def build_parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", required=True)
 
     build = commands.add_parser("build", help="Construire un export du warehouse")
-    build.add_argument("version", choices=("v9", "v10", "v11", "v12", "v13"))
+    build.add_argument("version", choices=("v9", "v10", "v11", "v12", "v13", "v15"))
     build.add_argument("--data-dir")
+    build.add_argument("--seed-dir", help="Paquet public V14.1 servant d'entrée au pipeline canonique V15")
+    build.add_argument("--output-dir", help="Répertoire de sortie V15")
+
+    bootstrap = commands.add_parser("bootstrap", help="Installer et vérifier le paquet public V15")
+    bootstrap.add_argument("--data-dir")
+    bootstrap.add_argument("--network-only", action="store_true", help="Ignorer toute archive locale V15")
 
     export = commands.add_parser("export", help="Produire un paquet de diffusion ouvert")
     export.add_argument("version", choices=("v13", "v14", "v14.1"))
@@ -19,12 +25,12 @@ def build_parser() -> argparse.ArgumentParser:
     export.add_argument("--readme-output")
 
     analyze = commands.add_parser("analyze", help="Exécuter les analyses de référence d'une release validée")
-    analyze.add_argument("version", choices=("v11", "v12", "v13"))
+    analyze.add_argument("version", choices=("v11", "v12", "v13", "reference"))
     analyze.add_argument("--data-dir")
     analyze.add_argument("--format", choices=("text", "json"), default="text")
 
     validate = commands.add_parser("validate", help="Valider le dépôt et les données locales")
-    validate.add_argument("--mode", choices=("ci", "full"), default="ci")
+    validate.add_argument("--mode", choices=("ci", "full", "public"), default="ci")
     validate.add_argument("--data-dir")
     validate.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "v14", "v14.1", "all"), default="v14.1")
     validate.add_argument("--baseline", choices=("v9", "v10", "v11", "v12", "v13", "v14"))
@@ -144,7 +150,15 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == "bootstrap":
+        from morocco_elections.v15.bootstrap import run
+
+        return run(data_dir=args.data_dir, network_only=args.network_only)
     if args.command == "build":
+        if args.version == "v15":
+            from morocco_elections.v15.pipeline import main as build_release
+
+            return build_release(data_dir=args.data_dir, seed_dir=args.seed_dir, output_dir=args.output_dir)
         if args.version == "v9":
             from morocco_elections.legacy.v9.build import main as build_release
         elif args.version == "v10":
@@ -171,6 +185,10 @@ def main(argv: list[str] | None = None) -> int:
         generate_docs(data_dir=args.data_dir)
         return 0
     if args.command == "validate":
+        if args.mode == "public":
+            from morocco_elections.quality.v15.package import report as public_report
+
+            return public_report(data_dir=args.data_dir)
         from morocco_elections.quality.validation import report
 
         return report(mode=args.mode, data_dir=args.data_dir, release=args.release, baseline=args.baseline)
@@ -184,6 +202,10 @@ def main(argv: list[str] | None = None) -> int:
         return run(data_dir=args.data_dir, output_format=args.format)
     if args.command == "analyze" and args.version == "v13":
         from morocco_elections.analysis.v13 import run
+
+        return run(data_dir=args.data_dir, output_format=args.format)
+    if args.command == "analyze" and args.version == "reference":
+        from morocco_elections.analysis.v15 import run
 
         return run(data_dir=args.data_dir, output_format=args.format)
     if args.command == "export" and args.version == "v13":
