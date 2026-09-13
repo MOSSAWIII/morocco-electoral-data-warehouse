@@ -1,0 +1,5476 @@
+{
+  "contract_version": 1,
+  "release": "V15",
+  "release_version": "15.0.0",
+  "source_release": "V14.1",
+  "source_distribution": {
+    "download_url": "https://github.com/MOSSAWIII/morocco-electoral-data-warehouse/releases/download/v14.1.0/morocco_elections_v14_1_open.zip",
+    "asset_name": "morocco_elections_v14_1_open.zip",
+    "bytes": 109382143,
+    "sha256": "0641619697828a364c9123911ff1a53a6d7d7956ba5d50ae3834ac6cfd4ce9b6",
+    "manifest_sha256": "75661c74523de9665abbde8eb27a93e6ac708c5576d2d167165797a12d23e01f"
+  },
+  "tables": [
+    {
+      "table_name": "dim_geo",
+      "source_table": "dim_geo",
+      "category": "CORE",
+      "grain": "one dated geographic entity",
+      "expected_rows": 1825,
+      "primary_key": [
+        "geo_id"
+      ],
+      "natural_key": [
+        "geo_id"
+      ],
+      "columns": [
+        {
+          "name": "geo_id",
+          "source_column": "geo_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "geo_name",
+          "source_column": "geo_name",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "geo_type",
+          "source_column": "geo_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "parent_geo_id",
+          "source_column": "parent_geo_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "region_name",
+          "source_column": "region_name",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "province_prefecture",
+          "source_column": "province_prefecture",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "constituency_name",
+          "source_column": "constituency_name",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "commune_name",
+          "source_column": "commune_name",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "district_arrondissement",
+          "source_column": "district_arrondissement",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "fraction",
+          "source_column": "fraction",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "douar",
+          "source_column": "douar",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "urban_rural",
+          "source_column": "urban_rural",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "latitude",
+          "source_column": "latitude",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "decimal_degrees",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "longitude",
+          "source_column": "longitude",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "decimal_degrees",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "boundary_version",
+          "source_column": "boundary_version",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_from",
+          "source_column": "valid_from",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_to",
+          "source_column": "valid_to",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_url",
+          "source_column": "source_url",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "publication_date",
+          "source_column": "publication_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "retrieval_date",
+          "source_column": "retrieval_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"valid_to\" IS NULL OR \"valid_from\" IS NULL OR \"valid_from\" <= \"valid_to\""
+      ]
+    },
+    {
+      "table_name": "dim_party",
+      "source_table": "dim_party",
+      "category": "CORE",
+      "grain": "one political party or alliance",
+      "expected_rows": 57,
+      "primary_key": [
+        "party_id"
+      ],
+      "natural_key": [
+        "party_id"
+      ],
+      "columns": [
+        {
+          "name": "party_id",
+          "source_column": "party_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "party_name_fr",
+          "source_column": "party_name_fr",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "party_name_ar",
+          "source_column": "party_name_ar",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "acronym",
+          "source_column": "acronym",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "alliance_id",
+          "source_column": "alliance_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "founded_year",
+          "source_column": "founded_year",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "dissolved_year",
+          "source_column": "dissolved_year",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legal_status",
+          "source_column": "legal_status",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "color_or_symbol",
+          "source_column": "color_or_symbol",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "leader_person_id",
+          "source_column": "leader_person_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "parliamentary_group",
+          "source_column": "parliamentary_group",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_from",
+          "source_column": "valid_from",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_to",
+          "source_column": "valid_to",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_url",
+          "source_column": "source_url",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "publication_date",
+          "source_column": "publication_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "retrieval_date",
+          "source_column": "retrieval_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"valid_to\" IS NULL OR \"valid_from\" IS NULL OR \"valid_from\" <= \"valid_to\""
+      ]
+    },
+    {
+      "table_name": "dim_election",
+      "source_table": "dim_election",
+      "category": "CORE",
+      "grain": "one election",
+      "expected_rows": 9,
+      "primary_key": [
+        "election_id"
+      ],
+      "natural_key": [
+        "election_id"
+      ],
+      "columns": [
+        {
+          "name": "election_id",
+          "source_column": "election_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "election_name",
+          "source_column": "election_name",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "election_type",
+          "source_column": "election_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "election_date",
+          "source_column": "election_date",
+          "type": "DATE",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "cycle_year",
+          "source_column": "cycle_year",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "chamber_or_level",
+          "source_column": "chamber_or_level",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "electoral_system",
+          "source_column": "electoral_system",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "total_seats",
+          "source_column": "total_seats",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"total_seats\" >= 0"
+          ]
+        },
+        {
+          "name": "campaign_start",
+          "source_column": "campaign_start",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "campaign_end",
+          "source_column": "campaign_end",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "official_results_date",
+          "source_column": "official_results_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legal_framework_version",
+          "source_column": "legal_framework_version",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_url",
+          "source_column": "source_url",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "publication_date",
+          "source_column": "publication_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "retrieval_date",
+          "source_column": "retrieval_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"campaign_end\" IS NULL OR \"campaign_start\" IS NULL OR \"campaign_start\" <= \"campaign_end\""
+      ]
+    },
+    {
+      "table_name": "dim_electoral_contest",
+      "source_table": "dim_electoral_contest",
+      "category": "CORE",
+      "grain": "one dated electoral contest",
+      "expected_rows": 3715,
+      "primary_key": [
+        "contest_id"
+      ],
+      "natural_key": [
+        "contest_id"
+      ],
+      "columns": [
+        {
+          "name": "contest_id",
+          "source_column": "contest_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "election_id",
+          "source_column": "election_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "geo_id",
+          "source_column": "geo_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "region_geo_id",
+          "source_column": "region_geo_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "list_type",
+          "source_column": "list_type",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_contest_id",
+          "source_column": "source_contest_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_label",
+          "source_column": "source_label",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "normalized_label",
+          "source_column": "normalized_label",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "boundary_version",
+          "source_column": "boundary_version",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_from",
+          "source_column": "valid_from",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_to",
+          "source_column": "valid_to",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "evidence_id",
+          "source_column": "evidence_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "identity_review_status",
+          "source_column": "identity_review_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"valid_to\" IS NULL OR \"valid_from\" IS NULL OR \"valid_from\" <= \"valid_to\""
+      ]
+    },
+    {
+      "table_name": "fact_election_result",
+      "source_table": "fact_election_result",
+      "category": "CORE",
+      "grain": "one contest × party result",
+      "expected_rows": 10883,
+      "primary_key": [
+        "result_id"
+      ],
+      "natural_key": [
+        "contest_id",
+        "party_id"
+      ],
+      "columns": [
+        {
+          "name": "result_id",
+          "source_column": "result_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "contest_id",
+          "source_column": "contest_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "election_id",
+          "source_column": "election_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "geo_id",
+          "source_column": "geo_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "party_id",
+          "source_column": "party_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "votes",
+          "source_column": "votes",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"votes\" >= 0"
+          ]
+        },
+        {
+          "name": "seats",
+          "source_column": "seats",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"seats\" >= 0"
+          ]
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "evidence_id",
+          "source_column": "evidence_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_row",
+          "source_column": "source_row",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": [
+            "\"source_row\" >= 0"
+          ]
+        },
+        {
+          "name": "source_party_code",
+          "source_column": "source_party_code",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "identity_review_status",
+          "source_column": "identity_review_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "fact_electoral_mobilization",
+      "source_table": "fact_electoral_mobilization",
+      "category": "CORE",
+      "grain": "one contest mobilization record",
+      "expected_rows": 639,
+      "primary_key": [
+        "contest_id"
+      ],
+      "natural_key": [
+        "contest_id"
+      ],
+      "columns": [
+        {
+          "name": "contest_id",
+          "source_column": "contest_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "election_id",
+          "source_column": "election_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "geo_id",
+          "source_column": "geo_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "contest_seats",
+          "source_column": "contest_seats",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"contest_seats\" >= 0"
+          ]
+        },
+        {
+          "name": "registered_voters",
+          "source_column": "registered_voters",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"registered_voters\" >= 0"
+          ]
+        },
+        {
+          "name": "voters",
+          "source_column": "voters",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"voters\" >= 0"
+          ]
+        },
+        {
+          "name": "valid_votes",
+          "source_column": "valid_votes",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"valid_votes\" >= 0"
+          ]
+        },
+        {
+          "name": "invalid_votes",
+          "source_column": "invalid_votes",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"invalid_votes\" >= 0"
+          ]
+        },
+        {
+          "name": "blank_votes",
+          "source_column": "blank_votes",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"blank_votes\" >= 0"
+          ]
+        },
+        {
+          "name": "turnout_rate",
+          "source_column": "turnout_rate",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "ratio_0_1",
+          "domain": null,
+          "checks": [
+            "\"turnout_rate\" BETWEEN 0 AND 1"
+          ]
+        },
+        {
+          "name": "invalid_vote_rate",
+          "source_column": "invalid_vote_rate",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "ratio_0_1",
+          "domain": null,
+          "checks": [
+            "\"invalid_vote_rate\" BETWEEN 0 AND 1"
+          ]
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "evidence_id",
+          "source_column": "evidence_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_row",
+          "source_column": "source_row",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": [
+            "\"source_row\" >= 0"
+          ]
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "fact_mandate",
+      "source_table": "fact_parliamentary_mandate",
+      "category": "CORE",
+      "grain": "one parliamentary mandate",
+      "expected_rows": 1654,
+      "primary_key": [
+        "mandate_id"
+      ],
+      "natural_key": [
+        "mandate_id"
+      ],
+      "columns": [
+        {
+          "name": "mandate_id",
+          "source_column": "mandate_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "person_id",
+          "source_column": "person_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "gender",
+          "source_column": "gender",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legislature",
+          "source_column": "legislature",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_seat_id",
+          "source_column": "source_seat_id",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": [
+            "\"source_seat_id\" >= 0"
+          ]
+        },
+        {
+          "name": "source_constituency_id",
+          "source_column": "source_constituency_id",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": [
+            "\"source_constituency_id\" >= 0"
+          ]
+        },
+        {
+          "name": "constituency",
+          "source_column": "constituency",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "region",
+          "source_column": "region",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "province",
+          "source_column": "province",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "party_id",
+          "source_column": "party_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "parliamentary_group",
+          "source_column": "parliamentary_group",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "start_date",
+          "source_column": "start_date",
+          "type": "DATE",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "end_date",
+          "source_column": "end_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "entry_reason",
+          "source_column": "entry_reason",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "exit_reason",
+          "source_column": "exit_reason",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "replacement_procedure",
+          "source_column": "replacement_procedure",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "active_at_source_date",
+          "source_column": "active_at_source_date",
+          "type": "BOOLEAN",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"end_date\" IS NULL OR \"start_date\" IS NULL OR \"start_date\" <= \"end_date\""
+      ]
+    },
+    {
+      "table_name": "fact_observation",
+      "source_table": "fact_observation",
+      "category": "CORE",
+      "grain": "one sourced indicator observation",
+      "expected_rows": 3203,
+      "primary_key": [
+        "observation_id"
+      ],
+      "natural_key": [
+        "observation_id"
+      ],
+      "columns": [
+        {
+          "name": "observation_id",
+          "source_column": "observation_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "indicator_id",
+          "source_column": "indicator_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "value_numeric",
+          "source_column": "value_numeric",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "value_text",
+          "source_column": "value_text",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "unit",
+          "source_column": "unit",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "geo_id",
+          "source_column": "geo_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "time_id",
+          "source_column": "time_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "election_id",
+          "source_column": "election_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "party_id",
+          "source_column": "party_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "person_id",
+          "source_column": "person_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "date_start",
+          "source_column": "date_start",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "date_start_precision",
+          "source_column": "date_start",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "TEMPORAL_PRECISION",
+          "unit": null,
+          "domain": [
+            "DAY",
+            "MONTH",
+            "YEAR",
+            "LABEL_YEAR"
+          ],
+          "checks": [],
+          "derived": "DATE_PRECISION"
+        },
+        {
+          "name": "date_end",
+          "source_column": "date_end",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "date_end_precision",
+          "source_column": "date_end",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "TEMPORAL_PRECISION",
+          "unit": null,
+          "domain": [
+            "DAY",
+            "MONTH",
+            "YEAR",
+            "LABEL_YEAR"
+          ],
+          "checks": [],
+          "derived": "DATE_PRECISION"
+        },
+        {
+          "name": "geo_granularity",
+          "source_column": "geo_granularity",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "temporal_granularity",
+          "source_column": "temporal_granularity",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "method",
+          "source_column": "method",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_url",
+          "source_column": "source_url",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "publication_date",
+          "source_column": "publication_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "publication_date_precision",
+          "source_column": "publication_date",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "TEMPORAL_PRECISION",
+          "unit": null,
+          "domain": [
+            "DAY",
+            "MONTH",
+            "YEAR",
+            "LABEL_YEAR"
+          ],
+          "checks": [],
+          "derived": "DATE_PRECISION"
+        },
+        {
+          "name": "retrieval_date",
+          "source_column": "retrieval_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"date_end\" IS NULL OR \"date_start\" IS NULL OR \"date_start\" <= \"date_end\""
+      ]
+    },
+    {
+      "table_name": "dim_time",
+      "source_table": "dim_time",
+      "category": "SPECIALIZED",
+      "grain": "one time period",
+      "expected_rows": 17,
+      "primary_key": [
+        "time_id"
+      ],
+      "natural_key": [
+        "time_id"
+      ],
+      "columns": [
+        {
+          "name": "time_id",
+          "source_column": "time_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "date",
+          "source_column": "date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "year",
+          "source_column": "year",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quarter",
+          "source_column": "quarter",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "month",
+          "source_column": "month",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "week",
+          "source_column": "week",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "day",
+          "source_column": "day",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "period_type",
+          "source_column": "period_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "campaign_phase",
+          "source_column": "campaign_phase",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legislature",
+          "source_column": "legislature",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "electoral_cycle",
+          "source_column": "electoral_cycle",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_from",
+          "source_column": "valid_from",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_to",
+          "source_column": "valid_to",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_url",
+          "source_column": "source_url",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "publication_date",
+          "source_column": "publication_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "retrieval_date",
+          "source_column": "retrieval_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"valid_to\" IS NULL OR \"valid_from\" IS NULL OR \"valid_from\" <= \"valid_to\""
+      ]
+    },
+    {
+      "table_name": "dim_person_public",
+      "source_table": "dim_person_public",
+      "category": "SPECIALIZED",
+      "grain": "one pseudonymized public person",
+      "expected_rows": 1185,
+      "primary_key": [
+        "person_id"
+      ],
+      "natural_key": [
+        "person_id"
+      ],
+      "columns": [
+        {
+          "name": "person_id",
+          "source_column": "person_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "gender",
+          "source_column": "gender",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "birth_year",
+          "source_column": "birth_year",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "party_id",
+          "source_column": "party_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "role",
+          "source_column": "role",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "incumbent_flag",
+          "source_column": "incumbent_flag",
+          "type": "BOOLEAN",
+          "nullable": true,
+          "role": "FLAG",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "first_elected_year",
+          "source_column": "first_elected_year",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "mandates_count",
+          "source_column": "mandates_count",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"mandates_count\" >= 0"
+          ]
+        },
+        {
+          "name": "valid_from",
+          "source_column": "valid_from",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_to",
+          "source_column": "valid_to",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"valid_to\" IS NULL OR \"valid_from\" IS NULL OR \"valid_from\" <= \"valid_to\""
+      ]
+    },
+    {
+      "table_name": "fact_communal_election_result",
+      "source_table": "fact_communal_election_result",
+      "category": "SPECIALIZED",
+      "grain": "one commune contest × party result",
+      "expected_rows": 22054,
+      "primary_key": [
+        "contest_id",
+        "party_id"
+      ],
+      "natural_key": [
+        "contest_id",
+        "party_id"
+      ],
+      "columns": [
+        {
+          "name": "contest_id",
+          "source_column": "contest_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "geo_id",
+          "source_column": "geo_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "election_id",
+          "source_column": "election_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "year",
+          "source_column": "year",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "party_id",
+          "source_column": "party_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "votes",
+          "source_column": "votes",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"votes\" >= 0"
+          ]
+        },
+        {
+          "name": "vote_share",
+          "source_column": "vote_share",
+          "type": "DOUBLE",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "percent_0_100",
+          "domain": null,
+          "checks": [
+            "\"vote_share\" BETWEEN 0 AND 100"
+          ]
+        },
+        {
+          "name": "rank",
+          "source_column": "rank",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": [
+            "\"rank\" >= 0"
+          ]
+        },
+        {
+          "name": "winner_flag",
+          "source_column": "winner_flag",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "role": "FLAG",
+          "unit": null,
+          "domain": [
+            false,
+            true
+          ],
+          "checks": []
+        },
+        {
+          "name": "seats",
+          "source_column": "seats",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"seats\" >= 0"
+          ]
+        },
+        {
+          "name": "seat_share",
+          "source_column": "seat_share",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "percent_0_100",
+          "domain": null,
+          "checks": [
+            "\"seat_share\" BETWEEN 0 AND 100"
+          ]
+        },
+        {
+          "name": "previous_vote_share",
+          "source_column": "previous_vote_share",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "percent_0_100",
+          "domain": null,
+          "checks": [
+            "\"previous_vote_share\" BETWEEN 0 AND 100"
+          ]
+        },
+        {
+          "name": "swing_pp",
+          "source_column": "swing_pp",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "percent_0_100",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "vote_change",
+          "source_column": "vote_change",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "seat_change",
+          "source_column": "seat_change",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "fact_status",
+          "source_column": "fact_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "fact_commune_election_summary",
+      "source_table": "fact_commune_election_summary",
+      "category": "SPECIALIZED",
+      "grain": "one commune contest summary",
+      "expected_rows": 3076,
+      "primary_key": [
+        "contest_id"
+      ],
+      "natural_key": [
+        "contest_id"
+      ],
+      "columns": [
+        {
+          "name": "contest_id",
+          "source_column": "contest_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "geo_id",
+          "source_column": "geo_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "election_id",
+          "source_column": "election_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "year",
+          "source_column": "year",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "turnout_rate",
+          "source_column": "turnout_rate",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "percent_0_100",
+          "domain": null,
+          "checks": [
+            "\"turnout_rate\" BETWEEN 0 AND 100"
+          ]
+        },
+        {
+          "name": "winner_party_id",
+          "source_column": "winner_party_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "winning_vote_share",
+          "source_column": "winning_vote_share",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "percent_0_100",
+          "domain": null,
+          "checks": [
+            "\"winning_vote_share\" BETWEEN 0 AND 100"
+          ]
+        },
+        {
+          "name": "runner_up_party_id",
+          "source_column": "runner_up_party_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "victory_margin_votes",
+          "source_column": "victory_margin_votes",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "victory_margin_pp",
+          "source_column": "victory_margin_pp",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "percent_0_100",
+          "domain": null,
+          "checks": [
+            "\"victory_margin_pp\" BETWEEN 0 AND 100"
+          ]
+        },
+        {
+          "name": "hhi",
+          "source_column": "hhi",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "index_0_10000",
+          "domain": null,
+          "checks": [
+            "\"hhi\" BETWEEN 0 AND 10000"
+          ]
+        },
+        {
+          "name": "enp",
+          "source_column": "enp",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "effective_parties",
+          "domain": null,
+          "checks": [
+            "\"enp\" >= 1"
+          ]
+        },
+        {
+          "name": "volatility",
+          "source_column": "volatility",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "percent_0_100",
+          "domain": null,
+          "checks": [
+            "\"volatility\" BETWEEN 0 AND 100"
+          ]
+        },
+        {
+          "name": "largest_party_id",
+          "source_column": "largest_party_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "president_party_id",
+          "source_column": "president_party_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "control_change",
+          "source_column": "control_change",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "population_reference",
+          "source_column": "population_reference",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": [
+            "\"population_reference\" >= 0"
+          ]
+        },
+        {
+          "name": "observation_year",
+          "source_column": "observation_year",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "election_year",
+          "source_column": "election_year",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "temporal_distance",
+          "source_column": "temporal_distance",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "temporal_join_method",
+          "source_column": "temporal_join_method",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "poverty",
+          "source_column": "poverty",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "unemployment",
+          "source_column": "unemployment",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "urban_rural",
+          "source_column": "urban_rural",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "migration",
+          "source_column": "migration",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "fact_status",
+          "source_column": "fact_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "dim_indicator",
+      "source_table": "dim_indicator",
+      "category": "SPECIALIZED",
+      "grain": "one indicator definition",
+      "expected_rows": 335,
+      "primary_key": [
+        "indicator_id"
+      ],
+      "natural_key": [
+        "indicator_id"
+      ],
+      "columns": [
+        {
+          "name": "indicator_id",
+          "source_column": "indicator_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "domain",
+          "source_column": "domain",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "metric_name",
+          "source_column": "metric_name",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "definition",
+          "source_column": "definition",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "data_type",
+          "source_column": "data_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "unit",
+          "source_column": "unit",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "preferred_geo_granularity",
+          "source_column": "preferred_geo_granularity",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "preferred_temporal_frequency",
+          "source_column": "preferred_temporal_frequency",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "primary_fact_sheet",
+          "source_column": "primary_fact_sheet",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "required_keys",
+          "source_column": "required_keys",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "candidate_sources",
+          "source_column": "candidate_sources",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "collection_status",
+          "source_column": "collection_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "priority",
+          "source_column": "priority",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_rule",
+          "source_column": "quality_rule",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "dim_parliamentary_period",
+      "source_table": "dim_parliamentary_period",
+      "category": "SPECIALIZED",
+      "grain": "one observed parliamentary period",
+      "expected_rows": 30,
+      "primary_key": [
+        "period_id"
+      ],
+      "natural_key": [
+        "period_id"
+      ],
+      "columns": [
+        {
+          "name": "period_id",
+          "source_column": "period_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legislature_id",
+          "source_column": "legislature_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legislature",
+          "source_column": "legislature",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "period_type",
+          "source_column": "period_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "period_label_ar",
+          "source_column": "period_label_ar",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "start_date",
+          "source_column": "start_date",
+          "type": "DATE",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "end_date",
+          "source_column": "end_date",
+          "type": "DATE",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "date_semantics",
+          "source_column": "date_semantics",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "observed_deposit_start",
+          "source_column": "observed_deposit_start",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "observed_deposit_end",
+          "source_column": "observed_deposit_end",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "official_start_date",
+          "source_column": "official_start_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "official_end_date",
+          "source_column": "official_end_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "boundary_method",
+          "source_column": "boundary_method",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"end_date\" IS NULL OR \"start_date\" IS NULL OR \"start_date\" <= \"end_date\""
+      ]
+    },
+    {
+      "table_name": "dim_institution",
+      "source_table": "dim_institution",
+      "category": "SPECIALIZED",
+      "grain": "one institution",
+      "expected_rows": 94,
+      "primary_key": [
+        "institution_id"
+      ],
+      "natural_key": [
+        "institution_id"
+      ],
+      "columns": [
+        {
+          "name": "institution_id",
+          "source_column": "institution_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "institution_type",
+          "source_column": "institution_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "institution_name_ar",
+          "source_column": "institution_name_ar",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "institution_key",
+          "source_column": "institution_key",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "dim_parliamentary_subject",
+      "source_table": "dim_parliamentary_subject",
+      "category": "SPECIALIZED",
+      "grain": "one normalized published subject",
+      "expected_rows": 58806,
+      "primary_key": [
+        "subject_id"
+      ],
+      "natural_key": [
+        "subject_id"
+      ],
+      "columns": [
+        {
+          "name": "subject_id",
+          "source_column": "subject_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "subject_ar",
+          "source_column": "subject_ar",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "subject_key",
+          "source_column": "subject_key",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "dim_parliamentary_group",
+      "source_table": "dim_parliamentary_group",
+      "category": "SPECIALIZED",
+      "grain": "one source parliamentary group",
+      "expected_rows": 19,
+      "primary_key": [
+        "group_id"
+      ],
+      "natural_key": [
+        "group_id"
+      ],
+      "columns": [
+        {
+          "name": "group_id",
+          "source_column": "group_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legislature",
+          "source_column": "legislature",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "group_name_ar_raw",
+          "source_column": "group_name_ar_raw",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "group_key",
+          "source_column": "group_key",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "dim_parliamentary_source",
+      "source_table": "dim_parliamentary_source",
+      "category": "METADATA",
+      "grain": "one acquired parliamentary source file",
+      "expected_rows": 59,
+      "primary_key": [
+        "source_id"
+      ],
+      "natural_key": [
+        "source_id"
+      ],
+      "columns": [
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_family_id",
+          "source_column": "source_family_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "title",
+          "source_column": "title",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "producer",
+          "source_column": "producer",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "url",
+          "source_column": "url",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "license",
+          "source_column": "license",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "retrieved_at",
+          "source_column": "retrieved_at",
+          "type": "DATE",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "sha256",
+          "source_column": "sha256",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "byte_size",
+          "source_column": "byte_size",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": "bytes",
+          "domain": null,
+          "checks": [
+            "\"byte_size\" >= 0"
+          ]
+        },
+        {
+          "name": "coverage_start",
+          "source_column": "coverage_start",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "coverage_end",
+          "source_column": "coverage_end",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "observed_through_date",
+          "source_column": "observed_through_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "session_type",
+          "source_column": "session_type",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "coverage_status",
+          "source_column": "coverage_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "coverage_reason",
+          "source_column": "coverage_reason",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "fact_parliamentary_question",
+      "source_table": "fact_parliamentary_question",
+      "category": "SPECIALIZED",
+      "grain": "one published parliamentary question",
+      "expected_rows": 65748,
+      "primary_key": [
+        "question_id"
+      ],
+      "natural_key": [
+        "question_id"
+      ],
+      "columns": [
+        {
+          "name": "question_id",
+          "source_column": "question_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "question_type",
+          "source_column": "question_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": [
+            "oral",
+            "written"
+          ],
+          "checks": []
+        },
+        {
+          "name": "source_question_number",
+          "source_column": "source_question_number",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "deposit_date",
+          "source_column": "deposit_date",
+          "type": "DATE",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legislature",
+          "source_column": "legislature",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "period_id",
+          "source_column": "period_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "institution_id",
+          "source_column": "institution_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "subject_id",
+          "source_column": "subject_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "question_text_ar",
+          "source_column": "question_text_ar",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "response_status",
+          "source_column": "response_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_status",
+          "source_column": "quality_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "fact_parliamentary_response",
+      "source_table": "fact_parliamentary_response",
+      "category": "SPECIALIZED",
+      "grain": "one published response date",
+      "expected_rows": 30257,
+      "primary_key": [
+        "response_id"
+      ],
+      "natural_key": [
+        "question_id"
+      ],
+      "columns": [
+        {
+          "name": "response_id",
+          "source_column": "response_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "question_id",
+          "source_column": "question_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "response_date",
+          "source_column": "response_date",
+          "type": "DATE",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "response_status",
+          "source_column": "response_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "bridge_question_author",
+      "source_table": "bridge_question_author",
+      "category": "BRIDGE",
+      "grain": "one question × source-author link",
+      "expected_rows": 65748,
+      "primary_key": [
+        "question_author_id"
+      ],
+      "natural_key": [
+        "question_id",
+        "author_source_id"
+      ],
+      "columns": [
+        {
+          "name": "question_author_id",
+          "source_column": "question_author_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "question_id",
+          "source_column": "question_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "person_id",
+          "source_column": "person_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "party_id",
+          "source_column": "party_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "group_id",
+          "source_column": "group_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "affiliation_method",
+          "source_column": "affiliation_method",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "author_source_id",
+          "source_column": "author_source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "author_role",
+          "source_column": "author_role",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "coauthor_parsing_status",
+          "source_column": "coauthor_parsing_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "bridge_question_source",
+      "source_table": "bridge_question_source",
+      "category": "BRIDGE",
+      "grain": "one question × source-file occurrence",
+      "expected_rows": 66974,
+      "primary_key": [
+        "question_source_id"
+      ],
+      "natural_key": [
+        "question_id",
+        "source_id",
+        "source_row"
+      ],
+      "columns": [
+        {
+          "name": "question_source_id",
+          "source_column": "question_source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "question_id",
+          "source_column": "question_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_row",
+          "source_column": "source_row",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": [
+            "\"source_row\" >= 0"
+          ]
+        },
+        {
+          "name": "source_sha256",
+          "source_column": "source_sha256",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "dim_legislature",
+      "source_table": "dim_legislature",
+      "category": "SPECIALIZED",
+      "grain": "one legislature",
+      "expected_rows": 2,
+      "primary_key": [
+        "legislature_id"
+      ],
+      "natural_key": [
+        "legislature_id"
+      ],
+      "columns": [
+        {
+          "name": "legislature_id",
+          "source_column": "legislature_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legislature",
+          "source_column": "legislature",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "chamber",
+          "source_column": "chamber",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "start_date",
+          "source_column": "start_date",
+          "type": "DATE",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "end_date",
+          "source_column": "end_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "boundary_status",
+          "source_column": "boundary_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_url",
+          "source_column": "source_url",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"end_date\" IS NULL OR \"start_date\" IS NULL OR \"start_date\" <= \"end_date\""
+      ]
+    },
+    {
+      "table_name": "dim_parliamentary_source_author",
+      "source_table": "dim_parliamentary_source_author",
+      "category": "SPECIALIZED",
+      "grain": "one source author label",
+      "expected_rows": 1622,
+      "primary_key": [
+        "author_source_id"
+      ],
+      "natural_key": [
+        "author_source_id"
+      ],
+      "columns": [
+        {
+          "name": "author_source_id",
+          "source_column": "author_source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legislature",
+          "source_column": "legislature",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "person_id",
+          "source_column": "person_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "identity_match_method",
+          "source_column": "identity_match_method",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "identity_scope",
+          "source_column": "identity_scope",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "bridge_person_parliamentary_affiliation",
+      "source_table": "bridge_person_parliamentary_affiliation",
+      "category": "BRIDGE",
+      "grain": "one mandate-bounded affiliation",
+      "expected_rows": 1654,
+      "primary_key": [
+        "affiliation_id"
+      ],
+      "natural_key": [
+        "mandate_id"
+      ],
+      "columns": [
+        {
+          "name": "affiliation_id",
+          "source_column": "affiliation_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "mandate_id",
+          "source_column": "mandate_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "person_id",
+          "source_column": "person_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "party_id",
+          "source_column": "party_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "group_id",
+          "source_column": "group_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_from",
+          "source_column": "valid_from",
+          "type": "DATE",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "valid_to",
+          "source_column": "valid_to",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "validity_method",
+          "source_column": "validity_method",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": [
+        "\"valid_to\" IS NULL OR \"valid_from\" IS NULL OR \"valid_from\" <= \"valid_to\""
+      ]
+    },
+    {
+      "table_name": "analytical_parliamentary_coverage",
+      "source_table": "analytical_parliamentary_coverage",
+      "category": "ANALYTICAL",
+      "grain": "one coverage cell",
+      "expected_rows": 61,
+      "primary_key": [
+        "coverage_id"
+      ],
+      "natural_key": [
+        "coverage_id"
+      ],
+      "columns": [
+        {
+          "name": "coverage_id",
+          "source_column": "coverage_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "chamber",
+          "source_column": "chamber",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legislature",
+          "source_column": "legislature",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "calendar_year",
+          "source_column": "calendar_year",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "TEMPORAL",
+          "unit": "calendar_year",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "session_type",
+          "source_column": "session_type",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "question_type",
+          "source_column": "question_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "expected_file_count",
+          "source_column": "expected_file_count",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"expected_file_count\" >= 0"
+          ]
+        },
+        {
+          "name": "found_file_count",
+          "source_column": "found_file_count",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"found_file_count\" >= 0"
+          ]
+        },
+        {
+          "name": "observed_deposit_start",
+          "source_column": "observed_deposit_start",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "observed_deposit_end",
+          "source_column": "observed_deposit_end",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "published_question_count",
+          "source_column": "published_question_count",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"published_question_count\" >= 0"
+          ]
+        },
+        {
+          "name": "coverage_status",
+          "source_column": "coverage_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "justification",
+          "source_column": "justification",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "analytical_person_period_exposure",
+      "source_table": "analytical_person_period_exposure",
+      "category": "ANALYTICAL",
+      "grain": "one person × period × question type exposure",
+      "expected_rows": 23424,
+      "primary_key": [
+        "person_period_exposure_id"
+      ],
+      "natural_key": [
+        "person_id",
+        "period_id",
+        "question_type"
+      ],
+      "columns": [
+        {
+          "name": "person_period_exposure_id",
+          "source_column": "person_period_exposure_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "person_id",
+          "source_column": "person_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "period_id",
+          "source_column": "period_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "question_type",
+          "source_column": "question_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": [
+            "oral",
+            "written"
+          ],
+          "checks": []
+        },
+        {
+          "name": "observed_mandate_days",
+          "source_column": "observed_mandate_days",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"observed_mandate_days\" >= 0"
+          ]
+        },
+        {
+          "name": "active_in_observed_window",
+          "source_column": "active_in_observed_window",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "role": "FLAG",
+          "unit": null,
+          "domain": [
+            false,
+            true
+          ],
+          "checks": []
+        },
+        {
+          "name": "published_question_count",
+          "source_column": "published_question_count",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"published_question_count\" >= 0"
+          ]
+        },
+        {
+          "name": "published_response_date_count",
+          "source_column": "published_response_date_count",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"published_response_date_count\" >= 0"
+          ]
+        },
+        {
+          "name": "published_questions_per_100_observed_mandate_days",
+          "source_column": "published_questions_per_100_observed_mandate_days",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "denominator_status",
+          "source_column": "denominator_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "analytical_parliamentary_trajectory",
+      "source_table": "analytical_parliamentary_trajectory",
+      "category": "ANALYTICAL",
+      "grain": "one person × period × question type trajectory",
+      "expected_rows": 3142,
+      "primary_key": [
+        "trajectory_id"
+      ],
+      "natural_key": [
+        "trajectory_id"
+      ],
+      "columns": [
+        {
+          "name": "trajectory_id",
+          "source_column": "trajectory_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "person_id",
+          "source_column": "person_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "party_id",
+          "source_column": "party_id",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "legislature",
+          "source_column": "legislature",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "period_id",
+          "source_column": "period_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "question_type",
+          "source_column": "question_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": [
+            "oral",
+            "written"
+          ],
+          "checks": []
+        },
+        {
+          "name": "first_deposit_date",
+          "source_column": "first_deposit_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "last_deposit_date",
+          "source_column": "last_deposit_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "derivation_status",
+          "source_column": "derivation_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "published_question_count",
+          "source_column": "published_question_count",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"published_question_count\" >= 0"
+          ]
+        },
+        {
+          "name": "published_response_date_count",
+          "source_column": "published_response_date_count",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"published_response_date_count\" >= 0"
+          ]
+        },
+        {
+          "name": "published_response_date_rate_pct",
+          "source_column": "published_response_date_rate_pct",
+          "type": "DOUBLE",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "percent_0_100",
+          "domain": null,
+          "checks": [
+            "\"published_response_date_rate_pct\" BETWEEN 0 AND 100"
+          ]
+        },
+        {
+          "name": "party_assignment_method",
+          "source_column": "party_assignment_method",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "parliamentary_outlier_audit",
+      "source_table": "parliamentary_outlier_audit",
+      "category": "METADATA",
+      "grain": "one reviewed outlier",
+      "expected_rows": 1,
+      "primary_key": [
+        "outlier_audit_id"
+      ],
+      "natural_key": [
+        "outlier_audit_id"
+      ],
+      "columns": [
+        {
+          "name": "outlier_audit_id",
+          "source_column": "outlier_audit_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "author_source_id",
+          "source_column": "author_source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "person_id",
+          "source_column": "person_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "published_question_count",
+          "source_column": "published_question_count",
+          "type": "BIGINT",
+          "nullable": false,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"published_question_count\" >= 0"
+          ]
+        },
+        {
+          "name": "distinct_question_number_count",
+          "source_column": "distinct_question_number_count",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"distinct_question_number_count\" >= 0"
+          ]
+        },
+        {
+          "name": "distinct_question_text_count",
+          "source_column": "distinct_question_text_count",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"distinct_question_text_count\" >= 0"
+          ]
+        },
+        {
+          "name": "duplicate_text_occurrence_count",
+          "source_column": "duplicate_text_occurrence_count",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"duplicate_text_occurrence_count\" >= 0"
+          ]
+        },
+        {
+          "name": "distinct_source_count",
+          "source_column": "distinct_source_count",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"distinct_source_count\" >= 0"
+          ]
+        },
+        {
+          "name": "dataset_source_count_reviewed",
+          "source_column": "dataset_source_count_reviewed",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": "count",
+          "domain": null,
+          "checks": [
+            "\"dataset_source_count_reviewed\" >= 0"
+          ]
+        },
+        {
+          "name": "annual_published_question_counts_json",
+          "source_column": "annual_published_question_counts_json",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "first_deposit_date",
+          "source_column": "first_deposit_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "last_deposit_date",
+          "source_column": "last_deposit_date",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_label_nature",
+          "source_column": "source_label_nature",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "mandate_link_status",
+          "source_column": "mandate_link_status",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "outlier_review_status",
+          "source_column": "outlier_review_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "treatment",
+          "source_column": "treatment",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "sources",
+      "source_table": "sources",
+      "category": "METADATA",
+      "grain": "one source record",
+      "expected_rows": 61,
+      "primary_key": [
+        "source_id"
+      ],
+      "natural_key": [
+        "source_id"
+      ],
+      "columns": [
+        {
+          "name": "source_id",
+          "source_column": "source_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_name",
+          "source_column": "source_name",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "publisher",
+          "source_column": "publisher",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "source_type",
+          "source_column": "source_type",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "domain",
+          "source_column": "domain",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "url",
+          "source_column": "url",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "coverage_start",
+          "source_column": "coverage_start",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "coverage_start_raw",
+          "source_column": "coverage_start",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": [],
+          "derived": "PRESERVE_SOURCE_VALUE"
+        },
+        {
+          "name": "coverage_start_precision",
+          "source_column": "coverage_start",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "TEMPORAL_PRECISION",
+          "unit": null,
+          "domain": [
+            "DAY",
+            "MONTH",
+            "YEAR",
+            "LABEL_YEAR"
+          ],
+          "checks": [],
+          "derived": "DATE_PRECISION"
+        },
+        {
+          "name": "coverage_end",
+          "source_column": "coverage_end",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "coverage_end_raw",
+          "source_column": "coverage_end",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": [],
+          "derived": "PRESERVE_SOURCE_VALUE"
+        },
+        {
+          "name": "coverage_end_precision",
+          "source_column": "coverage_end",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "TEMPORAL_PRECISION",
+          "unit": null,
+          "domain": [
+            "DAY",
+            "MONTH",
+            "YEAR",
+            "LABEL_YEAR"
+          ],
+          "checks": [],
+          "derived": "DATE_PRECISION"
+        },
+        {
+          "name": "geo_granularity",
+          "source_column": "geo_granularity",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "temporal_frequency",
+          "source_column": "temporal_frequency",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "format",
+          "source_column": "format",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "access_method",
+          "source_column": "access_method",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "license",
+          "source_column": "license",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "reliability_score",
+          "source_column": "reliability_score",
+          "type": "BIGINT",
+          "nullable": true,
+          "role": "MEASURE",
+          "unit": null,
+          "domain": null,
+          "checks": [
+            "\"reliability_score\" >= 0"
+          ]
+        },
+        {
+          "name": "last_checked",
+          "source_column": "last_checked",
+          "type": "DATE",
+          "nullable": true,
+          "role": "TEMPORAL",
+          "unit": "ISO_DATE",
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "status",
+          "source_column": "status",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    },
+    {
+      "table_name": "data_dictionary",
+      "source_table": "data_dictionary",
+      "category": "METADATA",
+      "grain": "one metric definition",
+      "expected_rows": 292,
+      "primary_key": [
+        "metric_id"
+      ],
+      "natural_key": [
+        "metric_id"
+      ],
+      "columns": [
+        {
+          "name": "metric_id",
+          "source_column": "metric_id",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "IDENTIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "domain",
+          "source_column": "domain",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "metric_name",
+          "source_column": "metric_name",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "definition",
+          "source_column": "definition",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "data_type",
+          "source_column": "data_type",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "unit",
+          "source_column": "unit",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "preferred_geo_granularity",
+          "source_column": "preferred_geo_granularity",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "preferred_temporal_frequency",
+          "source_column": "preferred_temporal_frequency",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "primary_fact_sheet",
+          "source_column": "primary_fact_sheet",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "required_keys",
+          "source_column": "required_keys",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "candidate_sources",
+          "source_column": "candidate_sources",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "PROVENANCE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "collection_status",
+          "source_column": "collection_status",
+          "type": "VARCHAR",
+          "nullable": false,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "priority",
+          "source_column": "priority",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "quality_rule",
+          "source_column": "quality_rule",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "ATTRIBUTE",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        },
+        {
+          "name": "notes",
+          "source_column": "notes",
+          "type": "VARCHAR",
+          "nullable": true,
+          "role": "STATUS_OR_QUALIFIER",
+          "unit": null,
+          "domain": null,
+          "checks": []
+        }
+      ],
+      "table_checks": []
+    }
+  ],
+  "relationships": [
+    {
+      "child_table": "dim_electoral_contest",
+      "child_column": "geo_id",
+      "parent_table": "dim_geo",
+      "parent_column": "geo_id",
+      "nullable": false,
+      "grain": "one dated electoral contest",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "dim_electoral_contest",
+      "child_column": "election_id",
+      "parent_table": "dim_election",
+      "parent_column": "election_id",
+      "nullable": false,
+      "grain": "one dated electoral contest",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_election_result",
+      "child_column": "contest_id",
+      "parent_table": "dim_electoral_contest",
+      "parent_column": "contest_id",
+      "nullable": false,
+      "grain": "one contest × party result",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_election_result",
+      "child_column": "geo_id",
+      "parent_table": "dim_geo",
+      "parent_column": "geo_id",
+      "nullable": false,
+      "grain": "one contest × party result",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_election_result",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": false,
+      "grain": "one contest × party result",
+      "cardinality": "many-to-one",
+      "temporal_rule": "within declared validity interval"
+    },
+    {
+      "child_table": "fact_election_result",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false,
+      "grain": "one contest × party result",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_electoral_mobilization",
+      "child_column": "contest_id",
+      "parent_table": "dim_electoral_contest",
+      "parent_column": "contest_id",
+      "nullable": false,
+      "grain": "one contest mobilization record",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_electoral_mobilization",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false,
+      "grain": "one contest mobilization record",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_communal_election_result",
+      "child_column": "contest_id",
+      "parent_table": "dim_electoral_contest",
+      "parent_column": "contest_id",
+      "nullable": false,
+      "grain": "one commune contest × party result",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_communal_election_result",
+      "child_column": "geo_id",
+      "parent_table": "dim_geo",
+      "parent_column": "geo_id",
+      "nullable": false,
+      "grain": "one commune contest × party result",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_communal_election_result",
+      "child_column": "election_id",
+      "parent_table": "dim_election",
+      "parent_column": "election_id",
+      "nullable": false,
+      "grain": "one commune contest × party result",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_communal_election_result",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": false,
+      "grain": "one commune contest × party result",
+      "cardinality": "many-to-one",
+      "temporal_rule": "within declared validity interval"
+    },
+    {
+      "child_table": "fact_communal_election_result",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false,
+      "grain": "one commune contest × party result",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "geo_id",
+      "parent_table": "dim_geo",
+      "parent_column": "geo_id",
+      "nullable": false,
+      "grain": "one commune contest summary",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "contest_id",
+      "parent_table": "dim_electoral_contest",
+      "parent_column": "contest_id",
+      "nullable": false,
+      "grain": "one commune contest summary",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "election_id",
+      "parent_table": "dim_election",
+      "parent_column": "election_id",
+      "nullable": false,
+      "grain": "one commune contest summary",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "winner_party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true,
+      "grain": "one commune contest summary",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "runner_up_party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true,
+      "grain": "one commune contest summary",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "largest_party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true,
+      "grain": "one commune contest summary",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "president_party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true,
+      "grain": "one commune contest summary",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_commune_election_summary",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false,
+      "grain": "one commune contest summary",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_observation",
+      "child_column": "indicator_id",
+      "parent_table": "dim_indicator",
+      "parent_column": "indicator_id",
+      "nullable": false,
+      "grain": "one sourced indicator observation",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_observation",
+      "child_column": "geo_id",
+      "parent_table": "dim_geo",
+      "parent_column": "geo_id",
+      "nullable": true,
+      "grain": "one sourced indicator observation",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_observation",
+      "child_column": "time_id",
+      "parent_table": "dim_time",
+      "parent_column": "time_id",
+      "nullable": false,
+      "grain": "one sourced indicator observation",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_observation",
+      "child_column": "election_id",
+      "parent_table": "dim_election",
+      "parent_column": "election_id",
+      "nullable": true,
+      "grain": "one sourced indicator observation",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_observation",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false,
+      "grain": "one sourced indicator observation",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_mandate",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": false,
+      "grain": "one parliamentary mandate",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_mandate",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true,
+      "grain": "one parliamentary mandate",
+      "cardinality": "many-to-one",
+      "temporal_rule": "within declared validity interval"
+    },
+    {
+      "child_table": "fact_mandate",
+      "child_column": "source_id",
+      "parent_table": "sources",
+      "parent_column": "source_id",
+      "nullable": false,
+      "grain": "one parliamentary mandate",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_parliamentary_question",
+      "child_column": "period_id",
+      "parent_table": "dim_parliamentary_period",
+      "parent_column": "period_id",
+      "nullable": false,
+      "grain": "one published parliamentary question",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_parliamentary_question",
+      "child_column": "institution_id",
+      "parent_table": "dim_institution",
+      "parent_column": "institution_id",
+      "nullable": false,
+      "grain": "one published parliamentary question",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_parliamentary_question",
+      "child_column": "subject_id",
+      "parent_table": "dim_parliamentary_subject",
+      "parent_column": "subject_id",
+      "nullable": false,
+      "grain": "one published parliamentary question",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "fact_parliamentary_response",
+      "child_column": "question_id",
+      "parent_table": "fact_parliamentary_question",
+      "parent_column": "question_id",
+      "nullable": false,
+      "grain": "one published response date",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "bridge_question_author",
+      "child_column": "question_id",
+      "parent_table": "fact_parliamentary_question",
+      "parent_column": "question_id",
+      "nullable": false,
+      "grain": "one question × source-author link",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "bridge_question_author",
+      "child_column": "author_source_id",
+      "parent_table": "dim_parliamentary_source_author",
+      "parent_column": "author_source_id",
+      "nullable": false,
+      "grain": "one question × source-author link",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "bridge_question_author",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": true,
+      "grain": "one question × source-author link",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "bridge_question_author",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true,
+      "grain": "one question × source-author link",
+      "cardinality": "many-to-one",
+      "temporal_rule": "within declared validity interval"
+    },
+    {
+      "child_table": "bridge_question_author",
+      "child_column": "group_id",
+      "parent_table": "dim_parliamentary_group",
+      "parent_column": "group_id",
+      "nullable": false,
+      "grain": "one question × source-author link",
+      "cardinality": "many-to-one",
+      "temporal_rule": "within declared validity interval"
+    },
+    {
+      "child_table": "bridge_question_source",
+      "child_column": "question_id",
+      "parent_table": "fact_parliamentary_question",
+      "parent_column": "question_id",
+      "nullable": false,
+      "grain": "one question × source-file occurrence",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "bridge_question_source",
+      "child_column": "source_id",
+      "parent_table": "dim_parliamentary_source",
+      "parent_column": "source_id",
+      "nullable": false,
+      "grain": "one question × source-file occurrence",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "analytical_parliamentary_trajectory",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": false,
+      "grain": "one person × period × question type trajectory",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "analytical_parliamentary_trajectory",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true,
+      "grain": "one person × period × question type trajectory",
+      "cardinality": "many-to-one",
+      "temporal_rule": "within declared validity interval"
+    },
+    {
+      "child_table": "analytical_parliamentary_trajectory",
+      "child_column": "period_id",
+      "parent_table": "dim_parliamentary_period",
+      "parent_column": "period_id",
+      "nullable": false,
+      "grain": "one person × period × question type trajectory",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "dim_parliamentary_period",
+      "child_column": "legislature_id",
+      "parent_table": "dim_legislature",
+      "parent_column": "legislature_id",
+      "nullable": false,
+      "grain": "one observed parliamentary period",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "bridge_person_parliamentary_affiliation",
+      "child_column": "mandate_id",
+      "parent_table": "fact_mandate",
+      "parent_column": "mandate_id",
+      "nullable": false,
+      "grain": "one mandate-bounded affiliation",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "bridge_person_parliamentary_affiliation",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": false,
+      "grain": "one mandate-bounded affiliation",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "bridge_person_parliamentary_affiliation",
+      "child_column": "party_id",
+      "parent_table": "dim_party",
+      "parent_column": "party_id",
+      "nullable": true,
+      "grain": "one mandate-bounded affiliation",
+      "cardinality": "many-to-one",
+      "temporal_rule": "within declared validity interval"
+    },
+    {
+      "child_table": "bridge_person_parliamentary_affiliation",
+      "child_column": "group_id",
+      "parent_table": "dim_parliamentary_group",
+      "parent_column": "group_id",
+      "nullable": true,
+      "grain": "one mandate-bounded affiliation",
+      "cardinality": "many-to-one",
+      "temporal_rule": "within declared validity interval"
+    },
+    {
+      "child_table": "analytical_person_period_exposure",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": false,
+      "grain": "one person × period × question type exposure",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "analytical_person_period_exposure",
+      "child_column": "period_id",
+      "parent_table": "dim_parliamentary_period",
+      "parent_column": "period_id",
+      "nullable": false,
+      "grain": "one person × period × question type exposure",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "parliamentary_outlier_audit",
+      "child_column": "author_source_id",
+      "parent_table": "dim_parliamentary_source_author",
+      "parent_column": "author_source_id",
+      "nullable": false,
+      "grain": "one reviewed outlier",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    },
+    {
+      "child_table": "parliamentary_outlier_audit",
+      "child_column": "person_id",
+      "parent_table": "dim_person_public",
+      "parent_column": "person_id",
+      "nullable": false,
+      "grain": "one reviewed outlier",
+      "cardinality": "many-to-one",
+      "temporal_rule": "not temporal"
+    }
+  ],
+  "partial_date_policies": [
+    {
+      "table_name": "fact_observation",
+      "column": "date_start",
+      "precision_column": "date_start_precision",
+      "start_or_end": "START"
+    },
+    {
+      "table_name": "fact_observation",
+      "column": "date_end",
+      "precision_column": "date_end_precision",
+      "start_or_end": "END"
+    },
+    {
+      "table_name": "fact_observation",
+      "column": "publication_date",
+      "precision_column": "publication_date_precision",
+      "start_or_end": "START"
+    },
+    {
+      "table_name": "sources",
+      "column": "coverage_start",
+      "precision_column": "coverage_start_precision",
+      "raw_column": "coverage_start_raw",
+      "start_or_end": "START"
+    },
+    {
+      "table_name": "sources",
+      "column": "coverage_end",
+      "precision_column": "coverage_end_precision",
+      "raw_column": "coverage_end_raw",
+      "start_or_end": "END"
+    }
+  ],
+  "corrections": [
+    {
+      "correction_id": "V15_MANDATE_INTERVAL_001",
+      "table_name": "fact_mandate",
+      "record_key": "PM_2011_2016_456_68758_2013-10-03",
+      "column": "end_date",
+      "source_id": "SRC_TAFRA_MPS_RAW_V9",
+      "evidence_id": "SOURCE_RECORD:SRC_TAFRA_MPS_RAW_V9:PM_2011_2016_456_68758_2013-10-03",
+      "proof": "published end_date 2013-06-02 precedes published start_date 2013-10-03",
+      "action": "set end_date to NULL; do not infer a replacement date",
+      "source_value": "2013-06-02",
+      "published_value": null,
+      "rule": "NULLIFY_INVERTED_INTERVAL"
+    },
+    {
+      "correction_id": "V15_AFFILIATION_INTERVAL_001",
+      "table_name": "bridge_person_parliamentary_affiliation",
+      "record_key": "AFFILIATION_V14_1_440E693C7566E2DBAF93D806519F7701",
+      "column": "valid_to",
+      "source_id": "SRC_TAFRA_MPS_RAW_V9",
+      "evidence_id": "SOURCE_RECORD:SRC_TAFRA_MPS_RAW_V9:AFFILIATION_V14_1_440E693C7566E2DBAF93D806519F7701",
+      "proof": "published valid_to 2013-06-02 precedes published valid_from 2013-10-03",
+      "action": "set valid_to to NULL; do not propagate the affiliation outside a proven interval",
+      "source_value": "2013-06-02",
+      "published_value": null,
+      "rule": "NULLIFY_INVERTED_INTERVAL"
+    }
+  ]
+}

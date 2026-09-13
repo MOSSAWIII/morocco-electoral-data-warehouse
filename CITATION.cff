@@ -4,15 +4,15 @@ title: "Morocco Electoral Data Warehouse"
 type: dataset
 authors:
   - name: MOSSAWIII
-version: "14.0.0-beta"
-date-released: 2026-09-12
+version: "15.0.0"
+date-released: 2026-09-13
 repository-code: "https://github.com/MOSSAWIII/morocco-electoral-data-warehouse"
 license: ODbL-1.0
 preferred-citation:
   type: dataset
-  title: "Morocco Electoral Data Warehouse — V14 Parliament public beta"
+  title: "Morocco Electoral Data Warehouse — V15 reproducible public foundation"
   authors:
     - name: MOSSAWIII
-  version: "14.0.0-beta"
-  date-released: 2026-09-12
-  url: "https://github.com/MOSSAWIII/morocco-electoral-data-warehouse/releases/tag/v14.0.0"
+  version: "15.0.0"
+  date-released: 2026-09-13
+  url: "https://github.com/MOSSAWIII/morocco-electoral-data-warehouse/releases/tag/v15.0.0"
