@@ -81,6 +81,18 @@ def coverage_matrix(connection: duckdb.DuckDBPyConnection) -> dict[str, Any]:
            GROUP BY legislature, validity_method, evidence_status
            ORDER BY legislature, validity_method, evidence_status""",
     )
+    affiliation_status_totals = {status: 0 for status in ("PROVEN_INTERVAL", "PARTIAL_INTERVAL", "UNKNOWN_INTERVAL")}
+    for row in affiliations:
+        affiliation_status_totals[row["evidence_status"]] += row["affiliation_periods"]
+    questions_by_period = _rows(
+        connection,
+        """SELECT year(deposit_date)::BIGINT AS calendar_year, question_type,
+                  COUNT(*)::BIGINT AS published_questions,
+                  NULL::BIGINT AS official_expected_questions,
+                  'UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR'::VARCHAR AS status
+           FROM fact_parliamentary_question
+           GROUP BY year(deposit_date), question_type ORDER BY calendar_year, question_type""",
+    )
     analysis_queries = {
         "COMMUNAL_RESULTS_PUBLISHED_SCOPE": (
             "SELECT COUNT(*) FROM fact_communal_election_result", "SELECT COUNT(*) FROM fact_communal_election_result"
@@ -153,11 +165,13 @@ def coverage_matrix(connection: duckdb.DuckDBPyConnection) -> dict[str, Any]:
             "PARTIAL_INTERVAL": "at least one required proof component is published but the interval is incomplete",
             "UNKNOWN_INTERVAL": "no required proof component is published",
         },
+        "affiliation_evidence_status_totals": affiliation_status_totals,
         "parliamentary_question_corpus": {
             "published_questions": connection.execute("SELECT COUNT(*) FROM fact_parliamentary_question").fetchone()[0],
             "official_expected_questions": None,
             "status": "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR",
         },
+        "parliamentary_questions_by_period": questions_by_period,
         "temporal_precision": temporal_precision,
         "analyses": analyses,
     }
