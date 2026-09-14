@@ -19,11 +19,21 @@ def _contract(name: str, mutation_name: str) -> dict:
 
 def test_production_ddl_rejects_result_duplicate() -> None:
     connection = duckdb.connect()
-    contract = _contract("dim_geo", "mutation_dim_geo")
+    contract = _contract("fact_election_result", "mutation_election_result")
     connection.execute(_ddl(contract))
-    connection.execute("INSERT INTO mutation_dim_geo(geo_id, geo_name, geo_type, quality_status) VALUES ('G1','A','COMMUNE','OK')")
+    first_insert = (
+        "INSERT INTO mutation_election_result"
+        "(result_id,contest_id,election_id,geo_id,party_id,votes,source_id,evidence_id,source_row,"
+        "identity_review_status,quality_status) VALUES ('R1','C1','E1','G1','P1',10,'S1','EV1',1,'VERIFIED','OK')"
+    )
+    connection.execute(first_insert)
     with pytest.raises(duckdb.ConstraintException):
-        connection.execute("INSERT INTO mutation_dim_geo(geo_id, geo_name, geo_type, quality_status) VALUES ('G1','B','COMMUNE','OK')")
+        connection.execute(
+            "INSERT INTO mutation_election_result"
+            "(result_id,contest_id,election_id,geo_id,party_id,votes,source_id,evidence_id,source_row,"
+            "identity_review_status,quality_status) "
+            "VALUES ('R2','C1','E1','G1','P1',11,'S1','EV2',2,'VERIFIED','OK')"
+        )
 
 
 def test_production_relationship_validator_detects_orphan_party(tmp_path: Path) -> None:
@@ -46,12 +56,13 @@ def test_production_relationship_validator_detects_orphan_party(tmp_path: Path) 
 
 def test_production_ddl_rejects_inverted_mandate_interval() -> None:
     connection = duckdb.connect()
-    contract = _contract("dim_geo", "mutation_period")
+    contract = _contract("fact_mandate", "mutation_mandate")
     connection.execute(_ddl(contract))
     with pytest.raises(duckdb.ConstraintException):
         connection.execute(
-            "INSERT INTO mutation_period(geo_id,geo_name,geo_type,valid_from,valid_to,quality_status) "
-            "VALUES ('G1','A','COMMUNE',DATE '2021-01-02',DATE '2021-01-01','OK')"
+            "INSERT INTO mutation_mandate"
+            "(mandate_id,person_id,legislature,start_date,end_date,source_id,quality_status) "
+            "VALUES ('M1','P1','2021-2026',DATE '2021-01-02',DATE '2021-01-01','S1','OK')"
         )
 
 

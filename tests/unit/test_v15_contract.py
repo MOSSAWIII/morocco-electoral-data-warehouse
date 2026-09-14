@@ -36,7 +36,9 @@ def test_cubes_and_analyses_have_complete_contracts_and_one_registry() -> None:
     assert len(available_cubes()) == 5
     for cube in available_cubes():
         assert cube["grain"] and cube["dimensions"] and cube["measures"] and cube["reconciliation_sql"]
+        assert cube["output_columns"]
         assert all({"name", "unit", "formula", "denominator"} <= measure.keys() for measure in cube["measures"])
+        assert all(measure["denominator"] for measure in cube["measures"])
     assert len(ANALYSES) == 5
     assert all({"tables", "filters", "units", "coverage_id", "limitations", "sql"} <= row.keys() for row in ANALYSES)
     assert (ROOT / "examples/v15_reference_queries.sql").read_text(encoding="utf-8") == render_reference_queries()

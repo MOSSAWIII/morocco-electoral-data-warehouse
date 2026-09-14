@@ -7,6 +7,7 @@ from pathlib import Path
 import duckdb
 import pytest
 
+from morocco_elections.analysis.v15 import run as run_analyses
 from morocco_elections.quality.v15.package import validate_package
 from morocco_elections.v15.queries import ANALYSES
 
@@ -42,6 +43,19 @@ def test_temporal_precision_and_known_coverage_are_explicit() -> None:
     governance = {row["year"]: row for row in coverage["communal_governance"]}
     assert governance[2015]["unresolved_presidencies"] == 1538
     assert governance[2021]["unresolved_presidencies"] == 135
+    assert sum(
+        row["unresolved_presidencies"]
+        for row in coverage["communal_governance_by_territory"] if row["year"] == 2015
+    ) == 1538
+    assert sum(
+        row["unresolved_presidencies"]
+        for row in coverage["communal_governance_by_territory"] if row["year"] == 2021
+    ) == 135
+    assert {row["election_id"] for row in coverage["registered_voters_by_territory"]}
+    assert all(row["legislature"] for row in coverage["parliamentary_affiliations"])
+    assert set(coverage["affiliation_evidence_status_definitions"]) == {
+        "PROVEN_INTERVAL", "PARTIAL_INTERVAL", "UNKNOWN_INTERVAL"
+    }
     assert coverage["parliamentary_question_corpus"]["status"] == "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR"
     assert all(row["missing_values_are_zero"] is False for row in coverage["analyses"])
     precision = {(row["table_name"], row["column"]): row for row in coverage["temporal_precision"]}
@@ -57,3 +71,11 @@ def test_all_five_reference_analyses_execute() -> None:
         assert all(connection.execute(row["sql"]).fetchall() is not None for row in ANALYSES)
     finally:
         connection.close()
+
+
+def test_analysis_output_displays_coverage_counts(capsys) -> None:
+    assert run_analyses(PACKAGE.parents[2], output_format="json") == 0
+    output = json.loads(capsys.readouterr().out)
+    assert len(output["analyses"]) == 5
+    for analysis in output["analyses"]:
+        assert {"numerator", "denominator", "status"} <= analysis["coverage"].keys()
