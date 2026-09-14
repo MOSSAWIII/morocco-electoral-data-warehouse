@@ -5,9 +5,11 @@ import os
 import shutil
 from pathlib import Path
 
+import duckdb
 import pytest
 
 from morocco_elections.provenance import sha256_file
+from morocco_elections.quality.v15.accuracy import validate_accuracy
 from morocco_elections.quality.v15.package import validate_package
 
 
@@ -66,3 +68,23 @@ def test_validator_rejects_checksum_path_traversal(package: Path) -> None:
     checksum = package / "checksums.sha256"
     checksum.write_text(f"{'0' * 64}  ../escape\n", encoding="ascii")
     assert any("non sûr" in error for error in validate_package(package))
+
+
+def test_validator_rejects_manifest_path_traversal(package: Path) -> None:
+    manifest_path = package / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["files"][0]["path"] = "../escape"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    assert any("chemin de manifeste non sûr" in error for error in validate_package(package))
+
+
+def test_accuracy_validator_rejects_planned_observation(package: Path) -> None:
+    database = package / "morocco_elections_v15.duckdb"
+    connection = duckdb.connect(str(database))
+    indicator = connection.execute(
+        "SELECT indicator_id FROM fact_observation ORDER BY indicator_id LIMIT 1"
+    ).fetchone()[0]
+    connection.execute("UPDATE dim_indicator SET collection_status='not_started' WHERE indicator_id=?", [indicator])
+    connection.close()
+    manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
+    assert any("planifiée" in error for error in validate_accuracy(package, manifest))

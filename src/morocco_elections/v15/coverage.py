@@ -25,6 +25,19 @@ def coverage_matrix(connection: duckdb.DuckDBPyConnection) -> dict[str, Any]:
                        ELSE 'PARTIAL' END AS status
            FROM fact_electoral_mobilization GROUP BY election_id ORDER BY election_id""",
     )
+    registered_by_territory = _rows(
+        connection,
+        """SELECT m.election_id, COALESCE(g.region_name, 'UNKNOWN') AS region,
+                  COUNT(*)::BIGINT AS expected_rows,
+                  COUNT(m.registered_voters)::BIGINT AS published_rows,
+                  (COUNT(*) - COUNT(m.registered_voters))::BIGINT AS unresolved_rows,
+                  CASE WHEN COUNT(m.registered_voters)=COUNT(*) THEN 'COMPLETE_IN_PUBLISHED_SCOPE'
+                       WHEN COUNT(m.registered_voters)=0 THEN 'UNAVAILABLE'
+                       ELSE 'PARTIAL' END AS status
+           FROM fact_electoral_mobilization m JOIN dim_geo g USING (geo_id)
+           GROUP BY m.election_id, COALESCE(g.region_name, 'UNKNOWN')
+           ORDER BY m.election_id, region""",
+    )
     governance = _rows(
         connection,
         """SELECT year, COUNT(*)::BIGINT AS commune_contests,
@@ -35,15 +48,38 @@ def coverage_matrix(connection: duckdb.DuckDBPyConnection) -> dict[str, Any]:
                        ELSE 'PARTIAL' END AS status
            FROM fact_commune_election_summary GROUP BY year ORDER BY year""",
     )
+    governance_by_territory = _rows(
+        connection,
+        """SELECT s.year, COALESCE(g.region_name, 'UNKNOWN') AS region,
+                  COUNT(*)::BIGINT AS commune_contests,
+                  COUNT(s.president_party_id)::BIGINT AS resolved_presidencies,
+                  (COUNT(*) - COUNT(s.president_party_id))::BIGINT AS unresolved_presidencies,
+                  CASE WHEN COUNT(s.president_party_id)=COUNT(*) THEN 'COMPLETE_IN_PUBLISHED_SCOPE'
+                       WHEN COUNT(s.president_party_id)=0 THEN 'UNRESOLVED'
+                       ELSE 'PARTIAL' END AS status
+           FROM fact_commune_election_summary s JOIN dim_geo g USING (geo_id)
+           GROUP BY s.year, COALESCE(g.region_name, 'UNKNOWN') ORDER BY s.year, region""",
+    )
     affiliations = _rows(
         connection,
-        """SELECT validity_method, COUNT(*)::BIGINT AS affiliation_periods,
-                  COUNT(party_id)::BIGINT AS periods_with_party,
-                  COUNT(group_id)::BIGINT AS periods_with_group,
-                  (COUNT(*) - COUNT(party_id))::BIGINT AS unresolved_party_periods,
-                  (COUNT(*) - COUNT(group_id))::BIGINT AS unresolved_group_periods
-           FROM bridge_person_parliamentary_affiliation
-           GROUP BY validity_method ORDER BY validity_method""",
+        """WITH classified AS (
+               SELECT m.legislature, a.validity_method,
+                      CASE WHEN a.source_id IS NOT NULL AND a.valid_from IS NOT NULL AND a.party_id IS NOT NULL
+                                THEN 'PROVEN_INTERVAL'
+                           WHEN a.source_id IS NOT NULL OR a.valid_from IS NOT NULL OR a.party_id IS NOT NULL
+                                THEN 'PARTIAL_INTERVAL'
+                           ELSE 'UNKNOWN_INTERVAL' END AS evidence_status,
+                      a.party_id, a.group_id
+               FROM bridge_person_parliamentary_affiliation a JOIN fact_mandate m USING (mandate_id)
+           )
+           SELECT legislature, validity_method, evidence_status, COUNT(*)::BIGINT AS affiliation_periods,
+                  COUNT(a.party_id)::BIGINT AS periods_with_party,
+                  COUNT(a.group_id)::BIGINT AS periods_with_group,
+                  (COUNT(*) - COUNT(a.party_id))::BIGINT AS unresolved_party_periods,
+                  (COUNT(*) - COUNT(a.group_id))::BIGINT AS unresolved_group_periods
+           FROM classified a
+           GROUP BY legislature, validity_method, evidence_status
+           ORDER BY legislature, validity_method, evidence_status""",
     )
     analysis_queries = {
         "COMMUNAL_RESULTS_PUBLISHED_SCOPE": (
@@ -66,13 +102,18 @@ def coverage_matrix(connection: duckdb.DuckDBPyConnection) -> dict[str, Any]:
         numerator_sql, denominator_sql = analysis_queries[analysis["coverage_id"]]
         numerator = connection.execute(numerator_sql).fetchone()[0]
         denominator = connection.execute(denominator_sql).fetchone()[0] if denominator_sql else None
+        status = (
+            "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR"
+            if denominator is None
+            else "COMPLETE_IN_PUBLISHED_SCOPE" if numerator == denominator else "PARTIAL"
+        )
         analyses.append(
             {
                 "analysis_id": analysis["id"],
                 "coverage_id": analysis["coverage_id"],
                 "numerator": numerator,
                 "denominator": denominator,
-                "status": "PUBLISHED_SCOPE" if denominator is not None else "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR",
+                "status": status,
                 "missing_values_are_zero": False,
             }
         )
@@ -103,8 +144,15 @@ def coverage_matrix(connection: duckdb.DuckDBPyConnection) -> dict[str, Any]:
         "release": "V15",
         "policy": "Missing or unresolved values are never interpreted as zero.",
         "registered_voters": registered,
+        "registered_voters_by_territory": registered_by_territory,
         "communal_governance": governance,
+        "communal_governance_by_territory": governance_by_territory,
         "parliamentary_affiliations": affiliations,
+        "affiliation_evidence_status_definitions": {
+            "PROVEN_INTERVAL": "source, lower bound and party affiliation are all published",
+            "PARTIAL_INTERVAL": "at least one required proof component is published but the interval is incomplete",
+            "UNKNOWN_INTERVAL": "no required proof component is published",
+        },
         "parliamentary_question_corpus": {
             "published_questions": connection.execute("SELECT COUNT(*) FROM fact_parliamentary_question").fetchone()[0],
             "official_expected_questions": None,

@@ -63,6 +63,12 @@ def validate_accuracy(root: Path, manifest: dict) -> list[str]:
             errors.append("exactitude: couverture parlementaire non déclarée UNKNOWN")
 
         for cube in available_cubes():
+            actual_output = [
+                [row[0], row[1], row[2] == "YES"]
+                for row in connection.execute(f'DESCRIBE SELECT * FROM "{cube["name"]}"').fetchall()
+            ]
+            if actual_output != cube["output_columns"]:
+                errors.append(f"exactitude: schéma de sortie du cube invalide: {cube['name']}")
             count = connection.execute(f'SELECT count(*) FROM "{cube["name"]}"').fetchone()[0]
             if count == 0:
                 errors.append(f"exactitude: cube AVAILABLE vide: {cube['name']}")

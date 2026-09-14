@@ -9,16 +9,21 @@ CUBES: tuple[dict[str, Any], ...] = (
         "status": "AVAILABLE",
         "grain": "region × election year × party",
         "dimensions": ["region_name", "election_year", "party_id"],
+        "output_columns": [
+            ["region_name", "VARCHAR", True], ["election_year", "BIGINT", True], ["party_id", "VARCHAR", True],
+            ["published_votes", "BIGINT", True], ["unweighted_mean_commune_vote_share_pct", "DOUBLE", True],
+            ["published_seats", "BIGINT", True], ["commune_party_rows", "BIGINT", True],
+        ],
         "measures": [
-            {"name": "published_votes", "unit": "votes", "formula": "SUM(votes)", "denominator": None},
+            {"name": "published_votes", "unit": "votes", "formula": "SUM(votes)", "denominator": "not applicable: additive published vote total"},
             {
                 "name": "unweighted_mean_commune_vote_share_pct",
                 "unit": "percent_0_100",
                 "formula": "AVG(vote_share)",
                 "denominator": "commune-party rows with a published vote share; explicitly unweighted",
             },
-            {"name": "published_seats", "unit": "seats", "formula": "SUM(seats)", "denominator": None},
-            {"name": "commune_party_rows", "unit": "rows", "formula": "COUNT(*)", "denominator": None},
+            {"name": "published_seats", "unit": "seats", "formula": "SUM(seats)", "denominator": "not applicable: additive published seat total"},
+            {"name": "commune_party_rows", "unit": "rows", "formula": "COUNT(*)", "denominator": "not applicable: row count"},
         ],
         "view_sql": """CREATE VIEW cube_party_territorial_evolution AS
             SELECT g.region_name, r.year AS election_year, r.party_id,
@@ -40,11 +45,19 @@ CUBES: tuple[dict[str, Any], ...] = (
         "name": "cube_electoral_competitiveness",
         "status": "AVAILABLE",
         "grain": "commune contest",
-        "dimensions": ["contest_id", "geo_id", "election_id", "year"],
+        "dimensions": ["contest_id", "geo_id", "election_id", "year", "concentration_band"],
+        "output_columns": [
+            ["contest_id", "VARCHAR", False], ["geo_id", "VARCHAR", False], ["election_id", "VARCHAR", False],
+            ["year", "BIGINT", False], ["hhi", "DOUBLE", True], ["enp", "DOUBLE", True],
+            ["victory_margin_votes", "BIGINT", True], ["victory_margin_pp", "DOUBLE", True],
+            ["winning_vote_share", "DOUBLE", True], ["concentration_band", "VARCHAR", True],
+        ],
         "measures": [
             {"name": "hhi", "unit": "index_0_10000", "formula": "SUM(vote_share_pct²)", "denominator": "published valid party vote shares"},
             {"name": "enp", "unit": "effective_parties", "formula": "10000 / HHI", "denominator": "published valid party vote shares"},
             {"name": "victory_margin_pp", "unit": "percentage_points", "formula": "winner share − runner-up share", "denominator": "published valid party vote shares"},
+            {"name": "victory_margin_votes", "unit": "votes", "formula": "winner votes − runner-up votes", "denominator": "published valid party vote totals"},
+            {"name": "winning_vote_share", "unit": "percent_0_100", "formula": "published winner vote share", "denominator": "published valid votes for the contest"},
         ],
         "view_sql": """CREATE VIEW cube_electoral_competitiveness AS
             SELECT contest_id, geo_id, election_id, year, hhi, enp,
@@ -63,29 +76,46 @@ CUBES: tuple[dict[str, Any], ...] = (
         "name": "cube_communal_control",
         "status": "AVAILABLE",
         "grain": "commune contest",
-        "dimensions": ["contest_id", "geo_id", "election_id", "year"],
+        "dimensions": [
+            "contest_id", "geo_id", "election_id", "year", "winner_party_id", "president_party_id",
+            "control_change", "result_control_alignment",
+        ],
+        "output_columns": [
+            ["contest_id", "VARCHAR", False], ["geo_id", "VARCHAR", False], ["election_id", "VARCHAR", False],
+            ["year", "BIGINT", False], ["winner_party_id", "VARCHAR", True], ["president_party_id", "VARCHAR", True],
+            ["control_change", "VARCHAR", True], ["result_control_alignment", "VARCHAR", True],
+            ["contest_count", "BIGINT", True],
+        ],
         "measures": [
-            {"name": "result_control_alignment", "unit": "category", "formula": "winner party compared with evidenced president party", "denominator": "commune contests; unresolved evidence remains UNRESOLVED"},
+            {"name": "contest_count", "unit": "commune_contests", "formula": "constant 1 per contest-grain row", "denominator": "all published commune contests; unresolved evidence remains a category"},
         ],
         "view_sql": """CREATE VIEW cube_communal_control AS
             SELECT contest_id, geo_id, election_id, year, winner_party_id,
                    president_party_id, control_change,
                    CASE WHEN winner_party_id IS NULL OR president_party_id IS NULL THEN 'UNRESOLVED'
                         WHEN winner_party_id = president_party_id THEN 'ALIGNED'
-                        ELSE 'NOT_ALIGNED' END AS result_control_alignment
+                        ELSE 'NOT_ALIGNED' END AS result_control_alignment,
+                   1::BIGINT AS contest_count
             FROM fact_commune_election_summary""",
-        "reconciliation_sql": """SELECT abs(
-            (SELECT COUNT(*) FROM cube_communal_control) -
-            (SELECT COUNT(*) FROM fact_commune_election_summary)
-        ) AS violations""",
+        "reconciliation_sql": """SELECT CASE WHEN
+            (SELECT COUNT(*) FROM cube_communal_control) = (SELECT COUNT(*) FROM fact_commune_election_summary)
+            AND (SELECT SUM(contest_count) FROM cube_communal_control) = (SELECT COUNT(*) FROM fact_commune_election_summary)
+            THEN 0 ELSE 1 END AS violations""",
     },
     {
         "name": "cube_mandate_representation",
         "status": "AVAILABLE",
         "grain": "legislature × region × party × gender",
         "dimensions": ["legislature", "region", "party_id", "gender"],
+        "output_columns": [
+            ["legislature", "VARCHAR", True], ["region", "VARCHAR", True], ["party_id", "VARCHAR", True],
+            ["gender", "VARCHAR", True], ["published_mandates", "BIGINT", True],
+            ["region_legislature_published_mandates", "BIGINT", True],
+            ["share_of_region_legislature_pct", "DOUBLE", True],
+        ],
         "measures": [
-            {"name": "published_mandates", "unit": "mandates", "formula": "COUNT(mandate_id)", "denominator": None},
+            {"name": "published_mandates", "unit": "mandates", "formula": "COUNT(mandate_id)", "denominator": "not applicable: group mandate count"},
+            {"name": "region_legislature_published_mandates", "unit": "mandates", "formula": "SUM(group mandate counts) over legislature and region", "denominator": "not applicable: exposed denominator count"},
             {
                 "name": "share_of_region_legislature_pct",
                 "unit": "percent_0_100",
@@ -113,7 +143,12 @@ CUBES: tuple[dict[str, Any], ...] = (
         "name": "cube_parliamentary_publication",
         "status": "AVAILABLE",
         "grain": "calendar year × question type",
-        "dimensions": ["calendar_year", "question_type"],
+        "dimensions": ["calendar_year", "question_type", "coverage_status"],
+        "output_columns": [
+            ["calendar_year", "BIGINT", True], ["question_type", "VARCHAR", True],
+            ["published_question_count", "BIGINT", True], ["published_response_date_count", "BIGINT", True],
+            ["published_response_date_rate_pct", "DOUBLE", True], ["coverage_status", "VARCHAR", True],
+        ],
         "measures": [
             {"name": "published_question_count", "unit": "questions", "formula": "COUNT(question_id)", "denominator": "questions found in acquired public files"},
             {"name": "published_response_date_count", "unit": "questions", "formula": "COUNT(response_id)", "denominator": "questions found in acquired public files"},

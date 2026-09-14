@@ -2,7 +2,7 @@
   "release": "V15",
   "asset_name": "Morocco_Electoral_Data_Warehouse_V15.zip",
   "download_url": "https://github.com/MOSSAWIII/morocco-electoral-data-warehouse/releases/download/v15.0.0/Morocco_Electoral_Data_Warehouse_V15.zip",
-  "bytes": 138150015,
-  "sha256": "de110135dc9e2f2ba58cc6b71e20b3db550c3e7618517fc16c007ee284d677f4",
+  "bytes": 138190155,
+  "sha256": "b1c73109bb9b880b5d46ffdafd3422a0cdfd59affd95a695c0adf766f09b8f5c",
   "override_environment_variable": "MOROCCO_ELECTIONS_V15_URL"
 }
