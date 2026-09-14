@@ -29,6 +29,7 @@ from morocco_elections.v15.schema import (
 from morocco_elections.v15.queries import ANALYSES, CUBES, available_cubes, render_reference_queries
 
 VERSION = "V15"
+RELEASE_VERSION = "15.0.0"
 SCHEMA_VERSION = 1
 GENERATED_ON = "2026-09-13"
 DEFAULT_SEED_RELEASE = "v14.1"
@@ -510,6 +511,7 @@ def build(
         manifest: dict[str, Any] = {
             "schema_version": SCHEMA_VERSION,
             "release": VERSION,
+            "release_version": RELEASE_VERSION,
             "generated_on": GENERATED_ON,
             "source_release": "V14.1",
             "pipeline": "morocco_elections.v15.pipeline",

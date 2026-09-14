@@ -18,6 +18,8 @@ pytestmark = pytest.mark.skipif(not (PACKAGE / "manifest.json").is_file(), reaso
 
 def test_complete_public_package_contract() -> None:
     assert validate_package(PACKAGE) == []
+    manifest = json.loads((PACKAGE / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["release_version"] == "15.0.0"
 
 
 def test_two_known_interval_anomalies_are_corrected_without_invention() -> None:
