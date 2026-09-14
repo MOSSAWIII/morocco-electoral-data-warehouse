@@ -8,6 +8,7 @@ import duckdb
 import pytest
 
 from morocco_elections.analysis.v15 import run as run_analyses
+from morocco_elections.v15.bootstrap import run as run_bootstrap
 from morocco_elections.quality.v15.package import validate_package
 from morocco_elections.v15.queries import ANALYSES
 
@@ -56,6 +57,10 @@ def test_temporal_precision_and_known_coverage_are_explicit() -> None:
     assert set(coverage["affiliation_evidence_status_definitions"]) == {
         "PROVEN_INTERVAL", "PARTIAL_INTERVAL", "UNKNOWN_INTERVAL"
     }
+    assert set(coverage["affiliation_evidence_status_totals"]) == {
+        "PROVEN_INTERVAL", "PARTIAL_INTERVAL", "UNKNOWN_INTERVAL"
+    }
+    assert all(row["status"] == "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR" for row in coverage["parliamentary_questions_by_period"])
     assert coverage["parliamentary_question_corpus"]["status"] == "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR"
     assert all(row["missing_values_are_zero"] is False for row in coverage["analyses"])
     precision = {(row["table_name"], row["column"]): row for row in coverage["temporal_precision"]}
@@ -79,3 +84,13 @@ def test_analysis_output_displays_coverage_counts(capsys) -> None:
     assert len(output["analyses"]) == 5
     for analysis in output["analyses"]:
         assert {"numerator", "denominator", "status"} <= analysis["coverage"].keys()
+
+
+def test_readme_public_commands_execute_against_the_real_package(capsys) -> None:
+    data_dir = PACKAGE.parents[2]
+    assert run_bootstrap(data_dir) == 0
+    assert validate_package(PACKAGE) == []
+    assert run_analyses(data_dir, output_format="json") == 0
+    output = capsys.readouterr().out
+    assert "V15_BOOTSTRAP_OK" in output
+    assert '"analyses"' in output

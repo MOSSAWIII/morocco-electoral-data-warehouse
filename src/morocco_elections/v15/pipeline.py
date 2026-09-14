@@ -221,7 +221,7 @@ def _table_contracts(seed_manifest: dict[str, Any]) -> tuple[list[dict[str, Any]
     return all_table_contracts(), [dict(row) for row in RELATIONSHIPS]
 
 
-def _ddl(contract: dict[str, Any]) -> str:
+def _ddl(contract: dict[str, Any], *, include_foreign_keys: bool = True) -> str:
     definitions = []
     for column in contract["columns"]:
         item = f'{_quote(column["name"])} {column["type"]}'
@@ -238,7 +238,7 @@ def _ddl(contract: dict[str, Any]) -> str:
         definitions.append("UNIQUE (" + ", ".join(_quote(name) for name in contract["natural_key"]) + ")")
     definitions.extend(f"CHECK ({check})" for check in contract["table_checks"])
     for relation in RELATIONSHIPS:
-        if relation["child_table"] == contract["table_name"]:
+        if include_foreign_keys and relation["child_table"] == contract["table_name"]:
             definitions.append(
                 f"FOREIGN KEY ({_quote(relation['child_column'])}) REFERENCES "
                 f"{_quote(relation['parent_table'])} ({_quote(relation['parent_column'])})"

@@ -25,6 +25,22 @@ def package(tmp_path: Path) -> Path:
     return destination
 
 
+def _refresh_integrity(package: Path, relative: str) -> None:
+    target = package / relative
+    manifest_path = package / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    record = next(row for row in manifest["files"] if row["path"] == relative)
+    record.update(bytes=target.stat().st_size, sha256=sha256_file(target))
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="")
+    checksums = package / "checksums.sha256"
+    entries = dict(line.split("  ", 1)[::-1] for line in checksums.read_text(encoding="ascii").splitlines())
+    entries[relative] = sha256_file(target)
+    entries["manifest.json"] = sha256_file(manifest_path)
+    checksums.write_text(
+        "".join(f"{entries[name]}  {name}\n" for name in sorted(entries)), encoding="ascii", newline=""
+    )
+
+
 @pytest.mark.parametrize("kind", ["csv", "parquet"])
 def test_validator_rejects_missing_table_format(package: Path, kind: str) -> None:
     (package / kind / f"dim_party.{kind}").unlink()
@@ -40,22 +56,18 @@ def test_validator_rejects_cross_format_single_value_divergence(package: Path) -
     lines[1] = ",".join(fields)
     target.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="")
 
-    manifest_path = package / "manifest.json"
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    record = next(row for row in manifest["files"] if row["path"] == "csv/dim_party.csv")
-    record.update(bytes=target.stat().st_size, sha256=sha256_file(target))
-    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="")
-    checksums = package / "checksums.sha256"
-    entries = {}
-    for line in checksums.read_text(encoding="ascii").splitlines():
-        digest, relative = line.split("  ", 1)
-        entries[relative] = digest
-    entries["csv/dim_party.csv"] = sha256_file(target)
-    entries["manifest.json"] = sha256_file(manifest_path)
-    checksums.write_text(
-        "".join(f"{entries[name]}  {name}\n" for name in sorted(entries)), encoding="ascii", newline=""
-    )
+    _refresh_integrity(package, "csv/dim_party.csv")
     assert any("contenu logique divergent" in error for error in validate_package(package))
+
+
+def test_validator_rejects_extra_csv_column(package: Path) -> None:
+    target = package / "csv" / "dim_party.csv"
+    lines = target.read_text(encoding="utf-8").splitlines()
+    lines[0] += ",unexpected_column"
+    lines[1:] = [line + ",unexpected" for line in lines[1:]]
+    target.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="")
+    _refresh_integrity(package, "csv/dim_party.csv")
+    assert any("en-tête CSV différent" in error for error in validate_package(package))
 
 
 def test_validator_rejects_malformed_checksum(package: Path) -> None:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import json
 import csv as csv_module
+import json
 from pathlib import Path
 
 import duckdb
@@ -48,8 +48,14 @@ def validate_schema(root: Path, manifest: dict) -> list[str]:
             if not parquet.is_file() or not csv.is_file():
                 errors.append(f"schema: formats manquants pour {name}")
                 continue
-            parquet_rows = pq.ParquetFile(parquet).metadata.num_rows
-            csv_rows = connection.execute("SELECT count(*) FROM read_csv_auto(?, header=true)", [str(csv)]).fetchone()[0]
+            try:
+                parquet_rows = pq.ParquetFile(parquet).metadata.num_rows
+                csv_rows = connection.execute(
+                    "SELECT count(*) FROM read_csv_auto(?, header=true)", [str(csv)]
+                ).fetchone()[0]
+            except (OSError, pa.ArrowException, duckdb.Error) as exc:
+                errors.append(f"schema: format illisible pour {name}: {exc}")
+                continue
             duck_rows = connection.execute(f'SELECT count(*) FROM "{name}"').fetchone()[0]
             if not (parquet_rows == csv_rows == duck_rows == table["rows"]):
                 errors.append(f"schema: volumes incohérents pour {name}")
@@ -89,9 +95,14 @@ def validate_schema(root: Path, manifest: dict) -> list[str]:
             with csv.open(encoding="utf-8", newline="") as stream:
                 header = next(csv_module.reader(stream), [])
             expected_header = [row["name"] for row in table["columns"]]
-            if header != expected_header:
+            csv_schema_valid = header == expected_header
+            if not csv_schema_valid:
                 errors.append(f"schema: en-tête CSV différent du contrat pour {name}")
-            parquet_schema = pq.read_schema(parquet)
+            try:
+                parquet_schema = pq.read_schema(parquet)
+            except (OSError, pa.ArrowException) as exc:
+                errors.append(f"schema: Parquet illisible pour {name}: {exc}")
+                continue
             expected_parquet = pa.schema(
                 [pa.field(row["name"], _arrow_type(row["type"]), nullable=row["nullable"]) for row in table["columns"]]
             )
@@ -101,11 +112,14 @@ def validate_schema(root: Path, manifest: dict) -> list[str]:
             if not expected_digest:
                 errors.append(f"schema: empreinte logique absente pour {name}")
             else:
-                digests = {
-                    "DuckDB": duckdb_digest(connection, table)[0],
-                    "Parquet": parquet_digest(connection, parquet, table)[0],
-                    "CSV": csv_digest(connection, csv, table)[0],
-                }
+                digests = {"DuckDB": duckdb_digest(connection, table)[0]}
+                try:
+                    digests["Parquet"] = parquet_digest(connection, parquet, table)[0]
+                    if csv_schema_valid:
+                        digests["CSV"] = csv_digest(connection, csv, table)[0]
+                except duckdb.Error as exc:
+                    errors.append(f"schema: contenu logique illisible pour {name}: {exc}")
+                    continue
                 mismatches = [kind for kind, digest in digests.items() if digest != expected_digest]
                 if mismatches:
                     errors.append(f"schema: contenu logique divergent pour {name}: {', '.join(mismatches)}")
