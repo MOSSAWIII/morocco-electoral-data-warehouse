@@ -42,7 +42,11 @@ def validate_package(root: Path) -> list[str]:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         return [f"paquet: manifeste illisible: {exc}"]
-    if manifest.get("release") != "V15" or manifest.get("schema_version") != 1:
+    if (
+        manifest.get("release") != "V15"
+        or manifest.get("release_version") != "15.0.0"
+        or manifest.get("schema_version") != 1
+    ):
         errors.append("paquet: racine de manifeste V15 invalide")
     missing_assets = sorted(name for name in REQUIRED_ASSETS if not (root / name).is_file())
     if missing_assets:
