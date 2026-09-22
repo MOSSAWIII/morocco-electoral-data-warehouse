@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import zipfile
 from pathlib import Path
 
 import pytest
 
-from morocco_elections.warehouse.sources import materialize_declared_sources
+from morocco_elections.warehouse.sources import materialize_declared_sources, materialize_seed_database
 
 
 def test_declared_sources_are_acquired_once_and_verified(tmp_path: Path) -> None:
@@ -38,3 +39,20 @@ def test_declared_source_mismatch_fails_closed(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="differ from pinned evidence"):
         materialize_declared_sources(tmp_path)
+
+
+def test_seed_database_is_extracted_from_pinned_snapshot(tmp_path: Path) -> None:
+    archive = tmp_path / "snapshot.zip"
+    with zipfile.ZipFile(archive, "w") as bundle:
+        bundle.writestr("snapshot/warehouse.duckdb", b"duckdb bytes")
+    metadata = tmp_path / "metadata/warehouse"
+    metadata.mkdir(parents=True)
+    (metadata / "seed_snapshot.json").write_text(json.dumps({
+        "download_url": archive.as_uri(), "bytes": archive.stat().st_size,
+        "sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
+        "database_member": "snapshot/warehouse.duckdb",
+    }), encoding="utf-8")
+    destination = tmp_path / "data/seed.duckdb"
+
+    assert materialize_seed_database(tmp_path, destination) == destination.resolve()
+    assert destination.read_bytes() == b"duckdb bytes"

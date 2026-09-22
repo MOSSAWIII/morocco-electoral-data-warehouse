@@ -7,6 +7,7 @@ import json
 import os
 import tempfile
 import urllib.request
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -58,3 +59,34 @@ def materialize_declared_sources(repository_root: Path) -> dict[str, int]:
         "declared": len(registry["sources"]), "acquired": acquired,
         "reused": reused, "metadata_only": metadata_only,
     }
+
+
+def materialize_seed_database(repository_root: Path, destination: Path) -> Path:
+    """Extract only the pinned DuckDB seed from its immutable snapshot archive."""
+    repository_root, destination = repository_root.resolve(), destination.resolve()
+    descriptor = json.loads(
+        (repository_root / "metadata/warehouse/seed_snapshot.json").read_text(encoding="utf-8")
+    )
+    if destination.is_file():
+        return destination
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="warehouse-seed-", dir=destination.parent) as temporary_name:
+        temporary_root = Path(temporary_name)
+        archive = temporary_root / "snapshot.zip"
+        request = urllib.request.Request(str(descriptor["download_url"]), headers={"User-Agent": "morocco-elections-warehouse/1"})
+        with urllib.request.urlopen(request, timeout=120) as response, archive.open("wb") as stream:
+            while chunk := response.read(1024 * 1024):
+                stream.write(chunk)
+        if archive.stat().st_size != int(descriptor["bytes"]) or _sha256(archive) != descriptor["sha256"]:
+            raise ValueError("seed snapshot archive differs from pinned evidence")
+        member = str(descriptor["database_member"])
+        if member.startswith(("/", "\\")) or ".." in Path(member).parts:
+            raise ValueError("unsafe seed database member")
+        with zipfile.ZipFile(archive) as bundle:
+            info = bundle.getinfo(member)
+            temporary_database = temporary_root / "seed.duckdb"
+            with bundle.open(info) as source, temporary_database.open("wb") as output:
+                while chunk := source.read(1024 * 1024):
+                    output.write(chunk)
+        os.replace(temporary_database, destination)
+    return destination
