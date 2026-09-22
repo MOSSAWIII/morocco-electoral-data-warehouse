@@ -356,7 +356,7 @@ def _publication_context(package_root: Path) -> PublicationContext:
             "manifest_sha256": manifest_sha,
             "commands": [
                 {"name": "tests", "command": "python -m pytest", "exit_code": 0},
-                {"name": "validate_warehouse", "command": "python tools/validate_warehouse.py", "exit_code": 0},
+                {"name": "validate_warehouse", "command": "python -m morocco_elections validate", "exit_code": 0},
             ],
         }, sort_keys=True)
         clean_shas.append(hashlib.sha256(clean_report.encode("utf-8")).hexdigest())

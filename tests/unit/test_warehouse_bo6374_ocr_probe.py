@@ -8,7 +8,12 @@ import pytest
 
 pytest.importorskip("fitz")
 
-from tools.ocr_bo6374_probe import DEFAULT_SOURCE, EXPECTED_SOURCE_SHA256, recognize_page, verify_pinned_source
+from morocco_elections.warehouse.ocr_probe import (
+    DEFAULT_SOURCE,
+    EXPECTED_SOURCE_SHA256,
+    recognize_page,
+    verify_pinned_source,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]

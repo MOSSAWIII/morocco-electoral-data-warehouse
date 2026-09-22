@@ -165,7 +165,7 @@ def test_readiness_audit_reports_external_territorial_coverage_without_claiming_
     if not canonical_database.is_file():
         pytest.skip("local canonical package required")
     process = subprocess.run(
-        [sys.executable, str(ROOT / "tools/audit_warehouse.py"), "--summary"],
+        [sys.executable, "-m", "morocco_elections", "audit", "--summary"],
         cwd=ROOT, capture_output=True, text=True, check=False,
     )
     assert process.returncode == 0  # Canonical parent relations resolve the historical semantic violations.
