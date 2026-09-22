@@ -1,367 +1,106 @@
+"""Single public command line for the canonical electoral warehouse."""
+
 from __future__ import annotations
 
 import argparse
+import json
+import zipfile
+from pathlib import Path
+
+from morocco_elections.warehouse.auditor import main as audit_main
+from morocco_elections.warehouse.package import build_package, validate_package
+from morocco_elections.warehouse.validator import main as validate_repository
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_PACKAGE = PROJECT_ROOT / "data" / "exports" / "open" / "warehouse"
+DEFAULT_SEED = PROJECT_ROOT / "data" / "exports" / "open" / "v15" / "morocco_elections_v15.duckdb"
+
+
+def _print(payload: object) -> None:
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="morocco_elections", description="Warehouse électoral marocain")
+    parser = argparse.ArgumentParser(prog="morocco-elections", description="Morocco Electoral Data Warehouse")
     commands = parser.add_subparsers(dest="command", required=True)
-
-    build = commands.add_parser("build", help="Construire un export du warehouse")
-    build.add_argument("version", choices=("v9", "v10", "v11", "v12", "v13", "v15"))
-    build.add_argument("--data-dir")
-    build.add_argument("--seed-dir", help="Paquet public V14.1 servant d'entrée au pipeline canonique V15")
-    build.add_argument("--output-dir", help="Répertoire de sortie V15")
-
-    bootstrap = commands.add_parser("bootstrap", help="Installer et vérifier le paquet public V15")
-    bootstrap.add_argument("--data-dir")
-    bootstrap.add_argument("--network-only", action="store_true", help="Ignorer toute archive locale V15")
-
-    export = commands.add_parser("export", help="Produire un paquet de diffusion ouvert")
-    export.add_argument("version", choices=("v13", "v14", "v14.1"))
-    export.add_argument("--data-dir")
-    export.add_argument("--output-dir")
-    export.add_argument("--manifest-output")
-    export.add_argument("--readme-output")
-
-    analyze = commands.add_parser("analyze", help="Exécuter les analyses de référence d'une release validée")
-    analyze.add_argument("version", choices=("v11", "v12", "v13", "reference"))
-    analyze.add_argument("--data-dir")
-    analyze.add_argument("--format", choices=("text", "json"), default="text")
-
-    validate = commands.add_parser("validate", help="Valider le dépôt et les données locales")
-    validate.add_argument("--mode", choices=("ci", "full", "public"), default="ci")
-    validate.add_argument("--data-dir")
-    validate.add_argument("--release", choices=("v9", "v10", "v11", "v12", "v13", "v14", "v14.1", "all"), default="v14.1")
-    validate.add_argument("--baseline", choices=("v9", "v10", "v11", "v12", "v13", "v14"))
-
-    sources = commands.add_parser("sources", help="Cataloguer et acquérir des sources sans les ingérer")
-    source_commands = sources.add_subparsers(dest="source_command", required=True)
-    catalog = source_commands.add_parser("catalog", help="Valider et résumer le catalogue d'acquisition")
-    catalog.add_argument("--catalog")
-    inventory = source_commands.add_parser("inventory", help="Consolider les profils RAW dans un inventaire partageable")
-    inventory.add_argument("--as-of", required=True)
-    inventory.add_argument("--data-dir")
-    inventory.add_argument("--output")
-    acquire = source_commands.add_parser("acquire", help="Conserver et profiler une source dans les RAW immuables")
-    acquire.add_argument("--source-id", required=True)
-    source_input = acquire.add_mutually_exclusive_group(required=True)
-    source_input.add_argument("--url")
-    source_input.add_argument("--input")
-    acquire.add_argument("--filename")
-    acquire.add_argument("--as-of")
-    acquire.add_argument("--data-dir")
-    acquire.add_argument("--catalog")
-    electoral_profile = source_commands.add_parser(
-        "profile-electoral-archives", help="Profiler les sept archives électorales acquises pour V13"
+    build = commands.add_parser("build", help="construire et vérifier le warehouse canonique")
+    build.add_argument("--seed", type=Path, default=DEFAULT_SEED, help=argparse.SUPPRESS)
+    build.add_argument("--output", type=Path, default=DEFAULT_PACKAGE)
+    build.add_argument("--replace", action="store_true")
+    validate = commands.add_parser("validate", help="valider le dépôt et le paquet canonique")
+    validate.add_argument("--package", type=Path, default=DEFAULT_PACKAGE)
+    validate.add_argument("--repository", action="store_true", help="inclure les sources et preuves locales")
+    audit = commands.add_parser("audit", help="auditer les lacunes et gates depuis DuckDB")
+    audit.add_argument("--package", type=Path, default=DEFAULT_PACKAGE)
+    audit.add_argument("--summary", action="store_true")
+    audit.add_argument("--require-ready", action="store_true")
+    package = commands.add_parser("package", help="créer une archive du paquet validé")
+    package.add_argument("--package", type=Path, default=DEFAULT_PACKAGE)
+    package.add_argument(
+        "--output", type=Path,
+        default=PROJECT_ROOT / "data" / "exports" / "open" / "releases" / "morocco-electoral-warehouse.zip",
     )
-    electoral_profile.add_argument("--baseline", choices=("v12",), default="v12")
-    electoral_profile.add_argument("--as-of", required=True)
-    electoral_profile.add_argument("--data-dir")
-    electoral_profile.add_argument("--output")
-    electoral_profile.add_argument("--report-output")
-
-    docs = commands.add_parser("docs", help="Historique: générer la documentation d'une release")
-    docs.add_argument("version", choices=("v9", "v10", "v11", "v12", "v13"))
-    docs.add_argument("--data-dir")
-
-    qualify = commands.add_parser("qualify", help="Historique: reproduire une qualification de source")
-    qualification = qualify.add_subparsers(dest="qualification", required=True)
-    councils = qualification.add_parser("councils-2015", help="Qualifier les conseils communaux de 2015")
-    councils.add_argument("--candidate", required=True)
-    councils.add_argument("--baseline", choices=("v10",), default="v10")
-    councils.add_argument("--data-dir")
-    councils.add_argument("--metadata-output")
-    councils.add_argument("--decision-output")
-    smiig = qualification.add_parser("smiig", help="Qualifier une source SMIIG sans l'ingérer")
-    smiig.add_argument("--candidate", required=True)
-    smiig.add_argument("--baseline", choices=("v10",), default="v10")
-    smiig.add_argument("--data-dir")
-    smiig.add_argument("--metadata-output")
-    smiig.add_argument("--decision-output")
-    denominators = qualification.add_parser(
-        "electoral-denominators", help="Qualifier les inscrits communaux 2015 et 2021"
-    )
-    denominators.add_argument("--candidate-2015")
-    denominators.add_argument("--candidate-2021")
-    denominators.add_argument("--baseline", choices=("v10",), default="v10")
-    denominators.add_argument("--as-of")
-    denominators.add_argument("--data-dir")
-    denominators.add_argument("--metadata-output")
-    denominators.add_argument("--decision-output")
-    presidencies = qualification.add_parser(
-        "local-presidencies", help="Qualifier les 135 présidences communales 2021 non résolues"
-    )
-    presidencies.add_argument("--evidence-index")
-    presidencies.add_argument("--baseline", choices=("v10",), default="v10")
-    presidencies.add_argument("--as-of")
-    presidencies.add_argument("--data-dir")
-    presidencies.add_argument("--metadata-output")
-    presidencies.add_argument("--decision-output")
-    hcp = qualification.add_parser("hcp-indicators", help="Qualifier les indicateurs communaux HCP 2014 et 2024")
-    hcp.add_argument("--candidate-2014-individuals")
-    hcp.add_argument("--candidate-2014-households")
-    hcp.add_argument("--candidate-2024-indicators")
-    hcp.add_argument("--baseline", choices=("v10",), default="v10")
-    hcp.add_argument("--as-of")
-    hcp.add_argument("--data-dir")
-    hcp.add_argument("--metadata-output")
-    hcp.add_argument("--decision-output")
-    parliament = qualification.add_parser("parliament", help="Qualifier les questions parlementaires écrites")
-    parliament.add_argument("--candidate", action="append", dest="candidates")
-    parliament.add_argument("--baseline", choices=("v11",), default="v11")
-    parliament.add_argument("--as-of", default="2026-09-09")
-    parliament.add_argument("--output")
-    parliament.add_argument("--data-dir")
-    electoral = qualification.add_parser(
-        "electoral-archives", help="Qualifier en bloc les archives électorales profilées pour V13"
-    )
-    electoral.add_argument("--baseline", choices=("v12",), default="v12")
-    electoral.add_argument("--as-of", required=True)
-    electoral.add_argument("--output")
-    electoral.add_argument("--report-output")
-
-    quality = commands.add_parser("quality", help="Historique: reproduire une baseline qualité")
-    quality_commands = quality.add_subparsers(dest="quality_command", required=True)
-    baseline = quality_commands.add_parser("baseline", help="Générer la baseline V10-QA")
-    baseline.add_argument("--release", choices=("v10", "v11"), default="v10")
-    baseline.add_argument("--as-of")
-    baseline.add_argument("--data-dir")
-    baseline.add_argument("--metadata-output")
-    baseline.add_argument("--report-output")
-
-    identity = commands.add_parser("identity", help="Historique: reproduire un registre d'identités")
-    identity_commands = identity.add_subparsers(dest="identity_command", required=True)
-    registry = identity_commands.add_parser("build-registry", help="Construire le registre électoral V13")
-    registry.add_argument("--baseline", choices=("v12",), default="v12")
-    registry.add_argument("--as-of", required=True)
-    registry.add_argument("--data-dir")
-    registry.add_argument("--output")
-    registry.add_argument("--report-output")
-
-    github = commands.add_parser("github", help="Historique: republier le backlog initial")
-    github_commands = github.add_subparsers(dest="github_command", required=True)
-    backlog = github_commands.add_parser("publish-backlog", help="Publier les jalons et issues")
-    backlog.add_argument("--repo")
-    backlog.add_argument("--dry-run", action="store_true")
-
+    status = commands.add_parser("status", help="afficher un état compact du produit")
+    status.add_argument("--package", type=Path, default=DEFAULT_PACKAGE)
     return parser
+
+
+def _build(args: argparse.Namespace) -> int:
+    report, validation = build_package(args.seed, args.output, PROJECT_ROOT, replace_existing=args.replace)
+    _print({
+        "status": validation["status"], "snapshot_id": "development-2026-09-21",
+        "package": str(args.output.resolve()), "tables": validation["present_tables"],
+        "files": validation["files_included"], "manifest_sha256": validation["manifest_sha256"],
+        "proof_index_sha256": validation["bundle_sha256"],
+        "materialized_publication_rows": report.get("materialized_publication_rows", {}),
+    })
+    return 0 if validation["status"] == "PASS" else 1
+
+
+def _validate(args: argparse.Namespace) -> int:
+    if args.repository:
+        return validate_repository([])
+    report = validate_package(args.package)
+    _print(report)
+    return 0 if report["status"] == "PASS" else 1
+
+
+def _audit(args: argparse.Namespace) -> int:
+    argv = ["--database", str(args.package / "morocco_elections.duckdb")]
+    if args.summary:
+        argv.append("--summary")
+    if args.require_ready:
+        argv.append("--require-ready")
+    return audit_main(argv)
+
+
+def _package(args: argparse.Namespace) -> int:
+    report = validate_package(args.package)
+    if report["status"] != "PASS":
+        _print(report)
+        return 1
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(args.output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+        for path in sorted(item for item in args.package.rglob("*") if item.is_file()):
+            archive.write(path, path.relative_to(args.package).as_posix())
+    _print({"status": "PASS", "archive": str(args.output.resolve()), "bytes": args.output.stat().st_size})
+    return 0
+
+
+def _status(args: argparse.Namespace) -> int:
+    if not args.package.is_dir():
+        _print({"status": "MISSING", "package": str(args.package.resolve())})
+        return 1
+    report = validate_package(args.package)
+    _print({
+        "status": report["status"], "package": str(args.package.resolve()),
+        "tables": report.get("present_tables", 0), "files": report.get("files_included", 0),
+        "failures": len(report.get("failures", [])),
+    })
+    return 0 if report["status"] == "PASS" else 1
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    if args.command == "bootstrap":
-        from morocco_elections.v15.bootstrap import run
-
-        return run(data_dir=args.data_dir, network_only=args.network_only)
-    if args.command == "build":
-        if args.version == "v15":
-            from morocco_elections.v15.pipeline import main as build_release
-
-            return build_release(data_dir=args.data_dir, seed_dir=args.seed_dir, output_dir=args.output_dir)
-        if args.version == "v9":
-            from morocco_elections.legacy.v9.build import main as build_release
-        elif args.version == "v10":
-            from morocco_elections.releases.v10.build import main as build_release
-        elif args.version == "v11":
-            from morocco_elections.releases.v11.build import main as build_release
-        elif args.version == "v12":
-            from morocco_elections.releases.v12.build import main as build_release
-        else:
-            from morocco_elections.releases.v13.build import main as build_release
-        build_release(data_dir=args.data_dir)
-        return 0
-    if args.command == "docs":
-        if args.version == "v9":
-            from morocco_elections.legacy.v9.documentation import main as generate_docs
-        elif args.version == "v10":
-            from morocco_elections.releases.v10.documentation import main as generate_docs
-        elif args.version == "v11":
-            from morocco_elections.releases.v11.documentation import main as generate_docs
-        elif args.version == "v12":
-            from morocco_elections.releases.v12.documentation import main as generate_docs
-        else:
-            from morocco_elections.releases.v13.documentation import main as generate_docs
-        generate_docs(data_dir=args.data_dir)
-        return 0
-    if args.command == "validate":
-        if args.mode == "public":
-            from morocco_elections.quality.v15.package import report as public_report
-
-            return public_report(data_dir=args.data_dir)
-        from morocco_elections.quality.validation import report
-
-        return report(mode=args.mode, data_dir=args.data_dir, release=args.release, baseline=args.baseline)
-    if args.command == "analyze" and args.version == "v11":
-        from morocco_elections.analysis.v11 import run
-
-        return run(data_dir=args.data_dir, output_format=args.format)
-    if args.command == "analyze" and args.version == "v12":
-        from morocco_elections.analysis.v12 import run
-
-        return run(data_dir=args.data_dir, output_format=args.format)
-    if args.command == "analyze" and args.version == "v13":
-        from morocco_elections.analysis.v13 import run
-
-        return run(data_dir=args.data_dir, output_format=args.format)
-    if args.command == "analyze" and args.version == "reference":
-        from morocco_elections.analysis.v15 import run
-
-        return run(data_dir=args.data_dir, output_format=args.format)
-    if args.command == "export" and args.version == "v13":
-        from morocco_elections.exports.open_v13 import run
-
-        return run(
-            data_dir=args.data_dir,
-            output_dir=args.output_dir,
-            manifest_output=args.manifest_output,
-            readme_output=args.readme_output,
-        )
-    if args.command == "export" and args.version == "v14":
-        from morocco_elections.exports.open_v14 import run
-
-        return run(
-            data_dir=args.data_dir,
-            output_dir=args.output_dir,
-            manifest_output=args.manifest_output,
-            readme_output=args.readme_output,
-        )
-    if args.command == "export" and args.version == "v14.1":
-        from morocco_elections.exports.open_v14_1 import run
-
-        return run(
-            data_dir=args.data_dir,
-            output_dir=args.output_dir,
-            manifest_output=args.manifest_output,
-            readme_output=args.readme_output,
-        )
-    if args.command == "qualify" and args.qualification == "councils-2015":
-        from morocco_elections.research.councils_2015 import qualify_candidate
-
-        return qualify_candidate(
-            candidate=args.candidate,
-            baseline=args.baseline,
-            metadata_output=args.metadata_output,
-            decision_output=args.decision_output,
-            data_dir=args.data_dir,
-        )
-    if args.command == "qualify" and args.qualification == "smiig":
-        from morocco_elections.research.smiig import qualify_candidate
-
-        return qualify_candidate(
-            candidate=args.candidate,
-            baseline=args.baseline,
-            metadata_output=args.metadata_output,
-            decision_output=args.decision_output,
-            data_dir=args.data_dir,
-        )
-    if args.command == "qualify" and args.qualification == "electoral-denominators":
-        from morocco_elections.research.electoral_denominators import qualify
-
-        return qualify(
-            candidate_2015=args.candidate_2015,
-            candidate_2021=args.candidate_2021,
-            baseline=args.baseline,
-            as_of=args.as_of,
-            metadata_output=args.metadata_output,
-            decision_output=args.decision_output,
-            data_dir=args.data_dir,
-        )
-    if args.command == "qualify" and args.qualification == "local-presidencies":
-        from morocco_elections.research.local_presidencies import qualify
-
-        return qualify(
-            evidence_index=args.evidence_index,
-            baseline=args.baseline,
-            as_of=args.as_of,
-            metadata_output=args.metadata_output,
-            decision_output=args.decision_output,
-            data_dir=args.data_dir,
-        )
-    if args.command == "qualify" and args.qualification == "hcp-indicators":
-        from morocco_elections.research.hcp_indicators import qualify
-
-        return qualify(
-            candidate_2014_individuals=args.candidate_2014_individuals,
-            candidate_2014_households=args.candidate_2014_households,
-            candidate_2024_indicators=args.candidate_2024_indicators,
-            baseline=args.baseline,
-            as_of=args.as_of,
-            metadata_output=args.metadata_output,
-            decision_output=args.decision_output,
-            data_dir=args.data_dir,
-        )
-    if args.command == "qualify" and args.qualification == "parliament":
-        from morocco_elections.research.parliamentary_questions import qualify
-
-        return qualify(
-            candidates=args.candidates,
-            baseline=args.baseline,
-            as_of=args.as_of,
-            output=args.output,
-            data_dir=args.data_dir,
-        )
-    if args.command == "qualify" and args.qualification == "electoral-archives":
-        from morocco_elections.research.electoral_qualification import generate
-
-        return generate(
-            as_of=args.as_of,
-            baseline=args.baseline,
-            output=args.output,
-            report_output=args.report_output,
-        )
-    if args.command == "quality" and args.quality_command == "baseline":
-        from morocco_elections.quality.baseline import generate
-
-        return generate(
-            release=args.release,
-            data_dir=args.data_dir,
-            as_of=args.as_of,
-            metadata_output=args.metadata_output,
-            report_output=args.report_output,
-        )
-    if args.command == "identity" and args.identity_command == "build-registry":
-        from morocco_elections.domains.identity.registry import generate
-
-        return generate(
-            data_dir=args.data_dir,
-            as_of=args.as_of,
-            baseline=args.baseline,
-            output=args.output,
-            report_output=args.report_output,
-        )
-    if args.command == "github" and args.github_command == "publish-backlog":
-        from morocco_elections.github.backlog import publish
-
-        return publish(repo=args.repo, dry_run=args.dry_run)
-    if args.command == "sources" and args.source_command == "catalog":
-        from morocco_elections.sources.acquisition import catalog_summary
-
-        return catalog_summary(catalog_path=args.catalog)
-    if args.command == "sources" and args.source_command == "inventory":
-        from morocco_elections.sources.acquisition import generate_inventory
-
-        return generate_inventory(data_dir=args.data_dir, as_of=args.as_of, output=args.output)
-    if args.command == "sources" and args.source_command == "acquire":
-        from morocco_elections.sources.acquisition import acquire
-
-        return acquire(
-            source_id=args.source_id,
-            url=args.url,
-            input_path=args.input,
-            filename=args.filename,
-            as_of=args.as_of,
-            data_dir=args.data_dir,
-            catalog_path=args.catalog,
-        )
-    if args.command == "sources" and args.source_command == "profile-electoral-archives":
-        from morocco_elections.research.electoral_archives import generate
-
-        return generate(
-            data_dir=args.data_dir,
-            as_of=args.as_of,
-            baseline=args.baseline,
-            output=args.output,
-            report_output=args.report_output,
-        )
-    raise AssertionError("Commande non gérée")
+    return {"build": _build, "validate": _validate, "audit": _audit, "package": _package, "status": _status}[args.command](args)
