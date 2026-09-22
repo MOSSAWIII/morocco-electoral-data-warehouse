@@ -9,6 +9,7 @@ from pathlib import Path
 
 from morocco_elections.warehouse.auditor import main as audit_main
 from morocco_elections.warehouse.package import build_package, validate_package
+from morocco_elections.warehouse.sources import materialize_declared_sources
 from morocco_elections.warehouse.validator import main as validate_repository
 
 
@@ -47,6 +48,13 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _build(args: argparse.Namespace) -> int:
+    source_report = materialize_declared_sources(PROJECT_ROOT)
+    if not args.seed.is_file():
+        from morocco_elections.v15.bootstrap import run as bootstrap_seed
+
+        exit_code = bootstrap_seed(data_dir=PROJECT_ROOT / "data", network_only=True)
+        if exit_code:
+            return exit_code
     report, validation = build_package(args.seed, args.output, PROJECT_ROOT, replace_existing=args.replace)
     _print({
         "status": validation["status"], "snapshot_id": "development-2026-09-21",
@@ -54,6 +62,7 @@ def _build(args: argparse.Namespace) -> int:
         "files": validation["files_included"], "manifest_sha256": validation["manifest_sha256"],
         "proof_index_sha256": validation["bundle_sha256"],
         "materialized_publication_rows": report.get("materialized_publication_rows", {}),
+        "source_materialization": source_report,
     })
     return 0 if validation["status"] == "PASS" else 1
 
