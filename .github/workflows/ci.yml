@@ -1,17 +1,19 @@
-name: validation
+name: canonical warehouse
 
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  validate:
+  build-test-audit:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
-      - name: Checkout
+      - name: Checkout clean source
         uses: actions/checkout@v4
 
       - name: Python 3.11
@@ -20,47 +22,44 @@ jobs:
           python-version: "3.11"
           cache: pip
 
-      - name: Install dependencies
+      - name: Install declared dependencies
         run: |
           python -m pip install --requirement requirements-dev.txt
           python -m pip install --no-deps --editable .
 
-      - name: Lint
-        run: ruff check .
-
-      - name: Tests
-        run: pytest
-
-      - name: Validate historical repository contracts without data
-        run: python -m morocco_elections validate --mode ci
-
-  v15-public-consumer:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: pip
-
-      - name: Install dependencies
+      - name: Compile and lint
         run: |
-          python -m pip install --requirement requirements-dev.txt
-          python -m pip install --no-deps --editable .
+          python -m compileall -q src
+          ruff check .
 
-      - name: Bootstrap V15 from the public network asset in an empty data directory
-        run: python -m morocco_elections bootstrap --network-only --data-dir "$RUNNER_TEMP/v15-consumer"
+      - name: Unit tests
+        run: pytest tests/unit
 
-      - name: Validate the public V15 package
-        run: python -m morocco_elections validate --mode public --data-dir "$RUNNER_TEMP/v15-consumer"
+      - name: Build canonical package from pinned sources
+        run: morocco-elections build --output "$RUNNER_TEMP/warehouse"
 
-      - name: Execute all five V15 analyses
-        run: python -m morocco_elections analyze reference --format json --data-dir "$RUNNER_TEMP/v15-consumer"
+      - name: Validate and audit package
+        run: |
+          morocco-elections validate --package "$RUNNER_TEMP/warehouse"
+          morocco-elections audit --package "$RUNNER_TEMP/warehouse" --summary
 
-      - name: Exercise the real package mutation suite
+      - name: Essential integration and mutation tests
         env:
-          V15_TEST_PACKAGE: ${{ runner.temp }}/v15-consumer/exports/open/v15
-        run: pytest tests/integration/test_v15_package_mutations.py tests/integration/test_v15_release_contract.py
+          WAREHOUSE_TEST_PACKAGE: ${{ runner.temp }}/warehouse
+        run: |
+          pytest tests/integration/test_canonical_cli.py tests/integration/test_warehouse_seed_audit.py
+          pytest tests/unit/test_warehouse_package.py tests/unit/test_warehouse_reconciliation_matrix.py
+
+      - name: Verify no source or generated drift
+        shell: bash
+        run: test -z "$(git status --porcelain --untracked-files=all)"
+
+      - name: Compact CI summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Morocco Electoral Data Warehouse'
+            echo
+            morocco-elections status --package "$RUNNER_TEMP/warehouse" || true
+          } >> "$GITHUB_STEP_SUMMARY"

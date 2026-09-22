@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import os
 import shutil
 from pathlib import Path
 
@@ -18,7 +19,7 @@ from morocco_elections.warehouse.reconciliation import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DATABASE = ROOT / "data/exports/open/warehouse/morocco_elections.duckdb"
+DATABASE = Path(os.environ.get("WAREHOUSE_TEST_PACKAGE", ROOT / "data/exports/open/warehouse")) / "morocco_elections.duckdb"
 pytestmark = pytest.mark.skipif(not DATABASE.is_file(), reason="local canonical package required")
 
 
