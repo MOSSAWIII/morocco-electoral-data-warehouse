@@ -23,7 +23,10 @@ from morocco_elections.warehouse.package import (
     _write_json,
     validate_package,
 )
-from morocco_elections.warehouse.materialization import materialize_publication_inputs
+from morocco_elections.warehouse.materialization import (
+    materialize_publication_inputs,
+    warehouse_content_fingerprint,
+)
 from morocco_elections.warehouse.publication import (
     PublicationContext,
     evidence_bundle_payload,
@@ -64,6 +67,23 @@ def test_publication_inputs_are_materialized_in_duckdb(tmp_path: Path) -> None:
     counts = materialize_publication_inputs(database, context)
 
     assert counts == {"coverage_universe": 1, "coverage_universe_member": 1, "release_coverage_matrix": 1}
+
+
+def test_warehouse_content_fingerprint_ignores_physical_row_order(tmp_path: Path) -> None:
+    fingerprints = []
+    for name, values in (("forward", (1, 2, 3)), ("reverse", (3, 2, 1))):
+        database = tmp_path / f"{name}.duckdb"
+        connection = duckdb.connect(str(database))
+        try:
+            connection.execute("CREATE TABLE published (id INTEGER PRIMARY KEY)")
+            connection.executemany("INSERT INTO published VALUES (?)", [(value,) for value in values])
+            connection.execute("CHECKPOINT")
+        finally:
+            connection.close()
+        fingerprints.append(warehouse_content_fingerprint(database))
+
+    assert fingerprints[0] == fingerprints[1]
+    assert fingerprints[0][1] > 0
 
 
 def test_evidence_index_contains_digests_not_materialized_facts() -> None:

@@ -21,10 +21,11 @@ CONTEXT_TABLES = {
 PROOF_TABLES = frozenset({"publication_file", "publication_review", "publication_gate_result"})
 
 
-def warehouse_content_sha256(database: Path) -> str:
+def warehouse_content_fingerprint(database: Path) -> tuple[str, int]:
     """Digest substantive schemas and rows without self-referential proof tables."""
     connection = duckdb.connect(str(database), read_only=True)
     digest = hashlib.sha256()
+    logical_bytes = 0
     try:
         tables = sorted(
             row[0] for row in connection.execute("SHOW TABLES").fetchall()
@@ -41,13 +42,19 @@ def warehouse_content_sha256(database: Path) -> str:
                     for row in rows
                 ),
             }
-            digest.update(
-                json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
-            )
+            encoded = json.dumps(
+                payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+            ).encode("utf-8")
+            digest.update(encoded)
             digest.update(b"\n")
+            logical_bytes += len(encoded) + 1
     finally:
         connection.close()
-    return digest.hexdigest()
+    return digest.hexdigest(), logical_bytes
+
+
+def warehouse_content_sha256(database: Path) -> str:
+    return warehouse_content_fingerprint(database)[0]
 
 
 def _replace_rows(

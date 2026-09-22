@@ -458,7 +458,7 @@ def build_package(
         from morocco_elections.warehouse.materialization import (
             materialize_publication_inputs,
             materialize_publication_proofs,
-            warehouse_content_sha256,
+            warehouse_content_fingerprint,
         )
         from morocco_elections.warehouse.readiness import build_readiness_context
 
@@ -473,7 +473,7 @@ def build_package(
         database_report["materialized_publication_rows"] = materialize_publication_inputs(
             staging / DATABASE_NAME, initial_context
         )
-        content_sha256 = warehouse_content_sha256(staging / DATABASE_NAME)
+        content_sha256, content_bytes = warehouse_content_fingerprint(staging / DATABASE_NAME)
         proof_artifact_types = {
             DATABASE_NAME: "DUCKDB_DATABASE",
             CONTRACT_NAME: "DATA_CONTRACT",
@@ -506,6 +506,7 @@ def build_package(
         logical_files = [dict(row) for row in physical_proof_files]
         database_row = next(row for row in logical_files if row["relative_path"] == DATABASE_NAME)
         database_row.update({
+            "byte_size": content_bytes,
             "sha256": content_sha256,
             "evidence_id": "sha256:" + content_sha256,
             "notes": "Logical digest of all substantive DuckDB tables; self-referential publication proof tables are excluded.",
