@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import tempfile
+import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -18,6 +19,35 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _download_pinned(url: str, temporary: Path, expected_bytes: int, expected_sha: str) -> None:
+    """Download an immutable object, resuming official servers that close early."""
+    temporary.write_bytes(b"")
+    last_error: BaseException | None = None
+    for _ in range(8):
+        offset = temporary.stat().st_size
+        headers = {"User-Agent": "morocco-elections-warehouse/1"}
+        if offset:
+            headers["Range"] = f"bytes={offset}-"
+        request = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(request, timeout=300) as response:
+                append = offset > 0 and response.status == 206
+                if offset > 0 and not append:
+                    offset = 0
+                with temporary.open("ab" if append else "wb") as stream:
+                    while chunk := response.read(1024 * 1024):
+                        stream.write(chunk)
+        except (OSError, TimeoutError, urllib.error.URLError) as error:
+            last_error = error
+        observed_bytes = temporary.stat().st_size
+        if observed_bytes == expected_bytes and _sha256(temporary) == expected_sha:
+            return
+        if observed_bytes > expected_bytes:
+            temporary.write_bytes(b"")
+    detail = f" after {type(last_error).__name__}" if last_error is not None else ""
+    raise ValueError(f"acquired bytes differ from pinned evidence{detail}")
 
 
 def materialize_declared_sources(repository_root: Path) -> dict[str, int]:
@@ -45,12 +75,10 @@ def materialize_declared_sources(repository_root: Path) -> dict[str, int]:
         os.close(descriptor)
         temporary = Path(temporary_name)
         try:
-            request = urllib.request.Request(str(row["source_url"]), headers={"User-Agent": "morocco-elections-warehouse/1"})
-            with urllib.request.urlopen(request, timeout=120) as response, temporary.open("wb") as stream:
-                while chunk := response.read(1024 * 1024):
-                    stream.write(chunk)
-            if temporary.stat().st_size != expected_bytes or _sha256(temporary) != expected_sha:
-                raise ValueError(f"{row['source_id']}: acquired bytes differ from pinned evidence")
+            try:
+                _download_pinned(str(row["source_url"]), temporary, expected_bytes, expected_sha)
+            except ValueError as error:
+                raise ValueError(f"{row['source_id']}: {error}") from error
             os.replace(temporary, target)
             acquired += 1
         finally:
