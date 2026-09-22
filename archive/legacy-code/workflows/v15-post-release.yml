@@ -1,0 +1,32 @@
+name: V15 post-release smoke
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  network-only-consumer:
+    if: github.event_name == 'workflow_dispatch' || github.event.release.tag_name == 'v15.0.0'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || 'main' }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: python -m pip install --requirement requirements-dev.txt
+      - run: python -m pip install --no-deps --editable .
+      - name: Bootstrap from the published URL only
+        run: python -m morocco_elections bootstrap --network-only --data-dir "$RUNNER_TEMP/consumer"
+      - run: python -m morocco_elections validate --mode public --data-dir "$RUNNER_TEMP/consumer"
+      - run: python -m morocco_elections analyze reference --format json --data-dir "$RUNNER_TEMP/consumer"
+      - name: Verify five available cubes and run mutation tests
+        env:
+          V15_TEST_PACKAGE: ${{ runner.temp }}/consumer/exports/open/v15
+        run: pytest tests/integration/test_v15_package_mutations.py tests/integration/test_v15_release_contract.py

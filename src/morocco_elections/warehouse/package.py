@@ -177,7 +177,7 @@ def _source_portability(repository_root: Path) -> list[dict[str, Any]]:
             "gate_consumers": consumers,
         })
     elected = json.loads(
-        (repository_root / "metadata/v11a_source_candidates.json").read_text(encoding="utf-8")
+        (repository_root / "metadata/warehouse/elected_2015_source.json").read_text(encoding="utf-8")
     )["candidate"]
     rows.append({
         "source_id": ELECTED_SOURCE_ID,
@@ -187,7 +187,7 @@ def _source_portability(repository_root: Path) -> list[dict[str, Any]]:
         "byte_size": elected["byte_size"],
         "sha256": elected["sha256"],
         "license_status": elected["license"],
-        "license_evidence": "metadata/v11a_source_candidates.json workbook notes and source qualification",
+        "license_evidence": "metadata/warehouse/elected_2015_source.json workbook notes and source qualification",
         "embedded": False,
         "gate_consumers": ["METRIC_RECONCILED"],
     })

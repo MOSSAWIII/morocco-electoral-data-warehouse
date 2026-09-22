@@ -5,12 +5,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-from morocco_elections.config import PROJECT_ROOT
 from morocco_elections.warehouse.validation import ValidationIssue
 
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 MANIFEST_PATH = PROJECT_ROOT / "metadata" / "warehouse" / "v15_immutable_checksums.json"
-PUBLICATION_PATH = PROJECT_ROOT / "metadata" / "v15_publication.json"
+PUBLICATION_PATH = PROJECT_ROOT / "metadata" / "warehouse" / "seed_snapshot.json"
 CANONICAL_MANIFEST_BYTES = 4034
 CANONICAL_MANIFEST_SHA256 = "f5558c09cdb4257b62e760563c0ac57d1d670f74ade798bd0a6f1ad14b17fec9"
 
@@ -30,11 +30,36 @@ def load_manifest(path: Path = MANIFEST_PATH) -> dict[str, Any]:
     return manifest
 
 
+def _archived_path(root: Path, relative: str) -> Path:
+    original = root / relative
+    if original.is_file():
+        return original
+    path = Path(relative)
+    parts = path.parts
+    if parts[:3] == ("src", "morocco_elections", "analysis") or parts[:3] == ("src", "morocco_elections", "quality"):
+        return root / "archive/legacy-code/morocco_elections" / Path(*parts[2:])
+    if parts[:2] == ("src", "morocco_elections"):
+        return root / "archive/legacy-code/morocco_elections" / Path(*parts[2:])
+    if parts and parts[0] == "scripts":
+        return root / "archive/legacy-code/scripts" / Path(*parts[1:])
+    if parts and parts[0] == "examples":
+        return root / "archive/legacy-code/examples" / Path(*parts[1:])
+    if parts and parts[0] == "metadata":
+        return root / "archive/legacy-metadata" / Path(*parts[1:])
+    if parts[:2] == ("tests", "unit"):
+        return root / "archive/legacy-tests/unit" / Path(*parts[2:])
+    if parts[:2] == ("tests", "integration"):
+        return root / "archive/legacy-tests/integration" / Path(*parts[2:])
+    if parts[:2] == (".github", "workflows"):
+        return root / "archive/legacy-code/workflows" / Path(*parts[2:])
+    return original
+
+
 def verify_v15_immutability(root: Path = PROJECT_ROOT, manifest_path: Path = MANIFEST_PATH) -> list[ValidationIssue]:
     issues = []
     for row in load_manifest(manifest_path)["files"]:
         relative = row["path"]
-        path = (root / relative).resolve()
+        path = _archived_path(root, relative).resolve()
         if root.resolve() not in path.parents:
             issues.append(ValidationIssue("UNSAFE_IMMUTABLE_PATH", "v15_manifest", relative, "path escapes project root"))
         elif not path.is_file():
