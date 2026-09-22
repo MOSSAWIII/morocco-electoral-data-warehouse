@@ -1,0 +1,70 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 40,
+  "printed_page": 6111,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "إفران",
+      "rows": [
+        {"row": 1, "commune_name_ar": "أزرو", "council_members": 31},
+        {"row": 2, "commune_name_ar": "إفران", "council_members": 15},
+        {"row": 3, "commune_name_ar": "تزكيت", "council_members": 13},
+        {"row": 4, "commune_name_ar": "ضاية عوا", "council_members": 13},
+        {"row": 5, "commune_name_ar": "بن صميم", "council_members": 11},
+        {"row": 6, "commune_name_ar": "تكريكرة", "council_members": 13},
+        {"row": 7, "commune_name_ar": "تمحضيت", "council_members": 13},
+        {"row": 8, "commune_name_ar": "عين اللوح", "council_members": 13},
+        {"row": 9, "commune_name_ar": "سيدي المخفي", "council_members": 23},
+        {"row": 10, "commune_name_ar": "واد إفران", "council_members": 13}
+      ]
+    },
+    {
+      "prefecture_province_ar": "مولاي يعقوب",
+      "rows": [
+        {"row": 11, "commune_name_ar": "مولاي يعقوب", "council_members": 11},
+        {"row": 12, "commune_name_ar": "سبع رواضي", "council_members": 23},
+        {"row": 13, "commune_name_ar": "ميكس", "council_members": 11},
+        {"row": 14, "commune_name_ar": "سبت الأوداية", "council_members": 13},
+        {"row": 15, "commune_name_ar": "عين الشقف", "council_members": 31},
+        {"row": 16, "commune_name_ar": "لعجاجرة", "council_members": 15},
+        {"row": 17, "commune_name_ar": "سيدي داود", "council_members": 15},
+        {"row": 18, "commune_name_ar": "أولاد ميمون", "council_members": 13},
+        {"row": 19, "commune_name_ar": "الولادين", "council_members": 13},
+        {"row": 20, "commune_name_ar": "عين قنصرة", "council_members": 13},
+        {"row": 21, "commune_name_ar": "عين بوعلي", "council_members": 13}
+      ]
+    },
+    {
+      "prefecture_province_ar": "صفرو",
+      "rows": [
+        {"row": 22, "commune_name_ar": "صفرو", "council_members": 31},
+        {"row": 23, "commune_name_ar": "إيموزار كندر", "council_members": 23},
+        {"row": 24, "commune_name_ar": "البهاليل", "council_members": 15},
+        {"row": 25, "commune_name_ar": "المنزل", "council_members": 15},
+        {"row": 26, "commune_name_ar": "رباط الخير", "council_members": 23},
+        {"row": 27, "commune_name_ar": "كندر سيدي خيار", "council_members": 13},
+        {"row": 28, "commune_name_ar": "العنصر", "council_members": 13},
+        {"row": 29, "commune_name_ar": "تازوطة", "council_members": 11},
+        {"row": 30, "commune_name_ar": "عزابة", "council_members": 11},
+        {"row": 31, "commune_name_ar": "أهل سيدي لحسن", "council_members": 11},
+        {"row": 32, "commune_name_ar": "سيدي يوسف بن أحمد", "council_members": 13},
+        {"row": 33, "commune_name_ar": "اغبالو اقورار", "council_members": 13},
+        {"row": 34, "commune_name_ar": "عين تمكناي", "council_members": 11},
+        {"row": 35, "commune_name_ar": "امطرناغة", "council_members": 11},
+        {"row": 36, "commune_name_ar": "أولاد امكودو", "council_members": 11},
+        {"row": 37, "commune_name_ar": "تافجيغت", "council_members": 11},
+        {"row": 38, "commune_name_ar": "أدرج", "council_members": 11},
+        {"row": 39, "commune_name_ar": "دار الحمراء", "council_members": 11},
+        {"row": 40, "commune_name_ar": "إغزران", "council_members": 13},
+        {"row": 41, "commune_name_ar": "راس تابودة", "council_members": 11},
+        {"row": 42, "commune_name_ar": "بئر طم طم", "council_members": 13},
+        {"row": 43, "commune_name_ar": "عين الشكاك", "council_members": 23},
+        {"row": 44, "commune_name_ar": "آيت السبع لجروف", "council_members": 23}
+      ]
+    }
+  ]
+}

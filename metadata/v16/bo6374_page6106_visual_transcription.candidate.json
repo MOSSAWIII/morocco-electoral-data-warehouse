@@ -1,0 +1,69 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 35,
+  "printed_page": 6106,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Transcription visuelle directe de la page numérisée. Les graphies et membres doivent être confirmés indépendamment; aucun identifiant de concours ou conseil officiel n'est inféré.",
+  "groups": [
+    {
+      "prefecture_province_ar": "العرائش",
+      "rows": [
+        {"row": 1, "commune_name_ar": "القصر الكبير", "council_members": 35},
+        {"row": 2, "commune_name_ar": "العرائش", "council_members": 35},
+        {"row": 3, "commune_name_ar": "العوامرة", "council_members": 25},
+        {"row": 4, "commune_name_ar": "زوادة", "council_members": 23},
+        {"row": 5, "commune_name_ar": "قصر بجير", "council_members": 23},
+        {"row": 6, "commune_name_ar": "بوجديان", "council_members": 13},
+        {"row": 7, "commune_name_ar": "تطفت", "council_members": 13},
+        {"row": 8, "commune_name_ar": "سوق القلة", "council_members": 15},
+        {"row": 9, "commune_name_ar": "بني عروس", "council_members": 13},
+        {"row": 10, "commune_name_ar": "تازروت", "council_members": 11},
+        {"row": 11, "commune_name_ar": "عياشة", "council_members": 11},
+        {"row": 12, "commune_name_ar": "بني كرفط", "council_members": 15},
+        {"row": 13, "commune_name_ar": "زعرورة", "council_members": 13},
+        {"row": 14, "commune_name_ar": "الساحل", "council_members": 23},
+        {"row": 15, "commune_name_ar": "ريصانة الشمالية", "council_members": 13},
+        {"row": 16, "commune_name_ar": "ريصانة الجنوبية", "council_members": 23},
+        {"row": 17, "commune_name_ar": "أولاد أوشيح", "council_members": 15},
+        {"row": 18, "commune_name_ar": "السواكن", "council_members": 15},
+        {"row": 19, "commune_name_ar": "سوق الطلبة", "council_members": 15}
+      ]
+    },
+    {
+      "prefecture_province_ar": "الحسيمة",
+      "rows": [
+        {"row": 20, "commune_name_ar": "الحسيمة", "council_members": 31},
+        {"row": 21, "commune_name_ar": "بني بوعياش", "council_members": 23},
+        {"row": 22, "commune_name_ar": "امزورن", "council_members": 25},
+        {"row": 23, "commune_name_ar": "تارجيست", "council_members": 15},
+        {"row": 24, "commune_name_ar": "أجدير", "council_members": 11},
+        {"row": 25, "commune_name_ar": "بني بوفراح", "council_members": 13},
+        {"row": 26, "commune_name_ar": "سنادة", "council_members": 13},
+        {"row": 27, "commune_name_ar": "بني جميل مكسولين", "council_members": 13},
+        {"row": 28, "commune_name_ar": "بني اكميل", "council_members": 13},
+        {"row": 29, "commune_name_ar": "شقران", "council_members": 11},
+        {"row": 30, "commune_name_ar": "أربعاء تاوريرت", "council_members": 11},
+        {"row": 31, "commune_name_ar": "تيفروين", "council_members": 11},
+        {"row": 32, "commune_name_ar": "النكور", "council_members": 13},
+        {"row": 33, "commune_name_ar": "زاوية سيدي عبد القادر", "council_members": 11},
+        {"row": 34, "commune_name_ar": "بني حذيفة", "council_members": 11},
+        {"row": 35, "commune_name_ar": "بني عبد الله", "council_members": 11},
+        {"row": 36, "commune_name_ar": "آيت يوسف وعلي", "council_members": 15},
+        {"row": 37, "commune_name_ar": "لوطا", "council_members": 11},
+        {"row": 38, "commune_name_ar": "امرابطن", "council_members": 13},
+        {"row": 39, "commune_name_ar": "ازمورن", "council_members": 11},
+        {"row": 40, "commune_name_ar": "آيت قمرة", "council_members": 13},
+        {"row": 41, "commune_name_ar": "ارواصدي", "council_members": 11},
+        {"row": 42, "commune_name_ar": "سيدي بوزينب", "council_members": 11},
+        {"row": 43, "commune_name_ar": "بني عمارت", "council_members": 11},
+        {"row": 44, "commune_name_ar": "سيدي بوتميم", "council_members": 13},
+        {"row": 45, "commune_name_ar": "زرقت", "council_members": 11},
+        {"row": 46, "commune_name_ar": "بني ابشير", "council_members": 11},
+        {"row": 47, "commune_name_ar": "بني بونصار", "council_members": 13},
+        {"row": 48, "commune_name_ar": "بني احمد اموكران", "council_members": 13}
+      ]
+    }
+  ]
+}

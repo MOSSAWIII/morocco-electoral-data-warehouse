@@ -6,6 +6,8 @@ data/staging/
 data/processed/
 data/exports/
 data/tmp/
+*.duckdb
+*.duckdb.wal
 *.xlsx
 *.xls
 *.xlsm
@@ -40,8 +42,12 @@ __pycache__/
 .mypy_cache/
 .coverage
 htmlcov/
+coverage.xml
+.coverage.*
 .venv/
 venv/
+build/
+dist/
 
 # Editeurs et systeme
 .idea/

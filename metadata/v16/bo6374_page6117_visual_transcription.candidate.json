@@ -1,0 +1,62 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 46,
+  "printed_page": 6117,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée. Le premier groupe continue Azilal depuis la page 6116. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "أزيلال (تابع)",
+      "rows": [
+        {"row": 1, "commune_name_ar": "واولي", "council_members": 23},
+        {"row": 2, "commune_name_ar": "آيت ماجدن", "council_members": 23},
+        {"row": 3, "commune_name_ar": "تنقي", "council_members": 13},
+        {"row": 4, "commune_name_ar": "امليل", "council_members": 13},
+        {"row": 5, "commune_name_ar": "سيدي بولخلف", "council_members": 23},
+        {"row": 6, "commune_name_ar": "آيت بلال", "council_members": 13},
+        {"row": 7, "commune_name_ar": "آيت اومديس", "council_members": 23},
+        {"row": 8, "commune_name_ar": "آيت تمليل", "council_members": 23},
+        {"row": 9, "commune_name_ar": "أزرو", "council_members": 23},
+        {"row": 10, "commune_name_ar": "تلمي فطواكة", "council_members": 15},
+        {"row": 11, "commune_name_ar": "سيدي يعقوب", "council_members": 23},
+        {"row": 12, "commune_name_ar": "انركي", "council_members": 11},
+        {"row": 13, "commune_name_ar": "بين الويدان", "council_members": 11},
+        {"row": 14, "commune_name_ar": "اسكسي", "council_members": 11},
+        {"row": 15, "commune_name_ar": "واويزغت", "council_members": 15},
+        {"row": 16, "commune_name_ar": "تيفرت نايت حمزة", "council_members": 11},
+        {"row": 17, "commune_name_ar": "آيت أو قبلي", "council_members": 11},
+        {"row": 18, "commune_name_ar": "تاكلفت", "council_members": 15},
+        {"row": 19, "commune_name_ar": "تبروشت", "council_members": 11},
+        {"row": 20, "commune_name_ar": "آيت مزغ", "council_members": 11},
+        {"row": 21, "commune_name_ar": "تيلوكيت", "council_members": 13},
+        {"row": 22, "commune_name_ar": "أفورار", "council_members": 23},
+        {"row": 23, "commune_name_ar": "تيموليلت", "council_members": 11},
+        {"row": 24, "commune_name_ar": "آيت وعرضى", "council_members": 11},
+        {"row": 25, "commune_name_ar": "بني عياط", "council_members": 23}
+      ]
+    },
+    {
+      "prefecture_province_ar": "الفقيه بن صالح",
+      "rows": [
+        {"row": 26, "commune_name_ar": "الفقيه بن صالح", "council_members": 35},
+        {"row": 27, "commune_name_ar": "سوق السبت أولاد النمة", "council_members": 31},
+        {"row": 28, "commune_name_ar": "أولاد عياد", "council_members": 23},
+        {"row": 29, "commune_name_ar": "سيدي حمادي", "council_members": 15},
+        {"row": 30, "commune_name_ar": "أولاد بورحمون", "council_members": 23},
+        {"row": 31, "commune_name_ar": "سيدي عيسى بن علي", "council_members": 25},
+        {"row": 32, "commune_name_ar": "أولاد زمام", "council_members": 25},
+        {"row": 33, "commune_name_ar": "كريفات", "council_members": 25},
+        {"row": 34, "commune_name_ar": "أهل مربع", "council_members": 13},
+        {"row": 35, "commune_name_ar": "خلفية", "council_members": 23},
+        {"row": 36, "commune_name_ar": "برادية", "council_members": 25},
+        {"row": 37, "commune_name_ar": "بني شكدال", "council_members": 13},
+        {"row": 38, "commune_name_ar": "بني وكيل", "council_members": 23},
+        {"row": 39, "commune_name_ar": "دار ولد زيدوح", "council_members": 25},
+        {"row": 40, "commune_name_ar": "أحد بوموسى", "council_members": 25},
+        {"row": 41, "commune_name_ar": "أولاد ناصر", "council_members": 25}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 38,
+  "printed_page": 6109,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "جرادة",
+      "rows": [
+        {"row": 1, "commune_name_ar": "جرادة", "council_members": 25},
+        {"row": 2, "commune_name_ar": "عين بني مطهر", "council_members": 23},
+        {"row": 3, "commune_name_ar": "تويسيت", "council_members": 11},
+        {"row": 4, "commune_name_ar": "لعوينات", "council_members": 11},
+        {"row": 5, "commune_name_ar": "كنفودة", "council_members": 11},
+        {"row": 6, "commune_name_ar": "كفايت", "council_members": 11},
+        {"row": 7, "commune_name_ar": "لبخاتة", "council_members": 11},
+        {"row": 8, "commune_name_ar": "راس عصفور", "council_members": 11},
+        {"row": 9, "commune_name_ar": "سيدي بوبكر", "council_members": 11},
+        {"row": 10, "commune_name_ar": "تيولي", "council_members": 11},
+        {"row": 11, "commune_name_ar": "بني مطهر", "council_members": 13},
+        {"row": 12, "commune_name_ar": "أولاد سيدي عبد الحاكم", "council_members": 11},
+        {"row": 13, "commune_name_ar": "مريجة", "council_members": 11},
+        {"row": 14, "commune_name_ar": "أولاد غزيل", "council_members": 13}
+      ]
+    },
+    {
+      "prefecture_province_ar": "بركان",
+      "rows": [
+        {"row": 15, "commune_name_ar": "بركان", "council_members": 35},
+        {"row": 16, "commune_name_ar": "أحفير", "council_members": 23},
+        {"row": 17, "commune_name_ar": "السعيدية", "council_members": 13},
+        {"row": 18, "commune_name_ar": "أكليم", "council_members": 13},
+        {"row": 19, "commune_name_ar": "عين الركادة", "council_members": 11},
+        {"row": 20, "commune_name_ar": "سيدي سليمان - الشراعة", "council_members": 25},
+        {"row": 21, "commune_name_ar": "لعثامنة", "council_members": 15},
+        {"row": 22, "commune_name_ar": "مداغ", "council_members": 15},
+        {"row": 23, "commune_name_ar": "فزوان", "council_members": 11},
+        {"row": 24, "commune_name_ar": "أغبال", "council_members": 15},
+        {"row": 25, "commune_name_ar": "بوغريبة", "council_members": 23},
+        {"row": 26, "commune_name_ar": "الشويحية", "council_members": 13},
+        {"row": 27, "commune_name_ar": "رسلان", "council_members": 11},
+        {"row": 28, "commune_name_ar": "سيدي بوهرية", "council_members": 11},
+        {"row": 29, "commune_name_ar": "تافوغالت", "council_members": 11},
+        {"row": 30, "commune_name_ar": "زكزل", "council_members": 23}
+      ]
+    },
+    {
+      "prefecture_province_ar": "تاوريرت",
+      "rows": [
+        {"row": 31, "commune_name_ar": "تاوريرت", "council_members": 35},
+        {"row": 32, "commune_name_ar": "العيون - سيدي ملوك", "council_members": 25},
+        {"row": 33, "commune_name_ar": "دبدو", "council_members": 11},
+        {"row": 34, "commune_name_ar": "كليطبر", "council_members": 11},
+        {"row": 35, "commune_name_ar": "أهل وادزا", "council_members": 13},
+        {"row": 36, "commune_name_ar": "ملك الويدان", "council_members": 13},
+        {"row": 37, "commune_name_ar": "عين الحجر", "council_members": 13},
+        {"row": 38, "commune_name_ar": "مشرع حمادي", "council_members": 11},
+        {"row": 39, "commune_name_ar": "مستكمر", "council_members": 11},
+        {"row": 40, "commune_name_ar": "تنشرفي", "council_members": 11},
+        {"row": 41, "commune_name_ar": "سيدي علي بالقاسم", "council_members": 15},
+        {"row": 42, "commune_name_ar": "سيدي لحسن", "council_members": 13},
+        {"row": 43, "commune_name_ar": "العاطف", "council_members": 11},
+        {"row": 44, "commune_name_ar": "أولاد امحمد", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "جرسيف",
+      "rows": [
+        {"row": 45, "commune_name_ar": "جرسيف", "council_members": 31},
+        {"row": 46, "commune_name_ar": "الصباب", "council_members": 11},
+        {"row": 47, "commune_name_ar": "بركين", "council_members": 13},
+        {"row": 48, "commune_name_ar": "هوارة أولاد رحو", "council_members": 25},
+        {"row": 49, "commune_name_ar": "لمريجة", "council_members": 15},
+        {"row": 50, "commune_name_ar": "صاكة", "council_members": 23},
+        {"row": 51, "commune_name_ar": "راس القصر", "council_members": 13},
+        {"row": 52, "commune_name_ar": "تادرت", "council_members": 23},
+        {"row": 53, "commune_name_ar": "أولاد بوريمة", "council_members": 11},
+        {"row": 54, "commune_name_ar": "مزكيتام", "council_members": 13}
+      ]
+    }
+  ]
+}

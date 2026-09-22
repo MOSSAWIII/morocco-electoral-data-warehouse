@@ -1,0 +1,95 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 43,
+  "printed_page": 6114,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "الرباط",
+      "rows": [
+        {"row": 1, "commune_name_ar": "الرباط", "council_members": 81},
+        {"row": 2, "commune_name_ar": "التواركة", "council_members": 9}
+      ]
+    },
+    {
+      "prefecture_province_ar": "سلا",
+      "rows": [
+        {"row": 3, "commune_name_ar": "سلا", "council_members": 81},
+        {"row": 4, "commune_name_ar": "سيدي أبي القنادل", "council_members": 25},
+        {"row": 5, "commune_name_ar": "السهول", "council_members": 23},
+        {"row": 6, "commune_name_ar": "عامر", "council_members": 25}
+      ]
+    },
+    {
+      "prefecture_province_ar": "الصخيرات - تمارة",
+      "rows": [
+        {"row": 7, "commune_name_ar": "تمارة", "council_members": 51},
+        {"row": 8, "commune_name_ar": "الهرهورة", "council_members": 23},
+        {"row": 9, "commune_name_ar": "الصخيرات", "council_members": 31},
+        {"row": 10, "commune_name_ar": "عين العودة", "council_members": 25},
+        {"row": 11, "commune_name_ar": "عين عتيق", "council_members": 25},
+        {"row": 12, "commune_name_ar": "مرس الخير", "council_members": 23},
+        {"row": 13, "commune_name_ar": "صباح", "council_members": 23},
+        {"row": 14, "commune_name_ar": "المنزه", "council_members": 13},
+        {"row": 15, "commune_name_ar": "أم عزة", "council_members": 11},
+        {"row": 16, "commune_name_ar": "سيدي يحيى زعير", "council_members": 31}
+      ]
+    },
+    {
+      "prefecture_province_ar": "القنيطرة",
+      "rows": [
+        {"row": 17, "commune_name_ar": "القنيطرة", "council_members": 61},
+        {"row": 18, "commune_name_ar": "سوق الأربعاء", "council_members": 31},
+        {"row": 19, "commune_name_ar": "مهدية", "council_members": 25},
+        {"row": 20, "commune_name_ar": "عامر السفلية", "council_members": 25},
+        {"row": 21, "commune_name_ar": "سيدي الطيبي", "council_members": 31},
+        {"row": 22, "commune_name_ar": "أولاد سلامة", "council_members": 23},
+        {"row": 23, "commune_name_ar": "الحدادة", "council_members": 23},
+        {"row": 24, "commune_name_ar": "المناصرة", "council_members": 25},
+        {"row": 25, "commune_name_ar": "بنمنصور", "council_members": 25},
+        {"row": 26, "commune_name_ar": "سيدي محمد بنمنصور", "council_members": 23},
+        {"row": 27, "commune_name_ar": "المكرن", "council_members": 25},
+        {"row": 28, "commune_name_ar": "عرباوة", "council_members": 25},
+        {"row": 29, "commune_name_ar": "واد المخازن", "council_members": 11},
+        {"row": 30, "commune_name_ar": "قرية بن عودة", "council_members": 13},
+        {"row": 31, "commune_name_ar": "بني مالك", "council_members": 25},
+        {"row": 32, "commune_name_ar": "سيدي علال التازي", "council_members": 23},
+        {"row": 33, "commune_name_ar": "سوق ثلاثاء الغرب", "council_members": 23},
+        {"row": 34, "commune_name_ar": "بحارة أولاد عياد", "council_members": 25},
+        {"row": 35, "commune_name_ar": "سيدي محمد لحمر", "council_members": 25},
+        {"row": 36, "commune_name_ar": "مولاي بوسلهام", "council_members": 25},
+        {"row": 37, "commune_name_ar": "للا ميمونة", "council_members": 25},
+        {"row": 38, "commune_name_ar": "الشوافع", "council_members": 23},
+        {"row": 39, "commune_name_ar": "سيدي بوبكر الحاج", "council_members": 23}
+      ]
+    },
+    {
+      "prefecture_province_ar": "الخميسات",
+      "rows": [
+        {"row": 40, "commune_name_ar": "الخميسات", "council_members": 35},
+        {"row": 41, "commune_name_ar": "الرماني", "council_members": 13},
+        {"row": 42, "commune_name_ar": "تيفلت", "council_members": 31},
+        {"row": 43, "commune_name_ar": "سيدي علال البحراوي", "council_members": 23},
+        {"row": 44, "commune_name_ar": "آيت ميمون", "council_members": 13},
+        {"row": 45, "commune_name_ar": "آيت اوريبيل", "council_members": 13},
+        {"row": 46, "commune_name_ar": "مجمع الطلبة", "council_members": 15},
+        {"row": 47, "commune_name_ar": "الكنزرة", "council_members": 15},
+        {"row": 48, "commune_name_ar": "آيت يدين", "council_members": 23},
+        {"row": 49, "commune_name_ar": "الصماصيف", "council_members": 13},
+        {"row": 50, "commune_name_ar": "آيت سيبرن", "council_members": 11},
+        {"row": 51, "commune_name_ar": "سيدي علال المصدر", "council_members": 11},
+        {"row": 52, "commune_name_ar": "سيدي الغندور", "council_members": 11},
+        {"row": 53, "commune_name_ar": "حودران", "council_members": 11},
+        {"row": 54, "commune_name_ar": "المعازيز", "council_members": 13},
+        {"row": 55, "commune_name_ar": "آيت إيكو", "council_members": 13},
+        {"row": 56, "commune_name_ar": "بوقشمر", "council_members": 11},
+        {"row": 57, "commune_name_ar": "آيت إيشو", "council_members": 11},
+        {"row": 58, "commune_name_ar": "أولماس", "council_members": 23},
+        {"row": 59, "commune_name_ar": "تيداس", "council_members": 13}
+      ]
+    }
+  ]
+}

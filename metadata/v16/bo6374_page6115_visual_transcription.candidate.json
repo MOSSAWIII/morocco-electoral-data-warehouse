@@ -1,0 +1,65 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 44,
+  "printed_page": 6115,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée. Le premier groupe continue Khémisset depuis la page 6114. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "الخميسات (تابع)",
+      "rows": [
+        {"row": 1, "commune_name_ar": "البراشوة", "council_members": 13},
+        {"row": 2, "commune_name_ar": "مولاي إدريس أغبال", "council_members": 11},
+        {"row": 3, "commune_name_ar": "جمعة مول البلاد", "council_members": 11},
+        {"row": 4, "commune_name_ar": "الغوالم", "council_members": 13},
+        {"row": 5, "commune_name_ar": "مرشوش", "council_members": 13},
+        {"row": 6, "commune_name_ar": "عين السبيت", "council_members": 13},
+        {"row": 7, "commune_name_ar": "الزحيلكة", "council_members": 23},
+        {"row": 8, "commune_name_ar": "مقام الطلبة", "council_members": 15},
+        {"row": 9, "commune_name_ar": "سيدي عبد الرزاق", "council_members": 15},
+        {"row": 10, "commune_name_ar": "آيت مالك", "council_members": 11},
+        {"row": 11, "commune_name_ar": "آيت علي أو لحسن", "council_members": 11},
+        {"row": 12, "commune_name_ar": "عين الجوهرة - سيدي بوخلال", "council_members": 23},
+        {"row": 13, "commune_name_ar": "آيت بلقاسم", "council_members": 11},
+        {"row": 14, "commune_name_ar": "خميس سيدي يحيى", "council_members": 11},
+        {"row": 15, "commune_name_ar": "آيت بويحيى الحجامة", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "سيدي قاسم",
+      "rows": [
+        {"row": 16, "commune_name_ar": "سيدي قاسم", "council_members": 31},
+        {"row": 17, "commune_name_ar": "مشرع بلقصيري", "council_members": 25},
+        {"row": 18, "commune_name_ar": "أحد كورت", "council_members": 13},
+        {"row": 19, "commune_name_ar": "جرف الملحة", "council_members": 25},
+        {"row": 20, "commune_name_ar": "دار الكداري", "council_members": 11},
+        {"row": 21, "commune_name_ar": "بني وال", "council_members": 11},
+        {"row": 22, "commune_name_ar": "عين الدفالي", "council_members": 23},
+        {"row": 23, "commune_name_ar": "مولاي عبد القادر", "council_members": 13},
+        {"row": 24, "commune_name_ar": "سيدي عزوز", "council_members": 15},
+        {"row": 25, "commune_name_ar": "سيدي أحمد بنعيسى", "council_members": 13},
+        {"row": 26, "commune_name_ar": "سيدي عمر الحاضي", "council_members": 13},
+        {"row": 27, "commune_name_ar": "لمرابيح", "council_members": 23},
+        {"row": 28, "commune_name_ar": "توغيلت", "council_members": 15},
+        {"row": 29, "commune_name_ar": "الخنيشات", "council_members": 23},
+        {"row": 30, "commune_name_ar": "أولاد نوال", "council_members": 13},
+        {"row": 31, "commune_name_ar": "سيدي أحمد الشلح", "council_members": 13},
+        {"row": 32, "commune_name_ar": "سيدي الكامل", "council_members": 25},
+        {"row": 33, "commune_name_ar": "ارميلات", "council_members": 23},
+        {"row": 34, "commune_name_ar": "دار العسلوجي", "council_members": 25},
+        {"row": 35, "commune_name_ar": "انويرات", "council_members": 23},
+        {"row": 36, "commune_name_ar": "الحوافات", "council_members": 23},
+        {"row": 37, "commune_name_ar": "صفصاف", "council_members": 25},
+        {"row": 38, "commune_name_ar": "باب تيوكا", "council_members": 13},
+        {"row": 39, "commune_name_ar": "زيرارة", "council_members": 23},
+        {"row": 40, "commune_name_ar": "اشبانات", "council_members": 13},
+        {"row": 41, "commune_name_ar": "زكوطة", "council_members": 13},
+        {"row": 42, "commune_name_ar": "سلفات", "council_members": 13},
+        {"row": 43, "commune_name_ar": "بئر الطالب", "council_members": 13},
+        {"row": 44, "commune_name_ar": "تكنة", "council_members": 11}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "release_id": "V16",
+  "as_of_date": null,
+  "status": "NOT_PUBLICATION_READY",
+  "reason": "Official universes and final release data have not yet been acquired and verified.",
+  "dimensions": [
+    {"scope_id": "acquired", "universe_ids_json": "[]", "acquired": 0, "expected": 0, "covered": 0, "missing": 0, "non_comparable": 0, "redistribution_forbidden": 0, "status": "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR"},
+    {"scope_id": "official", "universe_ids_json": "[]", "acquired": 0, "expected": 0, "covered": 0, "missing": 0, "non_comparable": 0, "redistribution_forbidden": 0, "status": "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR"},
+    {"scope_id": "territorial", "universe_ids_json": "[]", "acquired": 0, "expected": 0, "covered": 0, "missing": 0, "non_comparable": 0, "redistribution_forbidden": 0, "status": "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR"},
+    {"scope_id": "temporal", "universe_ids_json": "[]", "acquired": 0, "expected": 0, "covered": 0, "missing": 0, "non_comparable": 0, "redistribution_forbidden": 0, "status": "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR"},
+    {"scope_id": "documentary", "universe_ids_json": "[]", "acquired": 0, "expected": 0, "covered": 0, "missing": 0, "non_comparable": 0, "redistribution_forbidden": 0, "status": "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR"},
+    {"scope_id": "field", "universe_ids_json": "[]", "acquired": 0, "expected": 0, "covered": 0, "missing": 0, "non_comparable": 0, "redistribution_forbidden": 0, "status": "UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR"}
+  ]
+}

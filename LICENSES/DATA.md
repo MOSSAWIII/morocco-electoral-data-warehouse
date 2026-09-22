@@ -2,6 +2,8 @@
 
 Le paquet V14 est une base composite. Les droits sur les contenus sources restent régis source par source par les tables de sources, par les manifestes versionnés et par `ATTRIBUTIONS.md`.
 
+Le paquet de développement V16 applique la même politique à ses payloads générés. La structure, la sélection et les transformations du projet sont proposées sous ODbL 1.0, sous réserve des droits propres aux contenus tiers. Les fichiers RAW HCP et TAFRA utilisés comme preuves ne sont pas inclus dans le paquet V16 : leur registre d'acquisition conserve seulement l'URL, la taille et le SHA-256, et une acquisition divergente est refusée.
+
 La structure originale de la base, la sélection des champs et les transformations produites par ce projet sont proposées sous Open Data Commons Open Database License 1.0 (ODbL 1.0) :
 
 https://opendatacommons.org/licenses/odbl/1-0/

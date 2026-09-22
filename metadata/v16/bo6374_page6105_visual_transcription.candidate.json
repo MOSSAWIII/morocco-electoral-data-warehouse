@@ -1,0 +1,77 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 34,
+  "printed_page": 6105,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Transcription visuelle directe du tableau scanné. Les graphies et nombres de sièges doivent être confirmés indépendamment contre l'original; aucun code officiel de concours/conseil ni couverture nationale n'est inféré.",
+  "groups": [
+    {
+      "prefecture_province_ar": "طنجة - أصيلة",
+      "rows": [
+        {"row": 1, "commune_name_ar": "طنجة", "council_members": 81},
+        {"row": 2, "commune_name_ar": "أصيلة", "council_members": 25},
+        {"row": 3, "commune_name_ar": "اكزناية", "council_members": 23},
+        {"row": 4, "commune_name_ar": "حجر النحل", "council_members": 13},
+        {"row": 5, "commune_name_ar": "دار الشاوي", "council_members": 11},
+        {"row": 6, "commune_name_ar": "المنزلة", "council_members": 11},
+        {"row": 7, "commune_name_ar": "العوامة", "council_members": 13},
+        {"row": 8, "commune_name_ar": "سبت الزينات", "council_members": 11},
+        {"row": 9, "commune_name_ar": "أقواس بريش", "council_members": 11},
+        {"row": 10, "commune_name_ar": "حد الغربية", "council_members": 13},
+        {"row": 11, "commune_name_ar": "الساحل الشمالي", "council_members": 11},
+        {"row": 12, "commune_name_ar": "سيدي اليمني", "council_members": 13}
+      ]
+    },
+    {
+      "prefecture_province_ar": "المضيق - الفنيدق",
+      "rows": [
+        {"row": 13, "commune_name_ar": "المضيق", "council_members": 31},
+        {"row": 14, "commune_name_ar": "الفنيدق", "council_members": 31},
+        {"row": 15, "commune_name_ar": "مرتيل", "council_members": 31},
+        {"row": 16, "commune_name_ar": "عليين", "council_members": 11},
+        {"row": 17, "commune_name_ar": "بليونش", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "تطوان",
+      "rows": [
+        {"row": 18, "commune_name_ar": "تطوان", "council_members": 55},
+        {"row": 19, "commune_name_ar": "واد لو", "council_members": 13},
+        {"row": 20, "commune_name_ar": "عين لحصن", "council_members": 11},
+        {"row": 21, "commune_name_ar": "سوق القديم", "council_members": 13},
+        {"row": 22, "commune_name_ar": "جبل لحبيب", "council_members": 11},
+        {"row": 23, "commune_name_ar": "بني حرشن", "council_members": 11},
+        {"row": 24, "commune_name_ar": "الخروب", "council_members": 11},
+        {"row": 25, "commune_name_ar": "الملاليين", "council_members": 13},
+        {"row": 26, "commune_name_ar": "صدينة", "council_members": 11},
+        {"row": 27, "commune_name_ar": "السحتريين", "council_members": 13},
+        {"row": 28, "commune_name_ar": "بني يدر", "council_members": 11},
+        {"row": 29, "commune_name_ar": "بغاغزة", "council_members": 11},
+        {"row": 30, "commune_name_ar": "بني ليت", "council_members": 11},
+        {"row": 31, "commune_name_ar": "الحمراء", "council_members": 13},
+        {"row": 32, "commune_name_ar": "الواد", "council_members": 13},
+        {"row": 33, "commune_name_ar": "أولاد علي منصور", "council_members": 11},
+        {"row": 34, "commune_name_ar": "دار بني قريش", "council_members": 13},
+        {"row": 35, "commune_name_ar": "الزينات", "council_members": 13},
+        {"row": 36, "commune_name_ar": "أزلا", "council_members": 23},
+        {"row": 37, "commune_name_ar": "الزيتون", "council_members": 13},
+        {"row": 38, "commune_name_ar": "بني سعيد", "council_members": 13},
+        {"row": 39, "commune_name_ar": "زاوية سيدي قاسم", "council_members": 13}
+      ]
+    },
+    {
+      "prefecture_province_ar": "الفحص - أنجرة",
+      "rows": [
+        {"row": 40, "commune_name_ar": "ملوسة", "council_members": 13},
+        {"row": 41, "commune_name_ar": "البحراويين", "council_members": 13},
+        {"row": 42, "commune_name_ar": "القصر الصغير", "council_members": 15},
+        {"row": 43, "commune_name_ar": "جوامعة", "council_members": 13},
+        {"row": 44, "commune_name_ar": "أنجرة", "council_members": 23},
+        {"row": 45, "commune_name_ar": "تغرامت", "council_members": 13},
+        {"row": 46, "commune_name_ar": "القصر المجاز", "council_members": 13}
+      ]
+    }
+  ]
+}

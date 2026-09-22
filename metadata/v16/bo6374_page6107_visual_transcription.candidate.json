@@ -1,0 +1,78 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 36,
+  "printed_page": 6107,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée; la première section poursuit Al Hoceïma depuis la page précédente. Graphies et sièges à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "الحسيمة (تابع)",
+      "rows": [
+        {"row": 1, "commune_name_ar": "تامساوت", "council_members": 15},
+        {"row": 2, "commune_name_ar": "كتامة", "council_members": 23},
+        {"row": 3, "commune_name_ar": "مولاي أحمد الشريف", "council_members": 13},
+        {"row": 4, "commune_name_ar": "إساكن", "council_members": 23},
+        {"row": 5, "commune_name_ar": "بني بوشيبت", "council_members": 13},
+        {"row": 6, "commune_name_ar": "تاغزوت", "council_members": 11},
+        {"row": 7, "commune_name_ar": "عبد الغاية السواحل", "council_members": 25}
+      ]
+    },
+    {
+      "prefecture_province_ar": "شفشاون",
+      "rows": [
+        {"row": 8, "commune_name_ar": "شفشاون", "council_members": 25},
+        {"row": 9, "commune_name_ar": "باب برد", "council_members": 25},
+        {"row": 10, "commune_name_ar": "أونان", "council_members": 25},
+        {"row": 11, "commune_name_ar": "تمروت", "council_members": 25},
+        {"row": 12, "commune_name_ar": "امتار", "council_members": 13},
+        {"row": 13, "commune_name_ar": "متيوة", "council_members": 15},
+        {"row": 14, "commune_name_ar": "ووزكان", "council_members": 23},
+        {"row": 15, "commune_name_ar": "بني رزين", "council_members": 23},
+        {"row": 16, "commune_name_ar": "بني سميح", "council_members": 23},
+        {"row": 17, "commune_name_ar": "بني أحمد الشرقية", "council_members": 15},
+        {"row": 18, "commune_name_ar": "بني أحمد الغربية", "council_members": 15},
+        {"row": 19, "commune_name_ar": "واد ملحة", "council_members": 15},
+        {"row": 20, "commune_name_ar": "المنصورة", "council_members": 23},
+        {"row": 21, "commune_name_ar": "باب تازة", "council_members": 25},
+        {"row": 22, "commune_name_ar": "بني صالح", "council_members": 13},
+        {"row": 23, "commune_name_ar": "بني دركول", "council_members": 15},
+        {"row": 24, "commune_name_ar": "بني فغلوم", "council_members": 13},
+        {"row": 25, "commune_name_ar": "فيفي", "council_members": 13},
+        {"row": 26, "commune_name_ar": "الدردارة", "council_members": 13},
+        {"row": 27, "commune_name_ar": "تنقوب", "council_members": 13},
+        {"row": 28, "commune_name_ar": "لغدير", "council_members": 11},
+        {"row": 29, "commune_name_ar": "بني سلمان", "council_members": 23},
+        {"row": 30, "commune_name_ar": "بني منصور", "council_members": 23},
+        {"row": 31, "commune_name_ar": "بني بوزرة", "council_members": 23},
+        {"row": 32, "commune_name_ar": "اسطيحة", "council_members": 13},
+        {"row": 33, "commune_name_ar": "تزكان", "council_members": 15},
+        {"row": 34, "commune_name_ar": "تاسيفت", "council_members": 11},
+        {"row": 35, "commune_name_ar": "تلمبوط", "council_members": 13}
+      ]
+    },
+    {
+      "prefecture_province_ar": "وزان",
+      "rows": [
+        {"row": 36, "commune_name_ar": "وزان", "council_members": 31},
+        {"row": 37, "commune_name_ar": "امزفرون", "council_members": 11},
+        {"row": 38, "commune_name_ar": "مصمودة", "council_members": 23},
+        {"row": 39, "commune_name_ar": "سيدي رضوان", "council_members": 23},
+        {"row": 40, "commune_name_ar": "بني كلة", "council_members": 23},
+        {"row": 41, "commune_name_ar": "تروال", "council_members": 15},
+        {"row": 42, "commune_name_ar": "ازغيرة", "council_members": 23},
+        {"row": 43, "commune_name_ar": "ونانة", "council_members": 15},
+        {"row": 44, "commune_name_ar": "لمجاعرة", "council_members": 23},
+        {"row": 45, "commune_name_ar": "سيدي أحمد الشريف", "council_members": 13},
+        {"row": 46, "commune_name_ar": "سيدي بوصبر", "council_members": 13},
+        {"row": 47, "commune_name_ar": "ابريكشة", "council_members": 13},
+        {"row": 48, "commune_name_ar": "اسجن", "council_members": 15},
+        {"row": 49, "commune_name_ar": "مقريصات", "council_members": 13},
+        {"row": 50, "commune_name_ar": "عين بيضاء", "council_members": 13},
+        {"row": 51, "commune_name_ar": "قلعة بوقرة", "council_members": 23},
+        {"row": 52, "commune_name_ar": "زومي", "council_members": 25}
+      ]
+    }
+  ]
+}

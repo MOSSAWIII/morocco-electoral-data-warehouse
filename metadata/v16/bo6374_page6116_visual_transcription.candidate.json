@@ -1,0 +1,78 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 45,
+  "printed_page": 6116,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée. Le groupe Azilal continue à la page suivante. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "سيدي سليمان",
+      "rows": [
+        {"row": 1, "commune_name_ar": "سيدي سليمان", "council_members": 31},
+        {"row": 2, "commune_name_ar": "سيدي يحيى الغرب", "council_members": 25},
+        {"row": 3, "commune_name_ar": "بومعيز", "council_members": 23},
+        {"row": 4, "commune_name_ar": "دار بلعامري", "council_members": 25},
+        {"row": 5, "commune_name_ar": "أزغار", "council_members": 13},
+        {"row": 6, "commune_name_ar": "أولاد بن حمادي", "council_members": 15},
+        {"row": 7, "commune_name_ar": "المساعدة", "council_members": 23},
+        {"row": 8, "commune_name_ar": "أولاد احسين", "council_members": 25},
+        {"row": 9, "commune_name_ar": "الصفافعة", "council_members": 23},
+        {"row": 10, "commune_name_ar": "القصيبية", "council_members": 25},
+        {"row": 11, "commune_name_ar": "عامر الشمالية", "council_members": 23}
+      ]
+    },
+    {
+      "prefecture_province_ar": "بني ملال",
+      "rows": [
+        {"row": 12, "commune_name_ar": "بني ملال", "council_members": 39},
+        {"row": 13, "commune_name_ar": "قصبة تادلة", "council_members": 25},
+        {"row": 14, "commune_name_ar": "زاوية الشيخ", "council_members": 25},
+        {"row": 15, "commune_name_ar": "القصيبة", "council_members": 23},
+        {"row": 16, "commune_name_ar": "أولاد كناو", "council_members": 15},
+        {"row": 17, "commune_name_ar": "أولاد امبارك", "council_members": 23},
+        {"row": 18, "commune_name_ar": "فم أودي", "council_members": 13},
+        {"row": 19, "commune_name_ar": "أولاد إيعيش", "council_members": 25},
+        {"row": 20, "commune_name_ar": "سيدي جابر", "council_members": 23},
+        {"row": 21, "commune_name_ar": "فم العنصر", "council_members": 23},
+        {"row": 22, "commune_name_ar": "ناوور", "council_members": 11},
+        {"row": 23, "commune_name_ar": "دير القصيبة", "council_members": 23},
+        {"row": 24, "commune_name_ar": "تانوغة", "council_members": 15},
+        {"row": 25, "commune_name_ar": "تاكزيرت", "council_members": 23},
+        {"row": 26, "commune_name_ar": "آيت أم البخت", "council_members": 13},
+        {"row": 27, "commune_name_ar": "اغبالة", "council_members": 15},
+        {"row": 28, "commune_name_ar": "تيزي نيسلي", "council_members": 13},
+        {"row": 29, "commune_name_ar": "بوتفردة", "council_members": 11},
+        {"row": 30, "commune_name_ar": "كطاية", "council_members": 15},
+        {"row": 31, "commune_name_ar": "سمكت", "council_members": 13},
+        {"row": 32, "commune_name_ar": "أولاد يوسف", "council_members": 15},
+        {"row": 33, "commune_name_ar": "أولاد سعيد الواد", "council_members": 15}
+      ]
+    },
+    {
+      "prefecture_province_ar": "أزيلال",
+      "rows": [
+        {"row": 34, "commune_name_ar": "أزيلال", "council_members": 25},
+        {"row": 35, "commune_name_ar": "دمنات", "council_members": 25},
+        {"row": 36, "commune_name_ar": "آيت امحمد", "council_members": 23},
+        {"row": 37, "commune_name_ar": "آيت عباس", "council_members": 15},
+        {"row": 38, "commune_name_ar": "تبانت", "council_members": 15},
+        {"row": 39, "commune_name_ar": "آيت بولولي", "council_members": 13},
+        {"row": 40, "commune_name_ar": "أكودي نلخير", "council_members": 13},
+        {"row": 41, "commune_name_ar": "تامدة نومرصيد", "council_members": 13},
+        {"row": 42, "commune_name_ar": "زاوية أحنصال", "council_members": 13},
+        {"row": 43, "commune_name_ar": "تسقي", "council_members": 11},
+        {"row": 44, "commune_name_ar": "تاونزة", "council_members": 13},
+        {"row": 45, "commune_name_ar": "مولاي عيسى بن ادريس", "council_members": 15},
+        {"row": 46, "commune_name_ar": "بزو", "council_members": 15},
+        {"row": 47, "commune_name_ar": "ارفالة", "council_members": 13},
+        {"row": 48, "commune_name_ar": "آيت تكلا", "council_members": 13},
+        {"row": 49, "commune_name_ar": "تنانت", "council_members": 13},
+        {"row": 50, "commune_name_ar": "فم الجمعة", "council_members": 13},
+        {"row": 51, "commune_name_ar": "تابية", "council_members": 13},
+        {"row": 52, "commune_name_ar": "بني حسان", "council_members": 13}
+      ]
+    }
+  ]
+}

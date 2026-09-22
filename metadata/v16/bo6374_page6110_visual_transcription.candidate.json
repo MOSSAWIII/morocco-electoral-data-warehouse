@@ -1,0 +1,86 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 39,
+  "printed_page": 6110,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "فجيج",
+      "rows": [
+        {"row": 1, "commune_name_ar": "فجيج", "council_members": 13},
+        {"row": 2, "commune_name_ar": "بوعرفة", "council_members": 25},
+        {"row": 3, "commune_name_ar": "بني تدجيت", "council_members": 23},
+        {"row": 4, "commune_name_ar": "بوعنان", "council_members": 13},
+        {"row": 5, "commune_name_ar": "عين الشعير", "council_members": 11},
+        {"row": 6, "commune_name_ar": "عين الشواطر", "council_members": 11},
+        {"row": 7, "commune_name_ar": "بومريم", "council_members": 13},
+        {"row": 8, "commune_name_ar": "تالسينت", "council_members": 23},
+        {"row": 9, "commune_name_ar": "بوشاون", "council_members": 15},
+        {"row": 10, "commune_name_ar": "بني كيل", "council_members": 11},
+        {"row": 11, "commune_name_ar": "عبو لكحل", "council_members": 11},
+        {"row": 12, "commune_name_ar": "معتركة", "council_members": 13},
+        {"row": 13, "commune_name_ar": "تندرارة", "council_members": 23}
+      ]
+    },
+    {
+      "prefecture_province_ar": "فاس",
+      "rows": [
+        {"row": 14, "commune_name_ar": "فاس", "council_members": 91},
+        {"row": 15, "commune_name_ar": "المشور فاس الجديد", "council_members": 9},
+        {"row": 16, "commune_name_ar": "أولاد الطيب", "council_members": 23},
+        {"row": 17, "commune_name_ar": "سيدي حرازم", "council_members": 11},
+        {"row": 18, "commune_name_ar": "عين البيضاء", "council_members": 13}
+      ]
+    },
+    {
+      "prefecture_province_ar": "مكناس",
+      "rows": [
+        {"row": 19, "commune_name_ar": "مكناس", "council_members": 61},
+        {"row": 20, "commune_name_ar": "مشور استينية", "council_members": 9},
+        {"row": 21, "commune_name_ar": "مولاي إدريس زرهون", "council_members": 13},
+        {"row": 22, "commune_name_ar": "ويسلان", "council_members": 31},
+        {"row": 23, "commune_name_ar": "بوفكران", "council_members": 15},
+        {"row": 24, "commune_name_ar": "تولال", "council_members": 23},
+        {"row": 25, "commune_name_ar": "وليلي", "council_members": 13},
+        {"row": 26, "commune_name_ar": "المغاصيين", "council_members": 13},
+        {"row": 27, "commune_name_ar": "سيدي عبد الله الخياط", "council_members": 13},
+        {"row": 28, "commune_name_ar": "شرقاة", "council_members": 11},
+        {"row": 29, "commune_name_ar": "نزالة بني عمار", "council_members": 13},
+        {"row": 30, "commune_name_ar": "الدخيسة", "council_members": 23},
+        {"row": 31, "commune_name_ar": "واد الجديدة", "council_members": 15},
+        {"row": 32, "commune_name_ar": "المهاية", "council_members": 25},
+        {"row": 33, "commune_name_ar": "مجاط", "council_members": 13},
+        {"row": 34, "commune_name_ar": "سيدي سليمان مول الكيفان", "council_members": 23},
+        {"row": 35, "commune_name_ar": "عين عرمة", "council_members": 11},
+        {"row": 36, "commune_name_ar": "دار أم السلطان", "council_members": 13},
+        {"row": 37, "commune_name_ar": "آيت ولال", "council_members": 11},
+        {"row": 38, "commune_name_ar": "عين كرمة - واد الرمان", "council_members": 15},
+        {"row": 39, "commune_name_ar": "عين الجمعة", "council_members": 23}
+      ]
+    },
+    {
+      "prefecture_province_ar": "الحاجب",
+      "rows": [
+        {"row": 40, "commune_name_ar": "الحاجب", "council_members": 25},
+        {"row": 41, "commune_name_ar": "سبع عيون", "council_members": 25},
+        {"row": 42, "commune_name_ar": "عين تاوجطات", "council_members": 25},
+        {"row": 43, "commune_name_ar": "أكوري", "council_members": 23},
+        {"row": 44, "commune_name_ar": "آيت نعمان", "council_members": 11},
+        {"row": 45, "commune_name_ar": "إقدار", "council_members": 13},
+        {"row": 46, "commune_name_ar": "آيت بورزوين", "council_members": 13},
+        {"row": 47, "commune_name_ar": "آيت حرز الله", "council_members": 15},
+        {"row": 48, "commune_name_ar": "آيت بوبيدمان", "council_members": 23},
+        {"row": 49, "commune_name_ar": "بطيط", "council_members": 15},
+        {"row": 50, "commune_name_ar": "لقصير", "council_members": 25},
+        {"row": 51, "commune_name_ar": "تامشاشاط", "council_members": 11},
+        {"row": 52, "commune_name_ar": "آيت يعزم", "council_members": 23},
+        {"row": 53, "commune_name_ar": "آيت ويخلفن", "council_members": 11},
+        {"row": 54, "commune_name_ar": "جحجوح", "council_members": 11},
+        {"row": 55, "commune_name_ar": "راس إيجيري", "council_members": 11}
+      ]
+    }
+  ]
+}

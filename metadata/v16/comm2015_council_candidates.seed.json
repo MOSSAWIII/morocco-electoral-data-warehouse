@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0-candidate",
+  "election_id": "COMM2015",
+  "status": "PENDING_HUMAN_REVIEW_AND_BOUNDARY_ORDER",
+  "legal_source_id": "MA_SGG_LO_113_14_ORIGINAL_2015_AR",
+  "annex_source_id": "MA_SGG_BO_6381_DECREE_2_15_577_ARRONDISSEMENTS_2015",
+  "annex_pdf_page": 9,
+  "historical_comparison_source_id": "MA_DGCL_GUIDE_JURIDIQUE_COLLECTIVITES_LOCALES_2010",
+  "code_source_id": "MA_HCP_RGPH2014_POPULATION_LEGALE_COMMUNES_12_REGIONS",
+  "note": "Les identifiants de conseil ci-dessous sont internes et candidats, pas des identifiants officiels. L'annexe du décret 2-15-577 fixe en 2015 les communes, arrondissements et sièges; la correspondance individuelle avec les 41 codes HCP demande une revue humaine. Les arrêtés originaux 2014 de pourtour des communes de Tanger, Fès et Salé sont acquis dans le BO 6304, mais les cartes annexées et les limites de chaque arrondissement ne le sont pas; les autres communes restent sans arrêté acquis. Aucun grain conseil ni univers électoral officiel ne peut être revendiqué avant ces preuves.",
+  "groups": [
+    {"prefecture_code": "01.511.", "candidate_council_id": "COMM2015-CITY:TANGER", "commune_name": "Tanger", "annex_arrondissement_count": 4, "urban_commune_order_source_id": "MA_SGG_BO_6304_URBAN_COMMUNE_BOUNDARY_ORDERS_2014", "urban_commune_order_number": "3401.14", "urban_commune_order_status": "SOURCE_VERIFIED_MAP_AND_ARRONDISSEMENTS_PENDING"},
+    {"prefecture_code": "03.231.", "candidate_council_id": "COMM2015-CITY:FES", "commune_name": "Fès", "annex_arrondissement_count": 6, "urban_commune_order_source_id": "MA_SGG_BO_6304_URBAN_COMMUNE_BOUNDARY_ORDERS_2014", "urban_commune_order_number": "3375.14", "urban_commune_order_status": "SOURCE_VERIFIED_MAP_AND_ARRONDISSEMENTS_PENDING"},
+    {"prefecture_code": "04.421.", "candidate_council_id": "COMM2015-CITY:RABAT", "commune_name": "Rabat", "annex_arrondissement_count": 5},
+    {"prefecture_code": "04.441.", "candidate_council_id": "COMM2015-CITY:SALE", "commune_name": "Salé", "annex_arrondissement_count": 5, "urban_commune_order_source_id": "MA_SGG_BO_6304_URBAN_COMMUNE_BOUNDARY_ORDERS_2014", "urban_commune_order_number": "3400.14", "urban_commune_order_status": "SOURCE_VERIFIED_MAP_AND_ARRONDISSEMENTS_PENDING"},
+    {"prefecture_code": "06.141.", "candidate_council_id": "COMM2015-CITY:CASABLANCA", "commune_name": "Casablanca", "annex_arrondissement_count": 16},
+    {"prefecture_code": "07.351.", "candidate_council_id": "COMM2015-CITY:MARRAKECH", "commune_name": "Marrakech", "annex_arrondissement_count": 5}
+  ]
+}

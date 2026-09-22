@@ -1,0 +1,10 @@
+# Optional diagnostic OCR for the scanned original BO 6374 on Windows.
+# This output is not an official coverage universe until every row is reviewed.
+PyMuPDF==1.27.2.3
+winrt-Windows.Media.Ocr==3.2.1
+winrt-Windows.Graphics.Imaging==3.2.1
+winrt-Windows.Storage==3.2.1
+winrt-Windows.Storage.Streams==3.2.1
+winrt-Windows.Globalization==3.2.1
+winrt-Windows.Foundation==3.2.1
+winrt-Windows.Foundation.Collections==3.2.1
