@@ -1,0 +1,179 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from morocco_elections.warehouse.bo6374 import validate_visual_candidate
+
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_page6105_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6105_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [12, 5, 22, 7]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 46
+    assert payload["groups"][0]["rows"][0] == {"row": 1, "commune_name_ar": "طنجة", "council_members": 81}
+    assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
+    assert validate_visual_candidate({**payload, "source_sha256": "0" * 64}, source)
+    first_group = {**payload["groups"][0], "rows": [{**payload["groups"][0]["rows"][0], "official_council_id": "FAKE"}, *payload["groups"][0]["rows"][1:]]}
+    assert validate_visual_candidate({**payload, "groups": [first_group, *payload["groups"][1:]]}, source)
+
+
+def test_page6106_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6106_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [19, 29]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 48
+    assert payload["groups"][0]["rows"][0] == {"row": 1, "commune_name_ar": "القصر الكبير", "council_members": 35}
+    assert payload["groups"][1]["rows"][0] == {"row": 20, "commune_name_ar": "الحسيمة", "council_members": 31}
+    assert validate_visual_candidate({**payload, "status": "OFFICIAL_COMPLETE"}, source)
+
+
+def test_page6107_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6107_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [7, 28, 17]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 52
+    assert payload["groups"][0]["prefecture_province_ar"] == "الحسيمة (تابع)"
+    assert payload["groups"][2]["rows"][0] == {"row": 36, "commune_name_ar": "وزان", "council_members": 31}
+    assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
+
+
+def test_page6108_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6108_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [11, 23, 23]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 57
+    assert payload["groups"][0]["rows"][0] == {"row": 1, "commune_name_ar": "وجدة", "council_members": 61}
+    assert payload["groups"][1]["rows"][0] == {"row": 12, "commune_name_ar": "الناظور", "council_members": 39}
+    assert validate_visual_candidate({**payload, "source_sha256": "0" * 64}, source)
+
+
+def test_page6109_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6109_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [14, 16, 14, 10]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 54
+    assert payload["groups"][0]["rows"][0] == {"row": 1, "commune_name_ar": "جرادة", "council_members": 25}
+    assert payload["groups"][3]["rows"][-1] == {"row": 54, "commune_name_ar": "مزكيتام", "council_members": 13}
+    assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
+
+
+def test_page6110_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6110_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [13, 5, 21, 16]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 55
+    assert payload["groups"][1]["rows"][0] == {"row": 14, "commune_name_ar": "فاس", "council_members": 91}
+    assert payload["groups"][3]["rows"][-1] == {"row": 55, "commune_name_ar": "راس إيجيري", "council_members": 11}
+    assert validate_visual_candidate({**payload, "status": "OFFICIAL_COMPLETE"}, source)
+
+
+def test_page6111_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6111_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [10, 11, 23]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 44
+    assert payload["groups"][0]["rows"][0] == {"row": 1, "commune_name_ar": "أزرو", "council_members": 31}
+    assert payload["groups"][2]["rows"][-1] == {"row": 44, "commune_name_ar": "آيت السبع لجروف", "council_members": 23}
+    assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
+
+
+def test_page6112_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6112_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [21, 32]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 53
+    assert payload["groups"][0]["rows"][0] == {"row": 1, "commune_name_ar": "بولمان", "council_members": 11}
+    assert payload["groups"][1]["rows"][-1] == {"row": 53, "commune_name_ar": "الخلالفة", "council_members": 15}
+    assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
+
+
+def test_page6113_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6113_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [17, 38]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 55
+    assert payload["groups"][0]["prefecture_province_ar"] == "تاونات (تابع)"
+    assert payload["groups"][1]["rows"][0] == {"row": 18, "commune_name_ar": "تازة", "council_members": 35}
+    assert validate_visual_candidate({**payload, "status": "OFFICIAL_COMPLETE"}, source)
+
+
+def test_page6114_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6114_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [2, 4, 10, 23, 20]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 59
+    assert payload["groups"][0]["rows"][0] == {"row": 1, "commune_name_ar": "الرباط", "council_members": 81}
+    assert payload["groups"][4]["rows"][-1] == {"row": 59, "commune_name_ar": "تيداس", "council_members": 13}
+    assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
+
+
+def test_page6115_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6115_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [15, 29]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 44
+    assert payload["groups"][0]["prefecture_province_ar"] == "الخميسات (تابع)"
+    assert payload["groups"][1]["rows"][0] == {"row": 16, "commune_name_ar": "سيدي قاسم", "council_members": 31}
+    assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
+
+
+def test_page6116_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6116_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [11, 22, 19]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 52
+    assert payload["groups"][0]["rows"][0] == {"row": 1, "commune_name_ar": "سيدي سليمان", "council_members": 31}
+    assert payload["groups"][2]["rows"][0] == {"row": 34, "commune_name_ar": "أزيلال", "council_members": 25}
+    assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
+
+
+def test_page6117_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6117_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [25, 16]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 41
+    assert payload["groups"][0]["prefecture_province_ar"] == "أزيلال (تابع)"
+    assert payload["groups"][1]["rows"][0] == {"row": 26, "commune_name_ar": "الفقيه بن صالح", "council_members": 35}
+    assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
+
+
+def test_page6118_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6118_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [22, 31]
+    assert sum(len(group["rows"]) for group in payload["groups"]) == 53
+    assert payload["groups"][0]["rows"][0] == {"row": 1, "commune_name_ar": "خنيفرة", "council_members": 35}
+    assert payload["groups"][1]["rows"][0] == {"row": 23, "commune_name_ar": "خريبكة", "council_members": 39}
+    assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
