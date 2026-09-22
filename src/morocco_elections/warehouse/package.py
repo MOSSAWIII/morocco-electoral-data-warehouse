@@ -24,6 +24,7 @@ from morocco_elections.warehouse.publication import (
     _redistribution,
     _uncertainty,
     sha256_file,
+    validate_publication,
     write_evidence_bundle,
 )
 from morocco_elections.warehouse.portability import portability_descriptor_sha256, validate_source_portability
@@ -454,7 +455,11 @@ def build_package(
         _write_json(staging / GEO_REPORT_NAME, database_report["geo_parent_report"])
         _write_json(staging / RECONCILIATION_REPORT_NAME, database_report["reconciliation_report"])
         _write_json(staging / RESULT_HISTORY_REPORT_NAME, database_report["result_history_report"])
-        from morocco_elections.warehouse.materialization import materialize_publication_inputs
+        from morocco_elections.warehouse.materialization import (
+            materialize_publication_inputs,
+            materialize_publication_proofs,
+            warehouse_content_sha256,
+        )
         from morocco_elections.warehouse.readiness import build_readiness_context
 
         initial_context, _ = build_readiness_context(
@@ -467,6 +472,56 @@ def build_package(
         )
         database_report["materialized_publication_rows"] = materialize_publication_inputs(
             staging / DATABASE_NAME, initial_context
+        )
+        content_sha256 = warehouse_content_sha256(staging / DATABASE_NAME)
+        proof_artifact_types = {
+            DATABASE_NAME: "DUCKDB_DATABASE",
+            CONTRACT_NAME: "DATA_CONTRACT",
+            V15_MANIFEST_NAME: "ARCHIVE_CHECKSUM_INDEX",
+            GEO_REPORT_NAME: "QUALITY_REPORT",
+            RECONCILIATION_REPORT_NAME: "QUALITY_REPORT",
+            RESULT_HISTORY_REPORT_NAME: "QUALITY_REPORT",
+        }
+        physical_proof_files = [
+            _file_entry(staging, relative, proof_artifact_types[relative], produced_at)
+            for relative in proof_artifact_types
+        ]
+        proof_reviews = _publication_reviews(physical_proof_files, repository_root, produced_at)
+        proof_context, _ = build_readiness_context(
+            staging / DATABASE_NAME,
+            repository_root,
+            files=physical_proof_files,
+            release_id=DEFAULT_SNAPSHOT_ID,
+            as_of_date=produced_at,
+            v15_manifest_path=staging / V15_MANIFEST_NAME,
+        )
+        proof_context = replace(
+            proof_context,
+            checks={
+                **proof_reviews,
+                "source_portability": _source_portability(repository_root),
+            },
+        )
+        proof_evaluation = validate_publication(proof_context)
+        logical_files = [dict(row) for row in physical_proof_files]
+        database_row = next(row for row in logical_files if row["relative_path"] == DATABASE_NAME)
+        database_row.update({
+            "sha256": content_sha256,
+            "evidence_id": "sha256:" + content_sha256,
+            "notes": "Logical digest of all substantive DuckDB tables; self-referential publication proof tables are excluded.",
+        })
+        logical_reviews = _publication_reviews(logical_files, repository_root, produced_at)
+        logical_gate_results = [
+            {**row, "evidence_id": "sha256:" + content_sha256}
+            for row in proof_evaluation["gate_results"]
+        ]
+        database_report["materialized_publication_rows"].update(
+            materialize_publication_proofs(
+                staging / DATABASE_NAME,
+                files=logical_files,
+                reviews=logical_reviews,
+                gate_results=logical_gate_results,
+            )
         )
         _write_json(staging / CATALOG_NAME, _table_catalog(staging / DATABASE_NAME))
         manifest = _manifest(staging, produced_at)

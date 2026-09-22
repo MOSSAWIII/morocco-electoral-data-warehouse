@@ -28,6 +28,13 @@ from morocco_elections.warehouse.result_history import build_result_history_diag
 
 
 def _table_rows(connection: duckdb.DuckDBPyConnection, table: str) -> list[dict[str, Any]]:
+    present = connection.execute(
+        "SELECT count(*) FROM information_schema.tables "
+        "WHERE table_schema = 'main' AND table_name = ?",
+        [table],
+    ).fetchone()[0]
+    if not present:
+        return []
     cursor = connection.execute(f'SELECT * FROM "{table}"')
     columns = [item[0] for item in cursor.description]
     return [dict(zip(columns, values, strict=True)) for values in cursor.fetchall()]

@@ -180,21 +180,20 @@ def test_readiness_audit_reports_external_territorial_coverage_without_claiming_
     assert council["publication_claim_allowed"] is False
     assert report["publication_evaluation"]["publication_status"] == "NOT_PUBLICATION_READY"
     gates = {row["gate_id"]: row["gate_status"] for row in report["publication_evaluation"]["gate_results"]}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"] == "PASS"
     assert gates["SEMANTIC_FACTS_VALIDATED"] == "PASS"
     assert gates["OFFICIAL_UNIVERSE_DECLARED"] == "PASS"
-    assert gates["DENOMINATOR_TYPED"] == "PASS"
     assert gates["COVERAGE_DISCLOSED"] == "PASS"
     assert gates["METRIC_RECONCILED"] == "PASS"
     assert gates["AS_OF_DATE_VALID"] == "PASS"
-    assert gates["RESULT_STATUS_KNOWN"] == "FAIL"
-    assert gates["V15_IMMUTABILITY_VERIFIED"] == "PASS"
     assert gates["UNCERTAINTY_DISCLOSED_WHEN_APPLICABLE"] == "PASS"
     assert gates["PRIVACY_REVIEW_PASSED"] == "PASS"
     assert gates["CLAIM_CLASS_DECLARED"] == "PASS"
     assert gates["REDISTRIBUTION_PERMITTED"] == "PASS"
-    assert list(gates.values()).count("PASS") == 12
-    assert list(gates.values()).count("FAIL") == 9
+    assert {gate for gate, status in gates.items() if status == "FAIL"} == {
+        "LEGAL_REGIME_PINNED",
+    }
+    assert list(gates.values()).count("PASS") == 11
+    assert list(gates.values()).count("FAIL") == 1
     assert report["reconciliation_report"]["expected_checks"] == 14860
     assert report["reconciliation_report"]["contests_without_status"] == 0
 
@@ -272,7 +271,9 @@ def test_development_build_materializes_verified_legal_evidence(tmp_path: Path) 
     try:
         assert connection.execute("SELECT count(*) FROM dim_legal_regime").fetchone()[0] == 15
         assert connection.execute("SELECT count(*) FROM bridge_contest_legal_regime").fetchone()[0] == 3361
-        assert connection.execute("SELECT count(*) FROM fact_result_revision").fetchone()[0] == 0
+        assert "fact_result_revision" not in {
+            row[0] for row in connection.execute("SHOW TABLES").fetchall()
+        }
         metadata = connection.execute(
             "SELECT release, schema_version, source_release, as_of_date FROM warehouse_metadata"
         ).fetchone()

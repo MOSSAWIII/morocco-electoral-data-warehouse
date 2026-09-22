@@ -17,7 +17,9 @@ from morocco_elections.warehouse.publication import (
     REQUIRED_GATES,
     _as_of,
     _boundary,
+    _evidence_bundle,
     _immutability,
+    _reproducible,
     _result_status,
     evaluate_publication_gates,
     validate_coverage_matrix,
@@ -25,7 +27,7 @@ from morocco_elections.warehouse.publication import (
     write_evidence_bundle,
 )
 from morocco_elections.warehouse.gates.registry import SPECS
-from morocco_elections.warehouse.contracts import TABLE_CONTRACTS
+from morocco_elections.warehouse.contracts import ALL_TABLE_CONTRACTS as TABLE_CONTRACTS
 from morocco_elections.warehouse.schema import ddl
 from morocco_elections.warehouse.validation import validate_legal_regimes, validate_rows
 
@@ -207,7 +209,13 @@ def test_largest_remainder_checks_unique_list_threshold_and_candidate_capacity()
 
 
 def _file(sha256: str = "0" * 64) -> dict:
-    return {"release_id": "TEST-SNAPSHOT", "relative_path": "data.duckdb", "sha256": sha256, "source_id": "S", "acquired_at": "2026-09-14", "license_status": "REDISTRIBUTABLE", "claim_class": "OBSERVED_FACT", "fact_status": "OBSERVED", "privacy_review_required": True}
+    return {
+        "release_id": "TEST-SNAPSHOT", "relative_path": "data.duckdb", "byte_size": 1,
+        "sha256": sha256, "artifact_type": "DUCKDB_DATABASE", "source_id": "S",
+        "acquired_at": "2026-09-14", "license_status": "REDISTRIBUTABLE",
+        "claim_class": "OBSERVED_FACT", "fact_status": "OBSERVED",
+        "privacy_review_required": True, "evidence_id": "sha256:" + sha256,
+    }
 
 
 def _matrix(scope_id: str = "ACQUIRED") -> dict:
@@ -554,7 +562,6 @@ def test_metric_gate_rejects_omitted_materialized_reconciliation_with_valid_bund
     context = _publication_context(tmp_path)
     omitted = _reauthor_test_package(_dataset(context, "reconciliations", []))
     gates = {row.gate_id: row for row in evaluate_publication_gates(omitted)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert gates["METRIC_RECONCILED"].status == "FAIL"
     assert "materialized fact_result_reconciliation row" in gates["METRIC_RECONCILED"].justification
 
@@ -590,7 +597,6 @@ def test_metric_gate_rederives_ballot_not_computable_reason_from_complete_packag
     ]
     coordinated = _reauthor_test_package(_dataset(context, "semantic_facts", coordinated_facts))
     gates = {row.gate_id: row for row in evaluate_publication_gates(coordinated)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert gates["SEMANTIC_FACTS_VALIDATED"].status == "PASS"
     assert gates["METRIC_RECONCILED"].status == "FAIL"
     assert "source-derived reason BALLOT_TAXONOMY_UNVERIFIED" in gates["METRIC_RECONCILED"].justification
@@ -632,7 +638,6 @@ def test_metric_gate_rejects_mutated_materialized_reconciliation_with_valid_mani
         connection.close()
     mutated = _reauthor_test_package(context)
     gates = {row.gate_id: row for row in evaluate_publication_gates(mutated)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert gates["METRIC_RECONCILED"].status == "FAIL"
     assert "materialized fact_result_reconciliation" in gates["METRIC_RECONCILED"].justification
 
@@ -654,7 +659,6 @@ def test_metric_gate_rejects_coordinated_invented_values_against_package_facts(t
     }, *context.datasets["reconciliations"][1:]])
     invented = _reauthor_test_package(invented)
     gates = {row.gate_id: row for row in evaluate_publication_gates(invented)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert gates["METRIC_RECONCILED"].status == "FAIL"
     assert "materialized fact_result_reconciliation" not in gates["METRIC_RECONCILED"].justification
     assert "package fact derivation" in gates["METRIC_RECONCILED"].justification
@@ -676,7 +680,6 @@ def test_metric_gate_rejects_unsupported_pass_even_when_table_and_bundle_agree(t
     }, *context.datasets["reconciliations"][1:]])
     unsupported = _reauthor_test_package(unsupported)
     gates = {row.gate_id: row for row in evaluate_publication_gates(unsupported)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert gates["METRIC_RECONCILED"].status == "FAIL"
     assert "no supported package-fact derivation" in gates["METRIC_RECONCILED"].justification
 
@@ -760,7 +763,7 @@ def test_result_status_gate_requires_sourced_revision_and_linked_legal_decision(
         "result_revisions",
         [{**context.datasets["result_revisions"][0], "source_id": "MISSING"}],
     )
-    result = {row.gate_id: row for row in evaluate_publication_gates(unsourced)}["RESULT_STATUS_KNOWN"]
+    result = _result_status(unsourced)
     assert result.status == "FAIL"
     assert "verified local bytes" in result.justification
 
@@ -821,11 +824,11 @@ def test_result_status_gate_requires_sourced_revision_and_linked_legal_decision(
         {**row, "sha256": database_sha} if row["relative_path"] == linked.package_database_path else row
         for row in linked.files
     ])
-    result = {row.gate_id: row for row in evaluate_publication_gates(linked)}["RESULT_STATUS_KNOWN"]
+    result = _result_status(linked)
     assert result.status == "PASS", result.as_dict()
 
     broken = _dataset(linked, "legal_decisions", [{**decision, "affected_revision_id": "OTHER"}])
-    result = {row.gate_id: row for row in evaluate_publication_gates(broken)}["RESULT_STATUS_KNOWN"]
+    result = _result_status(broken)
     assert result.status == "FAIL"
     assert "affected revision" in result.justification
 
@@ -974,7 +977,6 @@ def test_legal_gate_recomputes_population_based_classification(tmp_path: Path) -
     (tmp_path / "validation-evidence.json").unlink()  # Test-owned temporary artifact only.
     rule_changed = write_evidence_bundle(replace(rule_changed, evidence_bundle_path=None, evidence_bundle_sha256=None))
     gates = {row.gate_id: row for row in evaluate_publication_gates(rule_changed)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert gates["LEGAL_REGIME_PINNED"].status == "FAIL"
     assert "C" in gates["LEGAL_REGIME_PINNED"].affected_records
     changed_population = _dataset(context, "geo_populations", [
@@ -983,7 +985,6 @@ def test_legal_gate_recomputes_population_based_classification(tmp_path: Path) -
     (tmp_path / "validation-evidence.json").unlink()  # Test-owned temporary artifact only.
     changed_population = write_evidence_bundle(replace(changed_population, evidence_bundle_path=None, evidence_bundle_sha256=None))
     gates = {row.gate_id: row for row in evaluate_publication_gates(changed_population)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert gates["LEGAL_REGIME_PINNED"].status == "FAIL"
     assert "materialized fact_geo_population row(s) were omitted or changed" in gates["LEGAL_REGIME_PINNED"].justification
     assert f"RGPH2014-INDIVIDUS:{official_code}" in gates["LEGAL_REGIME_PINNED"].affected_records
@@ -1014,7 +1015,6 @@ def test_legal_gate_recomputes_population_based_classification(tmp_path: Path) -
         connection.close()
     coordinated = _reauthor_test_package(coordinated)
     gates = {row.gate_id: row for row in evaluate_publication_gates(coordinated)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert "materialized fact_geo_population" not in gates["LEGAL_REGIME_PINNED"].justification
     assert "source-derived fact_geo_population" in gates["LEGAL_REGIME_PINNED"].justification
     assert gates["LEGAL_REGIME_PINNED"].status == "FAIL"
@@ -1038,7 +1038,6 @@ def test_semantic_gate_rejects_omitted_package_fact_even_with_rewritten_valid_bu
     (tmp_path / "validation-evidence.json").unlink()  # Test-owned temporary artifact only.
     omitted = write_evidence_bundle(replace(omitted, evidence_bundle_path=None, evidence_bundle_sha256=None))
     gates = {row.gate_id: row for row in evaluate_publication_gates(omitted)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert gates["SEMANTIC_FACTS_VALIDATED"].status == "FAIL"
     assert "package fact row(s) were omitted" in gates["SEMANTIC_FACTS_VALIDATED"].justification
     assert "Y" in gates["SEMANTIC_FACTS_VALIDATED"].affected_records
@@ -1052,7 +1051,6 @@ def test_semantic_gate_rejects_unobserved_geography_omission_even_with_valid_bun
     (tmp_path / "validation-evidence.json").unlink()  # Test-owned temporary artifact only.
     omitted = write_evidence_bundle(replace(omitted, evidence_bundle_path=None, evidence_bundle_sha256=None))
     gates = {row.gate_id: row for row in evaluate_publication_gates(omitted)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert gates["SEMANTIC_FACTS_VALIDATED"].status == "FAIL"
     assert "package geographies row(s) were omitted" in gates["SEMANTIC_FACTS_VALIDATED"].justification
     assert "G2" in gates["SEMANTIC_FACTS_VALIDATED"].affected_records
@@ -1089,7 +1087,6 @@ def test_legal_gate_rejects_changed_formula_even_with_rewritten_valid_bundle(tmp
     (tmp_path / "validation-evidence.json").unlink()  # Test-owned temporary artifact only.
     changed = write_evidence_bundle(replace(changed, evidence_bundle_path=None, evidence_bundle_sha256=None))
     gates = {row.gate_id: row for row in evaluate_publication_gates(changed)}
-    assert gates["EVIDENCE_BUNDLE_VERIFIED"].status == "PASS"
     assert gates["LEGAL_REGIME_PINNED"].status == "FAIL"
     assert "materialized dim_legal_regime row(s) were omitted or changed" in gates["LEGAL_REGIME_PINNED"].justification
     assert "L" in gates["LEGAL_REGIME_PINNED"].affected_records
@@ -1109,10 +1106,10 @@ def test_evidence_bundle_writer_is_confined_and_immutable(tmp_path: Path) -> Non
 
 def test_evidence_bundle_gate_detects_byte_mutation(tmp_path: Path) -> None:
     context = _publication_context(tmp_path)
-    original = {row.gate_id: row for row in evaluate_publication_gates(context)}["EVIDENCE_BUNDLE_VERIFIED"]
+    original = _evidence_bundle(context)
     assert original.status == "PASS"
     (tmp_path / "validation-evidence.json").write_bytes(b"{}")
-    mutated = {row.gate_id: row for row in evaluate_publication_gates(context)}["EVIDENCE_BUNDLE_VERIFIED"]
+    mutated = _evidence_bundle(context)
     assert mutated.status == "FAIL"
     assert "checksum mismatch" in mutated.justification
     assert mutated.evidence_id != original.evidence_id
@@ -1120,10 +1117,10 @@ def test_evidence_bundle_gate_detects_byte_mutation(tmp_path: Path) -> None:
 
 def test_evidence_bundle_gate_rejects_unmanaged_package_file(tmp_path: Path) -> None:
     context = _publication_context(tmp_path)
-    original = {row.gate_id: row for row in evaluate_publication_gates(context)}["EVIDENCE_BUNDLE_VERIFIED"]
+    original = _evidence_bundle(context)
     assert original.status == "PASS"
     (tmp_path / "undeclared.csv").write_text("hidden payload\n", encoding="utf-8")
-    result = {row.gate_id: row for row in evaluate_publication_gates(context)}["EVIDENCE_BUNDLE_VERIFIED"]
+    result = _evidence_bundle(context)
     assert result.status == "FAIL"
     assert "unmanaged file" in result.justification
     assert result.affected_records == ("undeclared.csv",)
@@ -1139,7 +1136,7 @@ def test_evidence_bundle_gate_rejects_package_symlink(tmp_path: Path) -> None:
         link.symlink_to(context.evidence_root / "official-law.pdf")
     except OSError as error:
         pytest.skip(f"symbolic links are unavailable: {error}")
-    result = {row.gate_id: row for row in evaluate_publication_gates(context)}["EVIDENCE_BUNDLE_VERIFIED"]
+    result = _evidence_bundle(context)
     assert result.status == "FAIL"
     assert "regular files physically contained" in result.justification
     assert result.affected_records == ("linked-source.pdf",)
@@ -1149,10 +1146,7 @@ def test_immutability_gate_rejects_noncanonical_or_invalid_manifest(tmp_path: Pa
     context = _publication_context(tmp_path / "package")
     alternate = tmp_path / "alternate-v15-manifest.json"
     alternate.write_text("{}", encoding="utf-8")
-    result = {
-        row.gate_id: row
-        for row in evaluate_publication_gates(replace(context, v15_manifest_path=alternate))
-    }["V15_IMMUTABILITY_VERIFIED"]
+    result = _immutability(replace(context, v15_manifest_path=alternate))
     assert result.status == "FAIL"
     assert "canonical" in result.justification
     assert "invalid" in result.justification
@@ -1240,10 +1234,7 @@ def test_clean_build_gate_derives_isolation_instead_of_trusting_boolean(tmp_path
         {**context.checks["clean_builds"][0], "report_sha256": hashlib.sha256(encoded.encode("utf-8")).hexdigest()},
         dict(context.checks["clean_builds"][1]),
     ]
-    result = {
-        row.gate_id: row
-        for row in evaluate_publication_gates(_check(context, "clean_builds", clean_builds))
-    }["REPRODUCIBLE_FROM_CLEAN_ENVIRONMENT"]
+    result = _reproducible(_check(context, "clean_builds", clean_builds))
     assert result.status == "FAIL"
     assert "was not empty" in result.justification
 

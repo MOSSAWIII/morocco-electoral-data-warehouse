@@ -114,9 +114,15 @@ def build_result_history_diagnostic(
                 "blocking_code": "OFFICIAL_RESULT_STATUS_NOT_PROVEN",
             })
 
-    revision_cursor = connection.execute("SELECT * FROM fact_result_revision")
-    revision_columns = [item[0] for item in revision_cursor.description]
-    revisions = [dict(zip(revision_columns, values, strict=True)) for values in revision_cursor.fetchall()]
+    has_revision_table = connection.execute(
+        "SELECT count(*) FROM information_schema.tables "
+        "WHERE table_schema = 'main' AND table_name = 'fact_result_revision'"
+    ).fetchone()[0]
+    revisions: list[dict[str, Any]] = []
+    if has_revision_table:
+        revision_cursor = connection.execute("SELECT * FROM fact_result_revision")
+        revision_columns = [item[0] for item in revision_cursor.description]
+        revisions = [dict(zip(revision_columns, values, strict=True)) for values in revision_cursor.fetchall()]
     revision_count = len(revisions)
     revision_issues = validate_revisions(revisions)
     chain_error_codes = {

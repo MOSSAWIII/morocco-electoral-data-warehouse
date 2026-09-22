@@ -49,7 +49,7 @@ VOCABULARIES = {
 }
 
 
-TABLE_CONTRACTS: dict[str, dict[str, Any]] = {
+_TABLE_DEFINITIONS: dict[str, dict[str, Any]] = {
     "coverage_universe": {"primary_key": ["universe_id"], "required": ["universe_id", "election_id", "coverage_dimension", "universe_type", "denominator", "source_id", "source_url", "acquired_at", "verification_status", "is_external", "member_extraction_method"]},
     "coverage_universe_member": {"primary_key": ["universe_id", "expected_id"], "required": ["universe_id", "expected_id", "source_id"]},
     "fact_result_revision": {"primary_key": ["revision_id"], "required": ["revision_id", "result_id", "contest_id", "election_id", "geo_id", "geo_version_id", "result_status", "valid_from", "source_id", "known_at", "verification_method", "verification_status"]},
@@ -72,10 +72,40 @@ TABLE_CONTRACTS: dict[str, dict[str, Any]] = {
     "bridge_geo_lineage": {"primary_key": ["geo_lineage_id"], "required": ["geo_lineage_id", "from_geo_version_id", "to_geo_version_id", "geo_lineage_type", "method", "source_id", "confidence"]},
     "bridge_geo_parent": {"primary_key": ["relation_id"], "required": ["relation_id", "child_geo_id", "parent_geo_id", "relationship_type", "election_id", "valid_from", "source_id", "matching_method", "confidence", "review_status"]},
     "fact_metric_validation": {"primary_key": ["metric_validation_id"], "required": ["metric_validation_id", "metric_name", "formula", "denominator", "scope", "metric_status", "coverage_status", "limitations"]},
-    "publication_file": {"primary_key": ["release_id", "relative_path"], "required": ["release_id", "relative_path", "sha256", "source_id", "acquired_at", "license_status", "claim_class", "privacy_review_required"]},
+    "publication_file": {"primary_key": ["release_id", "relative_path"], "required": ["release_id", "relative_path", "byte_size", "sha256", "artifact_type", "source_id", "acquired_at", "license_status", "claim_class", "privacy_review_required", "evidence_id"]},
+    "publication_review": {"primary_key": ["release_id", "relative_path", "review_type"], "required": ["release_id", "relative_path", "review_type", "decision", "file_sha256", "reviewed_by", "reviewed_at", "evidence_id"]},
     "release_coverage_matrix": {"primary_key": ["release_id", "scope_id"], "required": ["release_id", "scope_id", "universe_ids_json", "acquired", "expected", "covered", "missing", "non_comparable", "redistribution_forbidden", "status"]},
     "publication_gate_result": {"primary_key": ["release_id", "gate_id"], "required": ["release_id", "gate_id", "gate_status", "justification", "evidence_id", "affected_records"]},
 }
+
+
+PROPOSED_TABLE_NAMES = frozenset({
+    "dim_contest_type",
+    "dim_seat_category",
+    "fact_candidacy_list",
+    "fact_candidate",
+    "fact_seat_allocation",
+    "dim_party_version",
+    "bridge_party_lineage",
+    "bridge_person_party_affiliation",
+    "dim_geo_version",
+    "bridge_geo_lineage",
+    "fact_legal_decision",
+    "fact_result_revision",
+    "fact_metric_validation",
+})
+
+# Only TABLE_CONTRACTS is materialized in the public warehouse. Proposal
+# definitions remain importable so candidate schemas can be tested without
+# representing empty tables as published capabilities.
+TABLE_CONTRACTS = {
+    name: contract for name, contract in _TABLE_DEFINITIONS.items()
+    if name not in PROPOSED_TABLE_NAMES
+}
+PROPOSED_TABLE_CONTRACTS = {
+    name: _TABLE_DEFINITIONS[name] for name in sorted(PROPOSED_TABLE_NAMES)
+}
+ALL_TABLE_CONTRACTS = {**TABLE_CONTRACTS, **PROPOSED_TABLE_CONTRACTS}
 
 
 FIELD_VOCABULARIES = {

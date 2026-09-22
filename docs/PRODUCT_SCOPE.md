@@ -18,16 +18,17 @@ Principes : une absence n'est jamais interprétée comme zéro; une couverture n
 | Indicateurs | `dim_indicator`, `dim_time`, `fact_observation`, `data_dictionary` (une définition ou observation) | selon indicateur | sources enregistrées dans `sources` | 335 indicateurs et 3 203 observations; précision temporelle explicite; aucune valeur prévue ou inférée publiée comme observation | par source | **Publié partiellement** |
 | Preuves | `sources` (une source), `warehouse_metadata` (un snapshot), plus les tables de publication à matérialiser ci-dessous | date du snapshot | registre de sources, fichiers épinglés, build | toute preuve doit être traçable à des octets ou à une source déclarée | statut explicite par fichier/source | **Publié** |
 
-## Tables de preuve obligatoires à matérialiser
+## Tables de preuve matérialisées
 
-Ces tables appartiennent au produit public mais sont encore vides alors que leur information existe dans le bundle JSON. La consolidation doit les remplir avant de supprimer les copies JSON :
+Ces tables appartiennent au produit public et sont remplies dans chaque reconstruction :
 
 - `coverage_universe` et `coverage_universe_member` : univers externes et identifiants attendus;
 - `publication_file` : index des fichiers, tailles, SHA-256, licence et classe d'affirmation;
+- `publication_review` : décisions de licence, confidentialité et classe d'affirmation liées à l'empreinte du contenu inspecté;
 - `release_coverage_matrix` : couverture synthétique par périmètre;
 - `publication_gate_result` : résultat synthétique de chaque contrôle.
 
-Leur grain est celui déclaré dans le contrat actuel. Après migration, le manifeste compact ne contient que leurs empreintes logiques et les références nécessaires à la vérification.
+Leur grain est celui déclaré dans le contrat actuel. Le manifeste compact ne contient que leurs empreintes logiques et les références nécessaires à la vérification. Les trois tables de preuve auto-référentielles utilisent une empreinte logique du contenu substantiel du DuckDB qui exclut ces tables de preuve.
 
 ## Schémas proposés, exclus du contrat actif
 

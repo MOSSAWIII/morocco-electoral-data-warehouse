@@ -28,7 +28,9 @@ Un gate protège un risque observable. Il ne valide jamais une approbation qu'a 
 
 ## Registre cible
 
-Le registre actif contient donc les gates CORE et les gates DOMAIN dont le domaine est publié. Les deux contrôles `REMOVE` deviennent respectivement une preuve CI et un test d'archive. `DENOMINATOR_TYPED` est absorbé par le contrôle d'univers. `EVIDENCE_BUNDLE_VERIFIED` disparaît lorsque le manifeste compact vérifie les fichiers et les empreintes logiques des tables.
+Le registre actif contient 12 gates : `SEMANTIC_FACTS_VALIDATED`, `LEGAL_REGIME_PINNED`, `AS_OF_DATE_VALID`, `OFFICIAL_UNIVERSE_DECLARED`, `GRAIN_COMPATIBLE`, `SOURCE_CONFLICTS_RESOLVED_OR_EXPOSED`, `METRIC_RECONCILED`, `COVERAGE_DISCLOSED`, `UNCERTAINTY_DISCLOSED_WHEN_APPLICABLE`, `PRIVACY_REVIEW_PASSED`, `CLAIM_CLASS_DECLARED` et `REDISTRIBUTION_PERMITTED`.
+
+Les deux contrôles `REMOVE` sont respectivement une preuve CI et un test d'archive. `DENOMINATOR_TYPED` est absorbé par le contrôle d'univers. `EVIDENCE_BUNDLE_VERIFIED` n'est plus un gate de publication : le validateur de paquet vérifie directement le manifeste compact, les fichiers et les empreintes logiques des tables. Les validateurs des domaines proposés restent disponibles comme diagnostics et tests, sans bloquer un domaine absent du contrat public.
 
 Chaque implémentation exposera la même interface minimale :
 

@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from morocco_elections.warehouse.contracts import TABLE_CONTRACTS, VOCABULARIES
+from morocco_elections.warehouse.contracts import PROPOSED_TABLE_CONTRACTS, TABLE_CONTRACTS, VOCABULARIES
 from morocco_elections.warehouse.build import build_development_database
 from morocco_elections.warehouse.coverage import DIMENSIONS, UNKNOWN, coverage_report, validate_universes
 from morocco_elections.warehouse.history import validate_result_geographies
@@ -44,15 +44,19 @@ def test_local_v15_public_asset_matches_published_size_and_sha256() -> None:
     assert verify_v15_publication_asset() == []
 
 
-def test_contract_has_every_required_v16_structure_and_versioned_vocabularies() -> None:
+def test_contract_separates_published_tables_from_schema_proposals() -> None:
     assert {
-        "coverage_universe", "fact_result_revision", "fact_result_reconciliation", "fact_legal_decision", "bridge_contest_legal_regime",
+        "coverage_universe", "fact_result_reconciliation", "bridge_contest_legal_regime",
         "coverage_universe_member", "publication_gate_result",
-        "dim_legal_regime", "bridge_election_legal_regime", "dim_contest_type", "dim_seat_category",
-        "fact_candidacy_list", "fact_candidate", "fact_seat_allocation", "dim_party_version",
-        "bridge_party_lineage", "bridge_person_party_affiliation", "dim_geo_version", "bridge_geo_lineage",
-        "fact_metric_validation", "publication_file", "release_coverage_matrix",
+        "dim_legal_regime", "bridge_election_legal_regime", "publication_file", "release_coverage_matrix",
     } <= TABLE_CONTRACTS.keys()
+    assert {
+        "dim_contest_type", "dim_seat_category", "fact_candidacy_list", "fact_candidate",
+        "fact_seat_allocation", "dim_party_version", "bridge_party_lineage",
+        "bridge_person_party_affiliation", "dim_geo_version", "bridge_geo_lineage",
+        "fact_legal_decision", "fact_result_revision", "fact_metric_validation",
+    } == PROPOSED_TABLE_CONTRACTS.keys()
+    assert TABLE_CONTRACTS.keys().isdisjoint(PROPOSED_TABLE_CONTRACTS)
     assert all(vocabulary.version == "1.0.0" and vocabulary.definitions for vocabulary in VOCABULARIES.values())
 
 
@@ -79,7 +83,9 @@ def test_warehouse_build_is_additive_and_refuses_overwrite(tmp_path: Path) -> No
     assert report["created_canonical_tables"] == len(TABLE_CONTRACTS)
     connection = duckdb.connect(str(output), read_only=True)
     assert connection.execute("SELECT * FROM dim_election").fetchall() == [("E1",)]
-    assert {row[0] for row in connection.execute("SHOW TABLES").fetchall()} >= set(TABLE_CONTRACTS)
+    tables = {row[0] for row in connection.execute("SHOW TABLES").fetchall()}
+    assert tables >= set(TABLE_CONTRACTS)
+    assert tables.isdisjoint(PROPOSED_TABLE_CONTRACTS)
     connection.close()
     with pytest.raises(FileExistsError):
         build_development_database(seed, output)

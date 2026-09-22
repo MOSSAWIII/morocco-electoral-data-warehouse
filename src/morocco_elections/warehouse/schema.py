@@ -4,7 +4,7 @@ from typing import Any
 
 import duckdb
 
-from morocco_elections.warehouse.contracts import FIELD_VOCABULARIES, TABLE_CONTRACTS, VOCABULARIES
+from morocco_elections.warehouse.contracts import ALL_TABLE_CONTRACTS, FIELD_VOCABULARIES, TABLE_CONTRACTS, VOCABULARIES
 
 
 OPTIONAL_FIELDS: dict[str, tuple[str, ...]] = {
@@ -26,13 +26,14 @@ OPTIONAL_FIELDS: dict[str, tuple[str, ...]] = {
     "bridge_geo_lineage": ("notes",),
     "bridge_geo_parent": ("valid_to", "official_child_code", "supporting_source_ids", "notes"),
     "publication_file": ("fact_status", "source_url", "notes"),
+    "publication_review": ("legal_basis", "evidence_url", "review_method", "proof_sha256", "claim_class", "notes"),
 }
 
 
-INTEGER_FIELDS = {"denominator", "position", "official_seats", "recomputed_seats", "population", "classification_value", "acquired", "expected", "covered", "missing", "non_comparable", "redistribution_forbidden"}
+INTEGER_FIELDS = {"denominator", "position", "official_seats", "recomputed_seats", "population", "classification_value", "byte_size", "acquired", "expected", "covered", "missing", "non_comparable", "redistribution_forbidden"}
 DOUBLE_FIELDS = {"official_value", "recomputed_value", "difference", "tolerance", "threshold", "confidence"}
 BOOLEAN_FIELDS = {"is_external", "privacy_review_required"}
-DATE_FIELDS = {"acquired_at", "valid_from", "valid_to", "published_at", "known_at", "decision_date", "effective_date", "census_date"}
+DATE_FIELDS = {"acquired_at", "valid_from", "valid_to", "published_at", "known_at", "decision_date", "effective_date", "census_date", "reviewed_at"}
 
 
 def sql_type(field: str) -> str:
@@ -48,7 +49,7 @@ def sql_type(field: str) -> str:
 
 
 def ddl(table: str) -> str:
-    contract = TABLE_CONTRACTS[table]
+    contract = ALL_TABLE_CONTRACTS[table]
     required = list(contract["required"])
     fields = required + [field for field in OPTIONAL_FIELDS.get(table, ()) if field not in required]
     definitions = []

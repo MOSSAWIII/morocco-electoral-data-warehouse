@@ -15,7 +15,7 @@ from typing import Any, Callable, Iterable, Mapping, Sequence
 import duckdb
 
 from morocco_elections.warehouse.coverage import DIMENSIONS, coverage_report, validate_universes
-from morocco_elections.warehouse.contracts import TABLE_CONTRACTS
+from morocco_elections.warehouse.contracts import ALL_TABLE_CONTRACTS, TABLE_CONTRACTS
 from morocco_elections.warehouse.demography import load_hcp_rgph2014_individuals, validate_population_crosswalks
 from morocco_elections.warehouse.history import (
     geographies_comparable,
@@ -280,9 +280,9 @@ def _bind_contract_tables(
         connection = duckdb.connect(str(path), read_only=True)
         try:
             for name, (table, evaluated_rows) in datasets.items():
-                if table in TABLE_CONTRACTS:
-                    fields = [*TABLE_CONTRACTS[table]["required"], *OPTIONAL_FIELDS.get(table, ())]
-                    identity = TABLE_CONTRACTS[table]["primary_key"][0]
+                if table in ALL_TABLE_CONTRACTS:
+                    fields = [*ALL_TABLE_CONTRACTS[table]["required"], *OPTIONAL_FIELDS.get(table, ())]
+                    identity = ALL_TABLE_CONTRACTS[table]["primary_key"][0]
                 else:
                     fields = sorted({str(field) for row in evaluated_rows for field in row})
                     identity = fields[0] if fields else "<unknown>"
@@ -862,10 +862,12 @@ def _as_of(context: PublicationContext) -> GateResult:
         failures.append(("warehouse_metadata", "exactly one materialized release metadata row is required"))
     elif _as_date(metadata[0].get("as_of_date")) != as_of:
         failures.append(("warehouse_metadata", "materialized as_of_date differs from the release context"))
-    materialized, binding_failures = _bind_contract_tables(context, {
-        "result_revisions": ("fact_result_revision", revisions),
+    binding_datasets: dict[str, tuple[str, Sequence[Mapping[str, Any]]]] = {
         "warehouse_metadata": ("warehouse_metadata", metadata),
-    })
+    }
+    if revisions:
+        binding_datasets["result_revisions"] = ("fact_result_revision", revisions)
+    materialized, binding_failures = _bind_contract_tables(context, binding_datasets)
     failures += binding_failures
     return _gate(
         "AS_OF_DATE_VALID",
@@ -1016,8 +1018,32 @@ def _denominator(context: PublicationContext) -> GateResult:
 
 def _grain(context: PublicationContext) -> GateResult:
     specs = _checks(context, "grain_checks")
-    failures = _require_rows("grain_checks", specs)
+    failures: list[tuple[str, str]] = []
     inspected: dict[str, Any] = {}
+    if not specs:
+        root, relative = context.package_root, context.package_database_path
+        if root is None or not relative:
+            failures.append((context.release_id, "package database is required for exhaustive row-grain inspection"))
+        else:
+            root, path = root.resolve(), (root / relative).resolve()
+            try:
+                if root not in path.parents or not path.is_file():
+                    raise OSError("unsafe or missing package database")
+                connection = duckdb.connect(str(path), read_only=True)
+                try:
+                    for (table,) in connection.execute("SHOW TABLES").fetchall():
+                        escaped = str(table).replace('"', '""')
+                        total = connection.execute(f'SELECT count(*) FROM "{escaped}"').fetchone()[0]
+                        distinct = connection.execute(
+                            f'SELECT count(*) FROM (SELECT DISTINCT * FROM "{escaped}")'
+                        ).fetchone()[0]
+                        inspected[str(table)] = {"rows": total, "distinct_rows": distinct}
+                        if total != distinct:
+                            failures.append((str(table), f"{total - distinct} exact duplicate row(s) violate the materialized grain"))
+                finally:
+                    connection.close()
+            except (duckdb.Error, OSError) as error:
+                failures.append((relative, f"cannot inspect materialized row grains: {type(error).__name__}"))
     for spec in specs:
         rid = str(spec.get("check_id", "<unknown>"))
         dataset_name, grain_keys = spec.get("dataset"), spec.get("grain_keys")
@@ -1185,7 +1211,7 @@ def _lineage(context: PublicationContext) -> GateResult:
 def _source_conflicts(context: PublicationContext) -> GateResult:
     observations = _rows(context, "source_observations")
     resolutions = _checks(context, "source_conflict_checks")
-    failures = _require_rows("source_observations", observations)
+    failures: list[tuple[str, str]] = []
     grouped: dict[tuple[Any, Any], list[Mapping[str, Any]]] = {}
     for index, row in enumerate(observations):
         rid = str(row.get("observation_id", index))
@@ -1768,27 +1794,18 @@ def _immutability(context: PublicationContext) -> GateResult:
 
 
 GATE_EVALUATORS: Mapping[str, Callable[[PublicationContext], GateResult]] = {
-    "EVIDENCE_BUNDLE_VERIFIED": _evidence_bundle,
     "SEMANTIC_FACTS_VALIDATED": _semantic_facts,
     "LEGAL_REGIME_PINNED": _legal_regime,
-    "RESULT_STATUS_KNOWN": _result_status,
     "AS_OF_DATE_VALID": _as_of,
     "OFFICIAL_UNIVERSE_DECLARED": _official_universe,
-    "DENOMINATOR_TYPED": _denominator,
     "GRAIN_COMPATIBLE": _grain,
-    "BOUNDARY_COMPATIBLE": _boundary,
-    "PARTY_LINEAGE_REVIEWED": _lineage,
     "SOURCE_CONFLICTS_RESOLVED_OR_EXPOSED": _source_conflicts,
-    "CANDIDACY_AND_SEATS_VALIDATED": _candidacy_seats,
     "METRIC_RECONCILED": _metrics,
-    "ANALYTIC_METRICS_ADMISSIBLE": _analytic_admissibility,
     "COVERAGE_DISCLOSED": _coverage,
     "UNCERTAINTY_DISCLOSED_WHEN_APPLICABLE": _uncertainty,
     "PRIVACY_REVIEW_PASSED": _privacy,
     "CLAIM_CLASS_DECLARED": _claims,
     "REDISTRIBUTION_PERMITTED": _redistribution,
-    "REPRODUCIBLE_FROM_CLEAN_ENVIRONMENT": _reproducible,
-    "V15_IMMUTABILITY_VERIFIED": _immutability,
 }
 GATE_REGISTRY = build_registry(GATE_EVALUATORS)
 

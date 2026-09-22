@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from typing import Any, Iterable, Mapping, Sequence
 
-from morocco_elections.warehouse.contracts import FIELD_VOCABULARIES, TABLE_CONTRACTS, VOCABULARIES
+from morocco_elections.warehouse.contracts import ALL_TABLE_CONTRACTS, FIELD_VOCABULARIES, VOCABULARIES
 
 
 @dataclass(frozen=True)
@@ -43,9 +43,9 @@ def _as_date(value: Any) -> date | None:
 
 def validate_rows(table: str, rows: Iterable[Mapping[str, Any]]) -> list[ValidationIssue]:
     """Validate required fields, primary-key uniqueness and controlled values."""
-    if table not in TABLE_CONTRACTS:
+    if table not in ALL_TABLE_CONTRACTS:
         return [ValidationIssue("UNKNOWN_TABLE", table, "<contract>", "table is absent from the canonical contract")]
-    contract = TABLE_CONTRACTS[table]
+    contract = ALL_TABLE_CONTRACTS[table]
     issues: list[ValidationIssue] = []
     seen: set[tuple[Any, ...]] = set()
     for row in rows:

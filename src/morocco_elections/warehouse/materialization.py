@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -15,6 +17,37 @@ CONTEXT_TABLES = {
     "coverage_universe": "coverage_universes",
     "coverage_universe_member": "coverage_universe_members",
 }
+
+PROOF_TABLES = frozenset({"publication_file", "publication_review", "publication_gate_result"})
+
+
+def warehouse_content_sha256(database: Path) -> str:
+    """Digest substantive schemas and rows without self-referential proof tables."""
+    connection = duckdb.connect(str(database), read_only=True)
+    digest = hashlib.sha256()
+    try:
+        tables = sorted(
+            row[0] for row in connection.execute("SHOW TABLES").fetchall()
+            if row[0] not in PROOF_TABLES
+        )
+        for table in tables:
+            description = connection.execute(f'DESCRIBE "{table}"').fetchall()
+            rows = connection.execute(f'SELECT * FROM "{table}"').fetchall()
+            payload = {
+                "table": table,
+                "columns": [(row[0], row[1], row[2]) for row in description],
+                "rows": sorted(
+                    json.dumps(row, default=str, ensure_ascii=False, separators=(",", ":"))
+                    for row in rows
+                ),
+            }
+            digest.update(
+                json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            )
+            digest.update(b"\n")
+    finally:
+        connection.close()
+    return digest.hexdigest()
 
 
 def _replace_rows(
@@ -47,6 +80,48 @@ def materialize_publication_inputs(database: Path, context: PublicationContext) 
         return {
             table: connection.execute(f'SELECT count(*) FROM "{table}"').fetchone()[0]
             for table in (*CONTEXT_TABLES, "release_coverage_matrix")
+        }
+    except BaseException:
+        connection.execute("ROLLBACK")
+        raise
+    finally:
+        connection.close()
+
+
+def materialize_publication_proofs(
+    database: Path,
+    *,
+    files: Sequence[Mapping[str, Any]],
+    reviews: Mapping[str, Sequence[Mapping[str, Any]]],
+    gate_results: Sequence[Mapping[str, Any]],
+) -> dict[str, int]:
+    """Persist the stable, logical publication index and its review decisions."""
+    review_rows: list[dict[str, Any]] = []
+    release_by_path = {str(row["relative_path"]): str(row["release_id"]) for row in files}
+    for key, review_type in (
+        ("license_reviews", "LICENSE"),
+        ("privacy_reviews", "PRIVACY"),
+        ("claim_reviews", "CLAIM_CLASS"),
+    ):
+        for review in reviews.get(key, ()):
+            relative = str(review["relative_path"])
+            review_rows.append({
+                **review,
+                "release_id": release_by_path[relative],
+                "review_type": review_type,
+                "decision": review.get("decision") or review.get("claim_class"),
+                "notes": review.get("finding") or review.get("uncertainty_disclosure"),
+            })
+    connection = duckdb.connect(str(database))
+    try:
+        connection.execute("BEGIN TRANSACTION")
+        _replace_rows(connection, "publication_file", files)
+        _replace_rows(connection, "publication_review", review_rows)
+        _replace_rows(connection, "publication_gate_result", gate_results)
+        connection.execute("COMMIT")
+        return {
+            table: connection.execute(f'SELECT count(*) FROM "{table}"').fetchone()[0]
+            for table in PROOF_TABLES
         }
     except BaseException:
         connection.execute("ROLLBACK")
