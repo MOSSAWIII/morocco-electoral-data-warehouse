@@ -23,7 +23,41 @@ from morocco_elections.v16.package import (
     _write_json,
     validate_package,
 )
+from morocco_elections.v16.materialization import materialize_publication_inputs
 from morocco_elections.v16.publication import PublicationContext, sha256_file, validate_publication, write_evidence_bundle
+from morocco_elections.v16.schema import create_schema
+
+
+def test_publication_inputs_are_materialized_in_duckdb(tmp_path: Path) -> None:
+    database = tmp_path / "warehouse.duckdb"
+    connection = duckdb.connect(str(database))
+    try:
+        create_schema(connection)
+    finally:
+        connection.close()
+    universe = {
+        "universe_id": "U1", "election_id": "E1", "coverage_dimension": "TERRITORIAL",
+        "universe_type": "OFFICIAL_TERRITORIES", "denominator": 1, "source_id": "S1",
+        "source_url": "https://example.test/source", "acquired_at": "2026-09-21",
+        "verification_status": "VERIFIED", "is_external": True,
+        "member_extraction_method": "JSON_UNIVERSES_OBJECT",
+    }
+    matrix = {
+        "release_id": "SNAPSHOT", "scope_id": "TERRITORIAL", "universe_ids_json": '["U1"]',
+        "acquired": 1, "expected": 1, "covered": 1, "missing": 0, "non_comparable": 0,
+        "redistribution_forbidden": 0, "status": "COMPLETE",
+    }
+    context = PublicationContext(
+        release_id="SNAPSHOT", as_of_date="2026-09-21", files=[], coverage_matrix=[matrix],
+        datasets={
+            "coverage_universes": [universe],
+            "coverage_universe_members": [{"universe_id": "U1", "expected_id": "G1", "source_id": "S1"}],
+        }, checks={},
+    )
+
+    counts = materialize_publication_inputs(database, context)
+
+    assert counts == {"coverage_universe": 1, "coverage_universe_member": 1, "release_coverage_matrix": 1}
 
 
 def _make_package(root: Path) -> str:

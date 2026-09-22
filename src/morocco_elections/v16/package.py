@@ -458,10 +458,23 @@ def build_package(
         _write_json(staging / GEO_REPORT_NAME, database_report["geo_parent_report"])
         _write_json(staging / RECONCILIATION_REPORT_NAME, database_report["reconciliation_report"])
         _write_json(staging / RESULT_HISTORY_REPORT_NAME, database_report["result_history_report"])
+        from morocco_elections.v16.materialization import materialize_publication_inputs
+        from morocco_elections.v16.readiness import build_readiness_context
+
+        initial_context, _ = build_readiness_context(
+            staging / DATABASE_NAME,
+            repository_root,
+            files=[],
+            release_id="V16-DEVELOPMENT",
+            as_of_date=produced_at,
+            v15_manifest_path=staging / V15_MANIFEST_NAME,
+        )
+        database_report["materialized_publication_rows"] = materialize_publication_inputs(
+            staging / DATABASE_NAME, initial_context
+        )
         _write_json(staging / CATALOG_NAME, _table_catalog(staging / DATABASE_NAME))
         manifest = _manifest(staging, produced_at)
         _write_json(staging / MANIFEST_NAME, manifest)
-        from morocco_elections.v16.readiness import build_readiness_context
 
         context, _ = build_readiness_context(
             staging / DATABASE_NAME, repository_root, files=manifest["files"],
