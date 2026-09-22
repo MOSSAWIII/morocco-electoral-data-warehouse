@@ -21,6 +21,8 @@ python -m pip install --no-deps --editable .
 
 Les données RAW et les sorties sont hors Git. Le build réutilise les octets locaux vérifiés ou télécharge uniquement les sources déjà déclarées, avec taille et SHA-256 épinglés. Une divergence interrompt la construction.
 
+Un cache de contenu facultatif peut être indiqué par `MOROCCO_ELECTIONS_SOURCE_CACHE`. Chaque fichier du cache porte comme nom son SHA-256; il n'est utilisé qu'après validation de sa taille et de son empreinte. Ce cache accélère les reconstructions et rend les serveurs officiels intermittents non bloquants sans assouplir l'intégrité.
+
 ## Construire, valider et publier
 
 ```powershell

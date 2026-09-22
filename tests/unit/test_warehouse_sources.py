@@ -7,7 +7,23 @@ from pathlib import Path
 
 import pytest
 
-from morocco_elections.warehouse.sources import materialize_declared_sources, materialize_seed_database
+from morocco_elections.warehouse.sources import _download_pinned, materialize_declared_sources, materialize_seed_database
+
+
+def test_pinned_download_can_use_verified_content_addressed_cache(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = b"cached official bytes"
+    digest = hashlib.sha256(payload).hexdigest()
+    cache = tmp_path / "cache"
+    cache.mkdir()
+    (cache / digest).write_bytes(payload)
+    monkeypatch.setenv("MOROCCO_ELECTIONS_SOURCE_CACHE", str(cache))
+    target = tmp_path / "download.bin"
+
+    _download_pinned("https://unreachable.invalid/source", target, len(payload), digest)
+
+    assert target.read_bytes() == payload
 
 
 def test_declared_sources_are_acquired_once_and_verified(tmp_path: Path) -> None:

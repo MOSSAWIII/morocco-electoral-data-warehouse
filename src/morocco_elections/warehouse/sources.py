@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import tempfile
 import urllib.error
 import urllib.request
@@ -23,6 +24,12 @@ def _sha256(path: Path) -> str:
 
 def _download_pinned(url: str, temporary: Path, expected_bytes: int, expected_sha: str) -> None:
     """Download an immutable object, resuming official servers that close early."""
+    cache_root = os.environ.get("MOROCCO_ELECTIONS_SOURCE_CACHE")
+    if cache_root:
+        cached = Path(cache_root).resolve() / expected_sha
+        if cached.is_file() and cached.stat().st_size == expected_bytes and _sha256(cached) == expected_sha:
+            shutil.copyfile(cached, temporary)
+            return
     temporary.write_bytes(b"")
     last_error: BaseException | None = None
     for _ in range(8):
