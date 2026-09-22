@@ -24,7 +24,13 @@ from morocco_elections.warehouse.package import (
     validate_package,
 )
 from morocco_elections.warehouse.materialization import materialize_publication_inputs
-from morocco_elections.warehouse.publication import PublicationContext, sha256_file, validate_publication, write_evidence_bundle
+from morocco_elections.warehouse.publication import (
+    PublicationContext,
+    evidence_bundle_payload,
+    sha256_file,
+    validate_publication,
+    write_evidence_bundle,
+)
 from morocco_elections.warehouse.schema import create_schema
 
 
@@ -58,6 +64,24 @@ def test_publication_inputs_are_materialized_in_duckdb(tmp_path: Path) -> None:
     counts = materialize_publication_inputs(database, context)
 
     assert counts == {"coverage_universe": 1, "coverage_universe_member": 1, "release_coverage_matrix": 1}
+
+
+def test_evidence_index_contains_digests_not_materialized_facts() -> None:
+    rows = [{"result_id": f"R{index}", "votes": index} for index in range(10_000)]
+    context = PublicationContext(
+        release_id="snapshot", as_of_date="2026-09-21", files=[], coverage_matrix=[],
+        datasets={"semantic_facts": rows}, checks={},
+    )
+
+    payload = evidence_bundle_payload(context)
+
+    assert "datasets" not in payload
+    assert payload["tables"] == [{
+        "table_name": "semantic_facts",
+        "row_count": 10_000,
+        "logical_sha256": payload["tables"][0]["logical_sha256"],
+    }]
+    assert len(json.dumps(payload)) < 1_000
 
 
 def _make_package(root: Path) -> str:

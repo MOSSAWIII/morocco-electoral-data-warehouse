@@ -118,24 +118,57 @@ def generate_checksums(root: Path, relative_paths: Iterable[str]) -> list[dict[s
 
 def evidence_bundle_payload(context: PublicationContext) -> dict[str, Any]:
     manifest_sha256: str | None = None
-    manifest_payload: Any = None
     try:
         manifest_bytes = context.v15_manifest_path.read_bytes()
     except OSError:
         pass
     else:
         manifest_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
-        try:
-            manifest_payload = json.loads(manifest_bytes.decode("utf-8"))
-        except (UnicodeDecodeError, ValueError):
-            pass
+    table_index: list[dict[str, Any]] = []
+    source_references: list[str] = []
+    if context.package_root is not None and context.package_database_path:
+        root = context.package_root.resolve()
+        catalog_path = root / "table-catalog.json"
+        database_path = (root / context.package_database_path).resolve()
+        if catalog_path.is_file():
+            try:
+                catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+                table_index = [
+                    {
+                        "table_name": row.get("table_name"),
+                        "row_count": row.get("row_count"),
+                        "logical_sha256": row.get("logical_sha256"),
+                    }
+                    for row in catalog.get("tables", [])
+                ]
+            except (OSError, ValueError, TypeError):
+                table_index = []
+        if root in database_path.parents and database_path.is_file():
+            try:
+                connection = duckdb.connect(str(database_path), read_only=True)
+                try:
+                    names = {row[0] for row in connection.execute("SHOW TABLES").fetchall()}
+                    if "sources" in names:
+                        source_references = [
+                            str(row[0]) for row in connection.execute(
+                                "SELECT DISTINCT source_id FROM sources WHERE source_id IS NOT NULL ORDER BY source_id"
+                            ).fetchall()
+                        ]
+                finally:
+                    connection.close()
+            except (duckdb.Error, OSError):
+                source_references = []
+    if not table_index:
+        for name, rows in sorted(context.datasets.items()):
+            encoded = json.dumps(_canonical(rows), ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
+            table_index.append({"table_name": name, "row_count": len(rows), "logical_sha256": hashlib.sha256(encoded).hexdigest()})
     return {
         "release_id": context.release_id,
         "as_of_date": _canonical(context.as_of_date),
         "files": _canonical(context.files),
-        "coverage_matrix": _canonical(context.coverage_matrix),
-        "datasets": _canonical(context.datasets),
         "checks": _canonical(context.checks),
+        "tables": table_index,
+        "source_references": source_references,
         "package_database_path": context.package_database_path,
         "package_manifest": {
             "relative_path": context.package_manifest_path,
@@ -143,7 +176,6 @@ def evidence_bundle_payload(context: PublicationContext) -> dict[str, Any]:
         },
         "v15_immutability_manifest": {
             "sha256": manifest_sha256,
-            "payload": _canonical(manifest_payload),
         },
     }
 

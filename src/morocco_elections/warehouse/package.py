@@ -278,8 +278,8 @@ def package_context(root: Path) -> PublicationContext:
         release_id=bundle.get("release_id", DEFAULT_SNAPSHOT_ID),
         as_of_date=bundle.get("as_of_date", "2026-09-21"),
         files=manifest["files"],
-        coverage_matrix=bundle.get("coverage_matrix", []),
-        datasets=bundle.get("datasets", {}),
+        coverage_matrix=[],
+        datasets={},
         checks=bundle.get("checks", {}),
         package_root=root,
         package_database_path=DATABASE_NAME,
@@ -357,13 +357,8 @@ def validate_package(root: Path, *, expected_bundle_sha256: str | None = None) -
     observed_catalog = _table_catalog(root / DATABASE_NAME)
     if catalog != observed_catalog:
         failures.append({"record": CATALOG_NAME, "message": "table catalog differs from exhaustive DuckDB inspection"})
-    bundled_datasets = bundle.get("datasets", {})
     if history.get("as_of_date") != bundle.get("as_of_date"):
         failures.append({"record": RESULT_HISTORY_REPORT_NAME, "message": "history as_of_date differs from evidence bundle"})
-    if history.get("inventory") != bundled_datasets.get("result_history_inventory"):
-        failures.append({"record": RESULT_HISTORY_REPORT_NAME, "message": "history inventory differs from evidence bundle"})
-    if history.get("gaps") != bundled_datasets.get("result_history_gaps"):
-        failures.append({"record": RESULT_HISTORY_REPORT_NAME, "message": "history gaps differ from evidence bundle"})
     manifest_descriptor = bundle.get("package_manifest", {})
     if (
         manifest_descriptor.get("relative_path") != MANIFEST_NAME
