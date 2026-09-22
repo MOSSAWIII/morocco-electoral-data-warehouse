@@ -35,13 +35,31 @@ jobs:
       - name: Unit tests
         run: pytest tests/unit
 
-      - name: Build canonical package from pinned sources
-        run: morocco-elections build --output "$RUNNER_TEMP/warehouse"
+      - name: Build canonical package twice from pinned sources
+        run: |
+          morocco-elections build --output "$RUNNER_TEMP/warehouse"
+          morocco-elections build --output "$RUNNER_TEMP/warehouse-second"
+
+      - name: Compare deterministic build outputs
+        shell: bash
+        run: |
+          for file in \
+            data-contract.json \
+            geo-parent-report.json \
+            reconciliation-report.json \
+            result-history-report.json \
+            table-catalog.json \
+            v15-immutable-checksums.json
+          do
+            cmp "$RUNNER_TEMP/warehouse/$file" "$RUNNER_TEMP/warehouse-second/$file"
+          done
 
       - name: Validate and audit package
         run: |
           morocco-elections validate --package "$RUNNER_TEMP/warehouse"
+          morocco-elections validate --package "$RUNNER_TEMP/warehouse-second"
           morocco-elections audit --package "$RUNNER_TEMP/warehouse" --summary
+          morocco-elections audit --package "$RUNNER_TEMP/warehouse-second" --summary
 
       - name: Essential integration and mutation tests
         env:

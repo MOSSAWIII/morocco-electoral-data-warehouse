@@ -69,4 +69,4 @@ ruff check .
 pytest
 ```
 
-La CI unique reproduit le paquet depuis un checkout propre, valide les checksums et empreintes, exécute les mutations critiques et refuse toute dérive de fichiers générés ou non suivis.
+La CI unique reproduit deux fois le paquet depuis un checkout propre, valide les deux sorties, compare les 45 empreintes logiques et les rapports déterministes, exécute les mutations critiques et refuse toute dérive de fichiers générés ou non suivis. La [preuve de reconstruction propre](docs/CLEAN_REBUILD_PROOF.md) distingue explicitement l'identité logique de l'organisation physique DuckDB, qui n'est pas garantie octet pour octet.

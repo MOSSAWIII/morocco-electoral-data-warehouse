@@ -10,6 +10,7 @@ Cette roadmap décrit des capacités et des blocages, pas des versions de produi
 - les résultats, mobilisations, régimes juridiques couverts, populations et relations territoriales sont réconciliés lorsque les entrées le permettent;
 - les fichiers, sources, licences, classes d'affirmation et contrôles de confidentialité sont vérifiés;
 - une CI unique reconstruit et soumet le paquet aux mutations critiques.
+- deux constructions propres indépendantes ont produit les mêmes 45 tables et sorties déterministes; le protocole et les empreintes sont consignés dans [CLEAN_REBUILD_PROOF.md](CLEAN_REBUILD_PROOF.md), et la CI répète cette comparaison;
 
 ## Blocages factuels
 
@@ -26,7 +27,5 @@ Chaque acquisition doit avoir un grain, une autorité, une URL, une date, une em
 
 ## Améliorations prioritaires
 
-1. terminer l'extraction des évaluateurs du module de publication vers les modules de gates déclaratifs;
-2. effectuer deux constructions propres indépendantes et comparer les empreintes logiques;
-3. acquérir les textes juridiques qui couvrent les 354 scrutins non classés;
-4. reprendre ensuite, une source à la fois, les autres acquisitions utiles ci-dessus.
+1. acquérir les textes juridiques qui couvrent les 354 scrutins non classés;
+2. reprendre ensuite, une source à la fois, les autres acquisitions utiles ci-dessus.
