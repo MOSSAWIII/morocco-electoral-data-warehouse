@@ -347,7 +347,7 @@
       "verification_status": "VERIFIED_PORTAL_ACQUISITION_BLOCKED",
       "license_status": "UNKNOWN",
       "public_package_disposition": "METADATA_ONLY",
-      "notes": "Le portail annonce résultats, candidatures, corps électoral et découpage. Le 14 septembre 2026, l'acquisition automatisée de la page des résultats législatifs 2021 a été bloquée par le challenge JavaScript/cookies de Cloudflare; aucune donnée sous-jacente n'a donc été enregistrée comme acquise."
+      "notes": "Le portail annonce résultats, candidatures, corps électoral et découpage. Les tentatives automatisées du 14 et du 22 septembre 2026 sur les résultats et le découpage communal ont été bloquées par le challenge JavaScript/cookies de Cloudflare; aucune page de challenge, aucun extrait de moteur de recherche et aucune donnée sous-jacente n'ont été enregistrés comme source acquise."
     },
     {
       "source_id": "MA_SGG_CONSOLIDATED_LEGAL_INDEX",

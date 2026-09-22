@@ -14,7 +14,7 @@ Cette roadmap décrit des capacités et des blocages, pas des versions de produi
 
 ## Blocages factuels
 
-- régimes juridiques incomplets pour 354 scrutins ou types de listes;
+- rattachement juridique incomplet pour 354 concours : les règles et populations sont acquises, mais 177 communes répétées sur deux scrutins attendent une correspondance officielle entre identifiant hérité et code HCP;
 - grains et dénominateurs officiels absents pour plusieurs couvertures;
 
 Les historiques de révision, géométries datées, lignées partisanes, candidatures, allocations de sièges et validations scientifiques restent des propositions hors du contrat public. Leur absence ne bloque pas la publication du périmètre actuel.
@@ -27,5 +27,5 @@ Chaque acquisition doit avoir un grain, une autorité, une URL, une date, une em
 
 ## Améliorations prioritaires
 
-1. acquérir les textes juridiques qui couvrent les 354 scrutins non classés;
+1. acquérir la correspondance institutionnelle d'identifiants qui permettra de classer les 177 communes, sans promouvoir une égalité de nom; le diagnostic et les tentatives sont consignés dans [INSTITUTIONAL_ACQUISITION.md](INSTITUTIONAL_ACQUISITION.md);
 2. reprendre ensuite, une source à la fois, les autres acquisitions utiles ci-dessus.
