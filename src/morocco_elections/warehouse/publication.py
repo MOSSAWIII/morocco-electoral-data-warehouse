@@ -7,7 +7,7 @@ import os
 import tempfile
 import zipfile
 from collections import Counter
-from dataclasses import asdict, dataclass, replace
+from dataclasses import dataclass, replace
 from datetime import date
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping, Sequence
@@ -23,6 +23,8 @@ from morocco_elections.warehouse.history import (
     validate_party_history,
     validate_result_geographies,
 )
+from morocco_elections.warehouse.gates.base import GateResult
+from morocco_elections.warehouse.gates.registry import SPECS, build_registry
 from morocco_elections.warehouse.institutional import validate_candidacies_and_seats
 from morocco_elections.warehouse.immutability import (
     CANONICAL_MANIFEST_BYTES,
@@ -42,14 +44,7 @@ from morocco_elections.warehouse.validation import (
 from morocco_elections.warehouse.versions import validate_revisions
 
 
-REQUIRED_GATES = (
-    "EVIDENCE_BUNDLE_VERIFIED", "SEMANTIC_FACTS_VALIDATED", "LEGAL_REGIME_PINNED", "RESULT_STATUS_KNOWN", "AS_OF_DATE_VALID", "OFFICIAL_UNIVERSE_DECLARED",
-    "DENOMINATOR_TYPED", "GRAIN_COMPATIBLE", "BOUNDARY_COMPATIBLE", "PARTY_LINEAGE_REVIEWED",
-    "SOURCE_CONFLICTS_RESOLVED_OR_EXPOSED", "CANDIDACY_AND_SEATS_VALIDATED", "METRIC_RECONCILED",
-    "ANALYTIC_METRICS_ADMISSIBLE", "COVERAGE_DISCLOSED",
-    "UNCERTAINTY_DISCLOSED_WHEN_APPLICABLE", "PRIVACY_REVIEW_PASSED", "CLAIM_CLASS_DECLARED",
-    "REDISTRIBUTION_PERMITTED", "REPRODUCIBLE_FROM_CLEAN_ENVIRONMENT", "V15_IMMUTABILITY_VERIFIED",
-)
+REQUIRED_GATES = tuple(spec.gate_id for spec in SPECS)
 
 
 @dataclass(frozen=True)
@@ -71,30 +66,6 @@ class PublicationContext:
     package_manifest_sha256: str | None = None
     v15_root: Path | None = None
     v15_manifest_path: Path = MANIFEST_PATH
-
-
-@dataclass(frozen=True)
-class GateResult:
-    gate_id: str
-    status: str
-    justification: str
-    evidence_id: str
-    affected_records: tuple[str, ...]
-
-    def as_dict(self) -> dict[str, Any]:
-        payload = asdict(self)
-        payload["affected_records"] = list(self.affected_records)
-        return payload
-
-    def as_contract_row(self, release_id: str) -> dict[str, Any]:
-        return {
-            "release_id": release_id,
-            "gate_id": self.gate_id,
-            "gate_status": self.status,
-            "justification": self.justification,
-            "evidence_id": self.evidence_id,
-            "affected_records": json.dumps(self.affected_records, ensure_ascii=False),
-        }
 
 
 def sha256_file(path: Path) -> str:
@@ -1819,15 +1790,14 @@ GATE_EVALUATORS: Mapping[str, Callable[[PublicationContext], GateResult]] = {
     "REPRODUCIBLE_FROM_CLEAN_ENVIRONMENT": _reproducible,
     "V15_IMMUTABILITY_VERIFIED": _immutability,
 }
+GATE_REGISTRY = build_registry(GATE_EVALUATORS)
 
 
 def evaluate_publication_gates(context: PublicationContext) -> list[GateResult]:
     """Evaluate every mandatory gate from inspectable inputs in fixed order."""
     if not isinstance(context, PublicationContext):
         raise TypeError("publication gates require PublicationContext evidence; caller-supplied gate booleans are forbidden")
-    if tuple(GATE_EVALUATORS) != REQUIRED_GATES:
-        raise RuntimeError("mandatory gate registry and evaluator registry differ")
-    return [GATE_EVALUATORS[gate_id](context) for gate_id in REQUIRED_GATES]
+    return [gate.evaluate(context) for gate in GATE_REGISTRY]
 
 
 def validate_publication(context: PublicationContext) -> dict[str, Any]:

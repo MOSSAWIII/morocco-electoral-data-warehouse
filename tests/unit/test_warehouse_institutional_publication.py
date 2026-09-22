@@ -24,6 +24,7 @@ from morocco_elections.warehouse.publication import (
     validate_publication,
     write_evidence_bundle,
 )
+from morocco_elections.warehouse.gates.registry import SPECS
 from morocco_elections.warehouse.contracts import TABLE_CONTRACTS
 from morocco_elections.warehouse.schema import ddl
 from morocco_elections.warehouse.validation import validate_legal_regimes, validate_rows
@@ -1324,3 +1325,10 @@ def test_association_causal_and_fraud_claims_fail_closed(tmp_path: Path) -> None
     claims = {row.gate_id: row for row in evaluate_publication_gates(causal)}
     assert claims["CLAIM_CLASS_DECLARED"].status == "FAIL"
     assert "fraud" in claims["CLAIM_CLASS_DECLARED"].justification
+def test_gate_registry_declares_operational_dependencies() -> None:
+    assert len(SPECS) == len({spec.gate_id for spec in SPECS})
+    assert all(spec.classification in {"CORE_BLOCKING", "DOMAIN_BLOCKING", "INFORMATIONAL", "REDUNDANT", "REMOVE"} for spec in SPECS)
+    assert all(spec.scope and isinstance(spec.blocking, bool) and isinstance(spec.conditional, bool) for spec in SPECS)
+    assert any(spec.required_tables for spec in SPECS)
+    assert any(spec.required_sources for spec in SPECS)
+    assert any(spec.produced_evidence for spec in SPECS)
