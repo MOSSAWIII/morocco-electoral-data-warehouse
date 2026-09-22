@@ -101,12 +101,15 @@ def materialize_seed_database(repository_root: Path, destination: Path) -> Path:
     with tempfile.TemporaryDirectory(prefix="warehouse-seed-", dir=destination.parent) as temporary_name:
         temporary_root = Path(temporary_name)
         archive = temporary_root / "snapshot.zip"
-        request = urllib.request.Request(str(descriptor["download_url"]), headers={"User-Agent": "morocco-elections-warehouse/1"})
-        with urllib.request.urlopen(request, timeout=120) as response, archive.open("wb") as stream:
-            while chunk := response.read(1024 * 1024):
-                stream.write(chunk)
-        if archive.stat().st_size != int(descriptor["bytes"]) or _sha256(archive) != descriptor["sha256"]:
-            raise ValueError("seed snapshot archive differs from pinned evidence")
+        try:
+            _download_pinned(
+                str(descriptor["download_url"]),
+                archive,
+                int(descriptor["bytes"]),
+                str(descriptor["sha256"]),
+            )
+        except ValueError as error:
+            raise ValueError("seed snapshot archive differs from pinned evidence") from error
         member = str(descriptor["database_member"])
         if member.startswith(("/", "\\")) or ".." in Path(member).parts:
             raise ValueError("unsafe seed database member")
