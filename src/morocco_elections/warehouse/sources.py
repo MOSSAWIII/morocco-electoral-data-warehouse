@@ -57,16 +57,55 @@ def _download_pinned(url: str, temporary: Path, expected_bytes: int, expected_sh
     raise ValueError(f"acquired bytes differ from pinned evidence{detail}")
 
 
+def _declared_downloads(repository_root: Path) -> tuple[list[dict[str, Any]], int]:
+    official = json.loads(
+        (repository_root / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8")
+    )["sources"]
+    legacy_path = repository_root / "metadata/source_manifest.json"
+    legacy = json.loads(legacy_path.read_text(encoding="utf-8"))["sources"] if legacy_path.is_file() else []
+    elected_path = repository_root / "metadata/warehouse/elected_2015_source.json"
+    elected = (
+        json.loads(elected_path.read_text(encoding="utf-8"))["candidate"]
+        if elected_path.is_file() else None
+    )
+    rows = [
+        {
+            "source_id": row["source_id"], "source_url": row["source_url"],
+            "raw_path": row["raw_path"], "bytes": row["bytes"], "sha256": row["sha256"],
+        }
+        for row in official if row.get("raw_path")
+    ]
+    metadata_only = sum(not row.get("raw_path") for row in official)
+    rows.extend({
+        "source_id": row["source_id"], "source_url": row["source_url"],
+        "raw_path": row["local_path"], "bytes": row["byte_size"], "sha256": row["sha256"],
+    } for row in legacy)
+    if elected is not None:
+        rows.append({
+            "source_id": "TAFRA_COMMUNAL_ELECTED_2015",
+            "source_url": elected["download_url"],
+            "raw_path": "data/staging/v11a/source_candidates/communes-elus-2015-1-0.xlsx",
+            "bytes": elected["byte_size"],
+            "sha256": elected["sha256"],
+        })
+    unique: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        relative = str(row["raw_path"])
+        existing = unique.get(relative)
+        if existing is not None and (
+            existing["bytes"] != row["bytes"] or existing["sha256"] != row["sha256"]
+        ):
+            raise ValueError(f"conflicting pinned descriptors for {relative}")
+        unique[relative] = row
+    return list(unique.values()), metadata_only
+
+
 def materialize_declared_sources(repository_root: Path) -> dict[str, int]:
     """Download missing registered bytes and reject every size or digest mismatch."""
     repository_root = repository_root.resolve()
-    registry_path = repository_root / "metadata/warehouse/official_source_registry.json"
-    registry = json.loads(registry_path.read_text(encoding="utf-8"))
-    acquired = reused = metadata_only = 0
-    for row in registry["sources"]:
-        if not row.get("raw_path"):
-            metadata_only += 1
-            continue
+    declarations, metadata_only = _declared_downloads(repository_root)
+    acquired = reused = 0
+    for row in declarations:
         relative = Path(str(row["raw_path"]))
         if relative.is_absolute() or ".." in relative.parts:
             raise ValueError(f"unsafe source path: {relative}")
@@ -91,7 +130,7 @@ def materialize_declared_sources(repository_root: Path) -> dict[str, int]:
         finally:
             temporary.unlink(missing_ok=True)
     return {
-        "declared": len(registry["sources"]), "acquired": acquired,
+        "declared": len(declarations) + metadata_only, "acquired": acquired,
         "reused": reused, "metadata_only": metadata_only,
     }
 
