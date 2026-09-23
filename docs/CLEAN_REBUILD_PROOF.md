@@ -1,6 +1,12 @@
 # Preuve de reconstruction propre
 
-L'état de travail courant, dont la base Git est la révision `9005a45b142f4f3ceaccdd379c266f7ef215eefc`, a été reconstruit le 23 septembre 2026 vers deux répertoires de sortie absents et distincts. Les deux exécutions ont utilisé les mêmes sources locales adressées par SHA-256. Chaque objet, y compris le seed historique extrait, a été accepté seulement après vérification de sa taille et de son empreinte déclarées.
+La reconstruction de référence consignée ici, dont la base Git est la révision
+`9005a45b142f4f3ceaccdd379c266f7ef215eefc`, a été exécutée le 23 septembre
+2026 vers deux répertoires de sortie absents et distincts. Elle constitue une
+preuve historique précise, pas l'identifiant mouvant de l'état de travail
+courant. Les deux exécutions ont utilisé les mêmes sources locales adressées par
+SHA-256. Chaque objet, y compris le seed historique extrait, a été accepté
+seulement après vérification de sa taille et de son empreinte déclarées.
 
 ## Protocole
 

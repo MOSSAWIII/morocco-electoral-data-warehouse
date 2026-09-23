@@ -10,7 +10,9 @@ Cette roadmap décrit des capacités et des blocages, pas des versions de produi
 - la CLI unique construit, valide, audite, archive et résume le produit;
 - les univers territoriaux, leurs membres, la matrice de couverture, les fichiers substantiels, les revues et les résultats des gates sont matérialisés dans DuckDB;
 - les résultats, mobilisations, régimes juridiques couverts, populations et relations territoriales sont réconciliés lorsque les entrées le permettent;
-- les fichiers, sources, licences, classes d'affirmation et contrôles de confidentialité sont vérifiés;
+- les fichiers et sources sont vérifiés techniquement; les licences, classes
+  d'affirmation et contrôles de confidentialité sont structurés, mais leurs
+  revues externes restent absentes et leurs gates échouent explicitement;
 - une CI unique reconstruit et soumet le paquet aux mutations critiques.
 - deux constructions propres indépendantes ont produit les mêmes 45 tables et sorties déterministes; le protocole et les empreintes sont consignés dans [CLEAN_REBUILD_PROOF.md](CLEAN_REBUILD_PROOF.md), et la CI répète cette comparaison;
 
