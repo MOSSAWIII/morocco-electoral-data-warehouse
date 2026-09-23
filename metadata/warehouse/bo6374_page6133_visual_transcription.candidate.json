@@ -1,0 +1,61 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 62,
+  "printed_page": 6133,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée, assistée par la sonde OCR arabe à source épinglée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "تارودانت",
+      "rows": [
+        {"row": 1, "commune_name_ar": "تيسراس", "council_members": 13},
+        {"row": 2, "commune_name_ar": "أوزيوة", "council_members": 13},
+        {"row": 3, "commune_name_ar": "توبقال", "council_members": 13},
+        {"row": 4, "commune_name_ar": "أهل تفنوت", "council_members": 11},
+        {"row": 5, "commune_name_ar": "إيكيدي", "council_members": 13},
+        {"row": 6, "commune_name_ar": "تاويالت", "council_members": 11},
+        {"row": 7, "commune_name_ar": "أسكاون", "council_members": 11},
+        {"row": 8, "commune_name_ar": "تسوسفي", "council_members": 11},
+        {"row": 9, "commune_name_ar": "سيدي احساين", "council_members": 11},
+        {"row": 10, "commune_name_ar": "أسايس", "council_members": 11},
+        {"row": 11, "commune_name_ar": "أكادير ملول", "council_members": 13},
+        {"row": 12, "commune_name_ar": "أساكي", "council_members": 13},
+        {"row": 13, "commune_name_ar": "زكموزن", "council_members": 13},
+        {"row": 14, "commune_name_ar": "تيزكزاوين", "council_members": 11},
+        {"row": 15, "commune_name_ar": "أزرار", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "تيزنيت",
+      "rows": [
+        {"row": 16, "commune_name_ar": "تيزنيت", "council_members": 31},
+        {"row": 17, "commune_name_ar": "تافراوت", "council_members": 11},
+        {"row": 18, "commune_name_ar": "أملن", "council_members": 11},
+        {"row": 19, "commune_name_ar": "تارسوات", "council_members": 11},
+        {"row": 20, "commune_name_ar": "تاسريرت", "council_members": 11},
+        {"row": 21, "commune_name_ar": "أفلا إغير", "council_members": 11},
+        {"row": 22, "commune_name_ar": "إيريغ نتاهلة", "council_members": 11},
+        {"row": 23, "commune_name_ar": "أيت وافقا", "council_members": 11},
+        {"row": 24, "commune_name_ar": "اثنين أداي", "council_members": 11},
+        {"row": 25, "commune_name_ar": "تفراوت المولود", "council_members": 11},
+        {"row": 26, "commune_name_ar": "أنزي", "council_members": 13},
+        {"row": 27, "commune_name_ar": "تيغمي", "council_members": 11},
+        {"row": 28, "commune_name_ar": "أيت إسفن", "council_members": 11},
+        {"row": 29, "commune_name_ar": "أربعاء أيت أحمد", "council_members": 11},
+        {"row": 30, "commune_name_ar": "تيزغران", "council_members": 11},
+        {"row": 31, "commune_name_ar": "إدا وكوكمار", "council_members": 11},
+        {"row": 32, "commune_name_ar": "سيدي أحمد أوموسى", "council_members": 11},
+        {"row": 33, "commune_name_ar": "أربعاء رسموكة", "council_members": 11},
+        {"row": 34, "commune_name_ar": "المعدر الكبير", "council_members": 11},
+        {"row": 35, "commune_name_ar": "الركادة", "council_members": 15},
+        {"row": 36, "commune_name_ar": "وجان", "council_members": 11},
+        {"row": 37, "commune_name_ar": "سيدي بو عبد اللي", "council_members": 11},
+        {"row": 38, "commune_name_ar": "بونعمان", "council_members": 13},
+        {"row": 39, "commune_name_ar": "اثنين أكلو", "council_members": 13},
+        {"row": 40, "commune_name_ar": "أربعاء الساحل", "council_members": 13}
+      ]
+    }
+  ]
+}
