@@ -216,3 +216,22 @@ def test_page6120_visual_transcription_is_source_pinned_and_candidate_only() -> 
         "council_members": 11,
     }
     assert validate_visual_candidate({**payload, "official_universe_allowed": True}, source)
+
+
+def test_page6121_visual_transcription_is_source_pinned_and_candidate_only() -> None:
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
+    source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
+    payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6121_visual_transcription.candidate.json").read_text(encoding="utf-8"))
+    assert validate_visual_candidate(payload, source) == []
+    assert [len(group["rows"]) for group in payload["groups"]] == [46]
+    assert payload["groups"][0]["rows"][0] == {
+        "row": 1,
+        "commune_name_ar": "سطات",
+        "council_members": 35,
+    }
+    assert payload["groups"][0]["rows"][-1] == {
+        "row": 46,
+        "commune_name_ar": "كدانة",
+        "council_members": 13,
+    }
+    assert validate_visual_candidate({**payload, "status": "OFFICIAL_COMPLETE"}, source)
