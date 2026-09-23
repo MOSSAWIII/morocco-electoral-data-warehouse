@@ -100,6 +100,28 @@ def test_status_has_stable_exit_codes(tmp_path: Path, capsys: pytest.CaptureFixt
     assert report["publication_status"] == "NOT_PUBLICATION_READY"
 
 
+def test_audit_forwards_historical_seed_diagnostic_separately(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    received: list[str] = []
+
+    def fake_audit(argv: list[str]) -> int:
+        received.extend(argv)
+        return 0
+
+    monkeypatch.setattr("morocco_elections.cli.audit_main", fake_audit)
+
+    assert main([
+        "audit", "--package", str(tmp_path), "--summary",
+        "--historical-seed-diagnostic",
+    ]) == 0
+    assert received == [
+        "--database", str(tmp_path / "morocco_elections.duckdb"),
+        "--summary", "--historical-seed-diagnostic",
+    ]
+
+
 @pytest.mark.parametrize(
     ("archive_name", "extra_args"),
     [

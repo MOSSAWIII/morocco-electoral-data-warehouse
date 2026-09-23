@@ -36,6 +36,10 @@ def build_parser() -> argparse.ArgumentParser:
     audit.add_argument("--package", type=Path, default=DEFAULT_PACKAGE)
     audit.add_argument("--summary", action="store_true")
     audit.add_argument("--require-ready", action="store_true")
+    audit.add_argument(
+        "--historical-seed-diagnostic", action="store_true",
+        help="ajouter le diagnostic du seed historique, séparé de l'état courant",
+    )
     package = commands.add_parser("package", help="créer une archive du paquet validé")
     package.add_argument("--package", type=Path, default=DEFAULT_PACKAGE)
     package.add_argument(
@@ -81,6 +85,8 @@ def _audit(args: argparse.Namespace) -> int:
         argv.append("--summary")
     if args.require_ready:
         argv.append("--require-ready")
+    if args.historical_seed_diagnostic:
+        argv.append("--historical-seed-diagnostic")
     return audit_main(argv)
 
 

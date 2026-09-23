@@ -35,6 +35,10 @@ morocco-elections status
 
 `build` produit par défaut `data/exports/open/warehouse/`, dont `morocco_elections.duckdb`, `package-manifest.json`, `table-catalog.json` et `evidence-bundle.json`. Le bundle est un index de preuve : il contient chemins, tailles, SHA-256, empreintes logiques, références de sources et décisions externes disponibles, jamais une seconde copie des faits. Chaque commande expose séparément `integrity_status` et `publication_status`.
 
+`audit --summary` décrit uniquement l'état canonique courant. Ajouter
+`--historical-seed-diagnostic` inclut, sous une clé distincte, le diagnostic du
+seed historique lorsque cette comparaison est nécessaire.
+
 Les cinq commandes acceptent `--help`. Les destinations de build et d'archive sont configurables; aucun chemin utilisateur absolu n'est codé dans le produit.
 
 La seule procédure de publication officielle ajoute les deux gardes de release :
