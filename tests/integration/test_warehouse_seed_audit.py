@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -198,6 +200,45 @@ def test_readiness_audit_reports_external_territorial_coverage_without_claiming_
     assert sum(row["calculable_checks"] for row in computability) == 0
     assert sum(row["not_computable_checks"] for row in computability) == 14860
     assert report["result_history_gap_count"] == 8
+
+
+def test_audit_rejects_a_package_with_manifested_file_drift(tmp_path: Path) -> None:
+    package = ROOT / "data/exports/open/warehouse"
+    database = package / "morocco_elections.duckdb"
+    if not database.is_file():
+        pytest.skip("local canonical package required")
+    tampered = tmp_path / "warehouse"
+    for source in package.rglob("*"):
+        destination = tampered / source.relative_to(package)
+        if source.is_dir():
+            destination.mkdir(parents=True, exist_ok=True)
+        elif source.name == database.name:
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            os.link(source, destination)
+        else:
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination)
+    contract = tampered / "data-contract.json"
+    contract.write_bytes(contract.read_bytes() + b"\n")
+
+    process = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "morocco_elections",
+            "audit",
+            "--package",
+            str(tampered),
+            "--summary",
+        ],
+        cwd=ROOT, capture_output=True, text=True, check=False,
+    )
+
+    assert process.returncode == 1
+    report = json.loads(process.stdout)
+    assert report["integrity_status"] == "FAIL"
+    assert report["publication_status"] == "NOT_PUBLICATION_READY"
+    assert report["package_integrity_failure_count"] >= 1
 
 
 def test_historical_seed_audit_exposes_semantic_and_reconciliation_limits() -> None:

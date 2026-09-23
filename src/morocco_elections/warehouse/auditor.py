@@ -14,6 +14,7 @@ from morocco_elections.warehouse.councils import derive_comm2015_council_candida
 from morocco_elections.warehouse.demography import load_hcp_rgph2014_arrondissement_identifiers, load_hcp_rgph2014_individuals, load_hcp_rgph2014_territorial_universe  # noqa: E402
 from morocco_elections.warehouse.evidence import derive_contest_legal_regime_links, normalize_list_type, validate_official_source_registry  # noqa: E402
 from morocco_elections.warehouse.geo_parents import geo_parent_report, validate_geo_parent_relations  # noqa: E402
+from morocco_elections.warehouse.package import validate_package  # noqa: E402
 from morocco_elections.warehouse.publication import PublicationContext, sha256_file, validate_publication  # noqa: E402
 from morocco_elections.warehouse.reconciliation import derive_reconciliation_matrix  # noqa: E402
 from morocco_elections.warehouse.result_history import build_result_history_diagnostic  # noqa: E402
@@ -35,6 +36,26 @@ def _table_rows(connection: duckdb.DuckDBPyConnection, table: str) -> list[dict]
     return [dict(zip(columns, values, strict=True)) for values in cursor.fetchall()]
 
 
+def _status_pair(
+    *,
+    semantic_failure: bool,
+    package_integrity_status: str | None,
+    gate_publication_status: str,
+) -> tuple[str, str]:
+    """Keep technical integrity authoritative over release eligibility."""
+    integrity_status = (
+        "FAIL"
+        if semantic_failure or package_integrity_status not in {None, "PASS"}
+        else "PASS"
+    )
+    publication_status = (
+        gate_publication_status
+        if integrity_status == "PASS"
+        else "NOT_PUBLICATION_READY"
+    )
+    return integrity_status, publication_status
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Read-only historical-seed-to-canonical readiness audit")
     parser.add_argument("--database", type=Path, default=ROOT / "data/exports/open/warehouse/morocco_elections.duckdb")
@@ -50,6 +71,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"warehouse database not found: {args.database}")
     if args.historical_seed_diagnostic and not args.seed_database.is_file():
         parser.error(f"historical seed database not found: {args.seed_database}")
+    package_validation = (
+        validate_package(args.database.parent)
+        if (args.database.parent / "package-manifest.json").is_file()
+        else None
+    )
     seed_audit = audit_historical_seed(args.seed_database) if args.historical_seed_diagnostic else None
     matrix_payload = json.loads((ROOT / "metadata/warehouse/release_coverage_matrix.template.json").read_text(encoding="utf-8"))
     legal_payload = json.loads((ROOT / "metadata/warehouse/legal_regimes.seed.json").read_text(encoding="utf-8"))
@@ -256,10 +282,18 @@ def main(argv: list[str] | None = None) -> int:
         semantic_facts, contests, elections, geographies, geo_parent_relations,
     )
     semantic_failure = bool(relation_issues or semantic_issues or parent_report["remaining"])
-    integrity_status = "FAIL" if semantic_failure else "PASS"
+    integrity_status, publication_status = _status_pair(
+        semantic_failure=semantic_failure,
+        package_integrity_status=(
+            package_validation["integrity_status"]
+            if package_validation is not None
+            else None
+        ),
+        gate_publication_status=publication["publication_status"],
+    )
     report = {
         "integrity_status": integrity_status,
-        "publication_status": publication["publication_status"],
+        "publication_status": publication_status,
         "geo_parent_report": parent_report,
         "reconciliation_report": reconciliation_report,
         "external_territorial_coverage": territorial_report,
@@ -267,6 +301,8 @@ def main(argv: list[str] | None = None) -> int:
         "result_history_report": result_history,
         "publication_evaluation": publication,
     }
+    if package_validation is not None:
+        report["package_validation"] = package_validation
     if seed_audit is not None:
         report["historical_seed_diagnostic"] = seed_audit
     if args.summary:
@@ -292,7 +328,10 @@ def main(argv: list[str] | None = None) -> int:
         ]
         report = {
             "integrity_status": integrity_status,
-            "publication_status": publication["publication_status"],
+            "publication_status": publication_status,
+            "package_integrity_failure_count": len(
+                package_validation.get("failures", []) if package_validation is not None else []
+            ),
             "blocking_gate_count": len(blocking_gates),
             "blocking_record_count": sum(row["affected_record_count"] for row in blocking_gates),
             "blocking_gates": blocking_gates,
@@ -318,8 +357,8 @@ def main(argv: list[str] | None = None) -> int:
         if seed_audit is not None:
             report["historical_seed_diagnostic"] = seed_audit
     print(json.dumps(report, ensure_ascii=False, indent=2))
-    readiness_failure = args.require_ready and publication["publication_status"] != "PUBLICATION_READY"
-    if semantic_failure:
+    readiness_failure = args.require_ready and publication_status != "PUBLICATION_READY"
+    if integrity_status != "PASS":
         return 1
     return 2 if readiness_failure else 0
 
