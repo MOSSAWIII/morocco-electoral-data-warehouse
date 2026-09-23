@@ -1,0 +1,67 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 57,
+  "printed_page": 6128,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée, assistée par la sonde OCR arabe à source épinglée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "الرشيدية",
+      "rows": [
+        {"row": 1, "commune_name_ar": "الرشيدية", "council_members": 31},
+        {"row": 2, "commune_name_ar": "أرفود", "council_members": 25},
+        {"row": 3, "commune_name_ar": "كلميمة", "council_members": 23},
+        {"row": 4, "commune_name_ar": "الجرف", "council_members": 13},
+        {"row": 5, "commune_name_ar": "مولاي علي الشريف", "council_members": 23},
+        {"row": 6, "commune_name_ar": "بوذنيب", "council_members": 13},
+        {"row": 7, "commune_name_ar": "تنجداد", "council_members": 13},
+        {"row": 8, "commune_name_ar": "السيفا", "council_members": 11},
+        {"row": 9, "commune_name_ar": "عرب صباح زيز", "council_members": 23},
+        {"row": 10, "commune_name_ar": "عرب صباح اغريس", "council_members": 11},
+        {"row": 11, "commune_name_ar": "فزنا", "council_members": 11},
+        {"row": 12, "commune_name_ar": "بني امحمد سجلماسة", "council_members": 15},
+        {"row": 13, "commune_name_ar": "الريصاني", "council_members": 11},
+        {"row": 14, "commune_name_ar": "السفلات", "council_members": 13},
+        {"row": 15, "commune_name_ar": "الطاوس", "council_members": 11},
+        {"row": 16, "commune_name_ar": "سيدي علي", "council_members": 11},
+        {"row": 17, "commune_name_ar": "أوفوس", "council_members": 13},
+        {"row": 18, "commune_name_ar": "الرتب", "council_members": 15},
+        {"row": 19, "commune_name_ar": "وادي النعام", "council_members": 11},
+        {"row": 20, "commune_name_ar": "شرفاء مدغرة", "council_members": 15},
+        {"row": 21, "commune_name_ar": "الخنك", "council_members": 15},
+        {"row": 22, "commune_name_ar": "اغبالو انكردوس", "council_members": 13},
+        {"row": 23, "commune_name_ar": "اغريس السفلي", "council_members": 11},
+        {"row": 24, "commune_name_ar": "اغريس العلوي", "council_members": 13},
+        {"row": 25, "commune_name_ar": "تاديغوست", "council_members": 11},
+        {"row": 26, "commune_name_ar": "ملعب", "council_members": 23},
+        {"row": 27, "commune_name_ar": "فركلة السفلى", "council_members": 13},
+        {"row": 28, "commune_name_ar": "فركلة العليا", "council_members": 23},
+        {"row": 29, "commune_name_ar": "املاكو", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "ورزازات",
+      "rows": [
+        {"row": 30, "commune_name_ar": "ورزازات", "council_members": 31},
+        {"row": 31, "commune_name_ar": "تازناخت", "council_members": 11},
+        {"row": 32, "commune_name_ar": "امرزكان", "council_members": 13},
+        {"row": 33, "commune_name_ar": "أيت زينب", "council_members": 13},
+        {"row": 34, "commune_name_ar": "تلوات", "council_members": 15},
+        {"row": 35, "commune_name_ar": "اغرم نوكدال", "council_members": 15},
+        {"row": 36, "commune_name_ar": "تيدلي", "council_members": 23},
+        {"row": 37, "commune_name_ar": "ازناكن", "council_members": 13},
+        {"row": 38, "commune_name_ar": "وسلسات", "council_members": 15},
+        {"row": 39, "commune_name_ar": "خزامة", "council_members": 11},
+        {"row": 40, "commune_name_ar": "سروا", "council_members": 13},
+        {"row": 41, "commune_name_ar": "ترميكت", "council_members": 25},
+        {"row": 42, "commune_name_ar": "ادلسان", "council_members": 13},
+        {"row": 43, "commune_name_ar": "سكورة أهل الوسط", "council_members": 23},
+        {"row": 44, "commune_name_ar": "توندوت", "council_members": 13},
+        {"row": 45, "commune_name_ar": "امي نولاون", "council_members": 23},
+        {"row": 46, "commune_name_ar": "غسات", "council_members": 13}
+      ]
+    }
+  ]
+}
