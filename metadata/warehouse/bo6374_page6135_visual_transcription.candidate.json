@@ -1,0 +1,87 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 64,
+  "printed_page": 6135,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée, assistée par la sonde OCR arabe à source épinglée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "طانطان",
+      "rows": [
+        {"row": 1, "commune_name_ar": "طانطان", "council_members": 31},
+        {"row": 2, "commune_name_ar": "الوطية", "council_members": 13},
+        {"row": 3, "commune_name_ar": "ابن خليل", "council_members": 11},
+        {"row": 4, "commune_name_ar": "اشبيكة", "council_members": 11},
+        {"row": 5, "commune_name_ar": "ابطيح", "council_members": 11},
+        {"row": 6, "commune_name_ar": "امسيد", "council_members": 11},
+        {"row": 7, "commune_name_ar": "تيلمزون", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "سيدي إفني",
+      "rows": [
+        {"row": 8, "commune_name_ar": "سيدي إفني", "council_members": 23},
+        {"row": 9, "commune_name_ar": "الأخصاص", "council_members": 11},
+        {"row": 10, "commune_name_ar": "مستي", "council_members": 11},
+        {"row": 11, "commune_name_ar": "اسبويا", "council_members": 11},
+        {"row": 12, "commune_name_ar": "إمي نفاست", "council_members": 11},
+        {"row": 13, "commune_name_ar": "اثنين أملو", "council_members": 11},
+        {"row": 14, "commune_name_ar": "تنكرفا", "council_members": 11},
+        {"row": 15, "commune_name_ar": "أربعاء أيت عبد الله", "council_members": 11},
+        {"row": 16, "commune_name_ar": "تيوغزة", "council_members": 13},
+        {"row": 17, "commune_name_ar": "مير اللفت", "council_members": 13},
+        {"row": 18, "commune_name_ar": "سيدي مبارك", "council_members": 11},
+        {"row": 19, "commune_name_ar": "سيدي حساين أو علي", "council_members": 11},
+        {"row": 20, "commune_name_ar": "أيت الرخا", "council_members": 11},
+        {"row": 21, "commune_name_ar": "سيدي عبد الله أو بلعيد", "council_members": 11},
+        {"row": 22, "commune_name_ar": "تيغيرت", "council_members": 11},
+        {"row": 23, "commune_name_ar": "سبت النابور", "council_members": 11},
+        {"row": 24, "commune_name_ar": "بوطروش", "council_members": 11},
+        {"row": 25, "commune_name_ar": "إيبضر", "council_members": 11},
+        {"row": 26, "commune_name_ar": "أنفك", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "العيون",
+      "rows": [
+        {"row": 27, "commune_name_ar": "العيون", "council_members": 43},
+        {"row": 28, "commune_name_ar": "المرسى", "council_members": 23},
+        {"row": 29, "commune_name_ar": "بوكراع", "council_members": 11},
+        {"row": 30, "commune_name_ar": "الدشيرة", "council_members": 11},
+        {"row": 31, "commune_name_ar": "فم الواد", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "بوجدور",
+      "rows": [
+        {"row": 32, "commune_name_ar": "بوجدور", "council_members": 25},
+        {"row": 33, "commune_name_ar": "لمسيد", "council_members": 11},
+        {"row": 34, "commune_name_ar": "كلتة زمور", "council_members": 11},
+        {"row": 35, "commune_name_ar": "الجريفية", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "طرفاية",
+      "rows": [
+        {"row": 36, "commune_name_ar": "طرفاية", "council_members": 13},
+        {"row": 37, "commune_name_ar": "الدورة", "council_members": 11},
+        {"row": 38, "commune_name_ar": "الحكونية", "council_members": 11},
+        {"row": 39, "commune_name_ar": "أخفنير", "council_members": 11},
+        {"row": 40, "commune_name_ar": "الطاح", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "السمارة",
+      "rows": [
+        {"row": 41, "commune_name_ar": "السمارة", "council_members": 31},
+        {"row": 42, "commune_name_ar": "الجديرية", "council_members": 11},
+        {"row": 43, "commune_name_ar": "سيدي أحمد لعروسي", "council_members": 11},
+        {"row": 44, "commune_name_ar": "أمكالة", "council_members": 11},
+        {"row": 45, "commune_name_ar": "حوزة", "council_members": 11},
+        {"row": 46, "commune_name_ar": "تيفاريتي", "council_members": 11}
+      ]
+    }
+  ]
+}
