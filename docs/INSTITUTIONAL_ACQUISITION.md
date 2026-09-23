@@ -88,6 +88,25 @@ du gate exige toujours une proclamation ou un export institutionnel stable qui
 déclare explicitement l'univers électoral et puisse être archivé, haché et
 rejoué.
 
+## Identifiants secondaires conservés
+
+Les deux classeurs TAFRA épinglés de résultats communaux contiennent un champ
+`idCommune` distinct de l'identifiant interne du warehouse. Le build conserve
+désormais cette clé dans `dim_electoral_contest.source_contest_id` uniquement
+lorsque le couple préfecture/province et commune est unique et identique après
+normalisation. Il retrouve ainsi 1 530 concours sur 1 538 pour chacun des
+scrutins de 2015 et 2021; les huit autres restent explicitement sans identifiant
+source plutôt que de recevoir l'identifiant interne par défaut.
+
+Pour les 177 identités communales encore non résolues, les deux classeurs
+fournissent tous un identifiant secondaire unique et stable entre 2015 et 2021.
+Par exemple, `MA-01-051-1101` (Ait Kamra) porte `idCommune = 968` dans les deux
+sources. Ce constat fournit une clé d'acquisition concrète et préserve mieux la
+provenance, mais ne change ni la confiance `0.9`, ni la méthode
+`DOCUMENTED_CROSSWALK`, ni le statut du gate : TAFRA reste une copie secondaire
+attribuée à `elections.ma`, et aucune source institutionnelle acquise ne relie
+encore `968` au code HCP `01.051.05.01.`.
+
 Une troisième piste institutionnelle a été vérifiée auprès de la Cour des
 comptes : la
 [synthèse relative au scrutin législatif du 7 octobre 2016](https://www.courdescomptes.ma/wp-content/uploads/2018/11/Synthese-des-rapports-relatifs-aux-depenses-electorales-concernant-le-scrutin-du-7-octobre-2016-pour-lelection-des-membres-de-la-chambre-des-representants.pdf).

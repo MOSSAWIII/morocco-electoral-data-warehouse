@@ -342,6 +342,14 @@ def test_development_build_materializes_verified_legal_evidence(tmp_path: Path) 
     assert report["seeded_geo_parent_relations"] == 204
     assert report["seeded_result_reconciliations"] == 14860
     assert report["unmapped_contests"] == 354
+    assert report["communal_source_identifiers"] == {
+        "by_election": {
+            "COMM2015": {"contests": 1538, "matched": 1530, "unmatched": 8},
+            "COMM2021": {"contests": 1538, "matched": 1530, "unmatched": 8},
+        },
+        "uncertain_crosswalks": 177,
+        "stable_secondary_identifiers": 177,
+    }
     history = report["result_history_report"]
     assert history["as_of_date"] == "2026-09-21"
     assert len(history["inventory"]) == 9
@@ -387,6 +395,21 @@ def test_development_build_materializes_verified_legal_evidence(tmp_path: Path) 
         } == views
         assert connection.execute(
             "SELECT count(*) FROM analytics_geographies WHERE hcp_link_status='UNRESOLVED'"
+        ).fetchone()[0] == 177
+        assert connection.execute(
+            "SELECT election_id, source_contest_id, source_label, identity_review_status "
+            "FROM dim_electoral_contest WHERE geo_id='MA-01-051-1101' ORDER BY election_id"
+        ).fetchall() == [
+            ("COMM2015", "968", "Ait Kamra", "SECONDARY_SOURCE_IDENTIFIER_NAME_MATCHED"),
+            ("COMM2021", "968", "Ait Kamra", "SECONDARY_SOURCE_IDENTIFIER_NAME_MATCHED"),
+        ]
+        assert connection.execute(
+            "SELECT count(*) FROM ("
+            "SELECT x.geo_id FROM bridge_geo_official_identifier x "
+            "JOIN dim_electoral_contest c USING(geo_id) "
+            "WHERE x.confidence < 1 AND c.election_id IN ('COMM2015', 'COMM2021') "
+            "GROUP BY x.geo_id HAVING count(*)=2 AND count(DISTINCT c.source_contest_id)=1"
+            ")"
         ).fetchone()[0] == 177
         assert connection.execute(
             "SELECT count(*) = count(DISTINCT geo_id) FROM analytics_geographies"

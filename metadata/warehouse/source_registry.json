@@ -1725,7 +1725,7 @@
       "aliases": [],
       "authority": "TAFRA / elections.ma",
       "bytes": 172732,
-      "descriptor_sha256": "f25ecebdfffef79f5309bee2c2d4c5a3408d5916f17c7336ced2a32b46468f25",
+      "descriptor_sha256": "f2c7de54ae6fcb2889d7596857831ea709ae71b1df6b348c93ba07f7f329f610",
       "format": "XLSX",
       "grain": "commune/arrondissement × élection",
       "license_status": "CC BY 4.0",
@@ -1740,6 +1740,7 @@
       "title": "Elections communales Maroc 2015 — fichier brut 1.0",
       "usages": [
         "acquired_source",
+        "contest_source_identifier",
         "historical_seed"
       ],
       "verification_status": "PINNED_BYTES"
@@ -1750,7 +1751,7 @@
       "aliases": [],
       "authority": "TAFRA / elections.ma",
       "bytes": 258267,
-      "descriptor_sha256": "02a6a16b086a6d0aaa87597fb5519faba5ad3af8cd03643576b21bae1d55877d",
+      "descriptor_sha256": "29105b77e4030df3096cb426b45d7fb382323136cdebbd3bd37a9f88e8987134",
       "format": "XLSX",
       "grain": "commune/arrondissement × élection",
       "license_status": "CC BY 4.0",
@@ -1765,6 +1766,7 @@
       "title": "Elections communales Maroc 2021 — fichier brut 1.0",
       "usages": [
         "acquired_source",
+        "contest_source_identifier",
         "historical_seed"
       ],
       "verification_status": "PINNED_BYTES"

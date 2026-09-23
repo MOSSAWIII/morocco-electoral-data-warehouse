@@ -1,14 +1,17 @@
 from __future__ import annotations
 
-import os
+import hashlib
 import json
+import os
 import tempfile
 from pathlib import Path
 from typing import Any
 
 import duckdb
+import openpyxl
 
 from morocco_elections.warehouse import DEFAULT_SNAPSHOT_ID, SCHEMA_REVISION
+from morocco_elections.warehouse.bo6374_reconciliation import normalize_latin
 from morocco_elections.warehouse.contracts import TABLE_CONTRACTS
 from morocco_elections.warehouse.demography import load_hcp_rgph2014_individuals
 from morocco_elections.warehouse.evidence import (
@@ -128,6 +131,105 @@ def _normalize_historical_release_text(connection: duckdb.DuckDBPyConnection) ->
     return changed
 
 
+_COMMUNAL_RESULT_SOURCES = {
+    "COMM2015": "SRC_TAFRA_COMM2015",
+    "COMM2021": "SRC_TAFRA_COMM2021",
+}
+
+
+def _communal_source_index(repository_root: Path, descriptor: dict[str, Any]) -> dict[tuple[str, str], tuple[str, str]]:
+    """Read pinned TAFRA commune IDs without treating them as official identities."""
+    relative = Path(str(descriptor["raw_path"]))
+    path = (repository_root / relative).resolve()
+    root = repository_root.resolve()
+    if relative.is_absolute() or ".." in relative.parts or root not in path.parents:
+        raise ValueError(f"unsafe communal-result source path: {relative}")
+    observed_sha = None
+    if path.is_file():
+        with path.open("rb") as stream:
+            observed_sha = hashlib.file_digest(stream, "sha256").hexdigest()
+    if not path.is_file() or path.stat().st_size != int(descriptor["bytes"]) or observed_sha != descriptor["sha256"]:
+        raise ValueError(f"communal-result source bytes differ: {descriptor['source_id']}")
+    workbook = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    try:
+        records = workbook.worksheets[0].iter_rows(values_only=True)
+        headers = list(next(records))
+        required = {"idCommune", "prefProv", "commune"}
+        if not required <= set(headers):
+            raise ValueError(f"communal-result source lacks required columns: {descriptor['source_id']}")
+        index: dict[tuple[str, str], tuple[str, str]] = {}
+        source_ids: set[str] = set()
+        for values in records:
+            row = dict(zip(headers, values, strict=False))
+            if row["idCommune"] is None:
+                raise ValueError(f"communal-result source has a missing idCommune: {descriptor['source_id']}")
+            source_id = str(int(row["idCommune"]))
+            source_label = str(row["commune"])
+            key = (normalize_latin(row["prefProv"]), normalize_latin(source_label))
+            if key in index and index[key] != (source_id, source_label):
+                raise ValueError(f"communal-result source has an ambiguous place label: {descriptor['source_id']}")
+            index[key] = (source_id, source_label)
+            source_ids.add(source_id)
+    finally:
+        workbook.close()
+    if len(index) != 1538 or len(source_ids) != 1538:
+        raise ValueError(f"communal-result source does not contain 1,538 unique communes: {descriptor['source_id']}")
+    return index
+
+
+def _materialize_communal_source_identifiers(
+    connection: duckdb.DuckDBPyConnection,
+    repository_root: Path,
+    source_registry: dict[str, Any],
+) -> dict[str, Any]:
+    """Preserve secondary source IDs while keeping name-only identity links explicit."""
+    descriptors = {row["source_id"]: row for row in source_registry["sources"]}
+    indexes = {
+        election_id: _communal_source_index(repository_root, descriptors[source_id])
+        for election_id, source_id in _COMMUNAL_RESULT_SOURCES.items()
+    }
+    counts: dict[str, dict[str, int]] = {}
+    for election_id, index in indexes.items():
+        rows = connection.execute(
+            "SELECT c.contest_id, g.geo_name, p.geo_name "
+            "FROM dim_electoral_contest c JOIN dim_geo g USING(geo_id) "
+            "LEFT JOIN dim_geo p ON p.geo_id=g.parent_geo_id WHERE c.election_id=? "
+            "ORDER BY c.contest_id",
+            [election_id],
+        ).fetchall()
+        matched = 0
+        for contest_id, commune_name, province_name in rows:
+            source = index.get((normalize_latin(province_name), normalize_latin(commune_name)))
+            if source is None:
+                connection.execute(
+                    "UPDATE dim_electoral_contest SET source_contest_id=NULL, source_label=NULL, "
+                    "normalized_label=NULL, identity_review_status='SECONDARY_SOURCE_IDENTIFIER_UNRESOLVED' "
+                    "WHERE contest_id=?",
+                    [contest_id],
+                )
+                continue
+            source_id, source_label = source
+            connection.execute(
+                "UPDATE dim_electoral_contest SET source_contest_id=?, source_label=?, normalized_label=?, "
+                "identity_review_status='SECONDARY_SOURCE_IDENTIFIER_NAME_MATCHED' WHERE contest_id=?",
+                [source_id, source_label, normalize_latin(source_label), contest_id],
+            )
+            matched += 1
+        counts[election_id] = {"contests": len(rows), "matched": matched, "unmatched": len(rows) - matched}
+    uncertain = connection.execute(
+        "SELECT x.geo_id, count(DISTINCT c.source_contest_id), count(*) "
+        "FROM bridge_geo_official_identifier x JOIN dim_electoral_contest c USING(geo_id) "
+        "WHERE x.confidence < 1 AND c.election_id IN ('COMM2015', 'COMM2021') "
+        "GROUP BY x.geo_id"
+    ).fetchall()
+    stable_uncertain = sum(distinct_ids == 1 and row_count == 2 for _, distinct_ids, row_count in uncertain)
+    return {
+        "by_election": counts,
+        "uncertain_crosswalks": len(uncertain),
+        "stable_secondary_identifiers": stable_uncertain,
+    }
+
+
 def _rename_parliamentary_source_keys(connection: duckdb.DuckDBPyConnection) -> None:
     """Reserve source_id for canonical provenance, not parliamentary file identity."""
     for table in ("dim_parliamentary_source", "bridge_question_source"):
@@ -223,6 +325,7 @@ def build_development_database(
     reconciliation_rows: list[dict[str, Any]] = []
     reconciliation_report: dict[str, Any] = {}
     result_history_report: dict[str, Any] = {}
+    communal_source_identifiers: dict[str, Any] = {}
     if legal_seed_path is not None or source_registry_path is not None:
         if legal_seed_path is None or source_registry_path is None or evidence_root is None:
             raise ValueError("legal_seed_path, source_registry_path and evidence_root must be supplied together")
@@ -351,6 +454,10 @@ def build_development_database(
                         )
                         _insert_rows(connection, "bridge_geo_official_identifier", crosswalks)
                         _insert_rows(connection, "bridge_contest_legal_regime", contest_links)
+            if evidence_root is not None and source_registry is not None and crosswalks:
+                communal_source_identifiers = _materialize_communal_source_identifiers(
+                    connection, evidence_root, source_registry,
+                )
             if evidence_root is not None:
                 result_history_report = build_result_history_diagnostic(
                     connection, evidence_root, as_of_date,
@@ -380,6 +487,7 @@ def build_development_database(
         "seeded_result_reconciliations": len(reconciliation_rows),
         "reconciliation_report": reconciliation_report,
         "result_history_report": result_history_report,
+        "communal_source_identifiers": communal_source_identifiers,
         "as_of_date": as_of_date,
         "unmapped_contests": contest_count - len(contest_links),
         "publication_status": "NOT_PUBLICATION_READY",
