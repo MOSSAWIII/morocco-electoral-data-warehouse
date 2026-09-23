@@ -1,0 +1,34 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 65,
+  "printed_page": 6136,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée, assistée par la sonde OCR arabe à source épinglée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "وادي الذهب",
+      "rows": [
+        {"row": 1, "commune_name_ar": "الداخلة", "council_members": 35},
+        {"row": 2, "commune_name_ar": "العركوب", "council_members": 11},
+        {"row": 3, "commune_name_ar": "امليلي", "council_members": 11},
+        {"row": 4, "commune_name_ar": "بئر انزران", "council_members": 11},
+        {"row": 5, "commune_name_ar": "اكليبات الفولة", "council_members": 11},
+        {"row": 6, "commune_name_ar": "أم دريكة", "council_members": 11},
+        {"row": 7, "commune_name_ar": "مجيك", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "أوسرد",
+      "rows": [
+        {"row": 8, "commune_name_ar": "الكويرة", "council_members": 11},
+        {"row": 9, "commune_name_ar": "بئر كندوز", "council_members": 11},
+        {"row": 10, "commune_name_ar": "أوسرد", "council_members": 11},
+        {"row": 11, "commune_name_ar": "اغونيت", "council_members": 11},
+        {"row": 12, "commune_name_ar": "الزوك", "council_members": 11},
+        {"row": 13, "commune_name_ar": "تشلا", "council_members": 11}
+      ]
+    }
+  ]
+}

@@ -68,7 +68,8 @@ Ce document est la liste de contrôle normative de V16. Une case n’est cochée
 - [x] Lecture visuelle directe, assistée par la sonde OCR arabe épinglée, des 40 lignes de la page 6133 : 15 Taroudant et 25 Tiznit; les 40 lignes se rapprochent sans nouveau conflit de sièges.
 - [x] Lecture visuelle directe, assistée par la sonde OCR arabe épinglée, des 47 lignes de la page 6134 : 20 Tata, 20 Guelmim et 7 Assa–Zag; les 47 lignes se rapprochent sans nouveau conflit de sièges.
 - [x] Lecture visuelle directe, assistée par la sonde OCR arabe épinglée, des 46 lignes de la page 6135 : 7 Tan-Tan, 19 Sidi Ifni, 5 Laayoune, 4 Boujdour, 5 Tarfaya et 6 Es-Semara; les 46 lignes se rapprochent sans nouveau conflit de sièges.
-- [ ] Lire et contrôler visuellement la dernière page de l'annexe BO 6374 (6136) et obtenir une seconde revue des 1 490 lignes candidates des pages 6105–6135.
+- [x] Lecture visuelle directe, assistée par la sonde OCR arabe épinglée, des 13 lignes de la page 6136 : 7 Oued Ed-Dahab et 6 Aousserd; les 13 lignes se rapprochent sans nouveau conflit de sièges. La première lecture couvre ainsi les 1 503 lignes des pages 6105–6136.
+- [ ] Obtenir une seconde revue indépendante des graphies et sièges des 1 503 lignes candidates avant toute promotion en univers officiel.
 - [ ] Extraire et contrôler chaque désignation de commune, préfecture/province et nombre de sièges de l'annexe BO 6374; rapprocher ces désignations des identifiants électoraux et tester la couverture exacte avant toute prétention `COMPLETE`.
 - [ ] Acquérir l'arrêté ministériel des limites auquel renvoie le décret 2-15-577, revoir humainement les 41 correspondances individuelles et obtenir les identifiants officiels des six conseils avant de matérialiser le grain conseil ou de prétendre à une couverture complète.
 - [ ] Acquérir et vérifier les univers officiels nécessaires à la release.
