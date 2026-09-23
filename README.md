@@ -39,6 +39,11 @@ morocco-elections status
 `--historical-seed-diagnostic` inclut, sous une clé distincte, le diagnostic du
 seed historique lorsque cette comparaison est nécessaire.
 
+Les décisions externes nécessaires à la publication suivent la procédure et les
+empreintes stables décrites dans
+[docs/PUBLICATION_REVIEWS.md](docs/PUBLICATION_REVIEWS.md). Le build les consomme
+et les matérialise; il ne les produit jamais.
+
 Les cinq commandes acceptent `--help`. Les destinations de build et d'archive sont configurables; aucun chemin utilisateur absolu n'est codé dans le produit.
 
 La seule procédure de publication officielle ajoute les deux gardes de release :

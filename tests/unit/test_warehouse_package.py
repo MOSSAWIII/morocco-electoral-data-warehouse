@@ -17,6 +17,7 @@ from morocco_elections.warehouse.package import (
     MANIFEST_NAME,
     RECONCILIATION_REPORT_NAME,
     RESULT_HISTORY_REPORT_NAME,
+    _catalog_review_fingerprint,
     _manifest,
     _table_catalog,
     _write_json,
@@ -107,6 +108,29 @@ def test_view_sql_fingerprint_changes_when_logic_changes_but_rows_do_not(tmp_pat
     assert view_entries[0]["logical_sha256"] == view_entries[1]["logical_sha256"]
     assert view_entries[0]["sql_sha256"] != view_entries[1]["sql_sha256"]
     assert view_entries[0]["sql_definition"] != view_entries[1]["sql_definition"]
+
+
+def test_catalog_review_fingerprint_excludes_recursive_proof_rows(tmp_path: Path) -> None:
+    substantive = {
+        "table_name": "published", "row_count": 1, "logical_sha256": "1" * 64,
+    }
+    proof = {
+        "table_name": "publication_review", "row_count": 0, "logical_sha256": "2" * 64,
+    }
+    payload = {
+        "schema_version": "1.0.0", "database": DATABASE_NAME,
+        "table_count": 2, "view_count": 0,
+        "tables": [substantive, proof], "views": [],
+    }
+    first = tmp_path / "first.json"
+    second = tmp_path / "second.json"
+    _write_json(first, payload)
+    _write_json(second, {
+        **payload,
+        "tables": [substantive, {**proof, "row_count": 18, "logical_sha256": "3" * 64}],
+    })
+
+    assert _catalog_review_fingerprint(first) == _catalog_review_fingerprint(second)
 
 
 def test_evidence_index_contains_digests_not_materialized_facts() -> None:
@@ -208,6 +232,34 @@ def test_package_rejects_database_byte_size_and_checksum_mutations(package) -> N
     messages = {row["message"] for row in report["failures"]}
     assert "file size differs from manifest" in messages
     assert "file SHA-256 differs from manifest" in messages
+
+
+@pytest.mark.parametrize(
+    ("relative_path", "expected_message"),
+    [
+        (DATABASE_NAME, "review digest differs from recomputed substantive content"),
+        (CATALOG_NAME, "review digest differs from recomputed substantive content"),
+        (CONTRACT_NAME, "whole-file review digest differs from the physical manifest entry"),
+    ],
+)
+def test_package_recomputes_review_digests(
+    package,
+    relative_path: str,
+    expected_message: str,
+) -> None:
+    root, _ = package
+    manifest = _manifest_payload(root)
+    entry = next(row for row in manifest["files"] if row["relative_path"] == relative_path)
+    entry["review_sha256"] = "0" * 64
+    _write_json(root / MANIFEST_NAME, manifest)
+
+    report = validate_package(root)
+
+    assert report["status"] == "FAIL"
+    assert any(
+        row["record"] == relative_path and row["message"] == expected_message
+        for row in report["failures"]
+    )
 
 
 @pytest.mark.parametrize("field,value", [("byte_size", 1), ("sha256", "0" * 64)])

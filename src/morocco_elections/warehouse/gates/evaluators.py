@@ -237,6 +237,25 @@ def _checks(context: PublicationContext, name: str) -> list[Mapping[str, Any]]:
     return list(context.checks.get(name, ()))
 
 
+def _review_sha256(file_row: Mapping[str, Any]) -> Any:
+    """Return the stable digest of the exact content placed under review."""
+    return file_row.get("review_sha256") or file_row.get("sha256")
+
+
+def _review_evidence_files(rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    """Keep review-gate evidence independent of self-referential file bytes."""
+    output = []
+    for row in rows:
+        review_sha256 = _review_sha256(row)
+        output.append({
+            **row,
+            "sha256": review_sha256,
+            "byte_size": row.get("review_byte_size", row.get("byte_size")),
+            "evidence_id": "sha256:" + str(review_sha256),
+        })
+    return output
+
+
 def _require_rows(name: str, rows: Sequence[Mapping[str, Any]]) -> list[tuple[str, str]]:
     return [] if rows else [(name, f"{name} has no inspectable evidence")]
 
@@ -1550,10 +1569,13 @@ def _uncertainty(context: PublicationContext) -> GateResult:
         if applicable is True and not row.get("uncertainty_disclosure"):
             failures.append((rid, "applicable uncertainty is not disclosed"))
         file_row = files_by_path.get(rid)
-        if file_row is not None and row.get("file_sha256") != file_row.get("sha256"):
+        if file_row is not None and row.get("file_sha256") != _review_sha256(file_row):
             failures.append((rid, "claim review is linked to the wrong file SHA-256"))
-        if not row.get("evidence_id") or not row.get("reviewed_at") or not (
-            row.get("reviewed_by") or row.get("review_method")
+        if (
+            not row.get("evidence_id")
+            or _as_date(row.get("reviewed_at")) is None
+            or not row.get("reviewed_by")
+            or not row.get("review_method")
         ):
             failures.append((rid, "claim and uncertainty review is not traceable"))
     for file_row in context.files:
@@ -1570,21 +1592,23 @@ def _privacy(context: PublicationContext) -> GateResult:
     rows = _checks(context, "privacy_reviews")
     required = {str(row.get("relative_path")) for row in context.files}
     failures = _require_rows("privacy_reviews", rows)
-    as_of = _as_date(context.as_of_date)
     reviews_by_path: dict[str, list[Mapping[str, Any]]] = {}
     for row in rows:
         rid = str(row.get("relative_path", "<unknown>"))
         reviews_by_path.setdefault(rid, []).append(row)
         reviewed_at = _as_date(row.get("reviewed_at"))
-        if row.get("decision") != "PASS" or not row.get("reviewed_by") or reviewed_at is None:
+        if (
+            row.get("decision") != "PASS"
+            or not row.get("review_method")
+            or not row.get("reviewed_by")
+            or reviewed_at is None
+        ):
             failures.append((rid, "privacy review is not a traceable PASS"))
-        elif as_of is not None and reviewed_at > as_of:
-            failures.append((rid, "privacy review occurred after release as_of_date"))
         if rid not in required:
             failures.append((rid, "privacy review does not reference a public-package file"))
         else:
             file_row = next(item for item in context.files if str(item.get("relative_path")) == rid)
-            if row.get("file_sha256") != file_row.get("sha256"):
+            if row.get("file_sha256") != _review_sha256(file_row):
                 failures.append((rid, "privacy review is linked to the wrong file SHA-256"))
             if not row.get("evidence_id"):
                 failures.append((rid, "privacy review lacks an inspected evidence identifier"))
@@ -1615,7 +1639,7 @@ def _claims(context: PublicationContext) -> GateResult:
         if review is None or review.get("claim_class") != row.get("claim_class"):
             failures.append((rid, "manifest claim_class lacks a matching file-level review"))
             continue
-        if review.get("file_sha256") != row.get("sha256"):
+        if review.get("file_sha256") != _review_sha256(row):
             failures.append((rid, "claim review is linked to the wrong file SHA-256"))
         if row.get("claim_class") == "ASSOCIATION" and not review.get("ecological_inference_warning"):
             failures.append((rid, "territorial association lacks an ecological-inference warning"))
@@ -1625,7 +1649,12 @@ def _claims(context: PublicationContext) -> GateResult:
             failures.append((rid, "causal claim lacks a validated identification card"))
         if review.get("automatic_fraud_inference") is True:
             failures.append((rid, "statistical signals cannot automatically produce a fraud conclusion"))
-    return _gate("CLAIM_CLASS_DECLARED", rows, failures, "Every published file has an admissible claim class.")
+    return _gate(
+        "CLAIM_CLASS_DECLARED",
+        _review_evidence_files(rows),
+        failures,
+        "Every published file has an admissible claim class.",
+    )
 
 
 def _redistribution(context: PublicationContext) -> GateResult:
@@ -1633,7 +1662,6 @@ def _redistribution(context: PublicationContext) -> GateResult:
     failures = _require_rows("publication_files", rows) + _issue_failures(validate_rows("publication_file", rows))
     reviews = _checks(context, "license_reviews")
     failures += _require_rows("license_reviews", reviews)
-    as_of = _as_date(context.as_of_date)
     file_paths = {str(row.get("relative_path")) for row in rows}
     reviews_by_path: dict[str, list[Mapping[str, Any]]] = {}
     for review in reviews:
@@ -1648,13 +1676,11 @@ def _redistribution(context: PublicationContext) -> GateResult:
             or reviewed_at is None
         ):
             failures.append((rid, "license review is not a traceable REDISTRIBUTABLE decision"))
-        elif as_of is not None and reviewed_at > as_of:
-            failures.append((rid, "license review occurred after release as_of_date"))
         if rid not in file_paths:
             failures.append((rid, "license review does not reference a public-package file"))
         else:
             file_row = next(item for item in rows if str(item.get("relative_path")) == rid)
-            if review.get("file_sha256") != file_row.get("sha256"):
+            if review.get("file_sha256") != _review_sha256(file_row):
                 failures.append((rid, "license review is linked to the wrong file SHA-256"))
             if not review.get("evidence_id") or not review.get("proof_sha256"):
                 failures.append((rid, "license review lacks inspected proof linkage"))
@@ -1669,7 +1695,7 @@ def _redistribution(context: PublicationContext) -> GateResult:
             failures.append((rid, "file license_status differs from its reviewed decision"))
     return _gate(
         "REDISTRIBUTION_PERMITTED",
-        {"files": rows, "license_reviews": reviews},
+        {"files": _review_evidence_files(rows), "license_reviews": reviews},
         failures,
         "Every public-package file has one sourced REDISTRIBUTABLE license decision.",
     )

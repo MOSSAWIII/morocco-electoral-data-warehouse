@@ -26,7 +26,7 @@ OPTIONAL_FIELDS: dict[str, tuple[str, ...]] = {
     "dim_geo_version": ("valid_to", "parent_geo_version_id", "geometry_reference", "geometry_path"),
     "bridge_geo_lineage": ("notes",),
     "bridge_geo_parent": ("valid_to", "official_child_code", "supporting_source_ids", "notes"),
-    "publication_file": ("fact_status", "source_url", "notes"),
+    "publication_file": ("fact_status", "source_url", "review_scope", "notes"),
     "publication_review": ("legal_basis", "evidence_url", "review_method", "proof_sha256", "claim_class", "notes"),
 }
 

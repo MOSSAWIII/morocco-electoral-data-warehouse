@@ -430,8 +430,8 @@ def _publication_context(package_root: Path) -> PublicationContext:
             "boundary_checks": [{"check_id": "GE", "from_geo_version_id": "GV", "to_geo_version_id": "GV", "comparison_status": "DIRECTLY_COMPARABLE"}],
             "party_lineage_reviews": [{"lineage_id": "PL", "reviewed_by": "reviewer", "reviewed_at": "2026-09-13", "source_id": "S"}],
             "source_conflict_checks": [],
-            "claim_reviews": [{"relative_path": "data.duckdb", "file_sha256": database_sha, "claim_class": "OBSERVED_FACT", "uncertainty_applicable": False, "reviewed_by": "reviewer", "reviewed_at": "2026-09-13", "evidence_id": "E"}],
-            "privacy_reviews": [{"relative_path": "data.duckdb", "file_sha256": database_sha, "decision": "PASS", "reviewed_by": "reviewer", "reviewed_at": "2026-09-13", "evidence_id": "E"}],
+            "claim_reviews": [{"relative_path": "data.duckdb", "file_sha256": database_sha, "claim_class": "OBSERVED_FACT", "uncertainty_applicable": False, "review_method": "Independent claim review", "reviewed_by": "reviewer", "reviewed_at": "2026-09-13", "evidence_id": "E"}],
+            "privacy_reviews": [{"relative_path": "data.duckdb", "file_sha256": database_sha, "decision": "PASS", "review_method": "Independent privacy review", "reviewed_by": "reviewer", "reviewed_at": "2026-09-13", "evidence_id": "E"}],
             "license_reviews": [{
                 "relative_path": "data.duckdb", "file_sha256": database_sha, "decision": "REDISTRIBUTABLE",
                 "legal_basis": "Official open-data terms permit redistribution",
@@ -1127,7 +1127,7 @@ def test_evidence_bundle_gate_rejects_package_symlink(tmp_path: Path) -> None:
     assert result.affected_records == ("linked-source.pdf",)
 
 
-def test_privacy_gate_rejects_caller_exemption_duplicate_or_future_review(tmp_path: Path) -> None:
+def test_privacy_gate_rejects_caller_exemption_duplicate_or_invalid_review_date(tmp_path: Path) -> None:
     context = _publication_context(tmp_path)
     exempted = replace(context, files=[{**context.files[0], "privacy_review_required": False}])
     result = {row.gate_id: row for row in evaluate_publication_gates(exempted)}["PRIVACY_REVIEW_PASSED"]
@@ -1140,10 +1140,14 @@ def test_privacy_gate_rejects_caller_exemption_duplicate_or_future_review(tmp_pa
     assert result.status == "FAIL"
     assert "exactly one" in result.justification
 
-    future = _check(context, "privacy_reviews", [{**review, "reviewed_at": "2026-09-15"}])
-    result = {row.gate_id: row for row in evaluate_publication_gates(future)}["PRIVACY_REVIEW_PASSED"]
+    invalid = _check(context, "privacy_reviews", [{**review, "reviewed_at": "not-a-date"}])
+    result = {row.gate_id: row for row in evaluate_publication_gates(invalid)}["PRIVACY_REVIEW_PASSED"]
     assert result.status == "FAIL"
-    assert "after release as_of_date" in result.justification
+    assert "traceable PASS" in result.justification
+
+    later = _check(context, "privacy_reviews", [{**review, "reviewed_at": "2026-09-15"}])
+    result = {row.gate_id: row for row in evaluate_publication_gates(later)}["PRIVACY_REVIEW_PASSED"]
+    assert result.status == "PASS"
 
 
 def test_redistribution_gate_requires_one_sourced_license_decision(tmp_path: Path) -> None:
@@ -1160,10 +1164,14 @@ def test_redistribution_gate_requires_one_sourced_license_decision(tmp_path: Pat
     assert "exactly one license review" in result.justification
 
     review = dict(context.checks["license_reviews"][0])
-    future = _check(context, "license_reviews", [{**review, "reviewed_at": "2026-09-15"}])
-    result = {row.gate_id: row for row in evaluate_publication_gates(future)}["REDISTRIBUTION_PERMITTED"]
+    invalid = _check(context, "license_reviews", [{**review, "reviewed_at": "not-a-date"}])
+    result = {row.gate_id: row for row in evaluate_publication_gates(invalid)}["REDISTRIBUTION_PERMITTED"]
     assert result.status == "FAIL"
-    assert "after release as_of_date" in result.justification
+    assert "traceable REDISTRIBUTABLE" in result.justification
+
+    later = _check(context, "license_reviews", [{**review, "reviewed_at": "2026-09-15"}])
+    result = {row.gate_id: row for row in evaluate_publication_gates(later)}["REDISTRIBUTION_PERMITTED"]
+    assert result.status == "PASS"
 
 
 def test_reviews_reject_duplicate_license_missing_proof_and_wrong_file_sha(tmp_path: Path) -> None:
@@ -1183,6 +1191,60 @@ def test_reviews_reject_duplicate_license_missing_proof_and_wrong_file_sha(tmp_p
     result = {row.gate_id: row for row in evaluate_publication_gates(wrong_sha)}["REDISTRIBUTION_PERMITTED"]
     assert result.status == "FAIL"
     assert "wrong file SHA-256" in result.justification
+
+
+def test_external_reviews_bind_to_stable_review_content_digest(tmp_path: Path) -> None:
+    context = _publication_context(tmp_path)
+    stable_sha = "a" * 64
+    files = [{
+        **row,
+        "review_sha256": stable_sha,
+        "review_byte_size": row["byte_size"],
+        "review_scope": "SUBSTANTIVE_LOGICAL_CONTENT_EXCLUDING_SELF_REFERENTIAL_PROOFS",
+    } for row in context.files]
+    checks = {
+        key: [{**row, "file_sha256": stable_sha} for row in context.checks[key]]
+        for key in ("license_reviews", "privacy_reviews", "claim_reviews")
+    }
+    reviewed = replace(context, files=files, checks={**context.checks, **checks})
+    results = {row.gate_id: row for row in evaluate_publication_gates(reviewed)}
+
+    assert results["UNCERTAINTY_DISCLOSED_WHEN_APPLICABLE"].status == "PASS"
+    assert results["PRIVACY_REVIEW_PASSED"].status == "PASS"
+    assert results["CLAIM_CLASS_DECLARED"].status == "PASS"
+    assert results["REDISTRIBUTION_PERMITTED"].status == "PASS"
+
+    physically_different = replace(
+        reviewed,
+        files=[{
+            **files[0],
+            "sha256": "b" * 64,
+            "byte_size": files[0]["byte_size"] + 4096,
+            "evidence_id": "sha256:" + "b" * 64,
+        }],
+    )
+    different_results = {
+        row.gate_id: row for row in evaluate_publication_gates(physically_different)
+    }
+    for gate_id in (
+        "UNCERTAINTY_DISCLOSED_WHEN_APPLICABLE",
+        "PRIVACY_REVIEW_PASSED",
+        "CLAIM_CLASS_DECLARED",
+        "REDISTRIBUTION_PERMITTED",
+    ):
+        assert different_results[gate_id].status == "PASS"
+        assert different_results[gate_id].evidence_id == results[gate_id].evidence_id
+
+    invalid_claim = _check(
+        reviewed,
+        "claim_reviews",
+        [{**checks["claim_reviews"][0], "reviewed_at": "not-a-date"}],
+    )
+    result = {
+        row.gate_id: row for row in evaluate_publication_gates(invalid_claim)
+    }["UNCERTAINTY_DISCLOSED_WHEN_APPLICABLE"]
+    assert result.status == "FAIL"
+    assert "not traceable" in result.justification
 
 
 def test_claim_gate_rejects_missing_class_and_inference_as_observed_fact(tmp_path: Path) -> None:

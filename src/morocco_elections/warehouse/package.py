@@ -35,6 +35,7 @@ CONTRACT_NAME = "data-contract.json"
 GEO_REPORT_NAME = "geo-parent-report.json"
 RECONCILIATION_REPORT_NAME = "reconciliation-report.json"
 RESULT_HISTORY_REPORT_NAME = "result-history-report.json"
+LOGICAL_REVIEW_SCOPE = "SUBSTANTIVE_LOGICAL_CONTENT_EXCLUDING_SELF_REFERENTIAL_PROOFS"
 PACKAGE_FILES = (
     DATABASE_NAME,
     CONTRACT_NAME,
@@ -152,13 +153,26 @@ def _table_catalog(database: Path) -> dict[str, Any]:
     }
 
 
-def _file_entry(root: Path, relative: str, artifact_type: str, produced_at: str) -> dict[str, Any]:
+def _file_entry(
+    root: Path,
+    relative: str,
+    artifact_type: str,
+    produced_at: str,
+    *,
+    review_sha256: str | None = None,
+    review_byte_size: int | None = None,
+    review_scope: str = "ENTIRE_FILE",
+) -> dict[str, Any]:
     path = root / relative
+    physical_sha256 = sha256_file(path)
     return {
         "release_id": DEFAULT_SNAPSHOT_ID,
         "relative_path": relative,
         "byte_size": path.stat().st_size,
-        "sha256": sha256_file(path),
+        "sha256": physical_sha256,
+        "review_sha256": review_sha256 or physical_sha256,
+        "review_byte_size": review_byte_size if review_byte_size is not None else path.stat().st_size,
+        "review_scope": review_scope,
         "artifact_type": artifact_type,
         "source_id": "WAREHOUSE_BUILD_PIPELINE",
         "acquired_at": produced_at,
@@ -167,7 +181,7 @@ def _file_entry(root: Path, relative: str, artifact_type: str, produced_at: str)
         "claim_class": "DERIVED_DESCRIPTIVE",
         "privacy_review_required": True,
         "redistribution_status": "REDISTRIBUTABLE",
-        "evidence_id": "sha256:" + sha256_file(path),
+        "evidence_id": "sha256:" + physical_sha256,
         "fact_status": "RECOMPUTED",
         "notes": "Generated package artifact reviewed under the project data policy; no RAW source bytes are included.",
     }
@@ -221,7 +235,10 @@ def _publication_reviews(
     del reviewed_at  # Review dates come only from the independent registry.
     registry_path = repository_root / "metadata/warehouse/publication_reviews.json"
     registry = json.loads(registry_path.read_text(encoding="utf-8"))
-    expected = {(str(row["relative_path"]), str(row["sha256"])) for row in files}
+    expected = {
+        (str(row["relative_path"]), str(row.get("review_sha256") or row["sha256"]))
+        for row in files
+    }
     result: dict[str, list[dict[str, Any]]] = {}
     for review_type in ("license_reviews", "privacy_reviews", "claim_reviews"):
         accepted: list[dict[str, Any]] = []
@@ -240,7 +257,33 @@ def _publication_reviews(
     return result
 
 
-def _manifest(root: Path, produced_at: str) -> dict[str, Any]:
+def _catalog_review_fingerprint(path: Path) -> tuple[str, int]:
+    """Digest cataloged substantive content without recursive proof-table rows."""
+    from morocco_elections.warehouse.materialization import PROOF_TABLES
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    projection = {
+        "schema_version": payload.get("schema_version"),
+        "database": payload.get("database"),
+        "tables": [
+            row for row in payload.get("tables", [])
+            if row.get("table_name") not in PROOF_TABLES
+        ],
+        "views": payload.get("views", []),
+        "excluded_self_referential_tables": sorted(PROOF_TABLES),
+    }
+    encoded = json.dumps(
+        _canonical(projection), ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest(), len(encoded)
+
+
+def _manifest(
+    root: Path,
+    produced_at: str,
+    *,
+    database_review: tuple[str, int] | None = None,
+) -> dict[str, Any]:
     artifact_types = {
         DATABASE_NAME: "DUCKDB_DATABASE",
         CONTRACT_NAME: "DATA_CONTRACT",
@@ -249,7 +292,30 @@ def _manifest(root: Path, produced_at: str) -> dict[str, Any]:
         RESULT_HISTORY_REPORT_NAME: "VALIDATION_REPORT",
         CATALOG_NAME: "TABLE_CATALOG",
     }
-    files = [_file_entry(root, relative, artifact_types[relative], produced_at) for relative in PACKAGE_FILES]
+    if database_review is None:
+        from morocco_elections.warehouse.materialization import warehouse_content_fingerprint
+
+        database_review = warehouse_content_fingerprint(root / DATABASE_NAME)
+    catalog_review = _catalog_review_fingerprint(root / CATALOG_NAME)
+    files = []
+    for relative in PACKAGE_FILES:
+        review: tuple[str, int] | None = None
+        if relative == DATABASE_NAME:
+            review = database_review
+        elif relative == CATALOG_NAME:
+            review = catalog_review
+        files.append(_file_entry(
+            root,
+            relative,
+            artifact_types[relative],
+            produced_at,
+            review_sha256=review[0] if review else None,
+            review_byte_size=review[1] if review else None,
+            review_scope=(
+                LOGICAL_REVIEW_SCOPE
+                if review else "ENTIRE_FILE"
+            ),
+        ))
     return {
         "schema_version": "1.0.0",
         "release_id": DEFAULT_SNAPSHOT_ID,
@@ -331,6 +397,7 @@ def validate_package(root: Path, *, expected_bundle_sha256: str | None = None) -
         required = (
             "release_id", "artifact_type", "source_id", "acquired_at", "license_status", "claim_class",
             "privacy_review_required", "redistribution_status", "evidence_id",
+            "review_sha256", "review_byte_size", "review_scope",
         )
         absent = [field for field in required if entry.get(field) is None or entry.get(field) == ""]
         if absent:
@@ -341,6 +408,34 @@ def validate_package(root: Path, *, expected_bundle_sha256: str | None = None) -
             failures.append({"record": relative, "message": "unlicensed file is falsely declared redistributable"})
         if entry.get("license_status") in {"UNKNOWN", "FORBIDDEN"}:
             failures.append({"record": relative, "message": "UNKNOWN or FORBIDDEN file cannot enter the public package"})
+        review_sha256 = entry.get("review_sha256")
+        review_byte_size = entry.get("review_byte_size")
+        review_scope = entry.get("review_scope")
+        valid_review_sha = (
+            isinstance(review_sha256, str)
+            and len(review_sha256) == 64
+            and all(character in "0123456789abcdef" for character in review_sha256.lower())
+        )
+        if not valid_review_sha or not isinstance(review_byte_size, int) or review_byte_size < 0:
+            failures.append({"record": relative, "message": "review digest or byte size is invalid"})
+        elif review_scope == "ENTIRE_FILE":
+            if review_sha256 != entry.get("sha256") or review_byte_size != entry.get("byte_size"):
+                failures.append({"record": relative, "message": "whole-file review digest differs from the physical manifest entry"})
+        elif review_scope == LOGICAL_REVIEW_SCOPE:
+            if relative == DATABASE_NAME:
+                from morocco_elections.warehouse.materialization import warehouse_content_fingerprint
+
+                observed_review = warehouse_content_fingerprint(path)
+            elif relative == CATALOG_NAME:
+                observed_review = _catalog_review_fingerprint(path)
+            else:
+                observed_review = None
+            if observed_review is None:
+                failures.append({"record": relative, "message": "logical review scope is unsupported for this file"})
+            elif (review_sha256, review_byte_size) != observed_review:
+                failures.append({"record": relative, "message": "review digest differs from recomputed substantive content"})
+        else:
+            failures.append({"record": relative, "message": "review scope is unsupported"})
     physical = {
         path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_file() or path.is_symlink()
     }
@@ -541,7 +636,11 @@ def build_package(
             )
         )
         _write_json(staging / CATALOG_NAME, _table_catalog(staging / DATABASE_NAME))
-        manifest = _manifest(staging, produced_at)
+        manifest = _manifest(
+            staging,
+            produced_at,
+            database_review=(content_sha256, content_bytes),
+        )
         _write_json(staging / MANIFEST_NAME, manifest)
 
         context, _ = build_readiness_context(
@@ -556,6 +655,64 @@ def build_package(
             "source_portability": _source_portability(repository_root),
         }
         context = replace(context, checks=checks)
+        final_proof_evaluation = validate_publication(context)
+        stable_gate_results = [
+            {**row, "evidence_id": "sha256:" + content_sha256}
+            for row in final_proof_evaluation["gate_results"]
+        ]
+        stable_files = []
+        for row in manifest["files"]:
+            stable = dict(row)
+            stable.update({
+                "byte_size": row["review_byte_size"],
+                "sha256": row["review_sha256"],
+                "evidence_id": "sha256:" + row["review_sha256"],
+            })
+            stable_files.append(stable)
+        database_report["materialized_publication_rows"].update(
+            materialize_publication_proofs(
+                staging / DATABASE_NAME,
+                files=stable_files,
+                reviews=checks,
+                gate_results=stable_gate_results,
+            )
+        )
+        _write_json(staging / CATALOG_NAME, _table_catalog(staging / DATABASE_NAME))
+        manifest = _manifest(
+            staging,
+            produced_at,
+            database_review=(content_sha256, content_bytes),
+        )
+        _write_json(staging / MANIFEST_NAME, manifest)
+        context, _ = build_readiness_context(
+            staging / DATABASE_NAME, repository_root, files=manifest["files"],
+            release_id=DEFAULT_SNAPSHOT_ID, as_of_date=produced_at,
+            package_manifest_path=MANIFEST_NAME,
+            package_manifest_sha256=sha256_file(staging / MANIFEST_NAME),
+        )
+        checks = {
+            **context.checks,
+            **_publication_reviews(manifest["files"], repository_root, produced_at),
+            "source_portability": _source_portability(repository_root),
+        }
+        context = replace(context, checks=checks)
+        final_evaluation = validate_publication(context)
+        proof_results = {
+            (
+                row["gate_id"], row["gate_status"], row["justification"],
+                row["affected_records"],
+            )
+            for row in final_proof_evaluation["gate_results"]
+        }
+        final_results = {
+            (
+                row["gate_id"], row["gate_status"], row["justification"],
+                row["affected_records"],
+            )
+            for row in final_evaluation["gate_results"]
+        }
+        if final_results != proof_results:
+            raise RuntimeError("publication gates changed after stable review proofs were materialized")
         context = write_evidence_bundle(context, BUNDLE_NAME)
         staged_validation = validate_package(staging, expected_bundle_sha256=context.evidence_bundle_sha256)
         if staged_validation["status"] != "PASS":

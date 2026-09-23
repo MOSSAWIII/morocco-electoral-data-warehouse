@@ -38,6 +38,13 @@ Le résumé d'audit sépare désormais les 0 relations parentales non résolues 
 
 Les fichiers physiques DuckDB ne sont pas comparés octet pour octet : leur organisation interne peut différer pour un contenu logique identique. Les manifestes et index qui scellent ces octets physiques diffèrent donc entre les exécutions et restent valides pour leur propre paquet. La reproductibilité exigée porte sur les 55 objets logiques, le contrat et les rapports déterministes.
 
+Le manifeste distingue désormais l'empreinte physique `sha256` de l'empreinte
+stable `review_sha256`. Deux constructions indépendantes doivent produire les
+mêmes `review_sha256`, `review_byte_size` et `review_scope` pour chaque fichier;
+la CI compare explicitement ce vecteur. Les revues externes restent ainsi liées
+au même contenu substantiel même lorsque la disposition physique de DuckDB
+diffère.
+
 La CI applique ce protocole depuis un checkout propre, compare les sorties ci-dessus et refuse toute dérive suivie ou non suivie.
 
 La même suite, le même lint et les mêmes dépendances ont aussi été exécutés avec succès sous CPython 3.11 et CPython 3.12.11. La matrice CI couvre donc 3.11 et 3.12, conformément à la plage `>=3.11,<3.13` déclarée par le paquet.

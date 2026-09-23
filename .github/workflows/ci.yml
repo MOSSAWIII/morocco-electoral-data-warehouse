@@ -56,6 +56,9 @@ jobs:
           do
             cmp "$RUNNER_TEMP/warehouse/$file" "$RUNNER_TEMP/warehouse-second/$file"
           done
+          diff \
+            <(jq -S '[.files[] | {relative_path, review_sha256, review_byte_size, review_scope}]' "$RUNNER_TEMP/warehouse/package-manifest.json") \
+            <(jq -S '[.files[] | {relative_path, review_sha256, review_byte_size, review_scope}]' "$RUNNER_TEMP/warehouse-second/package-manifest.json")
 
       - name: Validate and audit package
         run: |
