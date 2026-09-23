@@ -86,6 +86,16 @@ def _normalize_seed_identifiers(connection: duckdb.DuckDBPyConnection) -> int:
     ).fetchall()
     changed = 0
     for table, column in columns:
+        # Normalize list members first. Otherwise the embedded-marker pattern
+        # can partially consume a release marker with a numeric sub-suffix.
+        delimited = connection.execute(
+            f"UPDATE {_quoted(table)} SET {_quoted(column)} = "
+            f"regexp_replace({_quoted(column)}, "
+            "'_V[0-9]+(_[0-9]+)*([;, ]+)', '\\2', 'gi') "
+            f"WHERE {_quoted(column)} IS NOT NULL AND "
+            f"regexp_matches({_quoted(column)}, '_V[0-9]+(_[0-9]+)*[;, ]', 'i')"
+        )
+        changed += delimited.fetchone()[0] if delimited.description else 0
         result = connection.execute(
             f"UPDATE {_quoted(table)} SET {_quoted(column)} = "
             f"regexp_replace(regexp_replace({_quoted(column)}, "
@@ -93,6 +103,26 @@ def _normalize_seed_identifiers(connection: duckdb.DuckDBPyConnection) -> int:
             "'_V[0-9]+(_[0-9]+)*$', '', 'gi') "
             f"WHERE {_quoted(column)} IS NOT NULL AND "
             f"regexp_matches({_quoted(column)}, '_V[0-9]+(_[0-9]+)*(_|$)', 'i')"
+        )
+        changed += result.fetchone()[0] if result.description else 0
+    return changed
+
+
+def _normalize_historical_release_text(connection: duckdb.DuckDBPyConnection) -> int:
+    """Describe copied release-labelled notes as historical seed metadata."""
+    note_columns = connection.execute(
+        "SELECT table_name, column_name FROM information_schema.columns "
+        "WHERE table_schema='main' AND data_type='VARCHAR' AND column_name='notes' "
+        "ORDER BY table_name"
+    ).fetchall()
+    changed = 0
+    pattern = r"(^|[^a-z0-9])V(9|10|11|12|13|14|15|16)(-QA)?([^a-z0-9]|$)"
+    for table, column in note_columns:
+        result = connection.execute(
+            f"UPDATE {_quoted(table)} SET {_quoted(column)} = "
+            f"regexp_replace({_quoted(column)}, ?, '\\1historical seed\\4', 'gi') "
+            f"WHERE {_quoted(column)} IS NOT NULL AND regexp_matches({_quoted(column)}, ?, 'i')",
+            [pattern, pattern],
         )
         changed += result.fetchone()[0] if result.description else 0
     return changed
@@ -239,6 +269,7 @@ def build_development_database(
             connection.execute("DETACH historical_seed")
             normalized_source_references = _normalize_historical_source_ids(connection)
             normalized_seed_identifiers = _normalize_seed_identifiers(connection)
+            normalized_historical_text = _normalize_historical_release_text(connection)
             _rename_parliamentary_source_keys(connection)
             create_schema(connection)
             if "warehouse_metadata" not in source_tables:
@@ -336,6 +367,7 @@ def build_development_database(
         "copied_historical_tables": len(source_tables),
         "normalized_historical_source_references": normalized_source_references,
         "normalized_seed_identifiers": normalized_seed_identifiers,
+        "normalized_historical_text": normalized_historical_text,
         "created_canonical_tables": len(TABLE_CONTRACTS),
         "seeded_legal_regimes": len(legal_payload["legal_regimes"]) if legal_payload is not None else 0,
         "seeded_election_legal_links": len(legal_payload["election_links"]) if legal_payload is not None else 0,

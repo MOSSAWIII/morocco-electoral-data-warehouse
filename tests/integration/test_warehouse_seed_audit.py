@@ -203,6 +203,32 @@ def test_readiness_audit_reports_external_territorial_coverage_without_claiming_
     assert report["result_history_gap_count"] == 8
 
 
+def test_canonical_database_has_no_active_intermediate_release_identity() -> None:
+    canonical_database = ROOT / "data/exports/open/warehouse/morocco_elections.duckdb"
+    if not canonical_database.is_file():
+        pytest.skip("local canonical package required")
+    pattern = r"(?i)(^|[^a-z0-9])v(" + "|".join(str(number) for number in range(9, 17)) + r")([^0-9]|$)"
+    connection = duckdb.connect(str(canonical_database), read_only=True)
+    try:
+        columns = connection.execute(
+            "SELECT table_name, column_name FROM information_schema.columns "
+            "WHERE table_schema='main' AND data_type='VARCHAR' "
+            "AND (column_name LIKE '%_id' OR column_name IN ('candidate_sources', 'notes')) "
+            "ORDER BY table_name, column_name"
+        ).fetchall()
+        findings = []
+        for table, column in columns:
+            count = connection.execute(
+                f'SELECT count(*) FROM "{table}" WHERE regexp_matches("{column}", ?, \'i\')',
+                [pattern],
+            ).fetchone()[0]
+            if count:
+                findings.append((table, column, count))
+    finally:
+        connection.close()
+    assert findings == []
+
+
 def test_audit_rejects_a_package_with_manifested_file_drift(tmp_path: Path) -> None:
     package = ROOT / "data/exports/open/warehouse"
     database = package / "morocco_elections.duckdb"

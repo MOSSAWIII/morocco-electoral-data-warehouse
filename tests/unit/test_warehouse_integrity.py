@@ -5,7 +5,11 @@ from pathlib import Path
 import pytest
 
 from morocco_elections.warehouse.contracts import PROPOSED_TABLE_CONTRACTS, TABLE_CONTRACTS, VOCABULARIES
-from morocco_elections.warehouse.build import _normalize_seed_identifiers, build_development_database
+from morocco_elections.warehouse.build import (
+    _normalize_historical_release_text,
+    _normalize_seed_identifiers,
+    build_development_database,
+)
 from morocco_elections.warehouse.coverage import DIMENSIONS, UNKNOWN, coverage_report, validate_universes
 from morocco_elections.warehouse.history import validate_result_geographies
 from morocco_elections.warehouse.schema import create_schema, schema_inventory
@@ -66,14 +70,48 @@ def test_seed_identifier_normalization_is_release_agnostic() -> None:
     connection = duckdb.connect(":memory:")
     connection.execute("CREATE TABLE parent (entity_id VARCHAR PRIMARY KEY)")
     connection.execute("CREATE TABLE child (child_id VARCHAR, entity_id VARCHAR)")
+    connection.execute("CREATE TABLE dictionary (candidate_sources VARCHAR)")
     connection.execute("INSERT INTO parent VALUES ('ENTITY_V27_3_A')")
     connection.execute("INSERT INTO child VALUES ('CHILD_V27_B', 'ENTITY_V27_3_A')")
+    labelled_sources = "SOURCE_V" + "12; SOURCE_V" + "14_1; SOURCE_CURRENT"
+    connection.execute("INSERT INTO dictionary VALUES (?)", [labelled_sources])
 
     changed = _normalize_seed_identifiers(connection)
 
-    assert changed == 3
+    assert changed == 4
     assert connection.execute("SELECT * FROM parent").fetchall() == [("ENTITY_A",)]
     assert connection.execute("SELECT * FROM child").fetchall() == [("CHILD_B", "ENTITY_A")]
+    assert connection.execute("SELECT * FROM dictionary").fetchall() == [
+        ("SOURCE; SOURCE; SOURCE_CURRENT",)
+    ]
+    connection.close()
+
+
+def test_historical_release_labels_are_removed_from_active_notes() -> None:
+    import duckdb
+
+    connection = duckdb.connect(":memory:")
+    connection.execute("CREATE TABLE contests (notes VARCHAR)")
+    connection.execute("CREATE TABLE facts (notes VARCHAR)")
+    connection.execute(
+        "INSERT INTO contests VALUES (?), ('No release label.')",
+        ["Derived from V" + "13."],
+    )
+    connection.execute(
+        "INSERT INTO facts VALUES (?)",
+        ["V" + "11 GO; documented in V" + "11-QA."],
+    )
+
+    changed = _normalize_historical_release_text(connection)
+
+    assert changed == 2
+    assert connection.execute("SELECT * FROM contests ORDER BY notes").fetchall() == [
+        ("Derived from historical seed.",),
+        ("No release label.",),
+    ]
+    assert connection.execute("SELECT * FROM facts").fetchall() == [
+        ("historical seed GO; documented in historical seed.",)
+    ]
     connection.close()
 
 
