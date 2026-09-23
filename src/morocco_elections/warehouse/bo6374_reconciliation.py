@@ -119,8 +119,8 @@ def _load_candidates(root: Path, bo_source: Mapping[str, Any]) -> list[dict[str,
                     "bo_commune_name_ar": repair_mojibake(row["commune_name_ar"]),
                     "bo_council_members": row["council_members"],
                 })
-    if len(rows) != 758:
-        raise ValueError(f"expected 758 BO candidate rows, observed {len(rows)}")
+    if len(rows) != 795:
+        raise ValueError(f"expected 795 BO candidate rows, observed {len(rows)}")
     return rows
 
 
@@ -431,7 +431,7 @@ def build_reconciliation(root: Path) -> dict[str, Any]:
             "Large city council rows are not forced onto TAFRA arrondissement rows.",
         ],
     }
-    return {"schema_version": 1, "scope": "BO6374_PAGES_6105_6119_CANDIDATE_ONLY", "sources": descriptors, "rows": rows, "report": report}
+    return {"schema_version": 1, "scope": "BO6374_PAGES_6105_6120_CANDIDATE_ONLY", "sources": descriptors, "rows": rows, "report": report}
 
 
 def validate_reconciliation(payload: Mapping[str, Any], root: Path) -> list[ValidationIssue]:

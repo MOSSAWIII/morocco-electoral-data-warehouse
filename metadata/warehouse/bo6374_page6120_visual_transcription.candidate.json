@@ -1,0 +1,58 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 49,
+  "printed_page": 6120,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée, assistée par la sonde OCR arabe à source épinglée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "بنسليمان",
+      "rows": [
+        {"row": 1, "commune_name_ar": "بنسليمان", "council_members": 31},
+        {"row": 2, "commune_name_ar": "بوزنيقة", "council_members": 25},
+        {"row": 3, "commune_name_ar": "المنصورية", "council_members": 23},
+        {"row": 4, "commune_name_ar": "فضالات", "council_members": 13},
+        {"row": 5, "commune_name_ar": "أولاد يحيى لوطا", "council_members": 13},
+        {"row": 6, "commune_name_ar": "موالين الواد", "council_members": 13},
+        {"row": 7, "commune_name_ar": "أحلاف", "council_members": 13},
+        {"row": 8, "commune_name_ar": "الردادنة أولاد مالك", "council_members": 11},
+        {"row": 9, "commune_name_ar": "مليلة", "council_members": 23},
+        {"row": 10, "commune_name_ar": "أولاد علي الطوالع", "council_members": 11},
+        {"row": 11, "commune_name_ar": "الزيايدة", "council_members": 15},
+        {"row": 12, "commune_name_ar": "عين تيزغة", "council_members": 23},
+        {"row": 13, "commune_name_ar": "شراط", "council_members": 13},
+        {"row": 14, "commune_name_ar": "سيدي بطاش", "council_members": 11},
+        {"row": 15, "commune_name_ar": "بئر النصر", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "برشيد",
+      "rows": [
+        {"row": 16, "commune_name_ar": "برشيد", "council_members": 35},
+        {"row": 17, "commune_name_ar": "الكارة", "council_members": 23},
+        {"row": 18, "commune_name_ar": "أولاد عبو", "council_members": 13},
+        {"row": 19, "commune_name_ar": "سيدي رحال الشاطئ", "council_members": 23},
+        {"row": 20, "commune_name_ar": "حد السوالم", "council_members": 25},
+        {"row": 21, "commune_name_ar": "الدروة", "council_members": 25},
+        {"row": 22, "commune_name_ar": "لحساسنة", "council_members": 13},
+        {"row": 23, "commune_name_ar": "سيدي المكي", "council_members": 13},
+        {"row": 24, "commune_name_ar": "زاوية سيدي بنحمدون", "council_members": 13},
+        {"row": 25, "commune_name_ar": "لغنيميين", "council_members": 23},
+        {"row": 26, "commune_name_ar": "بن معاشو", "council_members": 13},
+        {"row": 27, "commune_name_ar": "سيدي عبد الخالق", "council_members": 11},
+        {"row": 28, "commune_name_ar": "الساحل أولاد احريز", "council_members": 25},
+        {"row": 29, "commune_name_ar": "السوالم الطريفية", "council_members": 25},
+        {"row": 30, "commune_name_ar": "أولاد زيان", "council_members": 23},
+        {"row": 31, "commune_name_ar": "قصبة بن مشيش", "council_members": 15},
+        {"row": 32, "commune_name_ar": "جاقمة", "council_members": 13},
+        {"row": 33, "commune_name_ar": "لمباركيين", "council_members": 13},
+        {"row": 34, "commune_name_ar": "رياح", "council_members": 13},
+        {"row": 35, "commune_name_ar": "الفقراء أولاد عامر", "council_members": 11},
+        {"row": 36, "commune_name_ar": "أولاد صباح", "council_members": 13},
+        {"row": 37, "commune_name_ar": "أولاد زيدان", "council_members": 11}
+      ]
+    }
+  ]
+}

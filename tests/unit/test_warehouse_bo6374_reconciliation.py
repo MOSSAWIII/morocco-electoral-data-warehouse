@@ -12,17 +12,17 @@ ROOT = Path(__file__).resolve().parents[2]
 def test_bo_tafra_reconciliation_is_complete_bijective_and_fail_closed() -> None:
     payload = build_reconciliation(ROOT)
     report = payload["report"]
-    assert report["candidate_rows"] == 758
-    assert report["identity_matches"] == 753
+    assert report["candidate_rows"] == 795
+    assert report["identity_matches"] == 790
     assert report["unmatched"] == 5
     assert report["unmatched_with_verified_parent"] == 5
-    assert report["ambiguous"] == 7
+    assert report["ambiguous"] == 9
     assert report["exact_count_matches"] == 1
-    assert report["explained_differences"] == 745
-    assert report["exact_name_matches"] == 644
-    assert report["fuzzy_unique_name_matches"] == 109
+    assert report["explained_differences"] == 780
+    assert report["exact_name_matches"] == 678
+    assert report["fuzzy_unique_name_matches"] == 112
     matched_ids = [row["tafra_commune_id"] for row in payload["rows"] if row["tafra_commune_id"] is not None]
-    assert len(matched_ids) == len(set(matched_ids)) == 753
+    assert len(matched_ids) == len(set(matched_ids)) == 790
     unmatched = [row for row in payload["rows"] if row["status"] == "UNMATCHED"]
     assert {row["warehouse_communal_parent_id"] for row in unmatched} == {
         "COMM2015-CITY:TANGER", "COMM2015-CITY:FES", "COMM2015-CITY:RABAT", "COMM2015-CITY:SALE",
@@ -30,6 +30,15 @@ def test_bo_tafra_reconciliation_is_complete_bijective_and_fail_closed() -> None
     }
     assert {row["remaining_blocker"] for row in unmatched} == {
         "TAFRA_HAS_ARRONDISSEMENT_RESULTS_BUT_NO_EQUIVALENT_CITY_COUNCIL_RESULT_ROW"
+    }
+    page6120_conflicts = {
+        row["candidate_id"]: (row["bo_council_members"], row["tafra_nSieges"], row["observed_elected_members"])
+        for row in payload["rows"]
+        if row["printed_page"] == 6120 and row["status"] == "AMBIGUOUS"
+    }
+    assert page6120_conflicts == {
+        "BO6374:P6120:R022": (13, 27, 27),
+        "BO6374:P6120:R025": (23, 17, 17),
     }
     assert validate_reconciliation(payload, ROOT) == []
 
