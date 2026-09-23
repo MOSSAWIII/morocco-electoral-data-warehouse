@@ -87,3 +87,20 @@ Ces pages sont donc conservées comme pistes documentaires seulement. La levée
 du gate exige toujours une proclamation ou un export institutionnel stable qui
 déclare explicitement l'univers électoral et puisse être archivé, haché et
 rejoué.
+
+Une troisième piste institutionnelle a été vérifiée auprès de la Cour des
+comptes : la
+[synthèse relative au scrutin législatif du 7 octobre 2016](https://www.courdescomptes.ma/wp-content/uploads/2018/11/Synthese-des-rapports-relatifs-aux-depenses-electorales-concernant-le-scrutin-du-7-octobre-2016-pour-lelection-des-membres-de-la-chambre-des-representants.pdf).
+Le PDF obtenu compte 495 217 octets et porte le SHA-256
+`ee8dc2771f27d0e7913e77213d8ee255a12db2ca4ad0ebc377ab16c369762bbb`.
+Il confirme que 1 407 mandataires de listes briguaient 395 sièges et indique en
+note que les résultats ont été proclamés le 8 octobre 2016.
+
+Son tableau par parti ne constitue cependant pas une allocation de sièges : il
+ventile les mandataires de listes selon le dépôt de leur déclaration de dépenses
+et leur qualité d'élu ou de non-élu. Par exemple, ses 93 mandataires PJD ne sont
+pas les 125 sièges généralement attribués au parti. Le document ne contient pas
+non plus une chaîne de statuts ou de rectifications rattachable à chaque résultat
+matérialisé. Il n'est donc ajouté ni comme univers officiel ni comme historique
+de résultats. Il pourra seulement corroborer une date de proclamation lorsqu'une
+publication des résultats au grain requis aura elle-même été acquise.
