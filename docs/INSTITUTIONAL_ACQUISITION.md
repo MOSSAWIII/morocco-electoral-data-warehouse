@@ -107,6 +107,16 @@ provenance, mais ne change ni la confiance `0.9`, ni la méthode
 attribuée à `elections.ma`, et aucune source institutionnelle acquise ne relie
 encore `968` au code HCP `01.051.05.01.`.
 
+L'implémentation historique du portail a également été retrouvée dans la
+[capture du 16 septembre 2015](https://web.archive.org/web/20150916012118id_/http://www.elections.ma/elections/communales/resultats.aspx).
+Le formulaire officiel transmet les paramètres `Region`, `province`, `Commune`
+et `Circ` au service `Electionweb.asmx/getListElus_Com`; `idCommune` est donc une
+clé exploitable pour une acquisition ciblée. Cette piste ne fournit toutefois
+pas encore de preuve : les captures archivées des méthodes du service ne
+contiennent qu'une page « Request Rejected » de 189 octets, tandis que les
+requêtes `POST` vers le service actif retournent `HTTP 403`. Aucun résultat de
+service associant `968` à Ait Kamra n'est disponible dans les octets acquis.
+
 Une troisième piste institutionnelle a été vérifiée auprès de la Cour des
 comptes : la
 [synthèse relative au scrutin législatif du 7 octobre 2016](https://www.courdescomptes.ma/wp-content/uploads/2018/11/Synthese-des-rapports-relatifs-aux-depenses-electorales-concernant-le-scrutin-du-7-octobre-2016-pour-lelection-des-membres-de-la-chambre-des-representants.pdf).
