@@ -172,3 +172,21 @@ donc inscrits ni au registre canonique des sources, ni dans
 `coverage_universe` : la prochaine acquisition utile est exactement la réponse
 nationale de `getstatparties`, ou une proclamation institutionnelle stable de
 même grain.
+
+## Copie DGCT du décret 2.15.402
+
+La page institutionnelle de la DGCT consacrée aux communes renvoie aussi une
+[copie isolée du décret 2.15.402 et de son annexe](https://www.collectivites-territoriales.gov.ma/sites/default/files/inline-files/d%C3%A9cret%20d%C3%A9coupage%20administratif%20et%20membres%20Conseils%20communaux.pdf).
+Le PDF acquis compte 435 877 octets, 33 pages et porte le SHA-256
+`3f799ac0121b60725cb99a3eabb63fe10b8136ca79b6612199334a892b8fdc40`.
+Il n'a aucun calque texte : chacune de ses pages contient une image numérisée.
+
+La comparaison porte sur les octets des images extraites, pas seulement sur le
+rendu visuel. Les 33 images sont respectivement identiques aux images des pages
+PDF 34 à 66 du BO 6374 déjà épinglé. Cette copie est donc un conteneur
+alternatif des mêmes scans, et non une seconde transcription, une seconde
+capture indépendante ou une preuve nouvelle des 1 503 lignes. Elle reste hors
+du registre canonique en tant que doublon documentaire et ne change pas le
+statut `VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY`. Une revue indépendante des
+graphies et des sièges, ou une source structurée distincte, reste nécessaire
+avant toute promotion en univers officiel.
