@@ -12,6 +12,10 @@ from morocco_elections.warehouse.auditor import _status_pair
 
 
 ROOT = Path(__file__).resolve().parents[2]
+ACTIVE_TEXT_ROOTS = (
+    ".github", "docs", "examples", "metadata", "scripts", "src", "tests",
+)
+ACTIVE_TEXT_SUFFIXES = {".json", ".md", ".py", ".sql", ".toml", ".txt", ".yaml", ".yml"}
 
 
 def test_cli_exposes_only_canonical_commands() -> None:
@@ -51,6 +55,41 @@ def test_current_documentation_contains_only_parseable_cli_commands() -> None:
     assert {shlex.split(command)[0] for command in commands} == {
         "build", "validate", "audit", "package", "status",
     }
+
+
+def test_active_product_has_no_intermediate_release_identity() -> None:
+    # The pinned historical seed descriptor must preserve its real remote asset
+    # locator. Everything else in the active product must be generation-free.
+    excluded = {
+        ROOT / "metadata/warehouse/seed_snapshot.json",
+    }
+    forbidden_names = {
+        "source" + "_release",
+        "v" + "15_seed",
+    }
+    generation_pattern = re.compile(
+        r"(?i)(?<![a-z0-9])v(?:" + "|".join(str(number) for number in range(9, 17)) + r")(?:\b|_)"
+    )
+    findings: list[str] = []
+
+    candidates = [
+        ROOT / name
+        for name in ("README.md", "CONTRIBUTING.md", "pyproject.toml", "data/README.md")
+    ]
+    for root_name in ACTIVE_TEXT_ROOTS:
+        candidates.extend(path for path in (ROOT / root_name).rglob("*") if path.is_file())
+
+    for path in candidates:
+        if path in excluded or path.suffix.lower() not in ACTIVE_TEXT_SUFFIXES:
+            continue
+        relative = path.relative_to(ROOT)
+        if "archive" in relative.parts or relative.parts[:2] == ("data", "exports"):
+            continue
+        content = path.read_text(encoding="utf-8")
+        if generation_pattern.search(content) or any(name in content.lower() for name in forbidden_names):
+            findings.append(relative.as_posix())
+
+    assert findings == []
 
 
 def test_status_has_stable_exit_codes(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
