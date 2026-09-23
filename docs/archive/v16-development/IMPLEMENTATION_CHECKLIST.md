@@ -61,7 +61,8 @@ Ce document est la liste de contrôle normative de V16. Une case n’est cochée
 - [x] Lecture visuelle directe, assistée par la sonde OCR arabe épinglée, des 51 lignes de la page 6126 : 26 Essaouira et 25 Rehamna. L'écart Labrikiyne (13 contre 16 sièges) reste exposé comme conflit, sans correction forcée.
 - [x] Lecture visuelle directe, assistée par la sonde OCR arabe épinglée, des 36 lignes de la page 6127 : 25 Safi et 11 Youssoufia; les 36 lignes se rapprochent sans nouveau conflit de sièges.
 - [x] Lecture visuelle directe, assistée par la sonde OCR arabe épinglée, des 46 lignes de la page 6128 : 29 Errachidia et 17 Ouarzazate; les 46 lignes se rapprochent sans nouveau conflit de sièges.
-- [ ] Lire et contrôler visuellement les autres pages de l'annexe BO 6374 (6129–6136) et obtenir une seconde revue des 1 163 lignes candidates des pages 6105–6128.
+- [x] Lecture visuelle directe, assistée par la sonde OCR arabe épinglée, des 43 lignes de la page 6129 : 29 Midelt et 14 Tinghir; les 43 lignes se rapprochent sans nouveau conflit de sièges.
+- [ ] Lire et contrôler visuellement les autres pages de l'annexe BO 6374 (6130–6136) et obtenir une seconde revue des 1 206 lignes candidates des pages 6105–6129.
 - [ ] Extraire et contrôler chaque désignation de commune, préfecture/province et nombre de sièges de l'annexe BO 6374; rapprocher ces désignations des identifiants électoraux et tester la couverture exacte avant toute prétention `COMPLETE`.
 - [ ] Acquérir l'arrêté ministériel des limites auquel renvoie le décret 2-15-577, revoir humainement les 41 correspondances individuelles et obtenir les identifiants officiels des six conseils avant de matérialiser le grain conseil ou de prétendre à une couverture complète.
 - [ ] Acquérir et vérifier les univers officiels nécessaires à la release.
