@@ -1,0 +1,61 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 51,
+  "printed_page": 6122,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée, assistée par la sonde OCR arabe à source épinglée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "سيدي بنور",
+      "rows": [
+        {"row": 1, "commune_name_ar": "سيدي بنور", "council_members": 31},
+        {"row": 2, "commune_name_ar": "زمامرة", "council_members": 15},
+        {"row": 3, "commune_name_ar": "لعامرية", "council_members": 13},
+        {"row": 4, "commune_name_ar": "بني هلال", "council_members": 23},
+        {"row": 5, "commune_name_ar": "لمشرك", "council_members": 23},
+        {"row": 6, "commune_name_ar": "أولاد سي بوحيى", "council_members": 23},
+        {"row": 7, "commune_name_ar": "بني تسيريس", "council_members": 15},
+        {"row": 8, "commune_name_ar": "لعونات", "council_members": 23},
+        {"row": 9, "commune_name_ar": "مطران", "council_members": 13},
+        {"row": 10, "commune_name_ar": "أولاد بوساكن", "council_members": 11},
+        {"row": 11, "commune_name_ar": "خميس القصيبة", "council_members": 11},
+        {"row": 12, "commune_name_ar": "كريديد", "council_members": 15},
+        {"row": 13, "commune_name_ar": "لعكاكشة", "council_members": 15},
+        {"row": 14, "commune_name_ar": "كدية بني دغوغ", "council_members": 23},
+        {"row": 15, "commune_name_ar": "تامدة", "council_members": 13},
+        {"row": 16, "commune_name_ar": "أولاد عمران", "council_members": 13},
+        {"row": 17, "commune_name_ar": "لعطاطرة", "council_members": 23},
+        {"row": 18, "commune_name_ar": "بوحمام", "council_members": 23},
+        {"row": 19, "commune_name_ar": "جابرية", "council_members": 23},
+        {"row": 20, "commune_name_ar": "امطل", "council_members": 13},
+        {"row": 21, "commune_name_ar": "الوليدية", "council_members": 23},
+        {"row": 22, "commune_name_ar": "الغربية", "council_members": 23},
+        {"row": 23, "commune_name_ar": "أولاد سبيطة", "council_members": 25},
+        {"row": 24, "commune_name_ar": "الغنادرة", "council_members": 25},
+        {"row": 25, "commune_name_ar": "سانية بركيك", "council_members": 25}
+      ]
+    },
+    {
+      "prefecture_province_ar": "مراكش",
+      "rows": [
+        {"row": 26, "commune_name_ar": "مراكش", "council_members": 81},
+        {"row": 27, "commune_name_ar": "مشور - القصبة", "council_members": 9},
+        {"row": 28, "commune_name_ar": "الأوداية", "council_members": 25},
+        {"row": 29, "commune_name_ar": "أيت ايمور", "council_members": 15},
+        {"row": 30, "commune_name_ar": "أكفاي", "council_members": 23},
+        {"row": 31, "commune_name_ar": "سيد الزوين", "council_members": 15},
+        {"row": 32, "commune_name_ar": "السويهلة", "council_members": 25},
+        {"row": 33, "commune_name_ar": "تسلطانت", "council_members": 31},
+        {"row": 34, "commune_name_ar": "سعادة", "council_members": 31},
+        {"row": 35, "commune_name_ar": "حربيل", "council_members": 31},
+        {"row": 36, "commune_name_ar": "المنابهة", "council_members": 15},
+        {"row": 37, "commune_name_ar": "أولاد دليم", "council_members": 15},
+        {"row": 38, "commune_name_ar": "واحة سيدي ابراهيم", "council_members": 25},
+        {"row": 39, "commune_name_ar": "الويدان", "council_members": 25},
+        {"row": 40, "commune_name_ar": "أولاد حسون", "council_members": 23}
+      ]
+    }
+  ]
+}
