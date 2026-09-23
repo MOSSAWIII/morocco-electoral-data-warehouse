@@ -1,0 +1,81 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 48,
+  "printed_page": 6119,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée, assistée par la sonde OCR arabe à source épinglée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "الدار البيضاء",
+      "rows": [
+        {"row": 1, "commune_name_ar": "الدار البيضاء", "council_members": 131},
+        {"row": 2, "commune_name_ar": "مشور الدار البيضاء", "council_members": 9}
+      ]
+    },
+    {
+      "prefecture_province_ar": "المحمدية",
+      "rows": [
+        {"row": 3, "commune_name_ar": "المحمدية", "council_members": 43},
+        {"row": 4, "commune_name_ar": "عين حرودة", "council_members": 31},
+        {"row": 5, "commune_name_ar": "بني يخلف", "council_members": 25},
+        {"row": 6, "commune_name_ar": "سيدي موسى بن علي", "council_members": 13},
+        {"row": 7, "commune_name_ar": "سيدي موسى المجذوب", "council_members": 23},
+        {"row": 8, "commune_name_ar": "الشلالات", "council_members": 31}
+      ]
+    },
+    {
+      "prefecture_province_ar": "الجديدة",
+      "rows": [
+        {"row": 9, "commune_name_ar": "الجديدة", "council_members": 39},
+        {"row": 10, "commune_name_ar": "أزمور", "council_members": 25},
+        {"row": 11, "commune_name_ar": "لبير الجديد", "council_members": 23},
+        {"row": 12, "commune_name_ar": "لمهارزة الساحل", "council_members": 23},
+        {"row": 13, "commune_name_ar": "لغديرة", "council_members": 23},
+        {"row": 14, "commune_name_ar": "سيدي علي بن حمدوش", "council_members": 25},
+        {"row": 15, "commune_name_ar": "شتوكة", "council_members": 25},
+        {"row": 16, "commune_name_ar": "حوزية", "council_members": 25},
+        {"row": 17, "commune_name_ar": "أولاد رحمون", "council_members": 25},
+        {"row": 18, "commune_name_ar": "مولاي عبد الله", "council_members": 31},
+        {"row": 19, "commune_name_ar": "أولاد احسين", "council_members": 25},
+        {"row": 20, "commune_name_ar": "سيدي امحمد اخديم", "council_members": 13},
+        {"row": 21, "commune_name_ar": "أولاد غانم", "council_members": 23},
+        {"row": 22, "commune_name_ar": "سيدي عابد", "council_members": 23},
+        {"row": 23, "commune_name_ar": "أولاد عيسى", "council_members": 23},
+        {"row": 24, "commune_name_ar": "أولاد سيدي علي بن يوسف", "council_members": 13},
+        {"row": 25, "commune_name_ar": "أولاد فرج", "council_members": 23},
+        {"row": 26, "commune_name_ar": "زاوية لقواسم", "council_members": 13},
+        {"row": 27, "commune_name_ar": "سي احساين بن عبد الرحمان", "council_members": 11},
+        {"row": 28, "commune_name_ar": "شعيبات", "council_members": 13},
+        {"row": 29, "commune_name_ar": "أولاد حمدان", "council_members": 13},
+        {"row": 30, "commune_name_ar": "متوح", "council_members": 25},
+        {"row": 31, "commune_name_ar": "بولعوان", "council_members": 15},
+        {"row": 32, "commune_name_ar": "مكرس", "council_members": 23},
+        {"row": 33, "commune_name_ar": "سيدي اسماعيل", "council_members": 25},
+        {"row": 34, "commune_name_ar": "سبت سايس", "council_members": 13},
+        {"row": 35, "commune_name_ar": "زاوية سايس", "council_members": 13}
+      ]
+    },
+    {
+      "prefecture_province_ar": "النواصر",
+      "rows": [
+        {"row": 36, "commune_name_ar": "النواصر", "council_members": 23},
+        {"row": 37, "commune_name_ar": "بوسكورة", "council_members": 35},
+        {"row": 38, "commune_name_ar": "دار بوعزة", "council_members": 39},
+        {"row": 39, "commune_name_ar": "أولاد عزوز", "council_members": 25},
+        {"row": 40, "commune_name_ar": "أولاد صالح", "council_members": 23}
+      ]
+    },
+    {
+      "prefecture_province_ar": "مديونة",
+      "rows": [
+        {"row": 41, "commune_name_ar": "تيط مليل", "council_members": 25},
+        {"row": 42, "commune_name_ar": "مديونة", "council_members": 23},
+        {"row": 43, "commune_name_ar": "لهراويين", "council_members": 31},
+        {"row": 44, "commune_name_ar": "سيدي حجاج واد حصار", "council_members": 23},
+        {"row": 45, "commune_name_ar": "المجاطية أولاد الطالب", "council_members": 25}
+      ]
+    }
+  ]
+}

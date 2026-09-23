@@ -51,7 +51,8 @@ Ce document est la liste de contrôle normative de V16. Une case n’est cochée
 - [x] Lecture visuelle directe et transcription candidate des 52 lignes de la page 6116 : 11 Sidi Slimane, 22 Beni Mellal et 19 Azilal; source et sièges conservés.
 - [x] Lecture visuelle directe et transcription candidate des 41 lignes de la page 6117 : 25 Azilal (suite) et 16 Fquih Ben Salah; source et sièges conservés.
 - [x] Lecture visuelle directe et transcription candidate des 53 lignes de la page 6118 : 22 Khénifra et 31 Khouribga; source et sièges conservés.
-- [ ] Lire et contrôler visuellement les autres pages de l'annexe BO 6374 (6119–6136) et obtenir une seconde revue des 713 lignes candidates des pages 6105–6118.
+- [x] Lecture visuelle directe, assistée par la sonde OCR arabe épinglée, des 45 lignes de la page 6119 : 2 Casablanca, 6 Mohammedia, 27 El Jadida, 5 Nouaceur et 5 Mediouna; source et sièges conservés, sans promotion en univers officiel.
+- [ ] Lire et contrôler visuellement les autres pages de l'annexe BO 6374 (6120–6136) et obtenir une seconde revue des 758 lignes candidates des pages 6105–6119.
 - [ ] Extraire et contrôler chaque désignation de commune, préfecture/province et nombre de sièges de l'annexe BO 6374; rapprocher ces désignations des identifiants électoraux et tester la couverture exacte avant toute prétention `COMPLETE`.
 - [ ] Acquérir l'arrêté ministériel des limites auquel renvoie le décret 2-15-577, revoir humainement les 41 correspondances individuelles et obtenir les identifiants officiels des six conseils avant de matérialiser le grain conseil ou de prétendre à une couverture complète.
 - [ ] Acquérir et vérifier les univers officiels nécessaires à la release.
