@@ -133,3 +133,42 @@ non plus une chaîne de statuts ou de rectifications rattachable à chaque résu
 matérialisé. Il n'est donc ajouté ni comme univers officiel ni comme historique
 de résultats. Il pourra seulement corroborer une date de proclamation lorsqu'une
 publication des résultats au grain requis aura elle-même été acquise.
+
+## Contrat du service officiel des législatives 2016
+
+Une capture ultérieure de la
+[page officielle des résultats législatifs](https://web.archive.org/web/20161220132744id_/http://www.elections.ma/elections/legislatives/resultats.aspx)
+permet de préciser la cible technique. Les octets HTML acquis comptent 42 891
+octets et portent le SHA-256
+`b75677822b22d7037f5b402e993d7586932508a5e57514496084f65537195a12`.
+Contrairement aux captures des 12 et 19 octobre 2016, qui renvoient encore le
+code du formulaire régional sous l'URL législative, cette capture du
+20 décembre 2016 appelle bien les méthodes suivantes de
+`ElectionLegislatives.asmx` :
+
+- `getListResultVoix` pour les voix par parti ;
+- `getListElus` pour les personnes élues ;
+- `getstatparties` pour la répartition des sièges par parti ;
+- `getStatGenre`, `getStatNiveauEtude` et `getStatTracheAge` pour les
+  statistiques qualitatives ;
+- `getTauxParticipation` pour la participation.
+
+Le script officiel
+[`stats_graphs_Leg.js`](https://web.archive.org/web/20180101013736id_/http://www.elections.ma/elections/scripts/stats_graphs_Leg.js)
+confirme le contrat `POST` JSON commun : `Region`, `province` et `Circ_Leg`.
+Les 51 216 octets acquis portent le SHA-256
+`e4f1542a7b6ee1614f0437319a8e734e36f06406d2b29416f103e91daab3f3a8`.
+Le niveau national est demandé par le formulaire avec `Region = 0`,
+`province = 0` et `Circ_Leg = 999`. La réponse de `getstatparties` attendue par
+le script contient les champs `Name`, `Value_decimal` et `label` ; celle de
+`getListResultVoix` contient `Nom_Partis`, `N_Voix` et `Pourcentage_Voix`.
+
+Cette découverte ne matérialise pas encore un univers. L'index CDX ne conserve
+que des requêtes `GET` sans corps pour les sept méthodes, toutes rejouées comme
+une page `Request Rejected` de 189 octets. Les requêtes `POST` reproduisant le
+contrat contre le service actif retournent aussi `HTTP 403`. Ni le HTML ni le
+JavaScript ne contiennent les membres ou les valeurs du résultat. Ils ne sont
+donc inscrits ni au registre canonique des sources, ni dans
+`coverage_universe` : la prochaine acquisition utile est exactement la réponse
+nationale de `getstatparties`, ou une proclamation institutionnelle stable de
+même grain.
