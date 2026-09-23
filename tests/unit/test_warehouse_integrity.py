@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from morocco_elections.warehouse.contracts import PROPOSED_TABLE_CONTRACTS, TABLE_CONTRACTS, VOCABULARIES
-from morocco_elections.warehouse.build import build_development_database
+from morocco_elections.warehouse.build import _normalize_seed_identifiers, build_development_database
 from morocco_elections.warehouse.coverage import DIMENSIONS, UNKNOWN, coverage_report, validate_universes
 from morocco_elections.warehouse.history import validate_result_geographies
 from morocco_elections.warehouse.schema import create_schema, schema_inventory
@@ -58,6 +58,23 @@ def test_warehouse_build_is_additive_and_refuses_overwrite(tmp_path: Path) -> No
     connection.close()
     with pytest.raises(FileExistsError):
         build_development_database(seed, output)
+
+
+def test_seed_identifier_normalization_is_release_agnostic() -> None:
+    import duckdb
+
+    connection = duckdb.connect(":memory:")
+    connection.execute("CREATE TABLE parent (entity_id VARCHAR PRIMARY KEY)")
+    connection.execute("CREATE TABLE child (child_id VARCHAR, entity_id VARCHAR)")
+    connection.execute("INSERT INTO parent VALUES ('ENTITY_V27_3_A')")
+    connection.execute("INSERT INTO child VALUES ('CHILD_V27_B', 'ENTITY_V27_3_A')")
+
+    changed = _normalize_seed_identifiers(connection)
+
+    assert changed == 3
+    assert connection.execute("SELECT * FROM parent").fetchall() == [("ENTITY_A",)]
+    assert connection.execute("SELECT * FROM child").fetchall() == [("CHILD_B", "ENTITY_A")]
+    connection.close()
 
 
 def test_semantic_mutations_produce_all_explicit_errors() -> None:

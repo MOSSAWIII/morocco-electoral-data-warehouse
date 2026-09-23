@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -241,6 +242,31 @@ def test_audit_rejects_a_package_with_manifested_file_drift(tmp_path: Path) -> N
     assert report["package_integrity_failure_count"] >= 1
 
 
+def test_analytical_question_matrix_and_queries_are_synchronized_and_executable() -> None:
+    database = ROOT / "data/exports/open/warehouse/morocco_elections.duckdb"
+    if not database.is_file():
+        pytest.skip("local canonical package required")
+    guide = (ROOT / "docs/ANALYTICAL_GUIDE.md").read_text(encoding="utf-8")
+    query_text = (ROOT / "examples/analytical_queries.sql").read_text(encoding="utf-8")
+    guide_ids = re.findall(r"^\| (Q\d{2}) — ", guide, flags=re.MULTILINE)
+    query_blocks = re.findall(
+        r"^-- (Q\d{2})\..*?\n(.*?;)",
+        query_text,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+    expected_ids = [f"Q{index:02d}" for index in range(1, 16)]
+
+    assert guide_ids == expected_ids
+    assert [question_id for question_id, _ in query_blocks] == expected_ids
+    connection = duckdb.connect(str(database), read_only=True)
+    try:
+        for question_id, query in query_blocks:
+            assert question_id in expected_ids
+            connection.execute(query).fetchone()
+    finally:
+        connection.close()
+
+
 def test_historical_seed_audit_exposes_semantic_and_reconciliation_limits() -> None:
     report = audit_historical_seed(DATABASE)
     assert sum(report["fact_rows"].values()) > 0
@@ -356,6 +382,17 @@ def test_development_build_materializes_verified_legal_evidence(tmp_path: Path) 
         assert connection.execute(
             "SELECT count(*) FROM analytics_national_summary"
         ).fetchone()[0] == 9
+        identifier_columns = connection.execute(
+            "SELECT table_name, column_name FROM information_schema.columns "
+            "WHERE table_schema='main' AND data_type='VARCHAR' "
+            "AND (column_name LIKE '%_id' OR column_name='candidate_sources')"
+        ).fetchall()
+        for table, column in identifier_columns:
+            count = connection.execute(
+                f'SELECT count(*) FROM "{table}" '
+                f'''WHERE regexp_matches("{column}", '_V[0-9]+(_[0-9]+)*(_|$)', 'i')'''
+            ).fetchone()[0]
+            assert count == 0, (table, column)
         assert len(TABLE_GRAINS) == 45
         for table, (_, keys) in TABLE_GRAINS.items():
             quoted_keys = ", ".join(f'"{key}"' for key in keys)

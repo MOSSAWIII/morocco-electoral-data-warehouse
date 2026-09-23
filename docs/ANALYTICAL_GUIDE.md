@@ -56,21 +56,21 @@ manquantes, les 177 identifiants communaux non reliés à l'univers HCP et les
 
 | Question analytique | Vue et grain | Préconditions testées | Statut actuel | Limite |
 |---|---|---|---|---|
-| Quelles élections sont présentes ? | `analytics_elections`, une élection | clé `election_id` unique | Disponible | inventaire observé |
-| Quels concours composent une élection ? | `analytics_contests`, un concours | clé `contest_id` unique | Disponible | 354 régimes non résolus |
-| Quels résultats sont observés dans un territoire ? | `analytics_party_results`, un résultat de liste par concours | aucune pour lecture descriptive | Disponible | exhaustivité inconnue |
-| Quels résultats sont observés pour un parti ? | `analytics_party_results`, un résultat de liste par concours | aucune pour lecture descriptive | Disponible | comparabilité historique non établie |
-| Quels sièges sont disponibles ? | `analytics_seats`, un résultat de liste par concours | `availability_status = 'AVAILABLE'` | Partiel | les absences restent `NULL` |
-| La participation peut-elle être recalculée ? | `analytics_mobilization`, un concours | inscrits non nuls et votants présents | Non calculable | votants absents |
-| Quelle hiérarchie territoriale est vérifiée ? | `analytics_geographies`, une géographie | relation parent prouvée | Partiel | relations historiques incomplètes |
-| Quelle population officielle est raccordée ? | `analytics_geographies`, une géographie | `hcp_link_status = 'VERIFIED'` | Partiel | 177 identités non reliées |
-| Quelle couverture est démontrée ? | `analytics_coverage`, un scope de publication | univers officiel explicite | Partiel | allocation nationale de sièges 2021 disponible; sept scrutins sans univers de résultats |
-| Quelles entrées de mobilisation manquent ? | `analytics_mobilization`, un concours | aucune | Disponible | absence non assimilée à zéro |
-| Quels contrôles sont calculables ? | `analytics_quality_controls`, une métrique par concours | composants admissibles présents | Partiel | 14 860 `NOT_COMPUTABLE` |
-| Quelle est la provenance d'un résultat ? | résultats + `analytics_provenance`, un résultat | `source_id` déclaré | Disponible | droits source par source |
-| Quelles licences sont déclarées ? | `analytics_provenance`, une source | décision de source présente | Partiel | autorisation de release séparée |
-| Quelles identités territoriales restent ouvertes ? | `analytics_geographies`, une géographie | statut de crosswalk calculé | Disponible | 177 `UNRESOLVED` |
-| Quelle allocation nationale officielle peut être publiée ? | `coverage_universe_member`, un parti ayant obtenu des sièges en 2021 | page officielle de la Chambre épinglée et 12 membres ré-extraits | Disponible pour `LEG2021` | 395 sièges; ne prouve ni l'univers des votes ni les allocations locales détaillées |
+| Q01 — Quelles élections sont présentes ? | `analytics_elections`, une élection | clé `election_id` unique | Disponible | inventaire observé |
+| Q02 — Quels concours composent une élection ? | `analytics_contests`, un concours | clé `contest_id` unique | Disponible | 354 régimes non résolus |
+| Q03 — Quels résultats sont observés dans un territoire ? | `analytics_party_results`, un résultat de liste par concours | aucune pour lecture descriptive | Disponible | exhaustivité inconnue |
+| Q04 — Quels résultats sont observés pour un parti ? | `analytics_party_results`, un résultat de liste par concours | aucune pour lecture descriptive | Disponible | comparabilité historique non établie |
+| Q05 — Quels sièges sont disponibles ? | `analytics_seats`, un résultat de liste par concours | `availability_status = 'AVAILABLE'` | Partiel | les absences restent `NULL` |
+| Q06 — La participation peut-elle être recalculée ? | `analytics_mobilization`, un concours | inscrits non nuls et votants présents | Non calculable | votants absents |
+| Q07 — Quelle hiérarchie territoriale est vérifiée ? | `analytics_geographies`, une géographie | relation parent prouvée | Partiel | relations historiques incomplètes |
+| Q08 — Quelle population officielle est raccordée ? | `analytics_geographies`, une géographie | `hcp_link_status = 'VERIFIED'` | Partiel | 177 identités non reliées |
+| Q09 — Quelle couverture est démontrée ? | `analytics_coverage`, un scope de publication | univers officiel explicite | Partiel | allocation nationale de sièges 2021 disponible; sept scrutins sans univers de résultats |
+| Q10 — Quelles entrées de mobilisation manquent ? | `analytics_mobilization`, un concours | aucune | Disponible | absence non assimilée à zéro |
+| Q11 — Quels contrôles sont calculables ? | `analytics_quality_controls`, une métrique par concours | composants admissibles présents | Partiel | 14 860 `NOT_COMPUTABLE` |
+| Q12 — Quelle est la provenance d'un résultat ? | résultats + `analytics_provenance`, un résultat | `source_id` déclaré | Disponible | droits source par source |
+| Q13 — Quelles licences sont déclarées ? | `analytics_provenance`, une source | décision de source présente | Partiel | autorisation de release séparée |
+| Q14 — Quelles identités territoriales restent ouvertes ? | `analytics_geographies`, une géographie | statut de crosswalk calculé | Disponible | 177 `UNRESOLVED` |
+| Q15 — Quelle allocation nationale officielle peut être publiée ? | `coverage_universe_member`, un parti ayant obtenu des sièges en 2021 | page officielle de la Chambre épinglée et 12 membres ré-extraits | Disponible pour `LEG2021` | 395 sièges; ne prouve ni l'univers des votes ni les allocations locales détaillées |
 
 ## Règles d'analyse
 

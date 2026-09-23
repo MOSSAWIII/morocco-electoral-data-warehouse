@@ -85,6 +85,30 @@ def test_warehouse_content_fingerprint_ignores_physical_row_order(tmp_path: Path
     assert fingerprints[0][1] > 0
 
 
+def test_view_sql_fingerprint_changes_when_logic_changes_but_rows_do_not(tmp_path: Path) -> None:
+    view_entries = []
+    definitions = (
+        "SELECT id AS election_id, value FROM published",
+        "SELECT id AS election_id, concat(value, '') AS value FROM published",
+    )
+    for index, definition in enumerate(definitions):
+        database = tmp_path / f"view-{index}.duckdb"
+        connection = duckdb.connect(str(database))
+        try:
+            connection.execute("CREATE TABLE published (id INTEGER, value VARCHAR)")
+            connection.execute("INSERT INTO published VALUES (1, 'one')")
+            connection.execute(f"CREATE VIEW analytics_elections AS {definition}")
+            connection.execute("CHECKPOINT")
+        finally:
+            connection.close()
+        catalog = _table_catalog(database)
+        view_entries.append(catalog["views"][0])
+
+    assert view_entries[0]["logical_sha256"] == view_entries[1]["logical_sha256"]
+    assert view_entries[0]["sql_sha256"] != view_entries[1]["sql_sha256"]
+    assert view_entries[0]["sql_definition"] != view_entries[1]["sql_definition"]
+
+
 def test_evidence_index_contains_digests_not_materialized_facts() -> None:
     rows = [{"result_id": f"R{index}", "votes": index} for index in range(10_000)]
     context = PublicationContext(

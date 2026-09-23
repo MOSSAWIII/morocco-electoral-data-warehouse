@@ -76,8 +76,8 @@ def _normalize_historical_source_ids(connection: duckdb.DuckDBPyConnection) -> i
     return changed
 
 
-def _normalize_historical_product_identifiers(connection: duckdb.DuckDBPyConnection) -> int:
-    """Remove retired product-version tokens from copied row identifiers."""
+def _normalize_seed_identifiers(connection: duckdb.DuckDBPyConnection) -> int:
+    """Remove any release marker from copied identifiers at the seed boundary."""
     columns = connection.execute(
         "SELECT table_name, column_name FROM information_schema.columns "
         "WHERE table_schema='main' AND data_type='VARCHAR' "
@@ -89,10 +89,10 @@ def _normalize_historical_product_identifiers(connection: duckdb.DuckDBPyConnect
         result = connection.execute(
             f"UPDATE {_quoted(table)} SET {_quoted(column)} = "
             f"regexp_replace(regexp_replace({_quoted(column)}, "
-            "'_V(9|10|11|12|13|14|15|16)(_1)?_', '_', 'gi'), "
-            "'_V(9|10|11|12|13|14|15|16)(_1)?$', '', 'gi') "
+            "'_V[0-9]+(_[0-9]+)*_', '_', 'gi'), "
+            "'_V[0-9]+(_[0-9]+)*$', '', 'gi') "
             f"WHERE {_quoted(column)} IS NOT NULL AND "
-            f"regexp_matches({_quoted(column)}, '(^|_)V(9|10|11|12|13|14|15|16)(_|$)', 'i')"
+            f"regexp_matches({_quoted(column)}, '_V[0-9]+(_[0-9]+)*(_|$)', 'i')"
         )
         changed += result.fetchone()[0] if result.description else 0
     return changed
@@ -238,7 +238,7 @@ def build_development_database(
                 connection.execute(f"CREATE TABLE main.{quoted} AS SELECT * FROM historical_seed.{quoted}")
             connection.execute("DETACH historical_seed")
             normalized_source_references = _normalize_historical_source_ids(connection)
-            normalized_product_identifiers = _normalize_historical_product_identifiers(connection)
+            normalized_seed_identifiers = _normalize_seed_identifiers(connection)
             _rename_parliamentary_source_keys(connection)
             create_schema(connection)
             if "warehouse_metadata" not in source_tables:
@@ -335,7 +335,7 @@ def build_development_database(
         "output_database": str(output_database),
         "copied_historical_tables": len(source_tables),
         "normalized_historical_source_references": normalized_source_references,
-        "normalized_historical_product_identifiers": normalized_product_identifiers,
+        "normalized_seed_identifiers": normalized_seed_identifiers,
         "created_canonical_tables": len(TABLE_CONTRACTS),
         "seeded_legal_regimes": len(legal_payload["legal_regimes"]) if legal_payload is not None else 0,
         "seeded_election_legal_links": len(legal_payload["election_links"]) if legal_payload is not None else 0,
