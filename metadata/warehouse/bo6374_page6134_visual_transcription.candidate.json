@@ -1,0 +1,73 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 63,
+  "printed_page": 6134,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée, assistée par la sonde OCR arabe à source épinglée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "طاطا",
+      "rows": [
+        {"row": 1, "commune_name_ar": "طاطا", "council_members": 23},
+        {"row": 2, "commune_name_ar": "أقا", "council_members": 11},
+        {"row": 3, "commune_name_ar": "فم الحصن", "council_members": 11},
+        {"row": 4, "commune_name_ar": "فم زكيد", "council_members": 13},
+        {"row": 5, "commune_name_ar": "أيت وابلي", "council_members": 11},
+        {"row": 6, "commune_name_ar": "قصبة سيدي عبد الله بن مبارك", "council_members": 11},
+        {"row": 7, "commune_name_ar": "تيزونين", "council_members": 11},
+        {"row": 8, "commune_name_ar": "تمنارت", "council_members": 11},
+        {"row": 9, "commune_name_ar": "أم الكردان", "council_members": 11},
+        {"row": 10, "commune_name_ar": "أديس", "council_members": 11},
+        {"row": 11, "commune_name_ar": "تيكزمرت", "council_members": 11},
+        {"row": 12, "commune_name_ar": "تكموت", "council_members": 11},
+        {"row": 13, "commune_name_ar": "تيزغت", "council_members": 11},
+        {"row": 14, "commune_name_ar": "إيسافن", "council_members": 11},
+        {"row": 15, "commune_name_ar": "أكينان", "council_members": 11},
+        {"row": 16, "commune_name_ar": "ابن يعقوب", "council_members": 11},
+        {"row": 17, "commune_name_ar": "أقا إيغان", "council_members": 11},
+        {"row": 18, "commune_name_ar": "أتليت", "council_members": 11},
+        {"row": 19, "commune_name_ar": "الوكوم", "council_members": 13},
+        {"row": 20, "commune_name_ar": "تيسينت", "council_members": 13}
+      ]
+    },
+    {
+      "prefecture_province_ar": "كلميم",
+      "rows": [
+        {"row": 21, "commune_name_ar": "كلميم", "council_members": 35},
+        {"row": 22, "commune_name_ar": "بويزكارن", "council_members": 15},
+        {"row": 23, "commune_name_ar": "تكانت", "council_members": 11},
+        {"row": 24, "commune_name_ar": "أيت بوفلن", "council_members": 11},
+        {"row": 25, "commune_name_ar": "إفران أطلس الصغير", "council_members": 13},
+        {"row": 26, "commune_name_ar": "تيمولاي", "council_members": 11},
+        {"row": 27, "commune_name_ar": "تغجيجت", "council_members": 13},
+        {"row": 28, "commune_name_ar": "امتدي", "council_members": 11},
+        {"row": 29, "commune_name_ar": "أداي", "council_members": 11},
+        {"row": 30, "commune_name_ar": "أفركات", "council_members": 11},
+        {"row": 31, "commune_name_ar": "أسرير", "council_members": 11},
+        {"row": 32, "commune_name_ar": "تيكليت", "council_members": 11},
+        {"row": 33, "commune_name_ar": "فاصك", "council_members": 11},
+        {"row": 34, "commune_name_ar": "الشاطئ الأبيض", "council_members": 11},
+        {"row": 35, "commune_name_ar": "لبيار", "council_members": 11},
+        {"row": 36, "commune_name_ar": "رأس اومليل", "council_members": 11},
+        {"row": 37, "commune_name_ar": "لقصابي تاكوست", "council_members": 11},
+        {"row": 38, "commune_name_ar": "تاركا وساي", "council_members": 11},
+        {"row": 39, "commune_name_ar": "تلوين اساكا", "council_members": 11},
+        {"row": 40, "commune_name_ar": "اباينو", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "أسا - الزاك",
+      "rows": [
+        {"row": 41, "commune_name_ar": "أسا", "council_members": 15},
+        {"row": 42, "commune_name_ar": "الزاك", "council_members": 15},
+        {"row": 43, "commune_name_ar": "عوينة لهنا", "council_members": 11},
+        {"row": 44, "commune_name_ar": "عوينة يغمان", "council_members": 11},
+        {"row": 45, "commune_name_ar": "تويزكي", "council_members": 11},
+        {"row": 46, "commune_name_ar": "لبويرات", "council_members": 11},
+        {"row": 47, "commune_name_ar": "المحبس", "council_members": 11}
+      ]
+    }
+  ]
+}
