@@ -12,17 +12,17 @@ ROOT = Path(__file__).resolve().parents[2]
 def test_bo_tafra_reconciliation_is_complete_bijective_and_fail_closed() -> None:
     payload = build_reconciliation(ROOT)
     report = payload["report"]
-    assert report["candidate_rows"] == 1081
-    assert report["identity_matches"] == 1075
+    assert report["candidate_rows"] == 1117
+    assert report["identity_matches"] == 1111
     assert report["unmatched"] == 6
     assert report["unmatched_with_verified_parent"] == 6
     assert report["ambiguous"] == 15
     assert report["exact_count_matches"] == 1
-    assert report["explained_differences"] == 1059
-    assert report["exact_name_matches"] == 939
-    assert report["fuzzy_unique_name_matches"] == 136
+    assert report["explained_differences"] == 1095
+    assert report["exact_name_matches"] == 974
+    assert report["fuzzy_unique_name_matches"] == 137
     matched_ids = [row["tafra_commune_id"] for row in payload["rows"] if row["tafra_commune_id"] is not None]
-    assert len(matched_ids) == len(set(matched_ids)) == 1075
+    assert len(matched_ids) == len(set(matched_ids)) == 1111
     unmatched = [row for row in payload["rows"] if row["status"] == "UNMATCHED"]
     assert {row["warehouse_communal_parent_id"] for row in unmatched} == {
         "COMM2015-CITY:TANGER", "COMM2015-CITY:FES", "COMM2015-CITY:RABAT", "COMM2015-CITY:SALE",
