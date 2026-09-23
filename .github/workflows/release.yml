@@ -52,6 +52,7 @@ jobs:
         run: |
           morocco-elections package \
             --package "$RUNNER_TEMP/warehouse" \
+            --require-ready \
             --output "$RUNNER_TEMP/morocco-electoral-data-warehouse-v1.0.0.zip"
 
       - name: Upload gated artifact

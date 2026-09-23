@@ -42,6 +42,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--output", type=Path,
         default=PROJECT_ROOT / "data" / "exports" / "open" / "releases" / "morocco-electoral-warehouse.zip",
     )
+    package.add_argument(
+        "--require-ready", action="store_true",
+        help="refuser l'archive tant que les gates de publication ne passent pas",
+    )
     status = commands.add_parser("status", help="afficher un état compact du produit")
     status.add_argument("--package", type=Path, default=DEFAULT_PACKAGE)
     return parser
@@ -85,6 +89,19 @@ def _package(args: argparse.Namespace) -> int:
     if report["status"] != "PASS":
         _print(report)
         return 1
+    official_release_name = "v1.0.0" in args.output.name.lower()
+    if (
+        (args.require_ready or official_release_name)
+        and report["publication_status"] != "PUBLICATION_READY"
+    ):
+        _print({
+            "integrity_status": report["integrity_status"],
+            "publication_status": report["publication_status"],
+            "archive": str(args.output.resolve()),
+            "created": False,
+            "reason": "publication gates are not ready",
+        })
+        return 2
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(args.output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for path in sorted(item for item in args.package.rglob("*") if item.is_file()):

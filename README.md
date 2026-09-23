@@ -37,6 +37,16 @@ morocco-elections status
 
 Les cinq commandes acceptent `--help`. Les destinations de build et d'archive sont configurables; aucun chemin utilisateur absolu n'est codé dans le produit.
 
+La seule procédure de publication officielle ajoute les deux gardes de release :
+
+```powershell
+morocco-elections audit --summary --require-ready
+morocco-elections package --require-ready --output morocco-electoral-data-warehouse-v1.0.0.zip
+```
+
+La seconde commande refuse aussi automatiquement tout nom d'archive contenant
+`v1.0.0` si `publication_status` n'est pas `PUBLICATION_READY`.
+
 ## Interroger DuckDB
 
 ```powershell

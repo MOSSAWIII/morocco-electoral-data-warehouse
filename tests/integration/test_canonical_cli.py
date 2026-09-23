@@ -1,12 +1,17 @@
 from __future__ import annotations
 
 import json
+import re
+import shlex
 from pathlib import Path
 
 import pytest
 
 from morocco_elections.cli import build_parser, main
 from morocco_elections.warehouse.auditor import _status_pair
+
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_cli_exposes_only_canonical_commands() -> None:
@@ -19,12 +24,78 @@ def test_cli_exposes_only_canonical_commands() -> None:
         assert exit_info.value.code == 0
 
 
+def test_current_documentation_contains_only_parseable_cli_commands() -> None:
+    paths = [
+        ROOT / "README.md",
+        ROOT / "CONTRIBUTING.md",
+        ROOT / "data/README.md",
+        ROOT / ".github/pull_request_template.md",
+        *(
+            path
+            for path in (ROOT / "docs").rglob("*.md")
+            if "archive" not in path.relative_to(ROOT / "docs").parts
+        ),
+    ]
+    parser = build_parser()
+    commands: list[str] = []
+    pattern = re.compile(
+        r"(?:python -m morocco_elections|morocco-elections)\s+([^`\r\n]+)"
+    )
+    for path in paths:
+        for match in pattern.finditer(path.read_text(encoding="utf-8")):
+            command = match.group(1).strip()
+            commands.append(command)
+            parser.parse_args(shlex.split(command))
+
+    assert commands
+    assert {shlex.split(command)[0] for command in commands} == {
+        "build", "validate", "audit", "package", "status",
+    }
+
+
 def test_status_has_stable_exit_codes(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     missing = tmp_path / "missing"
     assert main(["status", "--package", str(missing)]) == 1
     report = json.loads(capsys.readouterr().out)
     assert report["integrity_status"] == "FAIL"
     assert report["publication_status"] == "NOT_PUBLICATION_READY"
+
+
+@pytest.mark.parametrize(
+    ("archive_name", "extra_args"),
+    [
+        ("morocco-electoral-data-warehouse-v1.0.0.zip", []),
+        ("development.zip", ["--require-ready"]),
+    ],
+)
+def test_package_cannot_create_a_release_archive_before_readiness(
+    archive_name: str,
+    extra_args: list[str],
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        "morocco_elections.cli.validate_package",
+        lambda _path: {
+            "status": "PASS",
+            "integrity_status": "PASS",
+            "publication_status": "NOT_PUBLICATION_READY",
+        },
+    )
+    archive = tmp_path / archive_name
+
+    exit_code = main([
+        "package", "--package", str(tmp_path / "package"),
+        "--output", str(archive), *extra_args,
+    ])
+
+    assert exit_code == 2
+    assert not archive.exists()
+    report = json.loads(capsys.readouterr().out)
+    assert report["integrity_status"] == "PASS"
+    assert report["publication_status"] == "NOT_PUBLICATION_READY"
+    assert report["created"] is False
 
 
 @pytest.mark.parametrize(

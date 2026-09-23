@@ -24,7 +24,7 @@ Même le propriétaire du dépôt suit ce flux. Une urgence ne justifie pas de c
 
 ## Publication
 
-Le dépôt construit un produit unique. Son identité de développement est `0.0.0.dev0`. La première publication sera `v1.0.0`, uniquement lorsque `audit --require-ready` confirme les douze gates bloquants. Le snapshot utilisé comme seed est un artefact historique de provenance, pas une version active du produit. PostgreSQL reste différé jusqu'à la démonstration d'un besoin concret.
+Le dépôt construit un produit unique. Son identité de développement est `0.0.0.dev0`. La première publication sera `v1.0.0`, uniquement lorsque `audit --require-ready` confirme les douze gates bloquants; l'archive est ensuite créée avec `morocco-elections package --require-ready --output morocco-electoral-data-warehouse-v1.0.0.zip`. Le snapshot utilisé comme seed est un artefact historique de provenance, pas une version active du produit. PostgreSQL reste différé jusqu'à la démonstration d'un besoin concret.
 
 ## Proportionnalité
 
