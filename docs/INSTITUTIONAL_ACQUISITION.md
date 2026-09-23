@@ -45,3 +45,45 @@ La prochaine acquisition admissible doit fournir, depuis le ministère de l'Int�
 - une nomenclature versionnée des communes et de leurs changements de code.
 
 Une simple égalité de nom, même unique dans une préfecture, ne sera pas promue à `1.0`. Toute acquisition devra enregistrer URL, date, taille, SHA-256, licence, grain et méthode de rapprochement, puis subir un test de mutation avant de modifier le gate.
+
+## Tentative du 23 septembre 2026
+
+Deux nouvelles pistes HCP ont été examinées sans être ajoutées au registre,
+car aucune ne relie les identifiants internes aux codes HCP :
+
+- le [Code géographique du Maroc 2011](https://www.hcp.ma/region-marrakech/attachment/681918/)
+  est bien une nomenclature institutionnelle. Il confirme toutefois directement
+  les codes HCP déjà disponibles. Par exemple, `Ait Kamra` y porte
+  `051.05.01`, comme dans le fichier RGPH utilisé par le build, tandis que
+  l'identifiant interne non résolu est `MA-01-051-1101`. Le document ne
+  contient pas `051.11.01` et ne fournit donc pas le pont recherché;
+- l'URL HCP indexée comme
+  [« Communes et arrondissements »](https://www.hcp.ma/file/233918/) a été
+  téléchargée dans un espace temporaire. Le fichier obtenu compte
+  28 159 809 octets, porte le SHA-256
+  `d62869636e2fd31792455527d7909ed9afbacab0a1a8560cffac1b040d5f0d1b`
+  et contient 453 pages numérisées. L'inspection visuelle de la couverture
+  l'identifie comme l'`Annuaire statistique du Maroc 1983`; il ne s'agit pas
+  d'une nomenclature de communes et il ne ferme aucun gate.
+
+Ces deux fichiers restent exclus des sources actives. La recherche demeure
+limitée à un export institutionnel contenant soit l'identifiant interne, soit
+une clé stable commune aux deux systèmes; une seconde liste de noms et codes
+HCP n'est pas suffisante.
+
+La recherche des univers officiels de résultats n'a pas davantage produit de
+source admissible :
+
+- la page officielle des résultats législatifs 2016 sur `elections.ma` est
+  repérable, mais son téléchargement automatisé est refusé par la protection
+  du site (`HTTP 403`). Sans octets stables, aucun fichier ne peut être épinglé
+  par taille et SHA-256 ni intégré à la chaîne de preuve;
+- les pages de la Chambre des représentants consacrées à la composition des
+  législatures 2011–2016 et 2016–2021 décrivent un état parlementaire postérieur
+  au scrutin. Les remplacements et changements d'affiliation possibles les
+  rendent impropres à servir de proclamation officielle des résultats.
+
+Ces pages sont donc conservées comme pistes documentaires seulement. La levée
+du gate exige toujours une proclamation ou un export institutionnel stable qui
+déclare explicitement l'univers électoral et puisse être archivé, haché et
+rejoué.
