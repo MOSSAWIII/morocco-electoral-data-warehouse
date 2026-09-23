@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0.0",
+  "purpose": "Independent, hash-bound publication decisions consumed but never created by the build.",
+  "license_reviews": [],
+  "privacy_reviews": [],
+  "claim_reviews": []
+}

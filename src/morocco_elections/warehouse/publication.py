@@ -19,7 +19,6 @@ from morocco_elections.warehouse.gates.evaluators import (
     _denominator,
     _evidence_bundle,
     _grain,
-    _immutability,
     _legal_regime,
     _lineage,
     _metrics,

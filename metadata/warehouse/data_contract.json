@@ -61,6 +61,6 @@
     "absence of official result history remains explicitly disclosed and never implies FINAL",
     "forecast or AI-inferred values cannot be published as observed facts",
     "publication gates are computed by registered evaluators and never accepted as caller booleans",
-    "V15.0.0 artifacts remain byte-for-byte immutable"
+    "Historical source bytes remain pinned by their canonical descriptors"
   ]
 }

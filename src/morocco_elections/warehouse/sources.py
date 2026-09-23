@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shutil
 import tempfile
 import urllib.error
@@ -12,6 +13,100 @@ import urllib.request
 import zipfile
 from pathlib import Path
 from typing import Any
+
+
+_HISTORICAL_SHADOW_IDS = {
+    "SRC_HF_TAFRA_COMM2015_V6",
+    "SRC_HF_TAFRA_COUNCIL2021_V6",
+    "SRC_HF_TAFRA_MPS_V6",
+}
+_EQUIVALENT_SOURCE_IDS = {
+    # The historical and institutional descriptors pin the exact same workbook.
+    "SRC_HCP_RGPH2014_INDIVIDUALS": "MA_HCP_RGPH2014_INDICATEURS_COMMUNAUX_INDIVIDUS",
+}
+SOURCE_REGISTRY_PATH = Path("metadata/warehouse/source_registry.json")
+
+
+def canonical_source_id(source_id: str) -> str:
+    """Map legacy release-labelled source identities to stable functional names."""
+    if source_id in _HISTORICAL_SHADOW_IDS:
+        return re.sub(r"_V\d+$", "_HISTORICAL_SNAPSHOT", source_id)
+    normalized = re.sub(r"_RAW_V\d+$", "", source_id)
+    normalized = re.sub(r"_V\d+$", "", normalized)
+    return _EQUIVALENT_SOURCE_IDS.get(normalized, normalized)
+
+
+def load_source_registry(repository_root: Path) -> dict[str, Any]:
+    """Load the one active registry for every source class."""
+    return json.loads((repository_root / SOURCE_REGISTRY_PATH).read_text(encoding="utf-8"))
+
+
+def source_registry_issues(payload: dict[str, Any]) -> list[str]:
+    """Validate canonical identities, descriptor hashes, and acquisition state."""
+    issues: list[str] = []
+    source_ids: set[str] = set()
+    identity_owners: dict[str, str] = {}
+    content_hash_owners: dict[str, str] = {}
+    required = {
+        "source_id", "authority", "source_url", "grain", "license_status",
+        "status", "usages", "acquisition_status", "descriptor_sha256",
+    }
+    for row in payload.get("sources", []):
+        source_id = str(row.get("source_id", ""))
+        if not source_id or source_id in source_ids:
+            issues.append(f"duplicate or missing source_id: {source_id or '<missing>'}")
+        source_ids.add(source_id)
+        missing = sorted(field for field in required if row.get(field) in (None, "", []))
+        if missing:
+            issues.append(f"{source_id}: missing {', '.join(missing)}")
+        identities = [source_id, *row.get("aliases", [])]
+        for identity in identities:
+            normalized = canonical_source_id(str(identity))
+            owner = identity_owners.setdefault(normalized, source_id)
+            if owner != source_id:
+                issues.append(f"{identity}: canonical identity conflicts with {owner}")
+        content = (row.get("raw_path"), row.get("bytes"), row.get("sha256"))
+        pinned = all(value is not None and value != "" for value in content)
+        if pinned != any(value is not None and value != "" for value in content):
+            issues.append(f"{source_id}: content path, size, and SHA-256 must be atomic")
+        expected_acquisition = "ACQUIRED_PINNED" if pinned else "NOT_ACQUIRED_METADATA_ONLY"
+        if row.get("acquisition_status") != expected_acquisition:
+            issues.append(f"{source_id}: acquisition status contradicts content evidence")
+        if pinned and not row.get("acquired_at"):
+            issues.append(f"{source_id}: pinned content lacks acquisition date")
+        if pinned:
+            digest = str(row["sha256"])
+            owner = content_hash_owners.setdefault(digest, source_id)
+            if owner != source_id:
+                issues.append(f"{source_id}: content duplicates {owner} without alias resolution")
+        descriptor = {key: value for key, value in row.items() if key != "descriptor_sha256"}
+        observed = hashlib.sha256(
+            json.dumps(descriptor, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        if row.get("descriptor_sha256") != observed:
+            issues.append(f"{source_id}: descriptor SHA-256 mismatch")
+    if payload.get("source_count") != len(source_ids):
+        issues.append("source_count does not match unique canonical identities")
+    return issues
+
+
+def source_descriptors_by_id(repository_root: Path) -> dict[str, dict[str, Any]]:
+    """Index canonical IDs and historical aliases to their canonical descriptor."""
+    descriptors: dict[str, dict[str, Any]] = {}
+    for row in load_source_registry(repository_root).get("sources", []):
+        identities = [row.get("source_id"), *row.get("aliases", [])]
+        for identity in identities:
+            if identity:
+                descriptors[canonical_source_id(str(identity))] = row
+    return descriptors
+
+
+def official_source_rows(repository_root: Path) -> list[dict[str, Any]]:
+    """Return only entries explicitly qualified as institutional evidence."""
+    return [
+        row for row in load_source_registry(repository_root).get("sources", [])
+        if "official_evidence" in row.get("usages", [])
+    ]
 
 
 def _sha256(path: Path) -> str:
@@ -58,36 +153,16 @@ def _download_pinned(url: str, temporary: Path, expected_bytes: int, expected_sh
 
 
 def _declared_downloads(repository_root: Path) -> tuple[list[dict[str, Any]], int]:
-    official = json.loads(
-        (repository_root / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8")
-    )["sources"]
-    legacy_path = repository_root / "metadata/source_manifest.json"
-    legacy = json.loads(legacy_path.read_text(encoding="utf-8"))["sources"] if legacy_path.is_file() else []
-    elected_path = repository_root / "metadata/warehouse/elected_2015_source.json"
-    elected = (
-        json.loads(elected_path.read_text(encoding="utf-8"))["candidate"]
-        if elected_path.is_file() else None
-    )
+    registry = load_source_registry(repository_root)["sources"]
     rows = [
         {
-            "source_id": row["source_id"], "source_url": row["source_url"],
+            "source_id": canonical_source_id(row["source_id"]), "source_url": row["source_url"],
             "raw_path": row["raw_path"], "bytes": row["bytes"], "sha256": row["sha256"],
         }
-        for row in official if row.get("raw_path")
+        for row in registry
+        if row.get("raw_path") and row.get("bytes") is not None and row.get("sha256")
     ]
-    metadata_only = sum(not row.get("raw_path") for row in official)
-    rows.extend({
-        "source_id": row["source_id"], "source_url": row["source_url"],
-        "raw_path": row["local_path"], "bytes": row["byte_size"], "sha256": row["sha256"],
-    } for row in legacy)
-    if elected is not None:
-        rows.append({
-            "source_id": "TAFRA_COMMUNAL_ELECTED_2015",
-            "source_url": elected["download_url"],
-            "raw_path": "data/staging/v11a/source_candidates/communes-elus-2015-1-0.xlsx",
-            "bytes": elected["byte_size"],
-            "sha256": elected["sha256"],
-        })
+    metadata_only = len(registry) - len(rows)
     unique: dict[str, dict[str, Any]] = {}
     for row in rows:
         relative = str(row["raw_path"])
@@ -136,12 +211,18 @@ def materialize_declared_sources(repository_root: Path) -> dict[str, int]:
 
 
 def materialize_seed_database(repository_root: Path, destination: Path) -> Path:
-    """Extract only the pinned DuckDB seed from its immutable snapshot archive."""
+    """Return only a seed whose archive and extracted DuckDB match the descriptor."""
     repository_root, destination = repository_root.resolve(), destination.resolve()
     descriptor = json.loads(
         (repository_root / "metadata/warehouse/seed_snapshot.json").read_text(encoding="utf-8")
     )
-    if destination.is_file():
+    member = str(descriptor["database_member"])
+    expected_database_bytes = int(descriptor["database_bytes"])
+    expected_database_sha = str(descriptor["database_sha256"])
+    if destination.is_file() and (
+        destination.stat().st_size == expected_database_bytes
+        and _sha256(destination) == expected_database_sha
+    ):
         return destination
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="warehouse-seed-", dir=destination.parent) as temporary_name:
@@ -156,14 +237,23 @@ def materialize_seed_database(repository_root: Path, destination: Path) -> Path:
             )
         except ValueError as error:
             raise ValueError("seed snapshot archive differs from pinned evidence") from error
-        member = str(descriptor["database_member"])
         if member.startswith(("/", "\\")) or ".." in Path(member).parts:
             raise ValueError("unsafe seed database member")
         with zipfile.ZipFile(archive) as bundle:
-            info = bundle.getinfo(member)
+            try:
+                info = bundle.getinfo(member)
+            except KeyError as error:
+                raise ValueError("pinned seed database member is absent") from error
+            if info.is_dir() or info.file_size != expected_database_bytes:
+                raise ValueError("seed database member size differs from pinned evidence")
             temporary_database = temporary_root / "seed.duckdb"
             with bundle.open(info) as source, temporary_database.open("wb") as output:
                 while chunk := source.read(1024 * 1024):
                     output.write(chunk)
+        if (
+            temporary_database.stat().st_size != expected_database_bytes
+            or _sha256(temporary_database) != expected_database_sha
+        ):
+            raise ValueError("seed database member differs from pinned evidence")
         os.replace(temporary_database, destination)
     return destination

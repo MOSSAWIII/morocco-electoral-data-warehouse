@@ -7,30 +7,24 @@ La protection serveur de `main` n'est pas disponible pour ce dépôt privé avec
 1. Partir de `main` à jour et vérifier son alignement avec `origin/main`.
 2. Créer une branche `chore/<sujet>`, `research/<sujet>`, `feat/<sujet>` ou `fix/<sujet>`.
 3. Limiter chaque pull request à un changement cohérent.
-4. Exécuter `python -m ruff check .`, `python -m pytest` et `python -m morocco_elections validate --mode ci`.
-5. Exécuter aussi `python -m morocco_elections validate --mode full --release v13 --baseline v12` pour toute modification touchant le modèle, les sources, les volumes ou la documentation courante.
+4. Exécuter `python -m ruff check .` et `python -m pytest`.
+5. Construire puis contrôler le produit avec `python -m morocco_elections build --output <sortie>`, `python -m morocco_elections validate --package <sortie>` et `python -m morocco_elections audit --package <sortie> --summary`.
 6. Pousser uniquement la branche de travail et ouvrir une pull request vers `main`.
 7. Fusionner par squash uniquement après réussite de la CI et revue de la provenance, puis supprimer la branche distante.
 
-Même le propriétaire du dépôt suit ce flux. Une urgence ne justifie pas de contourner la CI; elle utilise une PR `fix/...` minimale.
+Même le propriétaire du dépôt suit ce flux. Une urgence ne justifie pas de contourner la CI ; elle utilise une PR `fix/...` minimale.
 
 ## Données et traçabilité
 
 - Ne jamais committer de RAW, classeur Excel, Parquet, archive, Shapefile, export de base ou secret.
 - Ne jamais modifier un RAW. Une correction se fait dans une couche normalisée et conserve la valeur source.
-- Toute nouvelle source doit être inscrite dans `metadata/source_manifest.json` avec URL, producteur, licence, version, grain, dimensions, chemin relatif et SHA-256.
+- Toute nouvelle source doit être inscrite dans le registre canonique avec URL, producteur, licence, grain, chemin relatif et SHA-256.
 - Toute transformation doit avoir une clé, un grain, une règle de nullité et un statut qualité explicites.
 - Toute résolution manuelle doit conserver la décision, la preuve, l'auteur et la date.
 
-## Versions
+## Publication
 
-- `v9.0.0` : baseline GitHub du warehouse V9.
-- `v10.0.0` : identités locales, crosswalks et intégrité des sièges.
-- `v11.0.0` : ingestion minimale des deux indicateurs HCP validés.
-- `v12.0.0` : questions parlementaires écrites qualifiées.
-- `v13.0.0` : cœur électoral multi-scrutins et identités historiques.
-- V13 est la seule release opérationnelle; V9 à V12 restent reproductibles et immuables.
-- PostgreSQL reste différé jusqu'à la démonstration d'un besoin concret.
+Le dépôt construit un produit unique. Son identité de développement est `0.0.0.dev0`. La première publication sera `v1.0.0`, uniquement lorsque `audit --require-ready` confirme les douze gates bloquants. Le snapshot utilisé comme seed est un artefact historique de provenance, pas une version active du produit. PostgreSQL reste différé jusqu'à la démonstration d'un besoin concret.
 
 ## Proportionnalité
 

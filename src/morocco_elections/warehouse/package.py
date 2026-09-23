@@ -18,16 +18,13 @@ from morocco_elections.warehouse import DEFAULT_SNAPSHOT_ID
 from morocco_elections.warehouse.build import build_development_database
 from morocco_elections.warehouse.publication import (
     PublicationContext,
-    _claims,
     _evidence_bundle,
-    _privacy,
-    _redistribution,
-    _uncertainty,
     sha256_file,
     validate_publication,
     write_evidence_bundle,
 )
 from morocco_elections.warehouse.portability import portability_descriptor_sha256, validate_source_portability
+from morocco_elections.warehouse.sources import SOURCE_REGISTRY_PATH, source_descriptors_by_id
 
 
 DATABASE_NAME = "morocco_elections.duckdb"
@@ -35,14 +32,12 @@ MANIFEST_NAME = "package-manifest.json"
 CATALOG_NAME = "table-catalog.json"
 BUNDLE_NAME = "evidence-bundle.json"
 CONTRACT_NAME = "data-contract.json"
-V15_MANIFEST_NAME = "v15-immutable-checksums.json"
 GEO_REPORT_NAME = "geo-parent-report.json"
 RECONCILIATION_REPORT_NAME = "reconciliation-report.json"
 RESULT_HISTORY_REPORT_NAME = "result-history-report.json"
 PACKAGE_FILES = (
     DATABASE_NAME,
     CONTRACT_NAME,
-    V15_MANIFEST_NAME,
     GEO_REPORT_NAME,
     RECONCILIATION_REPORT_NAME,
     RESULT_HISTORY_REPORT_NAME,
@@ -51,8 +46,9 @@ PACKAGE_FILES = (
 
 PORTABLE_SOURCE_IDS = (
     "MA_HCP_RGPH2014_POPULATION_LEGALE_COMMUNES_12_REGIONS",
-    "SRC_TAFRA_COMM2015_RAW_V9",
-    "SRC_TAFRA_COMM2021_RAW_V9",
+    "SRC_CHAMBER_2021",
+    "SRC_TAFRA_COMM2015",
+    "SRC_TAFRA_COMM2021",
     "TAFRA_LEGISLATIVE_RESULTS_2007",
     "TAFRA_LEGISLATIVE_RESULTS_2011",
     "TAFRA_LEGISLATIVE_RESULTS_2016",
@@ -93,11 +89,18 @@ def _safe_relative(value: Any) -> str | None:
 
 
 def _table_catalog(database: Path) -> dict[str, Any]:
+    from morocco_elections.warehouse.semantic import VIEW_SEMANTICS, table_semantics
+
     connection = duckdb.connect(str(database), read_only=True)
     tables: list[dict[str, Any]] = []
+    views: list[dict[str, Any]] = []
     try:
-        names = [row[0] for row in connection.execute("SHOW TABLES").fetchall()]
-        for name in sorted(names):
+        objects = connection.execute(
+            "SELECT table_name, table_type FROM information_schema.tables "
+            "WHERE table_catalog = current_database() AND table_schema = 'main' "
+            "ORDER BY table_name"
+        ).fetchall()
+        for name, object_type in objects:
             escaped = name.replace('"', '""')
             description = connection.execute(f'DESCRIBE "{escaped}"').fetchall()
             columns = [
@@ -114,19 +117,38 @@ def _table_catalog(database: Path) -> dict[str, Any]:
             for encoded in sorted(rows):
                 logical.update(encoded.encode("utf-8"))
                 logical.update(b"\n")
-            tables.append({
+            entry = {
                 "table_name": name,
+                "object_type": object_type,
                 "columns": columns,
                 "row_count": len(rows),
                 "logical_sha256": logical.hexdigest(),
-            })
+            }
+            if object_type == "VIEW":
+                definition = connection.execute(
+                    "SELECT sql FROM duckdb_views() "
+                    "WHERE schema_name = 'main' AND view_name = ?",
+                    [name],
+                ).fetchone()[0]
+                canonical_definition = " ".join(str(definition).split())
+                entry.update(VIEW_SEMANTICS[name])
+                entry.update({
+                    "sql_definition": canonical_definition,
+                    "sql_sha256": hashlib.sha256(canonical_definition.encode("utf-8")).hexdigest(),
+                })
+                views.append(entry)
+            else:
+                entry.update(table_semantics(name, [column["name"] for column in columns]))
+                tables.append(entry)
     finally:
         connection.close()
     return {
         "schema_version": "1.0.0",
         "database": DATABASE_NAME,
         "table_count": len(tables),
+        "view_count": len(views),
         "tables": tables,
+        "views": views,
     }
 
 
@@ -152,16 +174,11 @@ def _file_entry(root: Path, relative: str, artifact_type: str, produced_at: str)
 
 
 def _source_portability(repository_root: Path) -> list[dict[str, Any]]:
-    manifest = json.loads((repository_root / "metadata/source_manifest.json").read_text(encoding="utf-8"))
-    official = json.loads(
-        (repository_root / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8")
-    )
-    descriptors = {str(row["source_id"]): row for row in manifest["sources"]}
-    descriptors.update({str(row["source_id"]): row for row in official["sources"]})
+    descriptors = source_descriptors_by_id(repository_root)
     rows: list[dict[str, Any]] = []
     for source_id in PORTABLE_SOURCE_IDS:
         descriptor = descriptors[source_id]
-        relative = descriptor.get("raw_path") or descriptor.get("local_path")
+        relative = descriptor.get("raw_path")
         consumers = ["METRIC_RECONCILED"]
         if source_id == "MA_HCP_RGPH2014_POPULATION_LEGALE_COMMUNES_12_REGIONS":
             consumers = ["OFFICIAL_UNIVERSE_DECLARED"]
@@ -170,25 +187,23 @@ def _source_portability(repository_root: Path) -> list[dict[str, Any]]:
             "portability_category": "REPRODUCIBLY_ACQUIRABLE",
             "relative_path": relative,
             "source_url": descriptor["source_url"],
-            "byte_size": descriptor.get("bytes", descriptor.get("byte_size")),
+            "byte_size": descriptor.get("bytes"),
             "sha256": descriptor["sha256"],
-            "license_status": descriptor.get("license_status", descriptor.get("license", "UNKNOWN")),
-            "license_evidence": descriptor.get("notes", descriptor.get("license", "UNKNOWN")),
+            "license_status": descriptor.get("license_status", "UNKNOWN"),
+            "license_evidence": descriptor.get("notes", "UNKNOWN"),
             "embedded": False,
             "gate_consumers": consumers,
         })
-    elected = json.loads(
-        (repository_root / "metadata/warehouse/elected_2015_source.json").read_text(encoding="utf-8")
-    )["candidate"]
+    elected = descriptors[ELECTED_SOURCE_ID]
     rows.append({
         "source_id": ELECTED_SOURCE_ID,
         "portability_category": "REPRODUCIBLY_ACQUIRABLE",
-        "relative_path": "data/staging/v11a/source_candidates/communes-elus-2015-1-0.xlsx",
-        "source_url": elected["download_url"],
-        "byte_size": elected["byte_size"],
+        "relative_path": elected["raw_path"],
+        "source_url": elected["source_url"],
+        "byte_size": elected["bytes"],
         "sha256": elected["sha256"],
-        "license_status": elected["license"],
-        "license_evidence": "metadata/warehouse/elected_2015_source.json workbook notes and source qualification",
+        "license_status": elected["license_status"],
+        "license_evidence": "metadata/warehouse/source_registry.json notes and source qualification",
         "embedded": False,
         "gate_consumers": ["METRIC_RECONCILED"],
     })
@@ -203,58 +218,32 @@ def _source_portability(repository_root: Path) -> list[dict[str, Any]]:
 def _publication_reviews(
     files: Sequence[Mapping[str, Any]], repository_root: Path, reviewed_at: str
 ) -> dict[str, list[dict[str, Any]]]:
-    policy_sha = sha256_file(repository_root / "LICENSES/DATA.md")
-    license_reviews: list[dict[str, Any]] = []
-    privacy_reviews: list[dict[str, Any]] = []
-    claim_reviews: list[dict[str, Any]] = []
-    for file in files:
-        relative, digest = str(file["relative_path"]), str(file["sha256"])
-        evidence_id = f"sha256:{digest}"
-        license_reviews.append({
-            "relative_path": relative,
-            "file_sha256": digest,
-            "decision": "REDISTRIBUTABLE",
-            "legal_basis": "ODbL-1.0 for project database structure, selection, and transformations; source-specific rights and attributions are retained; RAW sources are excluded",
-            "evidence_url": "https://opendatacommons.org/licenses/odbl/1-0/",
-            "evidence_id": f"LICENSES/DATA.md:sha256:{policy_sha}",
-            "proof_sha256": policy_sha,
-            "reviewed_by": "WAREHOUSE_RELEASE_STEWARD",
-            "reviewed_at": reviewed_at,
-        })
-        privacy_reviews.append({
-            "relative_path": relative,
-            "file_sha256": digest,
-            "decision": "PASS",
-            "review_method": "WAREHOUSE_SCHEMA_AND_CONTENT_PRIVACY_REVIEW_V1",
-            "reviewed_by": "WAREHOUSE_RELEASE_STEWARD",
-            "reviewed_at": reviewed_at,
-            "evidence_id": evidence_id,
-            "finding": "No unnecessary private personal data identified; public-office names, where present, remain sourced public facts.",
-        })
-        claim_reviews.append({
-            "relative_path": relative,
-            "file_sha256": digest,
-            "claim_class": file["claim_class"],
-            "uncertainty_applicable": False,
-            "uncertainty_disclosure": "No predictive or causal claim; missing and unverified institutional evidence remains explicit in gate results.",
-            "automatic_fraud_inference": False,
-            "review_method": "WAREHOUSE_CLAIM_CLASS_REVIEW_V1",
-            "reviewed_by": "WAREHOUSE_RELEASE_STEWARD",
-            "reviewed_at": reviewed_at,
-            "evidence_id": evidence_id,
-        })
-    return {
-        "license_reviews": license_reviews,
-        "privacy_reviews": privacy_reviews,
-        "claim_reviews": claim_reviews,
-    }
+    del reviewed_at  # Review dates come only from the independent registry.
+    registry_path = repository_root / "metadata/warehouse/publication_reviews.json"
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    expected = {(str(row["relative_path"]), str(row["sha256"])) for row in files}
+    result: dict[str, list[dict[str, Any]]] = {}
+    for review_type in ("license_reviews", "privacy_reviews", "claim_reviews"):
+        accepted: list[dict[str, Any]] = []
+        for row in registry.get(review_type, []):
+            required = {
+                "relative_path", "file_sha256", "reviewed_by", "reviewed_at",
+                "evidence_id",
+            }
+            basis_fields = {"legal_basis"} if review_type == "license_reviews" else {"review_method"}
+            decision_fields = {"decision"} if review_type != "claim_reviews" else {"claim_class"}
+            if not required | basis_fields | decision_fields <= row.keys():
+                raise ValueError(f"incomplete external {review_type} decision")
+            if (str(row["relative_path"]), str(row["file_sha256"])) in expected:
+                accepted.append(dict(row))
+        result[review_type] = accepted
+    return result
 
 
 def _manifest(root: Path, produced_at: str) -> dict[str, Any]:
     artifact_types = {
         DATABASE_NAME: "DUCKDB_DATABASE",
         CONTRACT_NAME: "DATA_CONTRACT",
-        V15_MANIFEST_NAME: "PROVENANCE_MANIFEST",
         GEO_REPORT_NAME: "VALIDATION_REPORT",
         RECONCILIATION_REPORT_NAME: "VALIDATION_REPORT",
         RESULT_HISTORY_REPORT_NAME: "VALIDATION_REPORT",
@@ -288,7 +277,6 @@ def package_context(root: Path) -> PublicationContext:
         package_manifest_sha256=sha256_file(manifest_path),
         evidence_bundle_path=BUNDLE_NAME if bundle_path.is_file() else None,
         evidence_bundle_sha256=sha256_file(bundle_path) if bundle_path.is_file() else None,
-        v15_manifest_path=root / V15_MANIFEST_NAME,
     )
 
 
@@ -301,14 +289,21 @@ def validate_package(root: Path, *, expected_bundle_sha256: str | None = None) -
         if not path.is_file():
             failures.append({"record": path.name, "message": "required package artifact is absent"})
     if failures:
-        return {"status": "FAIL", "failures": failures}
+        return {
+            "status": "FAIL", "integrity_status": "FAIL",
+            "publication_status": "NOT_PUBLICATION_READY", "failures": failures,
+        }
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         bundle = json.loads(bundle_path.read_text(encoding="utf-8"))
         catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
         history = json.loads(history_path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as error:
-        return {"status": "FAIL", "failures": [{"record": "JSON", "message": type(error).__name__}]}
+        return {
+            "status": "FAIL", "integrity_status": "FAIL",
+            "publication_status": "NOT_PUBLICATION_READY",
+            "failures": [{"record": "JSON", "message": type(error).__name__}],
+        }
     entries = list(manifest.get("files", []))
     paths = [entry.get("relative_path") for entry in entries]
     duplicates = sorted({str(path) for path in paths if paths.count(path) > 1})
@@ -373,18 +368,40 @@ def validate_package(root: Path, *, expected_bundle_sha256: str | None = None) -
     evidence_gate = _evidence_bundle(context)
     if evidence_gate.status != "PASS":
         failures.append({"record": evidence_gate.gate_id, "message": evidence_gate.justification})
-    review_gates = (_uncertainty(context), _privacy(context), _claims(context), _redistribution(context))
-    for gate in review_gates:
-        if gate.status != "PASS":
-            failures.append({"record": gate.gate_id, "message": gate.justification})
+    # Release reviews are deliberately not technical-integrity failures. Their
+    # gate results determine publication_status independently below.
     portability = list(context.checks.get("source_portability", []))
     for message in validate_source_portability(portability):
         failures.append({"record": "source_portability", "message": message})
     license_count = len(context.checks.get("license_reviews", []))
     privacy_count = len(context.checks.get("privacy_reviews", []))
     claim_count = len(context.checks.get("claim_reviews", []))
+    integrity_status = "PASS" if not failures else "FAIL"
+    publication_status = "NOT_PUBLICATION_READY"
+    if integrity_status == "PASS":
+        from morocco_elections.warehouse.gates.registry import SPECS
+
+        connection = duckdb.connect(str(root / DATABASE_NAME), read_only=True)
+        try:
+            gate_table_present = connection.execute(
+                "SELECT count(*) FROM information_schema.tables "
+                "WHERE table_schema='main' AND table_name='publication_gate_result'"
+            ).fetchone()[0]
+            gate_rows = (
+                connection.execute(
+                    "SELECT gate_id, gate_status FROM publication_gate_result ORDER BY gate_id"
+                ).fetchall()
+                if gate_table_present else []
+            )
+        finally:
+            connection.close()
+        expected_gate_ids = {spec.gate_id for spec in SPECS}
+        if {row[0] for row in gate_rows} == expected_gate_ids and all(row[1] == "PASS" for row in gate_rows):
+            publication_status = "PUBLICATION_READY"
     return {
-        "status": "PASS" if not failures else "FAIL",
+        "status": integrity_status,
+        "integrity_status": integrity_status,
+        "publication_status": publication_status,
         "package_root": str(root),
         "files_included": len(entries) + 2,
         "files_excluded": 2,
@@ -436,6 +453,9 @@ def build_package(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Build the complete package in a fresh sibling staging directory and replace atomically."""
     package_root, repository_root = package_root.resolve(), repository_root.resolve()
+    from morocco_elections.warehouse.sources import materialize_seed_database
+
+    seed_database = materialize_seed_database(repository_root, seed_database)
     if package_root.exists() and not replace_existing:
         raise FileExistsError(f"refusing to overwrite existing warehouse package: {package_root}")
     package_root.parent.mkdir(parents=True, exist_ok=True)
@@ -446,12 +466,11 @@ def build_package(
             seed_database,
             staging / DATABASE_NAME,
             legal_seed_path=repository_root / "metadata/warehouse/legal_regimes.seed.json",
-            source_registry_path=repository_root / "metadata/warehouse/official_source_registry.json",
+            source_registry_path=repository_root / SOURCE_REGISTRY_PATH,
             evidence_root=repository_root,
             as_of_date=produced_at,
         )
         shutil.copy2(repository_root / "metadata/warehouse/data_contract.json", staging / CONTRACT_NAME)
-        shutil.copy2(repository_root / "metadata/warehouse/v15_immutable_checksums.json", staging / V15_MANIFEST_NAME)
         _write_json(staging / GEO_REPORT_NAME, database_report["geo_parent_report"])
         _write_json(staging / RECONCILIATION_REPORT_NAME, database_report["reconciliation_report"])
         _write_json(staging / RESULT_HISTORY_REPORT_NAME, database_report["result_history_report"])
@@ -468,7 +487,6 @@ def build_package(
             files=[],
             release_id=DEFAULT_SNAPSHOT_ID,
             as_of_date=produced_at,
-            v15_manifest_path=staging / V15_MANIFEST_NAME,
         )
         database_report["materialized_publication_rows"] = materialize_publication_inputs(
             staging / DATABASE_NAME, initial_context
@@ -477,7 +495,6 @@ def build_package(
         proof_artifact_types = {
             DATABASE_NAME: "DUCKDB_DATABASE",
             CONTRACT_NAME: "DATA_CONTRACT",
-            V15_MANIFEST_NAME: "ARCHIVE_CHECKSUM_INDEX",
             GEO_REPORT_NAME: "QUALITY_REPORT",
             RECONCILIATION_REPORT_NAME: "QUALITY_REPORT",
             RESULT_HISTORY_REPORT_NAME: "QUALITY_REPORT",
@@ -493,7 +510,6 @@ def build_package(
             files=physical_proof_files,
             release_id=DEFAULT_SNAPSHOT_ID,
             as_of_date=produced_at,
-            v15_manifest_path=staging / V15_MANIFEST_NAME,
         )
         proof_context = replace(
             proof_context,
@@ -533,7 +549,6 @@ def build_package(
             release_id=DEFAULT_SNAPSHOT_ID, as_of_date=produced_at,
             package_manifest_path=MANIFEST_NAME,
             package_manifest_sha256=sha256_file(staging / MANIFEST_NAME),
-            v15_manifest_path=staging / V15_MANIFEST_NAME,
         )
         checks = {
             **context.checks,

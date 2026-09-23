@@ -12,14 +12,18 @@ jobs:
   build-test-audit:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
     steps:
       - name: Checkout clean source
         uses: actions/checkout@v4
 
-      - name: Python 3.11
+      - name: Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python-version }}
           cache: pip
 
       - name: Install declared dependencies
@@ -48,8 +52,7 @@ jobs:
             geo-parent-report.json \
             reconciliation-report.json \
             result-history-report.json \
-            table-catalog.json \
-            v15-immutable-checksums.json
+            table-catalog.json
           do
             cmp "$RUNNER_TEMP/warehouse/$file" "$RUNNER_TEMP/warehouse-second/$file"
           done

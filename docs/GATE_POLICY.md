@@ -24,7 +24,6 @@ Un gate protège un risque observable. Il ne valide jamais une approbation qu'a 
 | `CLAIM_CLASS_DECLARED` | CORE_BLOCKING | preuves | fait inféré présenté comme observé | changer la classe en `OBSERVED_FACT` | faible | conserver |
 | `REDISTRIBUTION_PERMITTED` | CORE_BLOCKING | licences | redistribution interdite ou inconnue | rendre redistribuable une source sans décision | faible | conserver |
 | `REPRODUCIBLE_FROM_CLEAN_ENVIRONMENT` | REMOVE | build | build non reproductible; rapport auto-attesté | modifier le rapport produit par le build | élevé | déplacer en CI, où deux builds sont réellement comparés |
-| `V15_IMMUTABILITY_VERIFIED` | REMOVE | archives | altération du snapshot historique V15 | modifier un fichier archivé | moyen | remplacer par test d'archive/checksums, hors publication courante |
 
 ## Registre cible
 

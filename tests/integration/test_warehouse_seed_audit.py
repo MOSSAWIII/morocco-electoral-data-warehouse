@@ -8,22 +8,24 @@ from pathlib import Path
 import duckdb
 import pytest
 
-from morocco_elections.warehouse.audit import audit_v15_seed
+from morocco_elections.warehouse.audit import audit_historical_seed
 from morocco_elections.warehouse.build import build_development_database
 from morocco_elections.warehouse.coverage import coverage_report
 from morocco_elections.warehouse.councils import derive_comm2015_council_candidates
 from morocco_elections.warehouse.demography import load_hcp_rgph2014_arrondissement_identifiers, load_hcp_rgph2014_territorial_universe
 from morocco_elections.warehouse.demography import load_hcp_rgph2014_individuals
 from morocco_elections.warehouse.evidence import derive_contest_legal_regime_links, validate_official_source_registry
+from morocco_elections.warehouse.package import _table_catalog
 from morocco_elections.warehouse.publication import PublicationContext, _bind_contract_tables, _semantic_facts, _verify_demographic_source_rows, sha256_file
+from morocco_elections.warehouse.semantic import TABLE_GRAINS, VIEW_SEMANTICS
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DATABASE = ROOT / "data/exports/open/v15/morocco_elections_v15.duckdb"
-pytestmark = pytest.mark.skipif(not DATABASE.is_file(), reason="local V15 package required")
+DATABASE = ROOT / "data/seeds/historical/morocco_elections.duckdb"
+pytestmark = pytest.mark.skipif(not DATABASE.is_file(), reason="local historical seed required")
 
 
-def test_hcp_official_arrondissement_codes_match_all_v15_comm2015_units() -> None:
+def test_hcp_official_arrondissement_codes_match_all_historical_comm2015_units() -> None:
     workbook = ROOT / "data/raw/elections/warehouse/demography/hcp_rgph2014_population_legale_12_regions.xlsx"
     if not workbook.is_file():
         pytest.skip("official HCP workbook not acquired locally")
@@ -44,7 +46,7 @@ def test_hcp_official_arrondissement_codes_match_all_v15_comm2015_units() -> Non
     assert {row["geo_id"] for row in rows} == observed
     assert len({row["prefecture_code"] for row in rows}) == 6
     seed = json.loads((ROOT / "metadata/warehouse/comm2015_council_candidates.seed.json").read_text(encoding="utf-8"))
-    sources = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))["sources"]
+    sources = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))["sources"]
     referenced = {seed[field] for field in ("legal_source_id", "annex_source_id", "code_source_id")}
     referenced.update(
         group["urban_commune_order_source_id"] for group in seed["groups"]
@@ -62,7 +64,7 @@ def test_hcp_official_arrondissement_codes_match_all_v15_comm2015_units() -> Non
 
 
 def test_original_bo6304_is_pinned_but_does_not_justify_arrondissement_boundaries() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6304_URBAN_COMMUNE_BOUNDARY_ORDERS_2014")
     assert validate_official_source_registry(ROOT, {"sources": [source]}) == []
     assert source["public_package_disposition"] == "METADATA_ONLY"
@@ -70,7 +72,7 @@ def test_original_bo6304_is_pinned_but_does_not_justify_arrondissement_boundarie
 
 
 def test_pre_comm2021_bo6980_bis_is_pinned_without_claiming_final_geometry() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(
         row for row in registry["sources"]
         if row["source_id"] == "MA_SGG_BO_6980_BIS_TANGIER_MARRAKECH_BOUNDARY_ORDERS_2021"
@@ -84,7 +86,7 @@ def test_pre_comm2021_bo6980_bis_is_pinned_without_claiming_final_geometry() -> 
 
 
 def test_pre_comm2015_bo6374_is_pinned_without_claiming_official_universe() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(
         row for row in registry["sources"]
         if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015"
@@ -123,7 +125,7 @@ def test_official_hcp_territorial_identifiers_expose_partial_exact_code_coverage
     assert report["status"] == "PARTIAL"
 
 
-def test_semantic_package_binding_inspects_all_v15_seed_rows_without_omission() -> None:
+def test_semantic_package_binding_inspects_all_historical_seed_rows_without_omission() -> None:
     connection = duckdb.connect(str(DATABASE), read_only=True)
     try:
         def table_rows(table: str) -> list[dict]:
@@ -142,7 +144,7 @@ def test_semantic_package_binding_inspects_all_v15_seed_rows_without_omission() 
     finally:
         connection.close()
     context = PublicationContext(
-        release_id="V15-SEED-AUDIT", as_of_date="2026-09-15",
+        release_id="HISTORICAL-SEED-AUDIT", as_of_date="2026-09-15",
         files=[{"relative_path": DATABASE.name, "sha256": sha256_file(DATABASE)}],
         coverage_matrix=[],
         datasets={"semantic_facts": facts, "elections": elections, "contests": contests, "geographies": geographies},
@@ -165,41 +167,41 @@ def test_readiness_audit_reports_external_territorial_coverage_without_claiming_
     if not canonical_database.is_file():
         pytest.skip("local canonical package required")
     process = subprocess.run(
-        [sys.executable, "-m", "morocco_elections", "audit", "--summary"],
+        [
+            sys.executable,
+            "-m",
+            "morocco_elections",
+            "audit",
+            "--summary",
+            "--require-ready",
+        ],
         cwd=ROOT, capture_output=True, text=True, check=False,
     )
-    assert process.returncode == 0  # Canonical parent relations resolve the historical semantic violations.
+    # Technical integrity passes, but a release command must stop on the
+    # remaining publication gates.
+    assert process.returncode == 2
     report = json.loads(process.stdout)
-    assert report["geo_parent_report"]["requested_snapshot_mismatches"] == 3293
-    assert report["geo_parent_report"]["remaining"] == 0
-    territorial = report["external_territorial_coverage"]
-    assert territorial["status"] == "PARTIAL"
-    assert (territorial["denominator"], territorial["covered"], territorial["missing"], territorial["unexpected"]) == (1538, 1361, 177, 177)
-    council = report["council_candidates"]
-    assert (council["status"], council["candidate_council_count"], council["arrondissement_count"]) == ("CANDIDATE_ONLY", 6, 41)
-    assert council["publication_claim_allowed"] is False
-    assert report["publication_evaluation"]["publication_status"] == "NOT_PUBLICATION_READY"
-    gates = {row["gate_id"]: row["gate_status"] for row in report["publication_evaluation"]["gate_results"]}
-    assert gates["SEMANTIC_FACTS_VALIDATED"] == "PASS"
-    assert gates["OFFICIAL_UNIVERSE_DECLARED"] == "PASS"
-    assert gates["COVERAGE_DISCLOSED"] == "PASS"
-    assert gates["METRIC_RECONCILED"] == "PASS"
-    assert gates["AS_OF_DATE_VALID"] == "PASS"
-    assert gates["UNCERTAINTY_DISCLOSED_WHEN_APPLICABLE"] == "PASS"
-    assert gates["PRIVACY_REVIEW_PASSED"] == "PASS"
-    assert gates["CLAIM_CLASS_DECLARED"] == "PASS"
-    assert gates["REDISTRIBUTION_PERMITTED"] == "PASS"
-    assert {gate for gate, status in gates.items() if status == "FAIL"} == {
-        "LEGAL_REGIME_PINNED",
+    assert report["integrity_status"] == "PASS"
+    assert report["publication_status"] == "NOT_PUBLICATION_READY"
+    assert report["blocking_gate_count"] >= 1
+    assert report["blocking_record_count"] >= 354
+    assert "LEGAL_REGIME_PINNED" in {row["gate_id"] for row in report["blocking_gates"]}
+    assert report["unresolved_geography_count"] == 177
+    assert report["unresolved_geography_parent_count"] == 0
+    assert report["unresolved_commune_identity_count"] == 177
+    assert report["official_result_universe_gap_count"] == 7
+    assert report["not_computable_check_count"] == 14860
+    computability = report["reconciliation_computability_by_election"]
+    assert {row["election_id"] for row in computability} == {
+        "COMM2015", "COMM2021", "LEG2007", "LEG2011", "LEG2016", "LEG2021", "REG2015", "REG2021"
     }
-    assert list(gates.values()).count("PASS") == 11
-    assert list(gates.values()).count("FAIL") == 1
-    assert report["reconciliation_report"]["expected_checks"] == 14860
-    assert report["reconciliation_report"]["contests_without_status"] == 0
+    assert sum(row["calculable_checks"] for row in computability) == 0
+    assert sum(row["not_computable_checks"] for row in computability) == 14860
+    assert report["result_history_gap_count"] == 8
 
 
-def test_v15_seed_audit_exposes_semantic_and_reconciliation_limits() -> None:
-    report = audit_v15_seed(DATABASE)
+def test_historical_seed_audit_exposes_semantic_and_reconciliation_limits() -> None:
+    report = audit_historical_seed(DATABASE)
     assert sum(report["fact_rows"].values()) > 0
     semantic = {row["check"]: row["violations"] for row in report["semantic_checks"]}
     assert semantic["fact_election_result.historical_regional_parent"] > 0
@@ -211,7 +213,7 @@ def test_v15_seed_audit_exposes_semantic_and_reconciliation_limits() -> None:
     assert all(row["official_detail_universe_id"] is None for row in report["reconciliation_checks"])
     assert report["publication_status"] == "NOT_PUBLICATION_READY"
     assert "BALLOT_COMPONENTS_INCOMPLETE" in report["blockers"]
-    assert "HISTORICAL_GEO_PARENTS_MISSING_FROM_V15_SEED" in report["blockers"]
+    assert "HISTORICAL_GEO_PARENTS_MISSING_FROM_SEED" in report["blockers"]
     communal = report["communal_grain_audit"]
     assert communal["contest_rows"] == 1538
     assert communal["ordinary_commune_contests"] == 1497
@@ -235,7 +237,7 @@ def test_development_build_materializes_verified_legal_evidence(tmp_path: Path) 
         DATABASE,
         output,
         legal_seed_path=ROOT / "metadata/warehouse/legal_regimes.seed.json",
-        source_registry_path=ROOT / "metadata/warehouse/official_source_registry.json",
+        source_registry_path=ROOT / "metadata/warehouse/source_registry.json",
         evidence_root=ROOT,
     )
     assert report["publication_status"] == "NOT_PUBLICATION_READY"
@@ -275,14 +277,84 @@ def test_development_build_materializes_verified_legal_evidence(tmp_path: Path) 
             row[0] for row in connection.execute("SHOW TABLES").fetchall()
         }
         metadata = connection.execute(
-            "SELECT release, schema_version, source_release, as_of_date FROM warehouse_metadata"
+            "SELECT release, schema_version, seed_identity, as_of_date FROM warehouse_metadata"
         ).fetchone()
-        assert metadata[:3] == ("development-2026-09-21", 1, "V15")
+        assert metadata[:3] == ("development-2026-09-21", 1, "historical_seed")
         assert str(metadata[3]) == "2026-09-21"
+        views = {
+            row[0] for row in connection.execute(
+                "SELECT table_name FROM information_schema.tables WHERE table_type='VIEW'"
+            ).fetchall()
+        }
+        assert {
+            "analytics_elections", "analytics_contests", "analytics_party_results",
+            "analytics_seats", "analytics_mobilization", "analytics_geographies",
+            "analytics_quality_controls", "analytics_coverage",
+            "analytics_provenance", "analytics_national_summary",
+        } == views
+        assert connection.execute(
+            "SELECT count(*) FROM analytics_geographies WHERE hcp_link_status='UNRESOLVED'"
+        ).fetchone()[0] == 177
+        assert connection.execute(
+            "SELECT count(*) = count(DISTINCT geo_id) FROM analytics_geographies"
+        ).fetchone()[0]
+        assert connection.execute(
+            "SELECT count(*) FROM analytics_quality_controls "
+            "WHERE validation_status='NOT_COMPUTABLE'"
+        ).fetchone()[0] == 14860
+        assert connection.execute(
+            "SELECT count(*) FROM analytics_mobilization "
+            "WHERE denominator_status='NOT_COMPUTABLE' "
+            "AND recomputed_turnout_rate IS NOT NULL"
+        ).fetchone()[0] == 0
+        assert connection.execute(
+            "SELECT count(*) FROM analytics_national_summary "
+            "WHERE coverage_status <> 'UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR' "
+            "OR official_denominator IS NOT NULL"
+        ).fetchone()[0] == 0
+        assert connection.execute(
+            "SELECT count(*) FROM analytics_national_summary"
+        ).fetchone()[0] == 9
+        assert len(TABLE_GRAINS) == 45
+        for table, (_, keys) in TABLE_GRAINS.items():
+            quoted_keys = ", ".join(f'"{key}"' for key in keys)
+            total = connection.execute(f'SELECT count(*) FROM "{table}"').fetchone()[0]
+            distinct = connection.execute(
+                f'SELECT count(*) FROM (SELECT DISTINCT {quoted_keys} FROM "{table}")'
+            ).fetchone()[0]
+            null_predicate = " OR ".join(f'"{key}" IS NULL' for key in keys)
+            nulls = connection.execute(
+                f'SELECT count(*) FROM "{table}" WHERE {null_predicate}'
+            ).fetchone()[0]
+            assert (distinct, nulls) == (total, 0), table
+        for view, semantics in VIEW_SEMANTICS.items():
+            keys = semantics["logical_key"]
+            quoted_keys = ", ".join(f'"{key}"' for key in keys)
+            total = connection.execute(f'SELECT count(*) FROM "{view}"').fetchone()[0]
+            distinct = connection.execute(
+                f'SELECT count(*) FROM (SELECT DISTINCT {quoted_keys} FROM "{view}")'
+            ).fetchone()[0]
+            assert distinct == total, view
     finally:
         connection.close()
+    catalog = _table_catalog(output)
+    assert (catalog["table_count"], catalog["view_count"]) == (45, 10)
+    table_fields = {
+        "role", "grain", "logical_key", "authorized_relation_keys",
+        "authorized_relations", "usage", "known_limits",
+    }
+    assert all(table_fields <= row.keys() for row in catalog["tables"])
+    assert all(
+        {"dependencies", "sql_definition", "sql_sha256"} <= row.keys()
+        and len(row["sql_sha256"]) == 64
+        for row in catalog["views"]
+    )
+    assert all(
+        relation["target_table"] in TABLE_GRAINS
+        for row in catalog["tables"] for relation in row["authorized_relations"]
+    )
     legal_payload = json.loads((ROOT / "metadata/warehouse/legal_regimes.seed.json").read_text(encoding="utf-8"))
-    sources = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))["sources"]
+    sources = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))["sources"]
     population_source_id = legal_payload["population_link_rules"][0]["population_source_id"]
     population_source = next(row for row in sources if row["source_id"] == population_source_id)
     seed = duckdb.connect(str(DATABASE), read_only=True)

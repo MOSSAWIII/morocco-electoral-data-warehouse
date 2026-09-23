@@ -19,6 +19,7 @@ from typing import Any, Iterable, Mapping
 import openpyxl
 
 from morocco_elections.warehouse.bo6374 import validate_visual_candidate
+from morocco_elections.warehouse.sources import load_source_registry
 from morocco_elections.warehouse.validation import ValidationIssue
 
 
@@ -26,11 +27,11 @@ BO_SOURCE_ID = "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015"
 HCP_SOURCE_ID = "MA_HCP_RGPH2014_POPULATION_LEGALE_COMMUNES_12_REGIONS"
 LAW_SOURCE_ID = "MA_SGG_LO_34_15"
 ARRONDISSEMENT_ANNEX_SOURCE_ID = "MA_SGG_BO_6381_DECREE_2_15_577_ARRONDISSEMENTS_2015"
-TAFRA_RESULTS_SOURCE_ID = "SRC_TAFRA_COMM2015_RAW_V9"
+TAFRA_RESULTS_SOURCE_ID = "SRC_TAFRA_COMM2015"
 TAFRA_ELECTED_SOURCE_ID = "TAFRA_COUNCILS_2015_V1_0_0"
 
 RESULTS_PATH = Path("data/raw/tafra/communal_results/2015/communes-elections-2015-1-0.xlsx")
-ELECTED_PATH = Path("data/staging/v11a/source_candidates/communes-elus-2015-1-0.xlsx")
+ELECTED_PATH = Path("data/staging/elected-2015/communes-elus-2015-1-0.xlsx")
 HCP_PATH = Path("data/raw/elections/warehouse/demography/hcp_rgph2014_population_legale_12_regions.xlsx")
 DEFAULT_ARTIFACT_PATH = Path("data/exports/open/warehouse/bo6374_tafra_2015_reconciliation.json")
 DEFAULT_REPORT_PATH = Path("data/exports/open/warehouse/bo6374_tafra_2015_reconciliation_report.json")
@@ -311,7 +312,7 @@ def _distribution(rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
 
 def build_reconciliation(root: Path) -> dict[str, Any]:
     root = root.resolve()
-    registry = json.loads((root / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = load_source_registry(root)
     bo_source = _official_source(registry, BO_SOURCE_ID)
     candidates = _load_candidates(root, bo_source)
     provinces, units = _load_hcp_bridge(root / HCP_PATH)

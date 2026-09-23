@@ -9,13 +9,13 @@ from pathlib import Path
 
 from morocco_elections.warehouse.auditor import main as audit_main
 from morocco_elections.warehouse.package import build_package, validate_package
-from morocco_elections.warehouse.sources import materialize_declared_sources, materialize_seed_database
+from morocco_elections.warehouse.sources import materialize_declared_sources
 from morocco_elections.warehouse.validator import main as validate_repository
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PACKAGE = PROJECT_ROOT / "data" / "exports" / "open" / "warehouse"
-DEFAULT_SEED = PROJECT_ROOT / "data" / "exports" / "open" / "v15" / "morocco_elections_v15.duckdb"
+DEFAULT_SEED = PROJECT_ROOT / "data" / "seeds" / "historical" / "morocco_elections.duckdb"
 
 
 def _print(payload: object) -> None:
@@ -49,18 +49,18 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _build(args: argparse.Namespace) -> int:
     source_report = materialize_declared_sources(PROJECT_ROOT)
-    if not args.seed.is_file():
-        materialize_seed_database(PROJECT_ROOT, args.seed)
     report, validation = build_package(args.seed, args.output, PROJECT_ROOT, replace_existing=args.replace)
     _print({
-        "status": validation["status"], "snapshot_id": "development-2026-09-21",
+        "integrity_status": validation["integrity_status"],
+        "publication_status": validation["publication_status"],
+        "snapshot_id": "development-2026-09-21",
         "package": str(args.output.resolve()), "tables": validation["present_tables"],
         "files": validation["files_included"], "manifest_sha256": validation["manifest_sha256"],
         "proof_index_sha256": validation["bundle_sha256"],
         "materialized_publication_rows": report.get("materialized_publication_rows", {}),
         "source_materialization": source_report,
     })
-    return 0 if validation["status"] == "PASS" else 1
+    return 0 if validation["integrity_status"] == "PASS" else 1
 
 
 def _validate(args: argparse.Namespace) -> int:
@@ -68,7 +68,7 @@ def _validate(args: argparse.Namespace) -> int:
         return validate_repository([])
     report = validate_package(args.package)
     _print(report)
-    return 0 if report["status"] == "PASS" else 1
+    return 0 if report["integrity_status"] == "PASS" else 1
 
 
 def _audit(args: argparse.Namespace) -> int:
@@ -89,21 +89,30 @@ def _package(args: argparse.Namespace) -> int:
     with zipfile.ZipFile(args.output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for path in sorted(item for item in args.package.rglob("*") if item.is_file()):
             archive.write(path, path.relative_to(args.package).as_posix())
-    _print({"status": "PASS", "archive": str(args.output.resolve()), "bytes": args.output.stat().st_size})
+    _print({
+        "integrity_status": report["integrity_status"],
+        "publication_status": report["publication_status"],
+        "archive": str(args.output.resolve()), "bytes": args.output.stat().st_size,
+    })
     return 0
 
 
 def _status(args: argparse.Namespace) -> int:
     if not args.package.is_dir():
-        _print({"status": "MISSING", "package": str(args.package.resolve())})
+        _print({
+            "integrity_status": "FAIL", "publication_status": "NOT_PUBLICATION_READY",
+            "package": str(args.package.resolve()), "reason": "package is missing",
+        })
         return 1
     report = validate_package(args.package)
     _print({
-        "status": report["status"], "package": str(args.package.resolve()),
+        "integrity_status": report["integrity_status"],
+        "publication_status": report["publication_status"],
+        "package": str(args.package.resolve()),
         "tables": report.get("present_tables", 0), "files": report.get("files_included", 0),
         "failures": len(report.get("failures", [])),
     })
-    return 0 if report["status"] == "PASS" else 1
+    return 0 if report["integrity_status"] == "PASS" else 1
 
 
 def main(argv: list[str] | None = None) -> int:

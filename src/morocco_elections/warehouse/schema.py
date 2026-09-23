@@ -8,6 +8,7 @@ from morocco_elections.warehouse.contracts import ALL_TABLE_CONTRACTS, FIELD_VOC
 
 
 OPTIONAL_FIELDS: dict[str, tuple[str, ...]] = {
+    "coverage_universe_member": ("member_type", "expected_value", "unit"),
     "fact_result_revision": ("published_at", "valid_to", "supersedes_revision_id", "decision_id", "official_value", "notes"),
     "fact_result_reconciliation": (
         "official_value", "recomputed_value", "difference", "explanation", "not_computable_reason",
@@ -30,7 +31,7 @@ OPTIONAL_FIELDS: dict[str, tuple[str, ...]] = {
 }
 
 
-INTEGER_FIELDS = {"denominator", "position", "official_seats", "recomputed_seats", "population", "classification_value", "byte_size", "acquired", "expected", "covered", "missing", "non_comparable", "redistribution_forbidden"}
+INTEGER_FIELDS = {"denominator", "position", "official_seats", "recomputed_seats", "population", "classification_value", "byte_size", "acquired", "expected", "expected_value", "covered", "missing", "non_comparable", "redistribution_forbidden"}
 DOUBLE_FIELDS = {"official_value", "recomputed_value", "difference", "tolerance", "threshold", "confidence"}
 BOOLEAN_FIELDS = {"is_external", "privacy_review_required"}
 DATE_FIELDS = {"acquired_at", "valid_from", "valid_to", "published_at", "known_at", "decision_date", "effective_date", "census_date", "reviewed_at"}

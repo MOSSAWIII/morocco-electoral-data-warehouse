@@ -21,6 +21,8 @@ from morocco_elections.warehouse.geo_parents import build_geo_parent_evidence, g
 from morocco_elections.warehouse.reconciliation import derive_reconciliation_matrix
 from morocco_elections.warehouse.result_history import build_result_history_diagnostic
 from morocco_elections.warehouse.schema import create_schema
+from morocco_elections.warehouse.semantic import create_analytical_views
+from morocco_elections.warehouse.sources import canonical_source_id, source_registry_issues
 
 
 def _quoted(name: str) -> str:
@@ -45,6 +47,125 @@ def _insert_rows(connection: duckdb.DuckDBPyConnection, table: str, rows: list[d
     )
 
 
+def _normalize_historical_source_ids(connection: duckdb.DuckDBPyConnection) -> int:
+    """Remove legacy release labels from every copied source-reference column."""
+    if not connection.execute(
+        "SELECT count(*) FROM information_schema.tables "
+        "WHERE table_schema='main' AND table_name='sources'"
+    ).fetchone()[0]:
+        return 0
+    source_ids = [row[0] for row in connection.execute("SELECT source_id FROM sources").fetchall()]
+    aliases = {source_id: canonical_source_id(source_id) for source_id in source_ids}
+    if len(set(aliases.values())) != len(aliases):
+        raise RuntimeError("historical source aliases are not unique")
+    columns = connection.execute(
+        "SELECT table_name, column_name FROM information_schema.columns "
+        "WHERE table_schema='main' AND (column_name='source_id' OR column_name LIKE '%_source_id') "
+        "ORDER BY (table_name='sources'), table_name, column_name"
+    ).fetchall()
+    changed = 0
+    for table, column in columns:
+        for old, new in aliases.items():
+            if old == new:
+                continue
+            result = connection.execute(
+                f"UPDATE {_quoted(table)} SET {_quoted(column)} = ? WHERE {_quoted(column)} = ?",
+                [new, old],
+            )
+            changed += result.fetchone()[0] if result.description else 0
+    return changed
+
+
+def _normalize_historical_product_identifiers(connection: duckdb.DuckDBPyConnection) -> int:
+    """Remove retired product-version tokens from copied row identifiers."""
+    columns = connection.execute(
+        "SELECT table_name, column_name FROM information_schema.columns "
+        "WHERE table_schema='main' AND data_type='VARCHAR' "
+        "AND (column_name LIKE '%_id' OR column_name='candidate_sources') "
+        "ORDER BY table_name, column_name"
+    ).fetchall()
+    changed = 0
+    for table, column in columns:
+        result = connection.execute(
+            f"UPDATE {_quoted(table)} SET {_quoted(column)} = "
+            f"regexp_replace(regexp_replace({_quoted(column)}, "
+            "'_V(9|10|11|12|13|14|15|16)(_1)?_', '_', 'gi'), "
+            "'_V(9|10|11|12|13|14|15|16)(_1)?$', '', 'gi') "
+            f"WHERE {_quoted(column)} IS NOT NULL AND "
+            f"regexp_matches({_quoted(column)}, '(^|_)V(9|10|11|12|13|14|15|16)(_|$)', 'i')"
+        )
+        changed += result.fetchone()[0] if result.description else 0
+    return changed
+
+
+def _rename_parliamentary_source_keys(connection: duckdb.DuckDBPyConnection) -> None:
+    """Reserve source_id for canonical provenance, not parliamentary file identity."""
+    for table in ("dim_parliamentary_source", "bridge_question_source"):
+        present = connection.execute(
+            "SELECT count(*) FROM information_schema.tables "
+            "WHERE table_schema='main' AND table_name=?", [table]
+        ).fetchone()[0]
+        if not present:
+            continue
+        columns = {row[0] for row in connection.execute(f"DESCRIBE {_quoted(table)}").fetchall()}
+        if "source_id" in columns and "parliamentary_source_id" not in columns:
+            connection.execute(
+                f"ALTER TABLE {_quoted(table)} RENAME COLUMN source_id TO parliamentary_source_id"
+            )
+
+
+def _materialize_canonical_sources(
+    connection: duckdb.DuckDBPyConnection, source_registry: dict[str, Any]
+) -> None:
+    """Make the package source dimension an exact projection of the one registry."""
+    connection.execute("DELETE FROM sources")
+    rows = []
+    checked_at = source_registry.get("as_of_date")
+    for source in source_registry.get("sources", []):
+        rows.append({
+            "source_id": source["source_id"],
+            "source_name": source["title"],
+            "publisher": source["authority"],
+            "source_type": ",".join(source.get("usages", [])),
+            "domain": "canonical_source_registry",
+            "url": source["source_url"],
+            "geo_granularity": source["grain"],
+            "format": source.get("format"),
+            "access_method": source["acquisition_status"],
+            "license": source["license_status"],
+            "reliability_score": source.get("reliability_score"),
+            "last_checked": checked_at,
+            "status": source["status"],
+            "notes": source.get("notes"),
+        })
+    _insert_rows(connection, "sources", rows)
+
+
+def _validate_provenance_references(connection: duckdb.DuckDBPyConnection) -> None:
+    """Require every column actually named source_id to use the canonical registry."""
+    present = connection.execute(
+        "SELECT count(*) FROM information_schema.tables "
+        "WHERE table_schema='main' AND table_name='sources'"
+    ).fetchone()[0]
+    if not present:
+        return
+    registered = {row[0] for row in connection.execute("SELECT source_id FROM sources").fetchall()}
+    failures: list[str] = []
+    tables = connection.execute(
+        "SELECT table_name FROM information_schema.columns "
+        "WHERE table_schema='main' AND column_name='source_id' ORDER BY table_name"
+    ).fetchall()
+    for (table,) in tables:
+        unknown = connection.execute(
+            f"SELECT DISTINCT source_id FROM {_quoted(table)} "
+            "WHERE source_id IS NOT NULL AND source_id NOT IN (SELECT source_id FROM sources) LIMIT 1"
+        ).fetchone()
+        if unknown:
+            failures.append(f"{table}.source_id={unknown[0]}")
+    if failures:
+        raise RuntimeError("non-canonical provenance reference: " + failures[0])
+
+
 def build_development_database(
     seed_database: Path,
     output_database: Path,
@@ -63,6 +184,7 @@ def build_development_database(
     if output_database.exists() and not replace_existing:
         raise FileExistsError(f"refusing to overwrite existing warehouse database: {output_database}")
     legal_payload: dict[str, Any] | None = None
+    source_registry: dict[str, Any] | None = None
     population_rows: list[dict[str, Any]] = []
     population_source: dict[str, Any] | None = None
     geo_parent_rows: list[dict[str, Any]] = []
@@ -76,7 +198,16 @@ def build_development_database(
             raise ValueError("legal_seed_path, source_registry_path and evidence_root must be supplied together")
         legal_payload = load_json(legal_seed_path)
         source_registry = load_json(source_registry_path)
-        evidence_issues = validate_official_source_registry(evidence_root, source_registry)
+        registry_issues = source_registry_issues(source_registry)
+        if registry_issues:
+            raise RuntimeError(f"invalid canonical source registry: {registry_issues[0]}")
+        official_sources = [
+            row for row in source_registry.get("sources", [])
+            if "official_evidence" in row.get("usages", [])
+        ]
+        evidence_issues = validate_official_source_registry(
+            evidence_root, {"sources": official_sources}
+        )
         evidence_issues += validate_legal_regime_seed(legal_payload, source_registry)
         if evidence_issues:
             codes = ", ".join(sorted({issue.code for issue in evidence_issues}))
@@ -91,12 +222,12 @@ def build_development_database(
         connection = duckdb.connect(str(temporary))
         try:
             seed_sql = str(seed_database).replace("'", "''")
-            connection.execute(f"ATTACH '{seed_sql}' AS v15_seed (READ_ONLY)")
+            connection.execute(f"ATTACH '{seed_sql}' AS historical_seed (READ_ONLY)")
             source_tables = [
                 row[0]
                 for row in connection.execute(
                     "SELECT table_name FROM information_schema.tables "
-                    "WHERE table_catalog='v15_seed' AND table_type='BASE TABLE' ORDER BY table_name"
+                    "WHERE table_catalog='historical_seed' AND table_type='BASE TABLE' ORDER BY table_name"
                 ).fetchall()
             ]
             collisions = set(source_tables) & TABLE_CONTRACTS.keys()
@@ -104,27 +235,44 @@ def build_development_database(
                 raise RuntimeError("seed/canonical table collision: " + ", ".join(sorted(collisions)))
             for table in source_tables:
                 quoted = _quoted(table)
-                connection.execute(f"CREATE TABLE main.{quoted} AS SELECT * FROM v15_seed.{quoted}")
-            connection.execute("DETACH v15_seed")
+                connection.execute(f"CREATE TABLE main.{quoted} AS SELECT * FROM historical_seed.{quoted}")
+            connection.execute("DETACH historical_seed")
+            normalized_source_references = _normalize_historical_source_ids(connection)
+            normalized_product_identifiers = _normalize_historical_product_identifiers(connection)
+            _rename_parliamentary_source_keys(connection)
             create_schema(connection)
             if "warehouse_metadata" not in source_tables:
                 connection.execute(
-                    "CREATE TABLE warehouse_metadata (release VARCHAR, schema_version BIGINT, source_release VARCHAR)"
+                    "CREATE TABLE warehouse_metadata (release VARCHAR, schema_version BIGINT, seed_identity VARCHAR)"
                 )
                 connection.execute(
-                    "INSERT INTO warehouse_metadata VALUES (?, ?, 'V15')",
+                    "INSERT INTO warehouse_metadata VALUES (?, ?, 'historical_seed')",
                     [DEFAULT_SNAPSHOT_ID, SCHEMA_REVISION],
                 )
             metadata_columns = {
                 row[0] for row in connection.execute("DESCRIBE warehouse_metadata").fetchall()
             }
+            legacy_identity_columns = metadata_columns - {
+                "release", "schema_version", "as_of_date", "seed_identity",
+            }
+            if "seed_identity" not in metadata_columns and len(legacy_identity_columns) == 1:
+                legacy_identity = next(iter(legacy_identity_columns))
+                connection.execute(
+                    f"ALTER TABLE warehouse_metadata RENAME COLUMN {_quoted(legacy_identity)} TO seed_identity"
+                )
+                metadata_columns.remove(legacy_identity)
+                metadata_columns.add("seed_identity")
+            if "seed_identity" not in metadata_columns:
+                connection.execute("ALTER TABLE warehouse_metadata ADD COLUMN seed_identity VARCHAR")
             if "as_of_date" not in metadata_columns:
                 connection.execute("ALTER TABLE warehouse_metadata ADD COLUMN as_of_date DATE")
             connection.execute(
                 "UPDATE warehouse_metadata SET release = ?, schema_version = ?, "
-                "source_release = 'V15', as_of_date = ?",
+                "seed_identity = 'historical_seed', as_of_date = ?",
                 [DEFAULT_SNAPSHOT_ID, SCHEMA_REVISION, as_of_date],
             )
+            if source_registry is not None:
+                _materialize_canonical_sources(connection, source_registry)
             if evidence_root is not None:
                 geo_parent_rows, geo_parent_details = build_geo_parent_evidence(connection, evidence_root)
                 _insert_rows(connection, "bridge_geo_parent", geo_parent_rows)
@@ -176,6 +324,8 @@ def build_development_database(
                 result_history_report = build_result_history_diagnostic(
                     connection, evidence_root, as_of_date,
                 )
+            create_analytical_views(connection)
+            _validate_provenance_references(connection)
             connection.execute("CHECKPOINT")
         finally:
             connection.close()
@@ -183,7 +333,9 @@ def build_development_database(
     return {
         "source_database": str(seed_database),
         "output_database": str(output_database),
-        "copied_v15_tables": len(source_tables),
+        "copied_historical_tables": len(source_tables),
+        "normalized_historical_source_references": normalized_source_references,
+        "normalized_historical_product_identifiers": normalized_product_identifiers,
         "created_canonical_tables": len(TABLE_CONTRACTS),
         "seeded_legal_regimes": len(legal_payload["legal_regimes"]) if legal_payload is not None else 0,
         "seeded_election_legal_links": len(legal_payload["election_links"]) if legal_payload is not None else 0,

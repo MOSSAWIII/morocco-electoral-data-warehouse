@@ -18,7 +18,7 @@ from morocco_elections.warehouse.validation import validate_semantic_consistency
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DATABASE = ROOT / "data/exports/open/v15/morocco_elections_v15.duckdb"
+DATABASE = ROOT / "data/seeds/historical/morocco_elections.duckdb"
 
 
 def _rows(connection: duckdb.DuckDBPyConnection, table: str) -> list[dict]:
@@ -96,10 +96,10 @@ def test_comm2015_seed_rejects_deleted_or_invented_arrondissement(evidence) -> N
 def test_parent_source_hash_mutation_is_rejected(tmp_path: Path) -> None:
     source = tmp_path / "source.bin"
     source.write_bytes(b"official bytes")
-    metadata = tmp_path / "metadata"
-    metadata.mkdir()
-    (metadata / "source_manifest.json").write_text(json.dumps({"sources": [{
-        "source_id": "S", "local_path": "source.bin", "byte_size": source.stat().st_size,
+    metadata = tmp_path / "metadata/warehouse"
+    metadata.mkdir(parents=True)
+    (metadata / "source_registry.json").write_text(json.dumps({"sources": [{
+        "source_id": "S", "aliases": [], "raw_path": "source.bin", "bytes": source.stat().st_size,
         "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
     }]}), encoding="utf-8")
     assert _verify_manifest_sources(tmp_path, {"S"})["S"]["source_id"] == "S"

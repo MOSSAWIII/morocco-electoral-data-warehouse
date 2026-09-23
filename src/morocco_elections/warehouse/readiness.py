@@ -25,6 +25,8 @@ from morocco_elections.warehouse.geo_parents import geo_parent_report
 from morocco_elections.warehouse.publication import PublicationContext, sha256_file
 from morocco_elections.warehouse.reconciliation import derive_reconciliation_matrix
 from morocco_elections.warehouse.result_history import build_result_history_diagnostic
+from morocco_elections.warehouse.result_universes import load_chamber_2021_seat_universe
+from morocco_elections.warehouse.sources import load_source_registry
 
 
 def _table_rows(connection: duckdb.DuckDBPyConnection, table: str) -> list[dict[str, Any]]:
@@ -51,12 +53,11 @@ def build_readiness_context(
     package_manifest_sha256: str | None = None,
     evidence_bundle_path: str | None = None,
     evidence_bundle_sha256: str | None = None,
-    v15_manifest_path: Path | None = None,
 ) -> tuple[PublicationContext, dict[str, Any]]:
     repository_root, database = repository_root.resolve(), database.resolve()
     matrix_payload = json.loads((repository_root / "metadata/warehouse/release_coverage_matrix.template.json").read_text(encoding="utf-8"))
     legal_payload = json.loads((repository_root / "metadata/warehouse/legal_regimes.seed.json").read_text(encoding="utf-8"))
-    source_payload = json.loads((repository_root / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source_payload = load_source_registry(repository_root)
     connection = duckdb.connect(str(database), read_only=True)
     try:
         elections = [
@@ -100,6 +101,12 @@ def build_readiness_context(
             row for table in ("fact_election_result", "fact_electoral_mobilization", "fact_communal_election_result")
             for row in _table_rows(connection, table)
         ]
+        result_universe_required_elections = [
+            {"election_id": row[0]} for row in connection.execute(
+                "SELECT DISTINCT election_id FROM fact_election_result "
+                "UNION SELECT DISTINCT election_id FROM fact_communal_election_result ORDER BY 1"
+            ).fetchall()
+        ]
         geo_parent_relations = _table_rows(connection, "bridge_geo_parent")
         reconciliations = _table_rows(connection, "fact_result_reconciliation")
         result_revisions = _table_rows(connection, "fact_result_revision")
@@ -128,6 +135,15 @@ def build_readiness_context(
         for row in contests if row["election_id"] == "COMM2015"
     ]
     territorial_report = coverage_report(territorial_observations, [territorial_universe], territorial_members)[2]
+    result_source = next(row for row in source_payload["sources"] if row["source_id"] == "SRC_CHAMBER_2021")
+    result_issues = validate_official_source_registry(repository_root, {"sources": [result_source]})
+    if result_issues:
+        raise RuntimeError("official result-universe source bytes are not verified")
+    result_universe, result_members = load_chamber_2021_seat_universe(
+        repository_root / result_source["raw_path"],
+        source_url=result_source["source_url"], acquired_at=result_source["acquired_at"],
+    )
+    official_report = coverage_report([], [result_universe], result_members)[1]
     matrix_rows = [{"release_id": matrix_payload["release_id"], **row} for row in matrix_payload["dimensions"]]
     territorial_matrix = next(row for row in matrix_rows if row["scope_id"].upper() == "TERRITORIAL")
     territorial_matrix.update({
@@ -138,6 +154,13 @@ def build_readiness_context(
         "non_comparable": len(territorial_report["non_comparable_ids"]),
         "redistribution_forbidden": len(territorial_report["redistribution_forbidden_ids"]),
         "status": territorial_report["status"],
+    })
+    official_matrix = next(row for row in matrix_rows if row["scope_id"].upper() == "OFFICIAL")
+    official_matrix.update({
+        "universe_ids_json": json.dumps([result_universe["universe_id"]], separators=(",", ":")),
+        "acquired": 0, "expected": official_report["denominator"], "covered": 0,
+        "missing": len(official_report["missing_ids"]), "non_comparable": 0,
+        "redistribution_forbidden": 0, "status": official_report["status"],
     })
     population_source_id = legal_payload["population_link_rules"][0]["population_source_id"]
     population_source = next(row for row in source_payload["sources"] if row["source_id"] == population_source_id)
@@ -169,12 +192,18 @@ def build_readiness_context(
             "semantic_facts": semantic_facts, "geo_parent_relations": geo_parent_relations,
             "reconciliations": reconciliations, "legal_regimes": legal_payload["legal_regimes"],
             "election_legal_regimes": legal_payload["election_links"],
-            "contest_legal_regimes": contest_legal_regimes, "official_sources": source_payload["sources"],
+            "contest_legal_regimes": contest_legal_regimes,
+            "official_sources": [
+                row for row in source_payload["sources"]
+                if "official_evidence" in row.get("usages", [])
+            ],
             "geo_populations": populations, "geo_official_identifier_crosswalks": crosswalks,
             "population_legal_rules": legal_payload["population_link_rules"],
             "geo_type_legal_rules": legal_payload["geo_type_link_rules"],
-            "coverage_universes": [territorial_universe], "coverage_universe_members": territorial_members,
+            "coverage_universes": [territorial_universe, result_universe],
+            "coverage_universe_members": [*territorial_members, *result_members],
             "coverage_observations": territorial_observations,
+            "result_universe_required_elections": result_universe_required_elections,
             "result_revisions": result_revisions,
             "legal_decisions": legal_decisions,
             "warehouse_metadata": warehouse_metadata,
@@ -184,8 +213,7 @@ def build_readiness_context(
         checks={}, evidence_root=repository_root, package_root=database.parent,
         package_database_path=database.name, package_manifest_path=package_manifest_path,
         package_manifest_sha256=package_manifest_sha256, evidence_bundle_path=evidence_bundle_path,
-        evidence_bundle_sha256=evidence_bundle_sha256, v15_root=repository_root,
-        v15_manifest_path=v15_manifest_path or repository_root / "metadata/warehouse/v15_immutable_checksums.json",
+        evidence_bundle_sha256=evidence_bundle_sha256,
     )
     return context, {
         "geo_parent_report": parent_report,

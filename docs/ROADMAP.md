@@ -5,6 +5,8 @@ Cette roadmap décrit des capacités et des blocages, pas des versions de produi
 ## Capacités présentes
 
 - une pipeline canonique produit un DuckDB, un catalogue de tables, un manifeste et un index cryptographique compact;
+- dix vues de consommation dans ce DuckDB couvrent les quinze questions analytiques minimales sans dupliquer les faits;
+- les 45 tables ont chacune un rôle, un grain, une clé logique, des relations autorisées, un usage et des limites dans le catalogue automatisé;
 - la CLI unique construit, valide, audite, archive et résume le produit;
 - les univers territoriaux, leurs membres, la matrice de couverture, les fichiers substantiels, les revues et les résultats des gates sont matérialisés dans DuckDB;
 - les résultats, mobilisations, régimes juridiques couverts, populations et relations territoriales sont réconciliés lorsque les entrées le permettent;

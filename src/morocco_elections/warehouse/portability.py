@@ -167,10 +167,20 @@ def portable_evidence_root(
                 "sha256": row.get("sha256"),
                 "byte_size": row.get("byte_size"),
             })
-        metadata = root / "metadata"
-        metadata.mkdir(exist_ok=True)
-        (metadata / "source_manifest.json").write_text(
-            json.dumps({"sources": descriptors}, ensure_ascii=False, indent=2) + "\n",
+        metadata = root / "metadata/warehouse"
+        metadata.mkdir(parents=True, exist_ok=True)
+        (metadata / "source_registry.json").write_text(
+            json.dumps({"sources": [
+                {
+                    "source_id": row["source_id"],
+                    "aliases": [],
+                    "source_url": row["source_url"],
+                    "raw_path": row["local_path"],
+                    "bytes": row["byte_size"],
+                    "sha256": row["sha256"],
+                }
+                for row in descriptors
+            ]}, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
         yield root

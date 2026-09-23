@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_page6105_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6105_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -24,7 +24,7 @@ def test_page6105_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6106_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6106_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -36,7 +36,7 @@ def test_page6106_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6107_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6107_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -48,7 +48,7 @@ def test_page6107_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6108_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6108_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -60,7 +60,7 @@ def test_page6108_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6109_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6109_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -72,7 +72,7 @@ def test_page6109_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6110_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6110_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -84,7 +84,7 @@ def test_page6110_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6111_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6111_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -96,7 +96,7 @@ def test_page6111_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6112_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6112_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -108,7 +108,7 @@ def test_page6112_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6113_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6113_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -120,7 +120,7 @@ def test_page6113_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6114_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6114_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -132,7 +132,7 @@ def test_page6114_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6115_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6115_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -144,7 +144,7 @@ def test_page6115_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6116_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6116_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -156,7 +156,7 @@ def test_page6116_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6117_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6117_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []
@@ -168,7 +168,7 @@ def test_page6117_visual_transcription_is_source_pinned_and_candidate_only() -> 
 
 
 def test_page6118_visual_transcription_is_source_pinned_and_candidate_only() -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(row for row in registry["sources"] if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015")
     payload = json.loads((ROOT / "metadata/warehouse/bo6374_page6118_visual_transcription.candidate.json").read_text(encoding="utf-8"))
     assert validate_visual_candidate(payload, source) == []

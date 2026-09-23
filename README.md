@@ -10,10 +10,10 @@ Repères du snapshot de développement actuel : 9 élections, 3 715 scrutins, 10
 
 ## Installer
 
-Python 3.11 est requis.
+Python 3.11 ou 3.12 est requis; la CI exécute les mêmes dépendances et commandes sur les deux versions.
 
 ```powershell
-py -3.11 -m venv .venv
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements-dev.txt
 python -m pip install --no-deps --editable .
@@ -33,7 +33,7 @@ morocco-elections package
 morocco-elections status
 ```
 
-`build` produit par défaut `data/exports/open/warehouse/`, dont `morocco_elections.duckdb`, `package-manifest.json`, `table-catalog.json` et `evidence-bundle.json`. Le bundle est un index de preuve : il contient chemins, tailles, SHA-256, empreintes logiques de tables, références de sources et revues synthétiques, jamais une seconde copie des faits.
+`build` produit par défaut `data/exports/open/warehouse/`, dont `morocco_elections.duckdb`, `package-manifest.json`, `table-catalog.json` et `evidence-bundle.json`. Le bundle est un index de preuve : il contient chemins, tailles, SHA-256, empreintes logiques, références de sources et décisions externes disponibles, jamais une seconde copie des faits. Chaque commande expose séparément `integrity_status` et `publication_status`.
 
 Les cinq commandes acceptent `--help`. Les destinations de build et d'archive sont configurables; aucun chemin utilisateur absolu n'est codé dans le produit.
 
@@ -44,6 +44,13 @@ python -c "import duckdb; c=duckdb.connect('data/exports/open/warehouse/morocco_
 ```
 
 La table `sources` décrit la provenance. `coverage_universe`, `coverage_universe_member` et `release_coverage_matrix` distinguent couverture observée et complétude officielle. `fact_result_reconciliation` conserve les contrôles calculables et les raisons structurées de non-calculabilité.
+
+Pour une consommation directe, dix vues `analytics_*` exposent élections,
+concours, résultats, sièges, mobilisation, géographies, couverture, qualité,
+provenance et résumé national sans créer une seconde source de vérité. Le
+[guide analytique](docs/ANALYTICAL_GUIDE.md) explique leurs grains et limites;
+les [requêtes de référence](examples/analytical_queries.sql) couvrent les quinze
+usages minimaux du produit.
 
 ## Limites connues
 
@@ -57,9 +64,9 @@ Les priorités factuelles sont dans [docs/ROADMAP.md](docs/ROADMAP.md). La polit
 
 ## Sources, licences et archives
 
-Le registre canonique est `metadata/warehouse/official_source_registry.json`. Il fixe autorité, URL, date d'acquisition, taille, SHA-256, statut de vérification, licence et décision de redistribution. Le code est sous MIT; la documentation sous CC BY 4.0; les droits des données restent source par source selon [LICENSES/DATA.md](LICENSES/DATA.md) et [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+Le registre canonique unique est `metadata/warehouse/source_registry.json`. Il fixe autorité, URL, date d'acquisition, taille, SHA-256, statut de vérification, licence, usages et décision de redistribution. Le code est sous MIT; la documentation sous CC BY 4.0; les droits des données restent source par source selon [LICENSES/DATA.md](LICENSES/DATA.md) et [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
 
-Les documents des développements antérieurs sont sous `docs/archive/`. Le manifeste `metadata/warehouse/v15_immutable_checksums.json` protège le snapshot historique utilisé comme seed. Ces archives servent à la provenance et à la non-régression, pas au parcours normal.
+Les documents des développements antérieurs sont sous `docs/archive/`. Le descripteur `metadata/warehouse/seed_snapshot.json` épingle à la fois l'archive historique et le DuckDB qui en est extrait. Ces archives servent à la provenance et à la non-régression, pas au parcours normal.
 
 ## Développer
 

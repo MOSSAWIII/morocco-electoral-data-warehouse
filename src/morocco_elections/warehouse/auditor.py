@@ -8,7 +8,7 @@ import duckdb
 
 ROOT = Path(__file__).resolve().parents[3]
 
-from morocco_elections.warehouse.audit import audit_v15_seed  # noqa: E402
+from morocco_elections.warehouse.audit import audit_historical_seed  # noqa: E402
 from morocco_elections.warehouse.coverage import coverage_report  # noqa: E402
 from morocco_elections.warehouse.councils import derive_comm2015_council_candidates  # noqa: E402
 from morocco_elections.warehouse.demography import load_hcp_rgph2014_arrondissement_identifiers, load_hcp_rgph2014_individuals, load_hcp_rgph2014_territorial_universe  # noqa: E402
@@ -17,6 +17,8 @@ from morocco_elections.warehouse.geo_parents import geo_parent_report, validate_
 from morocco_elections.warehouse.publication import PublicationContext, sha256_file, validate_publication  # noqa: E402
 from morocco_elections.warehouse.reconciliation import derive_reconciliation_matrix  # noqa: E402
 from morocco_elections.warehouse.result_history import build_result_history_diagnostic  # noqa: E402
+from morocco_elections.warehouse.result_universes import load_chamber_2021_seat_universe  # noqa: E402
+from morocco_elections.warehouse.sources import load_source_registry  # noqa: E402
 from morocco_elections.warehouse.validation import validate_semantic_consistency  # noqa: E402
 
 
@@ -36,18 +38,22 @@ def _table_rows(connection: duckdb.DuckDBPyConnection, table: str) -> list[dict]
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Read-only historical-seed-to-canonical readiness audit")
     parser.add_argument("--database", type=Path, default=ROOT / "data/exports/open/warehouse/morocco_elections.duckdb")
-    parser.add_argument("--seed-database", type=Path, default=ROOT / "data/exports/open/v15/morocco_elections_v15.duckdb")
+    parser.add_argument("--seed-database", type=Path, default=ROOT / "data/seeds/historical/morocco_elections.duckdb")
     parser.add_argument("--require-ready", action="store_true", help="return a non-zero exit status unless all publication gates pass")
     parser.add_argument("--summary", action="store_true", help="emit counts and gate statuses without full affected-record lists")
+    parser.add_argument(
+        "--historical-seed-diagnostic", action="store_true",
+        help="include the legacy seed diagnostic separately from current product status",
+    )
     args = parser.parse_args(argv)
     if not args.database.is_file():
         parser.error(f"warehouse database not found: {args.database}")
-    if not args.seed_database.is_file():
-        parser.error(f"V15 seed database not found: {args.seed_database}")
-    seed_audit = audit_v15_seed(args.seed_database)
+    if args.historical_seed_diagnostic and not args.seed_database.is_file():
+        parser.error(f"historical seed database not found: {args.seed_database}")
+    seed_audit = audit_historical_seed(args.seed_database) if args.historical_seed_diagnostic else None
     matrix_payload = json.loads((ROOT / "metadata/warehouse/release_coverage_matrix.template.json").read_text(encoding="utf-8"))
     legal_payload = json.loads((ROOT / "metadata/warehouse/legal_regimes.seed.json").read_text(encoding="utf-8"))
-    source_payload = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    source_payload = load_source_registry(ROOT)
     connection = duckdb.connect(str(args.database), read_only=True)
     try:
         elections = [
@@ -95,6 +101,12 @@ def main(argv: list[str] | None = None) -> int:
             for table in ("fact_election_result", "fact_electoral_mobilization", "fact_communal_election_result")
             for row in _table_rows(connection, table)
         ]
+        result_universe_required_elections = [
+            {"election_id": row[0]} for row in connection.execute(
+                "SELECT DISTINCT election_id FROM fact_election_result "
+                "UNION SELECT DISTINCT election_id FROM fact_communal_election_result ORDER BY 1"
+            ).fetchall()
+        ]
         geo_parent_relations = _table_rows(connection, "bridge_geo_parent")
         reconciliations = _table_rows(connection, "fact_result_reconciliation")
         result_revisions = _table_rows(connection, "fact_result_revision")
@@ -123,6 +135,15 @@ def main(argv: list[str] | None = None) -> int:
         for row in contests if row["election_id"] == "COMM2015"
     ]
     territorial_report = coverage_report(territorial_observations, [territorial_universe], territorial_members)[2]
+    result_source = next(row for row in source_payload["sources"] if row["source_id"] == "SRC_CHAMBER_2021")
+    result_issues = validate_official_source_registry(ROOT, {"sources": [result_source]})
+    if result_issues:
+        raise RuntimeError("official result-universe source bytes are not verified")
+    result_universe, result_members = load_chamber_2021_seat_universe(
+        ROOT / result_source["raw_path"],
+        source_url=result_source["source_url"], acquired_at=result_source["acquired_at"],
+    )
+    official_report = coverage_report([], [result_universe], result_members)[1]
     council_seed = json.loads((ROOT / "metadata/warehouse/comm2015_council_candidates.seed.json").read_text(encoding="utf-8"))
     council_source_ids = {council_seed[field] for field in ("legal_source_id", "annex_source_id", "code_source_id")}
     council_source_ids.update(
@@ -154,6 +175,13 @@ def main(argv: list[str] | None = None) -> int:
         "non_comparable": len(territorial_report["non_comparable_ids"]),
         "redistribution_forbidden": len(territorial_report["redistribution_forbidden_ids"]),
         "status": territorial_report["status"],
+    })
+    official_matrix = next(row for row in matrix_rows if row["scope_id"].upper() == "OFFICIAL")
+    official_matrix.update({
+        "universe_ids_json": json.dumps([result_universe["universe_id"]], separators=(",", ":")),
+        "acquired": 0, "expected": official_report["denominator"], "covered": 0,
+        "missing": len(official_report["missing_ids"]), "non_comparable": 0,
+        "redistribution_forbidden": 0, "status": official_report["status"],
     })
     population_source_id = legal_payload["population_link_rules"][0]["population_source_id"]
     population_source = next(row for row in source_payload["sources"] if row["source_id"] == population_source_id)
@@ -195,14 +223,18 @@ def main(argv: list[str] | None = None) -> int:
             "legal_regimes": legal_payload["legal_regimes"],
             "election_legal_regimes": legal_payload["election_links"],
             "contest_legal_regimes": contest_legal_regimes,
-            "official_sources": source_payload["sources"],
+            "official_sources": [
+                row for row in source_payload["sources"]
+                if "official_evidence" in row.get("usages", [])
+            ],
             "geo_populations": populations,
             "geo_official_identifier_crosswalks": crosswalks,
             "population_legal_rules": legal_payload["population_link_rules"],
             "geo_type_legal_rules": legal_payload["geo_type_link_rules"],
-            "coverage_universes": [territorial_universe],
-            "coverage_universe_members": territorial_members,
+            "coverage_universes": [territorial_universe, result_universe],
+            "coverage_universe_members": [*territorial_members, *result_members],
             "coverage_observations": territorial_observations,
+            "result_universe_required_elections": result_universe_required_elections,
             "result_revisions": result_revisions,
             "legal_decisions": legal_decisions,
             "warehouse_metadata": warehouse_metadata,
@@ -217,12 +249,17 @@ def main(argv: list[str] | None = None) -> int:
         package_manifest_sha256=sha256_file(manifest_path) if manifest_path.is_file() else None,
         evidence_bundle_path=bundle_path.name if bundle_path.is_file() else None,
         evidence_bundle_sha256=sha256_file(bundle_path) if bundle_path.is_file() else None,
-        v15_root=ROOT,
-        v15_manifest_path=ROOT / "metadata/warehouse/v15_immutable_checksums.json",
     )
     publication = validate_publication(context)
+    relation_issues = validate_geo_parent_relations(geo_parent_relations, geographies, elections)
+    semantic_issues = validate_semantic_consistency(
+        semantic_facts, contests, elections, geographies, geo_parent_relations,
+    )
+    semantic_failure = bool(relation_issues or semantic_issues or parent_report["remaining"])
+    integrity_status = "FAIL" if semantic_failure else "PASS"
     report = {
-        "seed_audit": seed_audit,
+        "integrity_status": integrity_status,
+        "publication_status": publication["publication_status"],
         "geo_parent_report": parent_report,
         "reconciliation_report": reconciliation_report,
         "external_territorial_coverage": territorial_report,
@@ -230,52 +267,61 @@ def main(argv: list[str] | None = None) -> int:
         "result_history_report": result_history,
         "publication_evaluation": publication,
     }
+    if seed_audit is not None:
+        report["historical_seed_diagnostic"] = seed_audit
     if args.summary:
-        report = {
-            "seed_audit": seed_audit,
-            "geo_parent_report": parent_report,
-            "reconciliation_report": reconciliation_report,
-            "external_territorial_coverage": {
-                "election_id": "COMM2015",
-                "universe_id": territorial_universe["universe_id"],
-                "source_id": territorial_source_id,
-                "coverage_dimension": "TERRITORIAL",
-                "status": territorial_report["status"],
-                "denominator": territorial_report["denominator"],
-                "covered": len(territorial_report["covered_ids"]),
-                "missing": len(territorial_report["missing_ids"]),
-                "unexpected": len(territorial_report["unexpected_ids"]),
-            },
-            "council_candidates": {key: value for key, value in council_candidates.items() if key != "rows"},
-            "result_history_report": {
-                "as_of_date": result_history["as_of_date"],
-                "diagnostic": result_history["diagnostic"],
-                "gap_count": len(result_history["gaps"]),
-                "gap_codes": sorted({row["blocking_code"] for row in result_history["gaps"]}),
-            },
-            "publication_evaluation": {
-                "release_id": publication["release_id"],
-                "publication_status": publication["publication_status"],
-                "gate_results": [
-                    {
-                        "gate_id": row["gate_id"],
-                        "gate_status": row["gate_status"],
-                        "justification": row["justification"],
-                        "evidence_id": row["evidence_id"],
-                        "affected_record_count": len(json.loads(row["affected_records"])),
-                    }
-                    for row in publication["gate_results"]
-                ],
-            },
+        unresolved_commune_identities = sum(
+            row.get("matching_method") != "OFFICIAL_IDENTIFIER" or row.get("confidence") != 1.0
+            for row in crosswalks
+        )
+        declared_result_elections = {
+            str(row["election_id"])
+            for row in (territorial_universe, result_universe)
+            if row.get("coverage_dimension") == "OFFICIAL"
         }
+        required_result_elections = {
+            str(row["election_id"]) for row in result_universe_required_elections
+        }
+        blocking_gates = [
+            {
+                "gate_id": row["gate_id"],
+                "affected_record_count": len(json.loads(row["affected_records"])),
+                "justification": row["justification"],
+            }
+            for row in publication["gate_results"] if row["gate_status"] != "PASS"
+        ]
+        report = {
+            "integrity_status": integrity_status,
+            "publication_status": publication["publication_status"],
+            "blocking_gate_count": len(blocking_gates),
+            "blocking_record_count": sum(row["affected_record_count"] for row in blocking_gates),
+            "blocking_gates": blocking_gates,
+            "unresolved_geography_count": parent_report["remaining"] + unresolved_commune_identities,
+            "unresolved_geography_parent_count": parent_report["remaining"],
+            "unresolved_commune_identity_count": unresolved_commune_identities,
+            "official_result_universe_gap_count": len(
+                required_result_elections - declared_result_elections
+            ),
+            "not_computable_check_count": sum(
+                row.get("validation_status") == "NOT_COMPUTABLE" for row in reconciliations
+            ),
+            "reconciliation_computability_by_election": [
+                {
+                    "election_id": row["election_id"],
+                    "calculable_checks": row["calculable_checks"],
+                    "not_computable_checks": row["not_computable_checks"],
+                }
+                for row in reconciliation_report["computability_by_election"]
+            ],
+            "result_history_gap_count": len(result_history["gaps"]),
+        }
+        if seed_audit is not None:
+            report["historical_seed_diagnostic"] = seed_audit
     print(json.dumps(report, ensure_ascii=False, indent=2))
-    relation_issues = validate_geo_parent_relations(geo_parent_relations, geographies, elections)
-    semantic_issues = validate_semantic_consistency(
-        semantic_facts, contests, elections, geographies, geo_parent_relations,
-    )
-    semantic_failure = bool(relation_issues or semantic_issues or parent_report["remaining"])
     readiness_failure = args.require_ready and publication["publication_status"] != "PUBLICATION_READY"
-    return 1 if semantic_failure or readiness_failure else 0
+    if semantic_failure:
+        return 1
+    return 2 if readiness_failure else 0
 
 
 if __name__ == "__main__":

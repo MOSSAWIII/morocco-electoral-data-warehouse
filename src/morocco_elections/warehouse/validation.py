@@ -106,7 +106,7 @@ def validate_semantic_consistency(
                 ):
                     active.append(relation)
             if active:
-                # A materialized, election-scoped relation supersedes the immutable V15 parent.
+                # A materialized, election-scoped relation supersedes the historical seed parent.
                 current = active[0].get("parent_geo_id")
             else:
                 current = geo_by_id.get(current, {}).get("parent_geo_id")

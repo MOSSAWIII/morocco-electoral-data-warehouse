@@ -11,14 +11,15 @@ Décrire le changement et le grain de données concerné.
 ## Provenance et qualité
 
 - [ ] Aucun RAW, classeur, export, secret ou fichier binaire n'est ajouté.
-- [ ] Les nouvelles sources ou versions sont inscrites dans le manifeste.
+- [ ] Les nouvelles sources sont inscrites dans le registre canonique.
 - [ ] Les RAW existants restent inchangés.
-- [ ] Les statuts `OBSERVÉ`, `DÉRIVÉ`, `STRUCTURE VIDE`, `PILOTE` et `BLOQUÉ` sont respectés.
 - [ ] Les clés, cardinalités, règles de nullité et limitations sont documentées.
 
 ## Validation
 
-- [ ] `python -m morocco_elections validate --mode ci`
-- [ ] `pytest`
-- [ ] `python -m morocco_elections validate --mode full --release v14 --baseline v13` si le modèle, les données ou la documentation courante changent.
+- [ ] `python -m ruff check .`
+- [ ] `python -m pytest`
+- [ ] `python -m morocco_elections build --output <sortie>`
+- [ ] `python -m morocco_elections validate --package <sortie>`
+- [ ] `python -m morocco_elections audit --package <sortie> --summary`
 - [ ] La CI distante est réussie avant fusion par squash.

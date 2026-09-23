@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "decision": "QUALIFIED_SECONDARY_COPY",
+  "scope": "Source candidate for descriptive reconciliation only; not an official candidacy universe.",
+  "candidate": {
+    "candidate_id": "TAFRA_COMMUNAL_ELECTED_2015",
+    "expected_local_name": "communes-elus-2015-1-0.xlsx",
+    "dataset_url": "https://bulk.openafrica.net/ko_KR/dataset/composition-des-conseils-communaux-2015-maroc",
+    "download_url": "https://open.africa/dataset/07a04224-c0ad-4861-9705-0518f5d49dbd/resource/7ae81ece-1b3d-4cdc-ac49-acd6ba37f6ea/download/communes-elus-2015-1-0.xlsx",
+    "final_url": "https://s3-eu-west-1.amazonaws.com/cfa-openafrica/resources/7ae81ece-1b3d-4cdc-ac49-acd6ba37f6ea/communes-elus-2015-1-0.xlsx?ETag=7fca1f51b56bff28ef48caa33a9dd562",
+    "producer": "Association TAFRA; copie déclarée de elections.ma",
+    "license": "CC BY 4.0",
+    "source_version": "1.0.0 (novembre 2019)",
+    "retrieved_on": "2026-09-07",
+    "etag": "7fca1f51b56bff28ef48caa33a9dd562",
+    "last_modified": "2024-02-05T13:15:49Z",
+    "byte_size": 2189518,
+    "sha256": "8b5e6d23756087409a77fbaa00c0e25428c699245dbc3241d280b914600fd341",
+    "local_path": "data/staging/elected-2015/communes-elus-2015-1-0.xlsx",
+    "tracked": false
+  }
+}

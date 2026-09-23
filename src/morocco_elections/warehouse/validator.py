@@ -13,11 +13,11 @@ from morocco_elections.warehouse.contracts import TABLE_CONTRACTS, VOCABULARIES 
 from morocco_elections.warehouse.bo6374 import validate_visual_candidate  # noqa: E402
 from morocco_elections.warehouse.bo6374_reconciliation import DEFAULT_ARTIFACT_PATH, build_reconciliation, validate_reconciliation  # noqa: E402
 from morocco_elections.warehouse.evidence import load_json, validate_legal_regime_seed, validate_official_source_registry  # noqa: E402
-from morocco_elections.warehouse.immutability import load_manifest, verify_v15_immutability, verify_v15_publication_asset  # noqa: E402
 from morocco_elections.warehouse.geo_parents import build_geo_parent_evidence, geo_parent_report, validate_geo_parent_relations  # noqa: E402
 from morocco_elections.warehouse.reconciliation import derive_reconciliation_matrix  # noqa: E402
 from morocco_elections.warehouse.validation import ValidationIssue, validate_semantic_consistency  # noqa: E402
 from morocco_elections.warehouse.package import validate_package  # noqa: E402
+from morocco_elections.warehouse.sources import load_source_registry, official_source_rows, source_registry_issues  # noqa: E402
 
 
 def _rows(connection: duckdb.DuckDBPyConnection, table: str) -> list[dict]:
@@ -39,13 +39,14 @@ def _canonical_row(row: dict) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    issues = verify_v15_immutability(ROOT)
-    asset = ROOT / "data/exports/open/releases/Morocco_Electoral_Data_Warehouse_V15.zip"
-    asset_issues = verify_v15_publication_asset() if asset.is_file() else []
-    issues.extend(asset_issues)
-    source_registry = load_json(ROOT / "metadata/warehouse/official_source_registry.json")
+    issues: list[ValidationIssue] = []
+    source_registry = load_source_registry(ROOT)
+    issues.extend(
+        ValidationIssue("SOURCE_REGISTRY_INVALID", "source_registry", "REGISTRY", message)
+        for message in source_registry_issues(source_registry)
+    )
     legal_seed = load_json(ROOT / "metadata/warehouse/legal_regimes.seed.json")
-    issues.extend(validate_official_source_registry(ROOT, source_registry))
+    issues.extend(validate_official_source_registry(ROOT, {"sources": official_source_rows(ROOT)}))
     issues.extend(validate_legal_regime_seed(legal_seed, source_registry))
     visual_paths = sorted((ROOT / "metadata/warehouse").glob("bo6374_page*_visual_transcription.candidate.json"))
     visual_candidates = [load_json(path) for path in visual_paths]
@@ -112,9 +113,7 @@ def main(argv: list[str] | None = None) -> int:
         "release": "warehouse",
         "contract_tables": len(TABLE_CONTRACTS),
         "controlled_vocabularies": len(VOCABULARIES),
-        "v15_immutable_files": len(load_manifest()["files"]),
-        "v15_public_asset": "VERIFIED" if asset.is_file() and not asset_issues else "NOT_AVAILABLE" if not asset.is_file() else "FAILED",
-        "official_warehouse_sources": len(source_registry["sources"]),
+        "canonical_warehouse_sources": len(source_registry["sources"]),
         "encoded_warehouse_legal_regimes": len(legal_seed["legal_regimes"]),
         "bo6374_visual_candidate_rows": sum(
             len(group["rows"]) for candidate in visual_candidates for group in candidate["groups"]

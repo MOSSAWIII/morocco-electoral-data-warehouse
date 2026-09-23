@@ -17,7 +17,6 @@ from morocco_elections.warehouse.package import (
     MANIFEST_NAME,
     RECONCILIATION_REPORT_NAME,
     RESULT_HISTORY_REPORT_NAME,
-    V15_MANIFEST_NAME,
     _manifest,
     _table_catalog,
     _write_json,
@@ -119,7 +118,6 @@ def _make_package(root: Path) -> str:
     _write_json(root / RESULT_HISTORY_REPORT_NAME, {
         "as_of_date": "2026-09-21", "inventory": [], "gaps": [], "diagnostic": {},
     })
-    _write_json(root / V15_MANIFEST_NAME, {"release": "V15", "release_version": "15.0.0", "files": []})
     _write_json(root / CATALOG_NAME, _table_catalog(root / DATABASE_NAME))
     manifest = _manifest(root, "2026-09-21")
     _write_json(root / MANIFEST_NAME, manifest)
@@ -148,7 +146,6 @@ def _make_package(root: Path) -> str:
         checks={"license_reviews": license_reviews, "privacy_reviews": privacy_reviews, "claim_reviews": claim_reviews}, package_root=root,
         package_database_path=DATABASE_NAME, package_manifest_path=MANIFEST_NAME,
         package_manifest_sha256=sha256_file(root / MANIFEST_NAME),
-        v15_manifest_path=root / V15_MANIFEST_NAME,
     )
     context = write_evidence_bundle(context, BUNDLE_NAME)
     assert context.evidence_bundle_sha256 is not None
@@ -187,18 +184,6 @@ def test_package_rejects_database_byte_size_and_checksum_mutations(package) -> N
     messages = {row["message"] for row in report["failures"]}
     assert "file size differs from manifest" in messages
     assert "file SHA-256 differs from manifest" in messages
-
-
-def test_package_rejects_mutated_embedded_v15_manifest(package) -> None:
-    root, digest = package
-    with (root / V15_MANIFEST_NAME).open("ab") as stream:
-        stream.write(b"\n")
-    report = validate_package(root, expected_bundle_sha256=digest)
-    assert report["status"] == "FAIL"
-    failures = [row for row in report["failures"] if row["record"] == V15_MANIFEST_NAME]
-    assert {row["message"] for row in failures} == {
-        "file size differs from manifest", "file SHA-256 differs from manifest",
-    }
 
 
 @pytest.mark.parametrize("field,value", [("byte_size", 1), ("sha256", "0" * 64)])

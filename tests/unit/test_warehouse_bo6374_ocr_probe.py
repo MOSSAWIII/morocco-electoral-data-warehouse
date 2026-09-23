@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_bo6374_ocr_only_accepts_pinned_scanned_annex(tmp_path: Path) -> None:
-    registry = json.loads((ROOT / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = json.loads((ROOT / "metadata/warehouse/source_registry.json").read_text(encoding="utf-8"))
     source = next(
         row for row in registry["sources"]
         if row["source_id"] == "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015"

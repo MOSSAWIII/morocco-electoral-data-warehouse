@@ -196,7 +196,7 @@
       "verification_status": "VERIFIED_AUTHORITY_AND_BYTES",
       "license_status": "UNKNOWN",
       "public_package_disposition": "METADATA_ONLY",
-      "notes": "Classeur officiel publié par le HCP le 8 avril 2015; 1 984 lignes dans l'onglet Communes, avec code géographique et population légale. Les octets restent exclus du paquet public faute de licence de redistribution établie. Aucun rapprochement aux géographies V15 n'est admis sur le seul nom."
+      "notes": "Classeur officiel publié par le HCP le 8 avril 2015; 1 984 lignes dans l'onglet Communes, avec code géographique et population légale. Les octets restent exclus du paquet public faute de licence de redistribution établie. Aucun rapprochement aux géographies historiques n'est admis sur le seul nom."
     },
     {
       "source_id": "MA_HCP_RGPH2014_INDICATEURS_COMMUNAUX_INDIVIDUS",

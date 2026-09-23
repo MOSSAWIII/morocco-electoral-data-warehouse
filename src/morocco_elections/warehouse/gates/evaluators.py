@@ -26,12 +26,6 @@ from morocco_elections.warehouse.history import (
 from morocco_elections.warehouse.gates.base import GateResult
 from morocco_elections.warehouse.gates.registry import SPECS, build_registry
 from morocco_elections.warehouse.institutional import validate_candidacies_and_seats
-from morocco_elections.warehouse.immutability import (
-    CANONICAL_MANIFEST_BYTES,
-    CANONICAL_MANIFEST_SHA256,
-    MANIFEST_PATH,
-    verify_v15_immutability,
-)
 from morocco_elections.warehouse.reconciliation import compare
 from morocco_elections.warehouse.schema import OPTIONAL_FIELDS
 from morocco_elections.warehouse.validation import (
@@ -64,8 +58,6 @@ class PublicationContext:
     package_database_path: str | None = None
     package_manifest_path: str | None = None
     package_manifest_sha256: str | None = None
-    v15_root: Path | None = None
-    v15_manifest_path: Path = MANIFEST_PATH
 
 
 def sha256_file(path: Path) -> str:
@@ -88,13 +80,6 @@ def generate_checksums(root: Path, relative_paths: Iterable[str]) -> list[dict[s
 
 
 def evidence_bundle_payload(context: PublicationContext) -> dict[str, Any]:
-    manifest_sha256: str | None = None
-    try:
-        manifest_bytes = context.v15_manifest_path.read_bytes()
-    except OSError:
-        pass
-    else:
-        manifest_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
     table_index: list[dict[str, Any]] = []
     source_references: list[str] = []
     if context.package_root is not None and context.package_database_path:
@@ -144,9 +129,6 @@ def evidence_bundle_payload(context: PublicationContext) -> dict[str, Any]:
         "package_manifest": {
             "relative_path": context.package_manifest_path,
             "sha256": context.package_manifest_sha256,
-        },
-        "v15_immutability_manifest": {
-            "sha256": manifest_sha256,
         },
     }
 
@@ -942,6 +924,24 @@ def _official_universe(context: PublicationContext) -> GateResult:
                 if uid != extracted_universe["universe_id"] or row.get("coverage_dimension") != "TERRITORIAL":
                     failures.append((uid, "HCP territorial universe scope or identifier differs from its source-derived contract"))
                 expected_ids = {member["expected_id"] for member in extracted}
+            elif method == "CHAMBER_2021_NATIONAL_SEATS" and source_id == "SRC_CHAMBER_2021":
+                from morocco_elections.warehouse.result_universes import load_chamber_2021_seat_universe
+
+                extracted_universe, extracted = load_chamber_2021_seat_universe(
+                    source_path, source_url=str(source.get("source_url")),
+                    acquired_at=str(source.get("acquired_at")),
+                )
+                if uid != extracted_universe["universe_id"] or row.get("coverage_dimension") != "OFFICIAL":
+                    failures.append((uid, "Chamber result universe scope or identifier differs from its source-derived contract"))
+                expected_ids = {member["expected_id"] for member in extracted}
+                extracted_values = {member["expected_id"]: member["expected_value"] for member in extracted}
+                declared_values = {
+                    member.get("expected_id"): member.get("expected_value")
+                    for member in members if member.get("universe_id") == row.get("universe_id")
+                }
+                for party_id, seats in extracted_values.items():
+                    if declared_values.get(party_id) != seats:
+                        failures.append((str(party_id), "declared seat allocation differs from the official Chamber table"))
             elif method == "JSON_UNIVERSES_OBJECT" and source_path.suffix.lower() == ".json":
                 payload = json.loads(source_path.read_text(encoding="utf-8"))
                 values = payload.get("universes", {}).get(uid) if isinstance(payload, dict) else None
@@ -977,6 +977,18 @@ def _official_universe(context: PublicationContext) -> GateResult:
         (str(row.get("election_id")), row.get("coverage_dimension"))
         for row in universes if row.get("universe_id") in verified
     }
+    required_result_elections = {
+        str(row.get("election_id")) for row in _rows(context, "result_universe_required_elections")
+        if row.get("election_id") is not None
+    }
+    result_universe_elections = {
+        str(row.get("election_id")) for row in universes
+        if row.get("coverage_dimension") == "OFFICIAL"
+        and row.get("universe_type") == "OFFICIAL_SEAT_ALLOCATIONS"
+        and row.get("universe_id") in verified
+    }
+    for election_id in sorted(required_result_elections - result_universe_elections):
+        failures.append((election_id, "published result scope lacks a verified official party/seat universe"))
     for row in universes:
         if row.get("verification_status") != "VERIFIED":
             failures.append((str(row.get("universe_id")), "official universe is not verified"))
@@ -1268,7 +1280,7 @@ def _metrics(context: PublicationContext) -> GateResult:
         except SourceEvidenceError as error:
             failures.append((context.release_id, str(error)))
             metric_evidence_root = None
-    manifest = metric_evidence_root / "metadata/source_manifest.json" if metric_evidence_root else None
+    manifest = metric_evidence_root / "metadata/warehouse/source_registry.json" if metric_evidence_root else None
     if manifest is not None and manifest.is_file():
         from morocco_elections.warehouse.reconciliation import derive_reconciliation_matrix
 
@@ -1758,39 +1770,6 @@ def _reproducible(context: PublicationContext) -> GateResult:
     if len(rows) >= 2 and len(workspace_ids) != len(rows):
         failures.append(("clean_builds", "every clean build must provide a distinct structured workspace"))
     return _gate("REPRODUCIBLE_FROM_CLEAN_ENVIRONMENT", rows, failures, "Two clean builds passed and produced the same manifest.")
-
-
-def _immutability(context: PublicationContext) -> GateResult:
-    root = context.v15_root
-    failures: list[tuple[str, str]] = []
-    manifest: Any = None
-    try:
-        manifest_bytes = context.v15_manifest_path.read_bytes()
-        observed_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
-        if len(manifest_bytes) != CANONICAL_MANIFEST_BYTES:
-            failures.append((str(context.v15_manifest_path), "canonical V15 manifest byte length differs"))
-        if observed_sha256 != CANONICAL_MANIFEST_SHA256:
-            failures.append((str(context.v15_manifest_path), "canonical V15 manifest SHA-256 differs"))
-        manifest = json.loads(manifest_bytes.decode("utf-8"))
-        if manifest.get("release") != "V15" or manifest.get("release_version") != "15.0.0":
-            failures.append((str(context.v15_manifest_path), "invalid canonical V15 manifest identity"))
-        if root is not None:
-            failures += _issue_failures(verify_v15_immutability(root, context.v15_manifest_path))
-    except (OSError, UnicodeDecodeError, ValueError, KeyError, TypeError, RuntimeError) as error:
-        failures.append((str(context.v15_manifest_path), f"V15 immutability manifest is unreadable or invalid: {type(error).__name__}"))
-    evidence = {
-        "manifest_sha256": sha256_file(context.v15_manifest_path) if context.v15_manifest_path.is_file() else None,
-        "manifest": manifest,
-        "root": root,
-        "canonical_manifest_bytes": CANONICAL_MANIFEST_BYTES,
-        "canonical_manifest_sha256": CANONICAL_MANIFEST_SHA256,
-    }
-    return _gate(
-        "V15_IMMUTABILITY_VERIFIED",
-        evidence,
-        failures,
-        "The embedded manifest has the canonical V15 byte identity; repository builds also verify every listed V15 artifact.",
-    )
 
 
 GATE_EVALUATORS: Mapping[str, Callable[[PublicationContext], GateResult]] = {

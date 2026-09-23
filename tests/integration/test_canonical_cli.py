@@ -21,4 +21,6 @@ def test_cli_exposes_only_canonical_commands() -> None:
 def test_status_has_stable_exit_codes(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     missing = tmp_path / "missing"
     assert main(["status", "--package", str(missing)]) == 1
-    assert json.loads(capsys.readouterr().out)["status"] == "MISSING"
+    report = json.loads(capsys.readouterr().out)
+    assert report["integrity_status"] == "FAIL"
+    assert report["publication_status"] == "NOT_PUBLICATION_READY"

@@ -4,6 +4,11 @@ Ce document est la décision canonique de publication du **Morocco Electoral Dat
 
 Principes : une absence n'est jamais interprétée comme zéro; une couverture n'est dite complète que contre un univers externe vérifié; DuckDB est la seule représentation matérialisée; les fichiers JSON de publication ne sont que des index cryptographiques dérivés.
 
+La consommation directe passe par dix vues `analytics_*` dans ce même DuckDB.
+Elles ne recopient aucune table et ne constituent pas une seconde source de
+vérité. Leur grain, leur clé et leur finalité sont catalogués séparément des 45
+tables dans `table-catalog.json`; voir [ANALYTICAL_GUIDE.md](ANALYTICAL_GUIDE.md).
+
 ## Matrice des domaines
 
 | Domaine | Tables et grain | Période | Sources principales | Couverture et limites | Licence | Décision |

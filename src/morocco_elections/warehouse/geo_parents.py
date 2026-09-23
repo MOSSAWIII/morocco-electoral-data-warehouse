@@ -15,6 +15,7 @@ import openpyxl
 
 from morocco_elections.warehouse.bo6374_reconciliation import normalize_arabic
 from morocco_elections.warehouse.evidence import validate_official_source_registry
+from morocco_elections.warehouse.sources import canonical_source_id, load_source_registry, source_descriptors_by_id
 from morocco_elections.warehouse.validation import ValidationIssue, validate_rows, validate_semantic_consistency
 
 
@@ -49,13 +50,16 @@ def _table_rows(connection: duckdb.DuckDBPyConnection, table: str) -> list[dict[
 
 
 def _verify_manifest_sources(root: Path, source_ids: set[str]) -> dict[str, dict[str, Any]]:
-    payload = json.loads((root / "metadata/source_manifest.json").read_text(encoding="utf-8"))
-    selected = {row["source_id"]: row for row in payload.get("sources", []) if row.get("source_id") in source_ids}
+    available = source_descriptors_by_id(root)
+    selected = {
+        source_id: available[canonical_source_id(source_id)]
+        for source_id in source_ids if canonical_source_id(source_id) in available
+    }
     if set(selected) != source_ids:
         raise ValueError("historical parent source is absent from the source manifest")
     for source_id, row in selected.items():
-        path = (root / row["local_path"]).resolve()
-        if not path.is_file() or path.stat().st_size != row["byte_size"] or _sha256(path) != row["sha256"]:
+        path = (root / row["raw_path"]).resolve()
+        if not path.is_file() or path.stat().st_size != row["bytes"] or _sha256(path) != row["sha256"]:
             raise ValueError(f"historical parent source bytes differ: {source_id}")
     return selected
 
@@ -149,7 +153,7 @@ def derive_comm2015_parent_relations(
     seed = seed or json.loads((root / COMM2015_SEED_PATH).read_text(encoding="utf-8"))
     if seed.get("status") != "VERIFIED_PARENT_RELATIONS_ONLY" or seed.get("election_id") != "COMM2015":
         raise ValueError("COMM2015 parent seed has an invalid scope or review status")
-    registry = json.loads((root / "metadata/warehouse/official_source_registry.json").read_text(encoding="utf-8"))
+    registry = load_source_registry(root)
     source_ids = {seed[field] for field in ("annex_source_id", "code_source_id", "legal_source_id")}
     sources = [row for row in registry["sources"] if row.get("source_id") in source_ids]
     if len(sources) != len(source_ids) or validate_official_source_registry(root, {"sources": sources}):
@@ -211,7 +215,7 @@ def derive_comm2015_parent_relations(
         prefecture = geography_by_id.get(group["prefecture_geo_id"])
         region = geography_by_id.get(group["region_geo_id"])
         if prefecture is None or prefecture.get("geo_type") != "province_prefecture" or prefecture.get("parent_geo_id") != group["region_geo_id"]:
-            raise ValueError(f"invalid V15 prefecture/region chain for {group['parent_geo_id']}")
+            raise ValueError(f"invalid historical prefecture/region chain for {group['parent_geo_id']}")
         if region is None or region.get("geo_type") != "region":
             raise ValueError(f"unknown official region for {group['parent_geo_id']}")
         relations.extend([

@@ -1,8 +1,10 @@
 {
-  "snapshot_id": "v15.0.0",
+  "snapshot_id": "historical_seed",
   "asset_name": "Morocco_Electoral_Data_Warehouse_V15.zip",
   "download_url": "https://github.com/MOSSAWIII/morocco-electoral-data-warehouse/releases/download/v15.0.0/Morocco_Electoral_Data_Warehouse_V15.zip",
   "bytes": 138170468,
   "sha256": "9c2913ee0b3bfe98460c5ab6679cd35e70eed052174ffdfe00fbeb7a0dc27079",
-  "database_member": "morocco_elections_v15/morocco_elections_v15.duckdb"
+  "database_member": "morocco_elections_v15/morocco_elections_v15.duckdb",
+  "database_bytes": 255340544,
+  "database_sha256": "2ddf8c3f347a33ed51cf70e5d4cf5a7401eb56e8f9f1bfb0c981f915d13658bf"
 }

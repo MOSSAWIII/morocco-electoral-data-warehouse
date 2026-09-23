@@ -1,32 +1,37 @@
 # Preuve de reconstruction propre
 
-La révision `e9259d59aab18ed90aa5307e6bc58053ef7465e4` a été reconstruite le 22 septembre 2026 depuis deux clones Git propres, distincts et sans fichier généré préalable. Les deux exécutions ont utilisé le même cache externe adressé par SHA-256. Ce cache ne constitue pas une sortie réutilisée : chaque objet est accepté seulement après vérification de sa taille et de son empreinte déclarées.
+L'état de travail courant, dont la base Git est la révision `9005a45b142f4f3ceaccdd379c266f7ef215eefc`, a été reconstruit le 23 septembre 2026 vers deux répertoires de sortie absents et distincts. Les deux exécutions ont utilisé les mêmes sources locales adressées par SHA-256. Chaque objet, y compris le seed historique extrait, a été accepté seulement après vérification de sa taille et de son empreinte déclarées.
 
 ## Protocole
 
-Chaque clone a exécuté séparément :
+Chaque construction a exécuté séparément :
 
 ```powershell
-$env:MOROCCO_ELECTIONS_SOURCE_CACHE = '<cache-externe>'
 python -m morocco_elections build --output '<sortie-vide>'
 python -m morocco_elections validate --package '<sortie>'
 python -m morocco_elections audit --package '<sortie>' --summary
 ```
 
-Les deux clones étaient propres avant et après la construction. Chacun a acquis 40 des 42 entrées déclarées; les deux autres sont explicitement `metadata_only`. Chaque paquet contient 45 tables et 9 fichiers. Les deux validations retournent `PASS`, sans fichier non géré, entrée manquante, divergence de taille ou divergence de SHA-256 interne au paquet.
+Chaque construction a réutilisé, après vérification cryptographique, 41 objets acquis distincts du registre ; les 45 entrées restantes sont explicitement documentaires ou internes et ne déclarent aucun contenu acquis. Chaque paquet contient 45 tables, 10 vues analytiques et 8 fichiers. Les validations retournent `integrity_status = PASS` et `publication_status = NOT_PUBLICATION_READY`, sans fichier non géré, entrée manquante, divergence de taille ou divergence de SHA-256 interne. Les 86 identifiants du registre canonique sont matérialisés une fois chacun, toutes les colonnes de provenance `source_id` les référencent, et aucun identifiant actif ne conserve un label de version intermédiaire. Deux univers et 1 550 membres sont matérialisés : l'univers territorial COMM2015 et l'allocation nationale officielle des 395 sièges LEG2021 entre 12 partis.
 
 ## Résultat comparatif
 
-Le fichier `table-catalog.json` est strictement identique dans les deux sorties : SHA-256 `3a3510e4fe973ce301b38750de7291ecb5b0c83bf7025d73d10be7822f389e0e`. Il prouve l'égalité, pour les 45 tables, du schéma ordonné, du nombre de lignes et de l'empreinte logique. Les cinq autres sorties déterministes comparées sont également identiques :
+Les sorties déterministes suivantes sont strictement identiques entre les deux constructions :
 
 | Fichier | SHA-256 |
 |---|---|
-| `data-contract.json` | `e86e3037db7ee5e989a606758d96fec4b749753175747f41080da83b764b3e74` |
+| `table-catalog.json` | `d85bd151a65f8d13c242d55d0e5f17f4426512fec2ed6e38d8202d0ad21349a3` |
+| `data-contract.json` | `c86ef1b388aa5930b5a41e4b292b1aaeeefead548342b7a28745d52bdcf334c5` |
 | `geo-parent-report.json` | `f2644edc4ea7f0ad7698f504a693ce976fdcc4f0733f9717e25f36d1a6de43a5` |
-| `reconciliation-report.json` | `f7a10f11f946a68a7f9b01c2030cdb874d4f82cf8291c9feeebde5d5f678437e` |
-| `result-history-report.json` | `14fb6181dde543333dc51261708c6f19ed027e09ac03887a33d2be63b8cdc5bb` |
-| `v15-immutable-checksums.json` | `f5558c09cdb4257b62e760563c0ac57d1d670f74ade798bd0a6f1ad14b17fec9` |
+| `reconciliation-report.json` | `d99bd17d742a01755efce2266bbb57ea421dfc30f09ffba184ba1e0fe6c5a378` |
+| `result-history-report.json` | `8f60ba62406037c0c49f5bac7571689d1b5bdf9e92ee1818c0d34d9f4f4f02b1` |
 
-Les fichiers physiques DuckDB ne sont pas comparés octet pour octet. DuckDB peut produire des organisations physiques et tailles différentes pour un même contenu logique. Par conséquent, les manifestes et index de preuve qui scellent ces octets physiques diffèrent aussi entre les exécutions. Chacun reste valide pour son propre paquet. La reproductibilité exigée porte sur le contenu matérialisé : les 45 empreintes logiques, les nombres de lignes, les schémas, le contrat et les rapports sont identiques.
+Le catalogue prouve l'égalité du schéma ordonné, du nombre de lignes et de l'empreinte logique des 45 tables. Pour les 10 vues, il épingle aussi la définition SQL normalisée, son SHA-256 et les dépendances déclarées.
 
-La CI applique désormais le même contrôle en construisant deux paquets, en validant les deux et en comparant octet pour octet le catalogue logique et les sorties déterministes.
+Le résumé d'audit sépare désormais les 0 relations parentales non résolues des 177 identités communales encore sans correspondance institutionnelle exacte. Il publie également les contrôles calculables et non calculables par élection, ainsi que les 7 élections qui n'ont pas encore d'univers officiel de résultats matérialisé.
+
+Les fichiers physiques DuckDB ne sont pas comparés octet pour octet : leur organisation interne peut différer pour un contenu logique identique. Les manifestes et index qui scellent ces octets physiques diffèrent donc entre les exécutions et restent valides pour leur propre paquet. La reproductibilité exigée porte sur les 55 objets logiques, le contrat et les rapports déterministes.
+
+La CI applique ce protocole depuis un checkout propre, compare les sorties ci-dessus et refuse toute dérive suivie ou non suivie.
+
+La même suite, le même lint et les mêmes dépendances ont aussi été exécutés avec succès sous CPython 3.11 et CPython 3.12.11. La matrice CI couvre donc 3.11 et 3.12, conformément à la plage `>=3.11,<3.13` déclarée par le paquet.

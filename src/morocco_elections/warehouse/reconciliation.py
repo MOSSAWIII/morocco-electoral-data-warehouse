@@ -11,6 +11,8 @@ from typing import Any, Iterable, Mapping, Sequence
 import duckdb
 import openpyxl
 
+from morocco_elections.warehouse.sources import canonical_source_id, source_descriptors_by_id
+
 
 RECONCILIATION_CHECKS = (
     "turnout_rate",
@@ -18,7 +20,7 @@ RECONCILIATION_CHECKS = (
     "party_votes_vs_valid_votes",
     "allocated_seats_vs_contest_seats",
 )
-ELECTED_2015_PATH = Path("data/staging/v11a/source_candidates/communes-elus-2015-1-0.xlsx")
+ELECTED_2015_PATH = Path("data/staging/elected-2015/communes-elus-2015-1-0.xlsx")
 ELECTED_2015_SHA256 = "8b5e6d23756087409a77fbaa00c0e25428c699245dbc3241d280b914600fd341"
 
 
@@ -168,15 +170,18 @@ def _sha256(path: Path) -> str:
 
 
 def _verified_manifest_sources(root: Path, source_ids: set[str]) -> dict[str, dict[str, Any]]:
-    manifest = json.loads((root / "metadata/source_manifest.json").read_text(encoding="utf-8"))
-    sources = {row["source_id"]: row for row in manifest["sources"] if row.get("source_id") in source_ids}
+    available = source_descriptors_by_id(root)
+    sources = {
+        source_id: available[canonical_source_id(source_id)]
+        for source_id in source_ids if canonical_source_id(source_id) in available
+    }
     if set(sources) != source_ids:
-        raise ValueError("a reconciliation source is absent from metadata/source_manifest.json")
+        raise ValueError("a reconciliation source is absent from metadata/warehouse/source_registry.json")
     for source_id, descriptor in sources.items():
-        path = (root / descriptor["local_path"]).resolve()
+        path = (root / descriptor["raw_path"]).resolve()
         if (
             not path.is_file()
-            or path.stat().st_size != descriptor["byte_size"]
+            or path.stat().st_size != descriptor["bytes"]
             or _sha256(path) != descriptor["sha256"]
         ):
             raise ValueError(f"reconciliation source bytes differ: {source_id}")
@@ -342,12 +347,47 @@ def derive_reconciliation_matrix(
         (str(row["election_id"]), str(row.get("list_type"))) for row in contests
     )
     contest_by_id = {str(row["contest_id"]): row for row in contests}
+    computability_by_election = []
+    for election_id in sorted({str(row["election_id"]) for row in contests}):
+        election_rows = [
+            row for row in rows
+            if str(contest_by_id[str(row["contest_id"])]["election_id"]) == election_id
+        ]
+        metric_rows = {
+            metric: [row for row in election_rows if row["metric"] == metric]
+            for metric in RECONCILIATION_CHECKS
+        }
+        computability_by_election.append({
+            "election_id": election_id,
+            "total_checks": len(election_rows),
+            "calculable_checks": sum(
+                row["validation_status"] != "NOT_COMPUTABLE" for row in election_rows
+            ),
+            "not_computable_checks": sum(
+                row["validation_status"] == "NOT_COMPUTABLE" for row in election_rows
+            ),
+            "by_metric": {
+                metric: {
+                    "total": len(metric_rows[metric]),
+                    "calculable": sum(
+                        row["validation_status"] != "NOT_COMPUTABLE"
+                        for row in metric_rows[metric]
+                    ),
+                    "not_computable": sum(
+                        row["validation_status"] == "NOT_COMPUTABLE"
+                        for row in metric_rows[metric]
+                    ),
+                }
+                for metric in RECONCILIATION_CHECKS
+            },
+        })
     report = {
         "covered_contests": len(contests),
         "expected_checks": len(contests) * len(RECONCILIATION_CHECKS),
         "produced_reconciliations": len(rows),
         "status_distribution": dict(sorted(statuses.items())),
         "not_computable_reason_distribution": dict(sorted(reasons.items())),
+        "computability_by_election": computability_by_election,
         "contests_without_status": sum(
             key_counts[(str(contest["contest_id"]), metric)] == 0
             for contest in contests for metric in RECONCILIATION_CHECKS

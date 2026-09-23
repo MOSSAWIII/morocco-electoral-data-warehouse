@@ -148,10 +148,10 @@ def test_gate_rereads_duckdb_and_rejects_coordinated_table_context_mutation(tmp_
 def test_reconciliation_source_hash_mutation_is_rejected(tmp_path: Path) -> None:
     source = tmp_path / "source.bin"
     source.write_bytes(b"pinned")
-    metadata = tmp_path / "metadata"
-    metadata.mkdir()
-    (metadata / "source_manifest.json").write_text(json.dumps({"sources": [{
-        "source_id": "S", "local_path": "source.bin", "byte_size": 6,
+    metadata = tmp_path / "metadata/warehouse"
+    metadata.mkdir(parents=True)
+    (metadata / "source_registry.json").write_text(json.dumps({"sources": [{
+        "source_id": "S", "aliases": [], "raw_path": "source.bin", "bytes": 6,
         "sha256": hashlib.sha256(b"pinned").hexdigest(),
     }]}), encoding="utf-8")
     assert _verified_manifest_sources(tmp_path, {"S"})["S"]["source_id"] == "S"

@@ -18,7 +18,6 @@ from morocco_elections.warehouse.publication import (
     _as_of,
     _boundary,
     _evidence_bundle,
-    _immutability,
     _reproducible,
     _result_status,
     evaluate_publication_gates,
@@ -318,9 +317,9 @@ def _publication_context(package_root: Path) -> PublicationContext:
         )
         connection.execute(ddl("fact_legal_decision"))
         connection.execute(
-            "CREATE TABLE warehouse_metadata (release VARCHAR, schema_version BIGINT, source_release VARCHAR, as_of_date DATE)"
+            "CREATE TABLE warehouse_metadata (release VARCHAR, schema_version BIGINT, seed_identity VARCHAR, as_of_date DATE)"
         )
-        connection.execute("INSERT INTO warehouse_metadata VALUES ('TEST-SNAPSHOT', 16, 'V15', '2026-09-14')")
+        connection.execute("INSERT INTO warehouse_metadata VALUES ('TEST-SNAPSHOT', 16, 'historical_seed', '2026-09-14')")
     finally:
         connection.close()
     published = package_database.read_bytes()
@@ -406,7 +405,7 @@ def _publication_context(package_root: Path) -> PublicationContext:
             }],
             "result_revisions": [revision],
             "legal_decisions": [],
-            "warehouse_metadata": [{"release": "TEST-SNAPSHOT", "schema_version": 16, "source_release": "V15", "as_of_date": "2026-09-14"}],
+            "warehouse_metadata": [{"release": "TEST-SNAPSHOT", "schema_version": 16, "seed_identity": "historical_seed", "as_of_date": "2026-09-14"}],
             "geo_versions": [{"geo_version_id": "GV", "geo_id": "G", "boundary_version": "2021", "valid_from": "2021-01-01", "source_id": "S"}],
             "coverage_universes": universes,
             "coverage_universe_members": [{"universe_id": f"U-{dimension}", "expected_id": f"ID-{dimension}", "source_id": "S-U"} for dimension in dimensions],
@@ -908,20 +907,6 @@ def test_coordinated_revision_and_bundle_mutation_cannot_replace_source_proof(tm
     assert "source bytes do not prove" in result.justification
 
 
-def test_v15_manifest_identity_is_location_independent_and_byte_exact(tmp_path: Path) -> None:
-    context = _publication_context(tmp_path / "package")
-    moved_manifest = tmp_path / "moved" / "v15-immutable-checksums.json"
-    moved_manifest.parent.mkdir()
-    moved_manifest.write_bytes(context.v15_manifest_path.read_bytes())
-    moved = replace(context, v15_manifest_path=moved_manifest, v15_root=None)
-    assert _immutability(moved).status == "PASS"
-    moved_manifest.write_bytes(moved_manifest.read_bytes() + b"\n")
-    mutated = _immutability(moved)
-    assert mutated.status == "FAIL"
-    assert "byte length differs" in mutated.justification
-    assert "SHA-256 differs" in mutated.justification
-
-
 def test_legal_gate_recomputes_population_based_classification(tmp_path: Path) -> None:
     context = _publication_context(tmp_path)
     source_geo_id, official_code = "MA-01-051-0101", "01.051.01.01."
@@ -1142,16 +1127,6 @@ def test_evidence_bundle_gate_rejects_package_symlink(tmp_path: Path) -> None:
     assert result.affected_records == ("linked-source.pdf",)
 
 
-def test_immutability_gate_rejects_noncanonical_or_invalid_manifest(tmp_path: Path) -> None:
-    context = _publication_context(tmp_path / "package")
-    alternate = tmp_path / "alternate-v15-manifest.json"
-    alternate.write_text("{}", encoding="utf-8")
-    result = _immutability(replace(context, v15_manifest_path=alternate))
-    assert result.status == "FAIL"
-    assert "canonical" in result.justification
-    assert "invalid" in result.justification
-
-
 def test_privacy_gate_rejects_caller_exemption_duplicate_or_future_review(tmp_path: Path) -> None:
     context = _publication_context(tmp_path)
     exempted = replace(context, files=[{**context.files[0], "privacy_review_required": False}])
@@ -1290,8 +1265,6 @@ def _mutate_gate(context: PublicationContext, gate_id: str) -> PublicationContex
     if gate_id == "REPRODUCIBLE_FROM_CLEAN_ENVIRONMENT":
         rows = [dict(context.checks["clean_builds"][0]), {**context.checks["clean_builds"][1], "report_sha256": "0" * 64}]
         return _check(context, "clean_builds", rows)
-    if gate_id == "V15_IMMUTABILITY_VERIFIED":
-        return replace(context, v15_root=Path(__file__).parent / "missing-v15-root")
     raise AssertionError(gate_id)
 
 

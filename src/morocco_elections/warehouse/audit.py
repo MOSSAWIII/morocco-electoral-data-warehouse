@@ -33,8 +33,8 @@ COMMUNAL_COUNCIL_UNIVERSE = {
 }
 
 
-def audit_v15_seed(database: Path) -> dict[str, Any]:
-    """Read every applicable V15 fact and disclose what cannot yet be validated for WAREHOUSE."""
+def audit_historical_seed(database: Path) -> dict[str, Any]:
+    """Read every applicable historical fact and disclose current validation limits."""
     connection = duckdb.connect(str(database), read_only=True)
     try:
         semantic = [
@@ -51,7 +51,7 @@ def audit_v15_seed(database: Path) -> dict[str, Any]:
                 "not_computable": eligible,
                 "violations": 0,
                 "validation_status": "NOT_COMPUTABLE",
-                "reason": "No verified external universe of expected party or seat-allocation identifiers proves that the V15 detail is exhaustive.",
+                "reason": "No verified external universe of expected party or seat-allocation identifiers proves that the historical detail is exhaustive.",
                 "official_detail_universe_id": None,
                 "provisional_compared": provisional_compared,
                 "provisional_mismatches": provisional_mismatches,
@@ -122,14 +122,14 @@ def audit_v15_seed(database: Path) -> dict[str, Any]:
         if not all(ballot_fields[name] == ballot_fields["total"] for name in ("voters", "valid_votes", "invalid_votes", "blank_votes")):
             blockers.append("BALLOT_COMPONENTS_INCOMPLETE")
         if any(row["check"] == "fact_election_result.historical_regional_parent" and row["violations"] for row in semantic):
-            blockers.append("HISTORICAL_GEO_PARENTS_MISSING_FROM_V15_SEED")
+            blockers.append("HISTORICAL_GEO_PARENTS_MISSING_FROM_SEED")
         if not communal_grain_audit["council_grain_materialized"]:
             blockers.append("COMMUNAL_COUNCIL_GRAIN_NOT_MATERIALIZED")
         if communal_grain_audit["represented_parent_territories"] != communal_grain_audit["represented_parent_communes"]:
             blockers.append("ARRONDISSEMENT_PARENT_NOT_COMMUNE")
-        blockers.extend(("OFFICIAL_UNIVERSES_NOT_LOADED", "RESULT_REVISION_HISTORY_NOT_LOADED", "LEGAL_REGIME_EVIDENCE_NOT_NATIVE_TO_V15_SEED"))
+        blockers.extend(("OFFICIAL_UNIVERSES_NOT_LOADED", "RESULT_REVISION_HISTORY_NOT_LOADED", "LEGAL_REGIME_EVIDENCE_NOT_NATIVE_TO_SEED"))
         return {
-            "source_release": "V15",
+            "seed_identity": "historical_seed",
             "target_release": "WAREHOUSE",
             "audit_mode": "READ_ONLY_FULL_SEED",
             "fact_rows": fact_rows,

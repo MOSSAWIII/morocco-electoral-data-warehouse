@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import hashlib
-import json
 from pathlib import Path
 
 import pytest
@@ -10,38 +8,9 @@ from morocco_elections.warehouse.contracts import PROPOSED_TABLE_CONTRACTS, TABL
 from morocco_elections.warehouse.build import build_development_database
 from morocco_elections.warehouse.coverage import DIMENSIONS, UNKNOWN, coverage_report, validate_universes
 from morocco_elections.warehouse.history import validate_result_geographies
-from morocco_elections.warehouse.immutability import load_manifest, verify_v15_immutability, verify_v15_publication_asset
 from morocco_elections.warehouse.schema import create_schema, schema_inventory
 from morocco_elections.warehouse.validation import WarehouseValidationError, validate_or_raise, validate_rows, validate_semantic_consistency
 from morocco_elections.warehouse.versions import applicable_revision, validate_revisions
-
-
-def test_v15_files_are_pinned_and_unchanged() -> None:
-    assert all(isinstance(row.get("bytes"), int) and row["bytes"] >= 0 for row in load_manifest()["files"])
-    assert verify_v15_immutability() == []
-
-
-def test_v15_manifest_rejects_size_and_same_size_content_mutations(tmp_path: Path) -> None:
-    artifact = tmp_path / "v15.txt"
-    artifact.write_bytes(b"abc")
-    manifest = {
-        "release": "V15", "release_version": "15.0.0",
-        "files": [{"path": "v15.txt", "bytes": 4, "sha256": hashlib.sha256(b"abc").hexdigest()}],
-    }
-    manifest_path = tmp_path / "manifest.json"
-    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
-    assert "V15_ARTIFACT_SIZE_CHANGED" in {issue.code for issue in verify_v15_immutability(tmp_path, manifest_path)}
-    manifest["files"][0]["bytes"] = 3
-    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
-    artifact.write_bytes(b"abd")
-    assert "V15_ARTIFACT_CHANGED" in {issue.code for issue in verify_v15_immutability(tmp_path, manifest_path)}
-
-
-def test_local_v15_public_asset_matches_published_size_and_sha256() -> None:
-    asset = Path(__file__).resolve().parents[2] / "data/exports/open/releases/Morocco_Electoral_Data_Warehouse_V15.zip"
-    if not asset.is_file():
-        pytest.skip("local V15 public asset required")
-    assert verify_v15_publication_asset() == []
 
 
 def test_contract_separates_published_tables_from_schema_proposals() -> None:
@@ -72,14 +41,14 @@ def test_all_contract_tables_materialize_with_database_constraints() -> None:
 def test_warehouse_build_is_additive_and_refuses_overwrite(tmp_path: Path) -> None:
     import duckdb
 
-    seed = tmp_path / "v15.duckdb"
+    seed = tmp_path / "historical-seed.duckdb"
     connection = duckdb.connect(str(seed))
     connection.execute("CREATE TABLE dim_election(election_id VARCHAR PRIMARY KEY)")
     connection.execute("INSERT INTO dim_election VALUES ('E1')")
     connection.close()
     output = tmp_path / "warehouse.duckdb"
     report = build_development_database(seed, output)
-    assert report["copied_v15_tables"] == 1
+    assert report["copied_historical_tables"] == 1
     assert report["created_canonical_tables"] == len(TABLE_CONTRACTS)
     connection = duckdb.connect(str(output), read_only=True)
     assert connection.execute("SELECT * FROM dim_election").fetchall() == [("E1",)]
