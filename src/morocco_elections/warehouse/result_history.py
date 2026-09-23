@@ -45,6 +45,21 @@ def build_result_history_diagnostic(
 ) -> dict[str, Any]:
     """Inventory result scopes without promoting archival values to official statuses."""
     acquisition_dates = _acquisition_dates(repository_root)
+    has_revision_table = connection.execute(
+        "SELECT count(*) FROM information_schema.tables "
+        "WHERE table_schema = 'main' AND table_name = 'fact_result_revision'"
+    ).fetchone()[0]
+    revisions: list[dict[str, Any]] = []
+    if has_revision_table:
+        revision_cursor = connection.execute("SELECT * FROM fact_result_revision")
+        revision_columns = [item[0] for item in revision_cursor.description]
+        revisions = [dict(zip(revision_columns, values, strict=True)) for values in revision_cursor.fetchall()]
+    revision_count = len(revisions)
+    revision_issues = validate_revisions(revisions)
+    revisions_by_election: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for revision in revisions:
+        revisions_by_election[str(revision.get("election_id"))].append(revision)
+
     elections = connection.execute(
         "SELECT election_id, election_date, official_results_date, publication_date, retrieval_date "
         "FROM dim_election ORDER BY election_date, election_id"
@@ -66,11 +81,14 @@ def build_result_history_diagnostic(
             type_rows[str(election_id)].add(result_type)
             counts[str(election_id)][table] = int(count)
 
+    contest_ids_by_election: dict[str, set[str]] = defaultdict(set)
+    for election_id, contest_id in connection.execute(
+        "SELECT election_id, contest_id FROM dim_electoral_contest"
+    ).fetchall():
+        contest_ids_by_election[str(election_id)].add(str(contest_id))
     contest_counts = {
-        str(election_id): int(count)
-        for election_id, count in connection.execute(
-            "SELECT election_id, count(*) FROM dim_electoral_contest GROUP BY election_id"
-        ).fetchall()
+        election_id: len(contest_ids)
+        for election_id, contest_ids in contest_ids_by_election.items()
     }
     inventory: list[dict[str, Any]] = []
     gaps: list[dict[str, Any]] = []
@@ -78,6 +96,19 @@ def build_result_history_diagnostic(
         election_id = str(election_id)
         source_ids = sorted(source_rows[election_id])
         contest_count = contest_counts.get(election_id, 0)
+        expected_contest_ids = contest_ids_by_election[election_id]
+        scope_revisions = revisions_by_election[election_id]
+        history_contest_ids = {
+            str(revision.get("contest_id")) for revision in scope_revisions
+            if revision.get("contest_id") is not None
+        } & expected_contest_ids
+        verified_history_contest_ids = {
+            str(revision.get("contest_id")) for revision in scope_revisions
+            if revision.get("contest_id") is not None
+            and revision.get("verification_method") == "STRUCTURED_SOURCE_CLAIM"
+            and revision.get("verification_status") == "VERIFIED"
+        } & expected_contest_ids
+        complete_history = bool(expected_contest_ids) and expected_contest_ids <= verified_history_contest_ids
         available_dates = {
             "official_results_date": _iso(official_results_date),
             "publication_date": _iso(publication_date),
@@ -95,36 +126,40 @@ def build_result_history_diagnostic(
             "result_row_counts": counts[election_id],
             "result_types_present": sorted(type_rows[election_id]),
             "source_ids": source_ids,
-            "source_declared_result_statuses": [],
+            "source_declared_result_statuses": sorted({
+                str(revision["result_status"])
+                for revision in scope_revisions if revision.get("result_status") is not None
+            }),
+            "result_revision_count": len(scope_revisions),
+            "history_covered_contest_count": len(history_contest_ids),
+            "verified_history_contest_count": len(verified_history_contest_ids),
             "available_dates": available_dates,
-            "history_or_rectification_available": False,
-            "official_status_provable": False,
-            "additional_official_source_required": in_scope,
+            "history_or_rectification_available": bool(scope_revisions),
+            "official_status_provable": complete_history,
+            "additional_official_source_required": in_scope and not complete_history,
         }
         inventory.append(row)
-        if in_scope:
+        if in_scope and not complete_history:
+            missing_count = contest_count - len(verified_history_contest_ids)
             gaps.append({
                 "scope_type": "ELECTION",
                 "scope_id": election_id,
                 "contest_count": contest_count,
+                "verified_history_contest_count": len(verified_history_contest_ids),
+                "missing_history_contest_count": missing_count,
                 "source_ids_searched": source_ids,
                 "required_source": "Competent-authority result publication or decision with explicit status and dates",
-                "availability_status": "VALUES_PRESENT_WITHOUT_OFFICIAL_STATUS_HISTORY",
-                "publication_consequence": "Results remain unqualified; no FINAL/PROCLAIMED/RECTIFIED/ANNULLED status may be published",
+                "availability_status": (
+                    "PARTIAL_OFFICIAL_STATUS_HISTORY"
+                    if verified_history_contest_ids
+                    else "VALUES_PRESENT_WITHOUT_OFFICIAL_STATUS_HISTORY"
+                ),
+                "publication_consequence": (
+                    f"{missing_count} contest result(s) remain unqualified; no unsupported "
+                    "FINAL/PROCLAIMED/RECTIFIED/ANNULLED status may be published"
+                ),
                 "blocking_code": "OFFICIAL_RESULT_STATUS_NOT_PROVEN",
             })
-
-    has_revision_table = connection.execute(
-        "SELECT count(*) FROM information_schema.tables "
-        "WHERE table_schema = 'main' AND table_name = 'fact_result_revision'"
-    ).fetchone()[0]
-    revisions: list[dict[str, Any]] = []
-    if has_revision_table:
-        revision_cursor = connection.execute("SELECT * FROM fact_result_revision")
-        revision_columns = [item[0] for item in revision_cursor.description]
-        revisions = [dict(zip(revision_columns, values, strict=True)) for values in revision_cursor.fetchall()]
-    revision_count = len(revisions)
-    revision_issues = validate_revisions(revisions)
     chain_error_codes = {
         "MISSING_SUPERSEDED_REVISION", "BROKEN_REVISION_CHAIN", "CYCLIC_REVISION_CHAIN",
         "CROSS_RESULT_REVISION_CHAIN", "MULTIPLE_REVISION_ROOTS", "OVERLAPPING_RESULT_REVISIONS",

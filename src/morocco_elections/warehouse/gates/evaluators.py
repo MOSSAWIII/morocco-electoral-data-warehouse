@@ -733,21 +733,20 @@ def _result_status(context: PublicationContext) -> GateResult:
         "legal_decisions": ("fact_legal_decision", decisions),
     })
     failures += binding_failures
-    if not revisions:
-        if gaps:
-            for gap in gaps:
-                scope_id = str(gap.get("scope_id", "<unknown>"))
-                required = (
-                    "scope_type", "scope_id", "required_source", "availability_status",
-                    "publication_consequence", "blocking_code",
-                )
-                missing = [field for field in required if not gap.get(field)]
-                if missing:
-                    failures.append((scope_id, "result-history gap lacks " + ", ".join(missing)))
-                else:
-                    failures.append((scope_id, f"{gap['blocking_code']}: {gap['publication_consequence']}"))
-        else:
-            failures += _require_rows("result_revisions", revisions)
+    if gaps:
+        for gap in gaps:
+            scope_id = str(gap.get("scope_id", "<unknown>"))
+            required = (
+                "scope_type", "scope_id", "required_source", "availability_status",
+                "publication_consequence", "blocking_code",
+            )
+            missing = [field for field in required if not gap.get(field)]
+            if missing:
+                failures.append((scope_id, "result-history gap lacks " + ", ".join(missing)))
+            else:
+                failures.append((scope_id, f"{gap['blocking_code']}: {gap['publication_consequence']}"))
+    elif not revisions:
+        failures += _require_rows("result_revisions", revisions)
     decisions_by_id = {row.get("decision_id"): row for row in decisions}
     referenced_decisions: set[Any] = set()
     expected_decision_types = {"RECTIFIED": "RECTIFICATION", "ANNULLED": "ANNULMENT"}

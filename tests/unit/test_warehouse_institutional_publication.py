@@ -832,6 +832,24 @@ def test_result_status_gate_requires_sourced_revision_and_linked_legal_decision(
     assert "affected revision" in result.justification
 
 
+def test_result_status_gate_keeps_partial_history_gaps_blocking(tmp_path: Path) -> None:
+    context = _publication_context(tmp_path)
+    partial = _dataset(context, "result_history_gaps", [{
+        "scope_type": "ELECTION",
+        "scope_id": "E-OTHER",
+        "required_source": "Competent-authority result publication",
+        "availability_status": "PARTIAL_OFFICIAL_STATUS_HISTORY",
+        "publication_consequence": "one contest remains unqualified",
+        "blocking_code": "OFFICIAL_RESULT_STATUS_NOT_PROVEN",
+    }])
+
+    result = _result_status(partial)
+
+    assert result.status == "FAIL"
+    assert result.affected_records == ("E-OTHER",)
+    assert "one contest remains unqualified" in result.justification
+
+
 def test_temporal_gate_rejects_future_and_reversed_dates(tmp_path: Path) -> None:
     context = _publication_context(tmp_path)
     revision = context.datasets["result_revisions"][0]
