@@ -1,0 +1,75 @@
+{
+  "source_id": "MA_SGG_BO_6374_DECREE_2_15_402_COMMUNES_2015",
+  "source_sha256": "4bd3823f3ce2fa92c623c48431f7e93e5fb80200628adb184fae7e23b1a23f4d",
+  "pdf_page_index": 59,
+  "printed_page": 6130,
+  "status": "VISUAL_SINGLE_REVIEW_CANDIDATE_ONLY",
+  "official_universe_allowed": false,
+  "notes": "Lecture visuelle directe de la page numérisée, assistée par la sonde OCR arabe à source épinglée. Graphies et membres à confirmer indépendamment, sans identifiants électoraux inférés.",
+  "groups": [
+    {
+      "prefecture_province_ar": "تنغير",
+      "rows": [
+        {"row": 1, "commune_name_ar": "اميضر", "council_members": 11},
+        {"row": 2, "commune_name_ar": "واكليم", "council_members": 13},
+        {"row": 3, "commune_name_ar": "تودغى العليا", "council_members": 11},
+        {"row": 4, "commune_name_ar": "تغزوت نايت عطى", "council_members": 15},
+        {"row": 5, "commune_name_ar": "أيت الفرسي", "council_members": 11},
+        {"row": 6, "commune_name_ar": "تودغى السفلى", "council_members": 23},
+        {"row": 7, "commune_name_ar": "النيف", "council_members": 23},
+        {"row": 8, "commune_name_ar": "مصيسي", "council_members": 11},
+        {"row": 9, "commune_name_ar": "حصيا", "council_members": 15},
+        {"row": 10, "commune_name_ar": "أيت هاني", "council_members": 13},
+        {"row": 11, "commune_name_ar": "اسول", "council_members": 11}
+      ]
+    },
+    {
+      "prefecture_province_ar": "زاكورة",
+      "rows": [
+        {"row": 12, "commune_name_ar": "زاكورة", "council_members": 25},
+        {"row": 13, "commune_name_ar": "اكدز", "council_members": 13},
+        {"row": 14, "commune_name_ar": "بوزروال", "council_members": 13},
+        {"row": 15, "commune_name_ar": "تينزولين", "council_members": 23},
+        {"row": 16, "commune_name_ar": "ابليدة", "council_members": 11},
+        {"row": 17, "commune_name_ar": "الروحا", "council_members": 13},
+        {"row": 18, "commune_name_ar": "ترناتة", "council_members": 23},
+        {"row": 19, "commune_name_ar": "بني زولي", "council_members": 23},
+        {"row": 20, "commune_name_ar": "تافتشنا", "council_members": 11},
+        {"row": 21, "commune_name_ar": "تامكروت", "council_members": 23},
+        {"row": 22, "commune_name_ar": "فزواطة", "council_members": 13},
+        {"row": 23, "commune_name_ar": "امحاميد الغزلان", "council_members": 13},
+        {"row": 24, "commune_name_ar": "تاكونيت", "council_members": 23},
+        {"row": 25, "commune_name_ar": "كتاوة", "council_members": 13},
+        {"row": 26, "commune_name_ar": "تامزموت", "council_members": 13},
+        {"row": 27, "commune_name_ar": "أولاد يحيى لكراير", "council_members": 13},
+        {"row": 28, "commune_name_ar": "افرا", "council_members": 13},
+        {"row": 29, "commune_name_ar": "مزكيطة", "council_members": 13},
+        {"row": 30, "commune_name_ar": "تانسيفت", "council_members": 13},
+        {"row": 31, "commune_name_ar": "افلاندرا", "council_members": 11},
+        {"row": 32, "commune_name_ar": "تغبالت", "council_members": 13},
+        {"row": 33, "commune_name_ar": "أيت بوداود", "council_members": 11},
+        {"row": 34, "commune_name_ar": "تازارين", "council_members": 23},
+        {"row": 35, "commune_name_ar": "النقوب", "council_members": 11},
+        {"row": 36, "commune_name_ar": "أيت ولال", "council_members": 13}
+      ]
+    },
+    {
+      "prefecture_province_ar": "أكادير - إدا وتنان",
+      "rows": [
+        {"row": 37, "commune_name_ar": "اكادير", "council_members": 61},
+        {"row": 38, "commune_name_ar": "امسكروض", "council_members": 13},
+        {"row": 39, "commune_name_ar": "اضمين", "council_members": 11},
+        {"row": 40, "commune_name_ar": "الدراركة", "council_members": 31},
+        {"row": 41, "commune_name_ar": "أورير", "council_members": 25},
+        {"row": 42, "commune_name_ar": "تاغزوت", "council_members": 11},
+        {"row": 43, "commune_name_ar": "اقصري", "council_members": 11},
+        {"row": 44, "commune_name_ar": "ايموزار", "council_members": 11},
+        {"row": 45, "commune_name_ar": "تقي", "council_members": 13},
+        {"row": 46, "commune_name_ar": "تدرارت", "council_members": 11},
+        {"row": 47, "commune_name_ar": "ازيار", "council_members": 11},
+        {"row": 48, "commune_name_ar": "تامري", "council_members": 23},
+        {"row": 49, "commune_name_ar": "امسوان", "council_members": 13}
+      ]
+    }
+  ]
+}

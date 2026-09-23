@@ -12,17 +12,17 @@ ROOT = Path(__file__).resolve().parents[2]
 def test_bo_tafra_reconciliation_is_complete_bijective_and_fail_closed() -> None:
     payload = build_reconciliation(ROOT)
     report = payload["report"]
-    assert report["candidate_rows"] == 1206
-    assert report["identity_matches"] == 1200
+    assert report["candidate_rows"] == 1255
+    assert report["identity_matches"] == 1249
     assert report["unmatched"] == 6
     assert report["unmatched_with_verified_parent"] == 6
-    assert report["ambiguous"] == 15
+    assert report["ambiguous"] == 16
     assert report["exact_count_matches"] == 1
-    assert report["explained_differences"] == 1184
-    assert report["exact_name_matches"] == 1063
-    assert report["fuzzy_unique_name_matches"] == 137
+    assert report["explained_differences"] == 1232
+    assert report["exact_name_matches"] == 1111
+    assert report["fuzzy_unique_name_matches"] == 138
     matched_ids = [row["tafra_commune_id"] for row in payload["rows"] if row["tafra_commune_id"] is not None]
-    assert len(matched_ids) == len(set(matched_ids)) == 1200
+    assert len(matched_ids) == len(set(matched_ids)) == 1249
     unmatched = [row for row in payload["rows"] if row["status"] == "UNMATCHED"]
     assert {row["warehouse_communal_parent_id"] for row in unmatched} == {
         "COMM2015-CITY:TANGER", "COMM2015-CITY:FES", "COMM2015-CITY:RABAT", "COMM2015-CITY:SALE",
@@ -68,6 +68,12 @@ def test_bo_tafra_reconciliation_is_complete_bijective_and_fail_closed() -> None
         if row["printed_page"] == 6126 and row["status"] == "AMBIGUOUS"
     }
     assert page6126_conflicts == {"BO6374:P6126:R037": (13, 16, 16)}
+    page6130_conflicts = {
+        row["candidate_id"]: (row["bo_council_members"], row["tafra_nSieges"], row["observed_elected_members"])
+        for row in payload["rows"]
+        if row["printed_page"] == 6130 and row["status"] == "AMBIGUOUS"
+    }
+    assert page6130_conflicts == {"BO6374:P6130:R024": (23, 26, 26)}
     assert validate_reconciliation(payload, ROOT) == []
 
 
