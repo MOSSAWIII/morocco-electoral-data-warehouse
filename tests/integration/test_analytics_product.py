@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 from pathlib import Path
 
@@ -61,6 +62,24 @@ def test_five_marts_and_six_demonstration_queries_execute(canonical_database: Pa
         assert connection.execute(
             "SELECT count(*) FROM mart_contest_results WHERE distribution_status='SOURCE_INTERNAL_COMPLETE'"
         ).fetchone()[0] == 0
+        assert connection.execute(
+            "SELECT geography_identity_status FROM mart_geography_profile WHERE geo_id='g3'"
+        ).fetchone()[0] == "UNRESOLVED"
+        assert connection.execute(
+            "SELECT geo_name, region_name FROM mart_geography_profile WHERE geo_id='g1'"
+        ).fetchone() == ("Geo 1", "Region A")
+        assert connection.execute(
+            "SELECT analytical_result_id, seat_metric_status FROM mart_contest_results "
+            "WHERE analytical_result_id IN ('r1', 'r3') ORDER BY analytical_result_id"
+        ).fetchall() == [("r1", "AVAILABLE"), ("r3", "NOT_AVAILABLE")]
+        assert connection.execute(
+            "SELECT identity_status, identity_method FROM mart_parliamentary_activity "
+            "WHERE parliamentary_activity_id='t2'"
+        ).fetchone() == ("UNRESOLVED", "UNRESOLVED_OR_MULTIPLE_WITHIN_TRAJECTORY")
+        parliamentary_rows = connection.execute(
+            (ROOT / "examples/analytics/06_parliamentary_activity.sql").read_text(encoding="utf-8")
+        ).fetchall()
+        assert any(row[2] == "PJD" and row[6] == "LIMITED" for row in parliamentary_rows)
     finally:
         connection.close()
 
@@ -75,12 +94,31 @@ def test_structural_validator_rejects_key_ratio_status_and_reason_mutations(cano
             "UPDATE mart_contest_results SET vote_share_ratio=1.5, metric_status='LIMITED', metric_status_reason=NULL "
             "WHERE analytical_result_id='r1'"
         )
+        connection.execute("UPDATE mart_parliamentary_activity SET identity_status='MANDATE_INTERVAL_AT_DEPOSIT_DATE'")
     finally:
         connection.close()
     rules = {item["rule"] for item in validate_analytics_database(database)["failures"]}
     assert "KEY_UNIQUE" in rules
     assert "RATIO_0_1:vote_share_ratio" in rules
-    assert "LIMITATION_REASON_REQUIRED" in rules
+    assert "LIMITATION_REASON_REQUIRED:metric_status" in rules
+    assert "IDENTITY_STATUS_VOCABULARY:identity_status" in rules
+
+
+def test_acceptance_profile_rejects_unchecked_expectations(canonical_database: Path, tmp_path: Path) -> None:
+    database = tmp_path / "analytics.duckdb"
+    profile = tmp_path / "profile.json"
+    build_analytics_database(canonical_database, database)
+    profile.write_text(json.dumps({
+        "contest_results": 5,
+        "available_competitiveness": 2,
+        "ballot_types": 4,
+        "unresolved_identities": 1,
+        "unresolved_geographies": 1,
+        "silently_ignored_before": 99,
+    }), encoding="utf-8")
+    report = validate_acceptance_profile(database, profile)
+    assert report["status"] == "FAIL"
+    assert {item["rule"] for item in report["failures"]} == {"UNKNOWN_PROFILE_KEY"}
 
 
 def test_upstream_contract_rejects_undeclared_many_to_many(canonical_database: Path) -> None:

@@ -6,7 +6,7 @@ from typing import Any
 import duckdb
 
 from morocco_elections.analytics.column_contracts import COLUMN_CONTRACTS
-from morocco_elections.analytics.contracts import MART_CONTRACTS, METRIC_STATUSES
+from morocco_elections.analytics.contracts import IDENTITY_STATUSES, MART_CONTRACTS, METRIC_STATUSES
 
 
 RATIO_COLUMNS = {
@@ -53,25 +53,52 @@ def validate_connection(connection: duckdb.DuckDBPyConnection) -> list[dict[str,
             ).fetchone()[0]
             if invalid:
                 failures.append(_failure(table, key, f"RATIO_0_1:{column}", invalid))
-        placeholders = ",".join("?" for _ in METRIC_STATUSES)
-        invalid_statuses = connection.execute(
-            f"SELECT count(*) FROM {table} WHERE metric_status IS NULL OR metric_status NOT IN ({placeholders})",
-            sorted(METRIC_STATUSES),
-        ).fetchone()[0]
-        if invalid_statuses:
-            failures.append(_failure(table, key, "METRIC_STATUS_VOCABULARY", invalid_statuses))
-        unexplained = connection.execute(
-            f"SELECT count(*) FROM {table} WHERE metric_status IN ('LIMITED', 'NOT_AVAILABLE') "
-            "AND nullif(trim(metric_status_reason), '') IS NULL"
-        ).fetchone()[0]
-        if unexplained:
-            failures.append(_failure(table, key, "LIMITATION_REASON_REQUIRED", unexplained))
+        metric_status_columns = sorted(
+            name for name in columns if name == "metric_status" or name.endswith("_metric_status")
+        )
+        for status_column in metric_status_columns:
+            placeholders = ",".join("?" for _ in METRIC_STATUSES)
+            invalid_statuses = connection.execute(
+                f"SELECT count(*) FROM {table} WHERE {status_column} IS NULL "
+                f"OR {status_column} NOT IN ({placeholders})",
+                sorted(METRIC_STATUSES),
+            ).fetchone()[0]
+            if invalid_statuses:
+                failures.append(_failure(
+                    table, key, f"METRIC_STATUS_VOCABULARY:{status_column}", invalid_statuses,
+                ))
+            reason_column = f"{status_column}_reason"
+            unexplained = connection.execute(
+                f"SELECT count(*) FROM {table} WHERE {status_column} IN ('LIMITED', 'NOT_AVAILABLE') "
+                f"AND nullif(trim({reason_column}), '') IS NULL"
+            ).fetchone()[0]
+            if unexplained:
+                failures.append(_failure(
+                    table, key, f"LIMITATION_REASON_REQUIRED:{status_column}", unexplained,
+                ))
+        for column in sorted(name for name in columns if name == "identity_status" or name.endswith("_identity_status")):
+            identity_placeholders = ",".join("?" for _ in IDENTITY_STATUSES)
+            invalid_identities = connection.execute(
+                f"SELECT count(*) FROM {table} WHERE {column} IS NULL OR {column} NOT IN ({identity_placeholders})",
+                sorted(IDENTITY_STATUSES),
+            ).fetchone()[0]
+            if invalid_identities:
+                failures.append(_failure(table, key, f"IDENTITY_STATUS_VOCABULARY:{column}", invalid_identities))
         if "longitudinal_compatibility_status" in columns:
             proven_without_evidence = connection.execute(
                 f"SELECT count(*) FROM {table} WHERE longitudinal_compatibility_status <> 'UNKNOWN'"
             ).fetchone()[0]
             if proven_without_evidence:
                 failures.append(_failure(table, key, "LONGITUDINAL_DEFAULT_UNKNOWN", proven_without_evidence))
+        if "geography_longitudinal_compatibility_status" in columns:
+            invalid_geo_compatibility = connection.execute(
+                f"SELECT count(*) FROM {table} WHERE geography_longitudinal_compatibility_status "
+                "NOT IN ('COMPATIBLE', 'NOT_COMPATIBLE')"
+            ).fetchone()[0]
+            if invalid_geo_compatibility:
+                failures.append(_failure(
+                    table, key, "GEOGRAPHY_LONGITUDINAL_COMPATIBILITY_VOCABULARY", invalid_geo_compatibility,
+                ))
 
     required_catalogs = {"analytics_table_catalog", "analytics_column_catalog", "analytics_join_contracts", "analytics_build_metadata"}
     for table in sorted(required_catalogs - tables):

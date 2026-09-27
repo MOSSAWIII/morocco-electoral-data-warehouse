@@ -6,6 +6,10 @@ SELECT r.analytical_result_id, r.election_id, r.ballot_type, r.contest_id,
        CASE WHEN r.vote_share_ratio IS NOT NULL THEN 'AVAILABLE' ELSE 'LIMITED' END AS metric_status,
        CASE WHEN r.vote_share_ratio IS NULL
             THEN 'Vote-share denominator is not identified for this source.' END AS metric_status_reason,
+       CASE WHEN r.seats IS NOT NULL AND r.seat_share_ratio IS NOT NULL
+            THEN 'AVAILABLE' ELSE 'NOT_AVAILABLE' END AS seat_metric_status,
+       CASE WHEN r.seats IS NULL OR r.seat_share_ratio IS NULL
+            THEN 'Seat count or seat-share denominator is not available for this result.' END AS seat_metric_status_reason,
        CASE WHEN r.analytical_readiness_level = 'SOURCE_INTERNAL_COMPLETE'
             THEN 'SOURCE_DISTRIBUTION_NORMALIZED' ELSE 'OBSERVED' END AS distribution_status,
        p.identity_status, 'OBSERVED' AS fact_status, upper(r.quality_status) AS quality_status,

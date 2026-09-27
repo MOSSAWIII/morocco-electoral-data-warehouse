@@ -47,6 +47,31 @@ UPSTREAM_RELATIONS = {
         required_non_null=("analytical_result_id", "party_id", "source_id", "identity_status"),
         vocabularies={"identity_status": frozenset({"RESOLVED", "UNRESOLVED"})},
     ),
+    "bridge_geo_identity": UpstreamRelation(
+        columns={
+            "geo_id": "VARCHAR", "official_geo_code": "VARCHAR", "matching_method": "VARCHAR",
+            "source_id": "VARCHAR", "confidence": "DOUBLE", "valid_from": "DATE", "valid_to": "DATE",
+            "identity_status": "VARCHAR", "longitudinally_compatible": "BOOLEAN",
+        },
+        key=("geo_id",),
+        required_non_null=(
+            "geo_id", "matching_method", "source_id", "identity_status", "longitudinally_compatible",
+        ),
+        vocabularies={
+            "identity_status": frozenset({"RESOLVED_OFFICIAL", "UNRESOLVED", "NOT_APPLICABLE"}),
+        },
+    ),
+    "analytics_geographies": UpstreamRelation(
+        columns={
+            "geo_id": "VARCHAR", "geo_name": "VARCHAR", "geo_type": "VARCHAR",
+            "region_name": "VARCHAR", "province_prefecture": "VARCHAR",
+            "constituency_name": "VARCHAR", "commune_name": "VARCHAR",
+            "boundary_version": "VARCHAR", "valid_from": "DATE", "valid_to": "DATE",
+        },
+        key=("geo_id",),
+        required_non_null=("geo_id", "geo_name", "geo_type"),
+        vocabularies={},
+    ),
     "analytical_parliamentary_trajectory": UpstreamRelation(
         columns={
             "trajectory_id": "VARCHAR", "person_id": "VARCHAR", "party_id": "VARCHAR", "legislature": "VARCHAR",
@@ -55,8 +80,15 @@ UPSTREAM_RELATIONS = {
             "published_response_date_rate_pct": "DOUBLE", "party_assignment_method": "VARCHAR",
         },
         key=("trajectory_id",),
-        required_non_null=("trajectory_id", "person_id", "legislature", "period_id", "question_type", "derivation_status"),
-        vocabularies={},
+        required_non_null=(
+            "trajectory_id", "person_id", "legislature", "period_id", "question_type", "derivation_status",
+            "party_assignment_method",
+        ),
+        vocabularies={
+            "party_assignment_method": frozenset({
+                "MANDATE_INTERVAL_AT_DEPOSIT_DATE", "UNRESOLVED_OR_MULTIPLE_WITHIN_TRAJECTORY",
+            }),
+        },
     ),
 }
 
@@ -119,5 +151,21 @@ def validate_upstream_database(source: Path) -> None:
         """).fetchone()[0]
         if orphan_identities:
             _fail("bridge_party_identity", "analytical_result_id,party_id,source_id", "NO_ORPHANS", orphan_identities)
+        unmatched_geographies = connection.execute("""
+            SELECT count(DISTINCT r.geo_id)
+            FROM analytics_party_results r
+            LEFT JOIN bridge_geo_identity g USING (geo_id)
+            WHERE g.geo_id IS NULL
+        """).fetchone()[0]
+        if unmatched_geographies:
+            _fail("bridge_geo_identity", "geo_id", "RESULT_GEOGRAPHY_COVERAGE_ONE_TO_ONE", unmatched_geographies)
+        unmatched_geography_dimensions = connection.execute("""
+            SELECT count(DISTINCT r.geo_id)
+            FROM analytics_party_results r
+            LEFT JOIN analytics_geographies g USING (geo_id)
+            WHERE g.geo_id IS NULL
+        """).fetchone()[0]
+        if unmatched_geography_dimensions:
+            _fail("analytics_geographies", "geo_id", "RESULT_GEOGRAPHY_COVERAGE_ONE_TO_ONE", unmatched_geography_dimensions)
     finally:
         connection.close()

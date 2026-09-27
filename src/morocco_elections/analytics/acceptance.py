@@ -23,8 +23,17 @@ def validate_acceptance_profile(database: Path, profile: Path = DEFAULT_PROFILE)
             ),
             "ballot_types": ("mart_contest_results", "ballot_type", "SELECT count(DISTINCT ballot_type) FROM mart_contest_results"),
             "unresolved_identities": ("mart_contest_results", "identity_status", "SELECT count(*) FROM mart_contest_results WHERE identity_status='UNRESOLVED'"),
+            "unresolved_geographies": (
+                "mart_geography_profile", "geo_id",
+                "SELECT count(DISTINCT geo_id) FROM mart_geography_profile WHERE geography_identity_status='UNRESOLVED'",
+            ),
         }
-        for name, (table, key, sql) in checks.items():
+        for name in sorted(set(expected) - set(checks)):
+            failures.append({"table": "acceptance_profile", "key": name, "rule": "UNKNOWN_PROFILE_KEY"})
+        for name in sorted(set(checks) - set(expected)):
+            failures.append({"table": "acceptance_profile", "key": name, "rule": "REQUIRED_PROFILE_KEY"})
+        for name in sorted(set(checks) & set(expected)):
+            table, key, sql = checks[name]
             observed = connection.execute(sql).fetchone()[0]
             if observed != expected[name]:
                 failures.append({"table": table, "key": key, "rule": f"PROFILE:{name}", "observed": str(observed), "expected": str(expected[name])})

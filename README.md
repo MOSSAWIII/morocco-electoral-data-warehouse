@@ -27,7 +27,7 @@ Six executable examples are under `examples/analytics/`. Every example states it
 
 ## Quality and limitations
 
-The build checks upstream schemas and keys before materialization, validates every mart key and ratio, restricts operational metric statuses to `AVAILABLE`, `LIMITED`, and `NOT_AVAILABLE`, requires reasons for limited/unavailable metrics, and verifies declared join cardinality. Missing values remain `NULL`; they are never silently converted to zero.
+The build checks upstream schemas and keys before materialization, validates every mart key and ratio, requires one-to-one party and geography crosswalk coverage, restricts operational metric statuses to `AVAILABLE`, `LIMITED`, and `NOT_AVAILABLE`, requires reasons for limited/unavailable metrics, and verifies declared join cardinality. Vote-share and seat availability are tracked separately. Missing values remain `NULL`; they are never silently converted to zero.
 
 Structural validation works with any compatible snapshot. `morocco-elections accept` is a separate, pinned check for the current reference snapshot. The source SHA-256 is checked before and after every build and only the source file name—not a machine-specific absolute path—is stored in provenance.
 

@@ -34,7 +34,9 @@ COLUMN_CONTRACTS: dict[str, dict[str, ColumnContract]] = {
         "seat_share_ratio": ("ratio_0_1", "Seat share within the identified denominator"),
         "previous_vote_share_ratio": ("ratio_0_1", "Comparable previous vote share"), "swing_ratio": ("ratio_delta", "Vote-share change"),
         "vote_change": ("count_delta", "Observed vote change"), "seat_change": ("count_delta", "Observed seat change"),
-        "metric_status": ("status", "Metric availability"), "metric_status_reason": ("text", "Reason a metric is limited"),
+        "metric_status": ("status", "Vote-share metric availability"), "metric_status_reason": ("text", "Reason vote share is limited"),
+        "seat_metric_status": ("status", "Seat metric availability"),
+        "seat_metric_status_reason": ("text", "Reason seat metrics are unavailable"),
         "distribution_status": ("status", "Source distribution normalization status"), "identity_status": ("status", "Party identity resolution status"),
         "fact_status": ("status", "Observed or derived fact status"), "quality_status": ("status", "Canonical quality status"),
         "longitudinal_compatibility_status": ("status", "Longitudinal evidence status"), "limitations": ("text", "Known limitations"),
@@ -55,17 +57,34 @@ COLUMN_CONTRACTS: dict[str, dict[str, ColumnContract]] = {
         "observed_seats": ("count", "Sum of observed seats"), "mean_vote_share_ratio": ("ratio_0_1", "Mean observed vote share"),
         "won_contest_count": ("count", "Observed winning contests"), "metric_status": ("status", "Performance metric availability"),
         "metric_status_reason": ("text", "Reason performance is limited"), "identity_status": ("status", "Aggregate identity resolution"),
+        "seat_metric_status": ("status", "Aggregated seat metric availability"),
+        "seat_metric_status_reason": ("text", "Reason aggregated seat metrics are limited"),
         "fact_status": ("status", "Observed or derived fact status"), "quality_status": ("status", "Aggregate quality status"),
         "source_ids": ("identifier_list", "Contributing source identifiers"), "limitations": ("text", "Interpretive limitations"),
     }, source="mart_contest_results"),
     "mart_geography_profile": _columns({
         "geography_profile_id": ("identifier", "Stable geography-election-ballot identifier"), "election_id": ("identifier", "Election identifier"),
         "ballot_type": ("category", "Ballot family"), "geo_id": ("identifier", "Geographic unit identifier"),
+        "geo_name": ("label", "Canonical geographic name"), "geo_type": ("category", "Geographic level or type"),
+        "region_name": ("label", "Region name when identified"),
+        "province_prefecture": ("label", "Province or prefecture name when identified"),
+        "constituency_name": ("label", "Constituency name when identified"),
+        "commune_name": ("label", "Commune name when identified"),
+        "boundary_version": ("category", "Geographic boundary version"),
+        "geography_valid_from": ("date", "Start of geographic definition validity"),
+        "geography_valid_to": ("date", "End of geographic definition validity"),
+        "official_geo_code": ("identifier", "Official geographic code when applicable"),
+        "geography_identity_status": ("status", "Geographic identity resolution"),
+        "geography_identity_method": ("category", "Method used to match the geographic identity"),
+        "geography_identity_source_id": ("identifier", "Source supporting the geographic identity"),
+        "geography_longitudinal_compatibility_status": ("status", "Geographic longitudinal compatibility evidence"),
         "observed_contest_count": ("count", "Distinct observed contests"), "observed_party_count": ("count", "Distinct observed parties"),
         "observed_votes": ("count", "Sum of observed votes"), "observed_seats": ("count", "Sum of observed seats"),
         "mean_hhi": ("ratio_0_1", "Mean contest concentration"), "mean_victory_margin_ratio": ("ratio_0_1", "Mean victory margin"),
         "metric_status": ("status", "Geography metric availability"), "metric_status_reason": ("text", "Reason geography profile is limited"),
-        "identity_status": ("status", "Aggregate identity resolution"), "fact_status": ("status", "Observed or derived fact status"),
+        "seat_metric_status": ("status", "Aggregated seat metric availability"),
+        "seat_metric_status_reason": ("text", "Reason aggregated seat metrics are limited"),
+        "party_identity_status": ("status", "Aggregate party identity resolution"), "fact_status": ("status", "Observed or derived fact status"),
         "quality_status": ("status", "Aggregate quality status"), "source_ids": ("identifier_list", "Contributing source identifiers"),
         "limitations": ("text", "Interpretive limitations"),
     }, source="analytical marts"),
@@ -77,7 +96,9 @@ COLUMN_CONTRACTS: dict[str, dict[str, ColumnContract]] = {
         "published_question_count": ("count", "Published questions"), "published_response_date_count": ("count", "Questions with a response date"),
         "published_response_date_ratio": ("ratio_0_1", "Share with a published response date"),
         "metric_status": ("status", "Activity metric availability"), "metric_status_reason": ("text", "Reason activity is limited"),
-        "identity_status": ("status", "Party assignment method"), "fact_status": ("status", "Upstream derivation status"),
+        "identity_status": ("status", "Party identity resolution"),
+        "identity_method": ("category", "Method used to assign the party identity"),
+        "fact_status": ("status", "Upstream derivation status"),
         "quality_status": ("status", "Analytical quality status"), "longitudinal_compatibility_status": ("status", "Longitudinal evidence status"),
         "limitations": ("text", "Coverage limitations"),
     }),
@@ -86,10 +107,10 @@ COLUMN_CONTRACTS: dict[str, dict[str, ColumnContract]] = {
 
 # Nullable and computed attributes are explicit rather than inferred from names.
 for table, nullable_columns in {
-    "mart_contest_results": {"votes", "seats", "vote_share_ratio", "rank", "winner_flag", "seat_share_ratio", "previous_vote_share_ratio", "swing_ratio", "vote_change", "seat_change", "metric_status_reason", "limitations"},
+    "mart_contest_results": {"votes", "seats", "vote_share_ratio", "rank", "winner_flag", "seat_share_ratio", "previous_vote_share_ratio", "swing_ratio", "vote_change", "seat_change", "metric_status_reason", "seat_metric_status_reason", "limitations"},
     "mart_contest_competitiveness": {"hhi", "effective_number_of_parties", "victory_margin_ratio", "concentration_ratio", "metric_status_reason"},
-    "mart_party_performance": {"observed_votes", "observed_seats", "mean_vote_share_ratio", "won_contest_count", "metric_status_reason"},
-    "mart_geography_profile": {"observed_votes", "observed_seats", "mean_hhi", "mean_victory_margin_ratio", "metric_status_reason"},
+    "mart_party_performance": {"observed_votes", "observed_seats", "mean_vote_share_ratio", "won_contest_count", "metric_status_reason", "seat_metric_status_reason"},
+    "mart_geography_profile": {"region_name", "province_prefecture", "constituency_name", "commune_name", "boundary_version", "geography_valid_from", "geography_valid_to", "official_geo_code", "observed_votes", "observed_seats", "mean_hhi", "mean_victory_margin_ratio", "metric_status_reason", "seat_metric_status_reason"},
     "mart_parliamentary_activity": {"party_id", "first_deposit_date", "last_deposit_date", "published_response_date_ratio", "metric_status_reason"},
 }.items():
     for name in nullable_columns:
@@ -101,6 +122,8 @@ CALCULATIONS = {
     "mart_contest_results": {
         "metric_status": "AVAILABLE when vote_share_ratio is present; otherwise LIMITED",
         "metric_status_reason": "declared when vote_share_ratio is absent",
+        "seat_metric_status": "AVAILABLE when both seats and seat_share_ratio are present; otherwise NOT_AVAILABLE",
+        "seat_metric_status_reason": "declared when seats or seat_share_ratio is absent",
         "distribution_status": "SOURCE_INTERNAL_COMPLETE is exposed as SOURCE_DISTRIBUTION_NORMALIZED; otherwise OBSERVED",
         "fact_status": "constant OBSERVED", "quality_status": "upper-case upstream quality_status",
         "longitudinal_compatibility_status": "constant UNKNOWN pending dedicated evidence",
@@ -118,6 +141,8 @@ CALCULATIONS = {
         "mean_vote_share_ratio": "average vote_share_ratio", "won_contest_count": "sum of non-null true winner_flag values",
         "metric_status": "AVAILABLE when all vote shares are present; otherwise LIMITED",
         "metric_status_reason": "declared when any vote share is absent", "identity_status": "RESOLVED when all input identities resolve",
+        "seat_metric_status": "AVAILABLE when every input has seats and seat share; otherwise LIMITED",
+        "seat_metric_status_reason": "declared when the aggregated seat total may be partial",
         "fact_status": "constant DERIVED", "quality_status": "QUALIFIED when all input quality states are accepted",
         "source_ids": "distinct sorted source_id joined by comma", "limitations": "declared observed-contest limitation",
     },
@@ -128,7 +153,14 @@ CALCULATIONS = {
         "mean_victory_margin_ratio": "average one victory margin per distinct contest",
         "metric_status": "AVAILABLE when all contests match and mean HHI is present; otherwise LIMITED",
         "metric_status_reason": "declared when a normalized contest distribution is absent",
-        "identity_status": "RESOLVED when all input identities resolve", "fact_status": "constant DERIVED",
+        "seat_metric_status": "AVAILABLE when every input has seats and seat share; otherwise LIMITED",
+        "seat_metric_status_reason": "declared when the aggregated seat total may be partial",
+        "official_geo_code": "copied from bridge_geo_identity when applicable",
+        "geography_identity_status": "RESOLVED_OFFICIAL maps to RESOLVED; UNRESOLVED is retained; other states map to NOT_APPLICABLE",
+        "geography_identity_method": "copied from bridge_geo_identity.matching_method",
+        "geography_identity_source_id": "copied from bridge_geo_identity.source_id",
+        "geography_longitudinal_compatibility_status": "COMPATIBLE when the dedicated upstream flag is true; otherwise NOT_COMPATIBLE",
+        "party_identity_status": "RESOLVED when all input party identities resolve", "fact_status": "constant DERIVED",
         "quality_status": "QUALIFIED when all input quality states are accepted",
         "source_ids": "distinct sorted source_id joined by comma", "limitations": "declared observed-contest limitation",
     },
@@ -137,6 +169,8 @@ CALCULATIONS = {
         "published_response_date_ratio": "published_response_date_rate_pct / 100",
         "metric_status": "AVAILABLE for DERIVED_FROM_PUBLISHED_QUESTIONS; otherwise LIMITED",
         "metric_status_reason": "upstream derivation_status when the metric is limited",
+        "identity_status": "RESOLVED for a non-null party assigned by mandate interval; otherwise UNRESOLVED",
+        "identity_method": "copied from party_assignment_method",
         "fact_status": "copied from derivation_status", "quality_status": "constant QUALIFIED",
         "longitudinal_compatibility_status": "constant UNKNOWN pending dedicated evidence",
         "limitations": "declared published-document coverage limitation",
@@ -144,10 +178,10 @@ CALCULATIONS = {
 }
 
 STATUS_COLUMNS = {
-    "mart_contest_results": {"vote_share_ratio", "seat_share_ratio", "previous_vote_share_ratio", "swing_ratio", "vote_change", "seat_change"},
+    "mart_contest_results": {"seats", "vote_share_ratio", "seat_share_ratio", "previous_vote_share_ratio", "swing_ratio", "vote_change", "seat_change"},
     "mart_contest_competitiveness": {"hhi", "effective_number_of_parties", "victory_margin_ratio", "concentration_ratio"},
-    "mart_party_performance": {"mean_vote_share_ratio"},
-    "mart_geography_profile": {"mean_hhi", "mean_victory_margin_ratio"},
+    "mart_party_performance": {"observed_seats", "mean_vote_share_ratio"},
+    "mart_geography_profile": {"observed_seats", "mean_hhi", "mean_victory_margin_ratio"},
     "mart_parliamentary_activity": {"published_response_date_ratio"},
 }
 
@@ -161,7 +195,12 @@ for table, formulas in CALCULATIONS.items():
 for table, names in STATUS_COLUMNS.items():
     for name in names:
         value = COLUMN_CONTRACTS[table][name]
-        status = "longitudinal_compatibility_status" if name in {"previous_vote_share_ratio", "swing_ratio", "vote_change", "seat_change"} else "metric_status"
+        if name in {"previous_vote_share_ratio", "swing_ratio", "vote_change", "seat_change"}:
+            status = "longitudinal_compatibility_status"
+        elif name in {"seats", "seat_share_ratio", "observed_seats"}:
+            status = "seat_metric_status"
+        else:
+            status = "metric_status"
         COLUMN_CONTRACTS[table][name] = ColumnContract(
             value.unit, value.meaning, value.nullable, value.calculation, status, value.source, value.limitation
         )
