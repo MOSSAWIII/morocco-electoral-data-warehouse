@@ -1,9 +1,5 @@
-# Licence de la documentation
+# Documentation license
 
-Sauf mention contraire, la documentation originale de ce dépôt est mise à disposition sous licence Creative Commons Attribution 4.0 International (CC BY 4.0) :
+Unless stated otherwise, original documentation in this repository is licensed under Creative Commons Attribution 4.0 International: https://creativecommons.org/licenses/by/4.0/
 
-https://creativecommons.org/licenses/by/4.0/
-
-Attribution recommandée : « Morocco Electoral Data Warehouse, MOSSAWIII, version consultée, URL du dépôt ».
-
-Cette licence ne couvre pas les publications, marques, données ni documents de tiers cités ou décrits dans la documentation.
+Recommended attribution: “Morocco Electoral Analytics, MOSSAWIII, consulted version, repository URL.” This license does not cover third-party publications, trademarks, data, or documents cited by the documentation.

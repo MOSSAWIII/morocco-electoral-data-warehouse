@@ -1,4 +1,4 @@
-from morocco_elections.cli import main
+from morocco_elections.analytics.cli import main
 
 
 if __name__ == "__main__":

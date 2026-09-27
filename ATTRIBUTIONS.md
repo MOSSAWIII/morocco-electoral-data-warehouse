@@ -1,17 +1,7 @@
-# Sources et attributions
+# Sources and attributions
 
-Les fichiers sources ne sont pas redistribués dans ce dépôt. Les registres canoniques `metadata/source_manifest.json` et `metadata/warehouse/official_source_registry.json` conservent leurs URLs, producteurs, versions, licences déclarées, chemins et empreintes SHA-256.
+This repository does not redistribute the canonical source files. Its analytical outputs may derive from TAFRA/elections.ma electoral results and council data, Haut-Commissariat au Plan population data, SIG-Maroc/HCP-derived geography, the Moroccan General Secretariat Bulletin officiel, and Parliament of Morocco documents distributed through data.gov.ma.
 
-Les principales familles de sources sont :
+Users must preserve the producer, source title or identifier, URL, and source-specific license carried by the supplied canonical warehouse. A source license does not become a blanket license for the composite analytical database. Project transformations must not be represented as official findings of any source producer.
 
-- TAFRA / elections.ma : résultats communaux 2015 et 2021, composition des conseils communaux 2015 et 2021, membres de la Chambre des représentants 2007–2026 et archives électorales nationales et régionales ;
-- Haut-Commissariat au Plan : populations légales RGPH 2014 et 2024 ;
-- SIG-Maroc : couche géographique communale dérivée des données HCP RGPH 2024, dont les conditions de réutilisation doivent être revérifiées avant redistribution ;
-- Secrétariat général du gouvernement : Bulletin officiel n° 7037 du 8 novembre 2021 et autres textes juridiques identifiés dans le registre officiel ;
-- Parlement du Royaume du Maroc via data.gov.ma : questions écrites et orales publiées sous la licence déclarée par la source.
-
-Chaque fichier diffusé est identifié par son empreinte dans les tables de provenance du warehouse. Les anciens contrats de release et rapports de qualification sont conservés sous `archive/legacy-metadata/` et `archive/legacy-docs/`; ils ne constituent pas le contrat actif.
-
-Une mention de licence dans ce dépôt décrit la source concernée ; elle ne constitue pas une licence générale du code ou de l'ensemble du warehouse.
-
-La politique applicable au paquet composite est détaillée dans [`LICENSES/DATA.md`](LICENSES/DATA.md). Les attributions doivent conserver le producteur, le titre ou identifiant de source, l'URL et la licence inscrits dans le warehouse. Les transformations du projet ne doivent pas être présentées comme des résultats officiels du producteur source.
+Because the canonical warehouse is external to this branch, the party supplying it is responsible for retaining its source registry and evidence. See `LICENSES/DATA.md` for the derived-product policy.

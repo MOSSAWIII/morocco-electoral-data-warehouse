@@ -1,93 +1,37 @@
-# Morocco Electoral Data Warehouse
+# Morocco Electoral Analytics
 
-Un warehouse électoral marocain reproductible, publié comme un DuckDB accompagné d'un manifeste cryptographique compact. Le projet possède un modèle, une pipeline, une CLI et un validateur canoniques. Les anciennes publications restent des snapshots immuables de provenance; elles ne sont plus des applications à choisir ou maintenir.
+This branch is a standalone analytics product. It reads a compatible canonical Morocco elections DuckDB in `READ_ONLY` mode and creates a separate DuckDB containing five documented marts. It does not acquire sources, construct the canonical warehouse, decide publication readiness, or modify the source database.
 
-## Contenu
+## Install and build
 
-Le DuckDB couvre les élections et scrutins publiés, la mobilisation, les résultats généraux et communaux, les territoires, les partis, les personnes et mandats publics, l'activité parlementaire, les indicateurs et les preuves de publication. La décision détaillée par domaine — grain, période, source, couverture, limite, licence et statut — est dans [docs/PRODUCT_SCOPE.md](docs/PRODUCT_SCOPE.md).
-
-Repères du snapshot de développement actuel : 9 élections, 3 715 scrutins, 10 883 résultats électoraux, 22 054 résultats communaux, 1 825 territoires, 1 654 mandats, 65 748 questions parlementaires et 30 257 réponses. Ces nombres décrivent le périmètre publié, pas nécessairement l'univers officiel complet.
-
-## Installer
-
-Python 3.11 ou 3.12 est requis; la CI exécute les mêmes dépendances et commandes sur les deux versions.
+Python 3.11 or 3.12 and DuckDB are the only runtime requirements.
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements-dev.txt
+python -m pip install --requirement requirements-dev.txt
 python -m pip install --no-deps --editable .
+morocco-elections build --source path/to/morocco_elections.duckdb --output data/analytics.duckdb
+morocco-elections validate --database data/analytics.duckdb
 ```
 
-Les données RAW et les sorties sont hors Git. Le build réutilise les octets locaux vérifiés ou télécharge uniquement les sources déjà déclarées, avec taille et SHA-256 épinglés. Une divergence interrompt la construction.
+`--source` takes precedence over `MOROCCO_ELECTIONS_CANONICAL_DB`, followed by the optional conventional local path `data/exports/open/warehouse/morocco_elections.duckdb`. An existing output is protected unless `--replace` is supplied. Replacement occurs atomically only after the new database passes validation.
 
-Un cache de contenu facultatif peut être indiqué par `MOROCCO_ELECTIONS_SOURCE_CACHE`. Chaque fichier du cache porte comme nom son SHA-256; il n'est utilisé qu'après validation de sa taille et de son empreinte. Ce cache accélère les reconstructions et rend les serveurs officiels intermittents non bloquants sans assouplir l'intégrité.
+The product contains:
 
-## Construire, valider et publier
+- `mart_contest_results` — result × contest × ballot;
+- `mart_contest_competitiveness` — contest × election × ballot;
+- `mart_party_performance` — party × election × ballot;
+- `mart_geography_profile` — geography × election × ballot;
+- `mart_parliamentary_activity` — person × party × legislature × period × question type.
 
-```powershell
-morocco-elections build
-morocco-elections validate
-morocco-elections audit --summary
-morocco-elections package
-morocco-elections status
-```
+Six executable examples are under `examples/analytics/`. Every example states its source scope and limitations. See [the analytical guide](docs/ANALYTICAL_GUIDE.md), [upstream contract](docs/UPSTREAM_CONTRACT.md), and [data contract](docs/DATA_CONTRACT.md).
 
-`build` produit par défaut `data/exports/open/warehouse/`, dont `morocco_elections.duckdb`, `package-manifest.json`, `table-catalog.json` et `evidence-bundle.json`. Le bundle est un index de preuve : il contient chemins, tailles, SHA-256, empreintes logiques, références de sources et décisions externes disponibles, jamais une seconde copie des faits. Chaque commande expose séparément `integrity_status` et `publication_status`.
+## Quality and limitations
 
-`audit --summary` décrit uniquement l'état canonique courant. Ajouter
-`--historical-seed-diagnostic` inclut, sous une clé distincte, le diagnostic du
-seed historique lorsque cette comparaison est nécessaire.
+The build checks upstream schemas and keys before materialization, validates every mart key and ratio, restricts operational metric statuses to `AVAILABLE`, `LIMITED`, and `NOT_AVAILABLE`, requires reasons for limited/unavailable metrics, and verifies declared join cardinality. Missing values remain `NULL`; they are never silently converted to zero.
 
-Les décisions externes nécessaires à la publication suivent la procédure et les
-empreintes stables décrites dans
-[docs/PUBLICATION_REVIEWS.md](docs/PUBLICATION_REVIEWS.md). Le build les consomme
-et les matérialise; il ne les produit jamais.
+Structural validation works with any compatible snapshot. `morocco-elections accept` is a separate, pinned check for the current reference snapshot. The source SHA-256 is checked before and after every build and only the source file name—not a machine-specific absolute path—is stored in provenance.
 
-Les cinq commandes acceptent `--help`. Les destinations de build et d'archive sont configurables; aucun chemin utilisateur absolu n'est codé dans le produit.
-
-La seule procédure de publication officielle ajoute les deux gardes de release :
-
-```powershell
-morocco-elections audit --summary --require-ready
-morocco-elections package --require-ready --output morocco-electoral-data-warehouse-v1.0.0.zip
-```
-
-La seconde commande refuse aussi automatiquement tout nom d'archive contenant
-`v1.0.0` si `publication_status` n'est pas `PUBLICATION_READY`.
-
-## Interroger DuckDB
-
-```powershell
-python -c "import duckdb; c=duckdb.connect('data/exports/open/warehouse/morocco_elections.duckdb', read_only=True); print(c.sql('SELECT election_id, count(*) AS contests FROM dim_electoral_contest GROUP BY election_id ORDER BY election_id'))"
-```
-
-La table `sources` décrit la provenance. `coverage_universe`, `coverage_universe_member` et `release_coverage_matrix` distinguent couverture observée et complétude officielle. `fact_result_reconciliation` conserve les contrôles calculables et les raisons structurées de non-calculabilité.
-
-Pour une consommation directe, dix vues `analytics_*` exposent élections,
-concours, résultats, sièges, mobilisation, géographies, couverture, qualité,
-provenance et résumé national sans créer une seconde source de vérité. Le
-[guide analytique](docs/ANALYTICAL_GUIDE.md) explique leurs grains et limites;
-les [requêtes de référence](examples/analytical_queries.sql) couvrent les quinze
-usages minimaux du produit.
-
-## Limites connues
-
-- aucun statut final de résultat n'est inféré sans historique officiel structuré;
-- les candidatures, allocations de sièges, lignées partisanes et certaines géographies historiques restent bloquées faute de sources suffisamment reliées;
-- la couverture des questions parlementaires est inconnue sans dénominateur officiel;
-- les RAW dont la licence de redistribution n'est pas établie sont vérifiés localement mais exclus du paquet;
-- une absence reste `NULL`, manquante ou non calculable; elle n'est jamais transformée en zéro.
-
-Les priorités factuelles sont dans [docs/ROADMAP.md](docs/ROADMAP.md). La politique des contrôles est dans [docs/GATE_POLICY.md](docs/GATE_POLICY.md).
-
-## Sources, licences et archives
-
-Le registre canonique unique est `metadata/warehouse/source_registry.json`. Il fixe autorité, URL, date d'acquisition, taille, SHA-256, statut de vérification, licence, usages et décision de redistribution. Le code est sous MIT; la documentation sous CC BY 4.0; les droits des données restent source par source selon [LICENSES/DATA.md](LICENSES/DATA.md) et [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
-
-Les documents des développements antérieurs sont sous `docs/archive/`. Le descripteur `metadata/warehouse/seed_snapshot.json` épingle à la fois l'archive historique et le DuckDB qui en est extrait. Ces archives servent à la provenance et à la non-régression, pas au parcours normal.
-
-## Développer
+## Development
 
 ```powershell
 python -m compileall -q src
@@ -95,4 +39,4 @@ ruff check .
 pytest
 ```
 
-La CI unique reproduit deux fois le paquet depuis un checkout propre, valide les deux sorties, compare les 45 empreintes logiques et les rapports déterministes, exécute les mutations critiques et refuse toute dérive de fichiers générés ou non suivis. La [preuve de reconstruction propre](docs/CLEAN_REBUILD_PROOF.md) distingue explicitement l'identité logique de l'organisation physique DuckDB, qui n'est pas garantie octet pour octet.
+The code is MIT licensed. Documentation is CC BY 4.0. Derived database structure and transformations are offered under ODbL 1.0 subject to source-specific rights described in [ATTRIBUTIONS.md](ATTRIBUTIONS.md) and [LICENSES/DATA.md](LICENSES/DATA.md).

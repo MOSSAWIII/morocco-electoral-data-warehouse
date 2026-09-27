@@ -1,9 +1,9 @@
 cff-version: 1.2.0
-message: "Si vous utilisez ce warehouse, merci de citer le produit et les sources indiquées dans sa table sources."
-title: "Morocco Electoral Data Warehouse"
-type: dataset
+message: "If you use this analytical product, cite it and the sources identified by the supplied canonical warehouse."
+title: "Morocco Electoral Analytics"
+type: software
 authors:
   - name: MOSSAWIII
 version: "0.0.0.dev0"
 repository-code: "https://github.com/MOSSAWIII/morocco-electoral-data-warehouse"
-license: ODbL-1.0
+license: MIT
