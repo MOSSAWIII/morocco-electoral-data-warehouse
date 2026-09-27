@@ -1,2 +1,0 @@
-"""GitHub project automation."""
-
