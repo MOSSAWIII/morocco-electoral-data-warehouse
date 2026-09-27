@@ -16,6 +16,7 @@ dependencies = [
 
 [project.scripts]
 morocco-elections = "morocco_elections.cli:main"
+morocco-elections-analytics = "morocco_elections.analytics.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

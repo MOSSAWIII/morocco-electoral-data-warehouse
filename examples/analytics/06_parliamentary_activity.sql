@@ -1,0 +1,11 @@
+-- Descriptive parliamentary activity from published documents.
+SELECT legislature, question_type, party_id,
+       sum(published_question_count) AS published_questions,
+       sum(published_response_date_count) AS questions_with_published_response_date,
+       avg(published_response_date_ratio) AS mean_published_response_date_ratio,
+       min(metric_status) AS metric_status,
+       'Canonical parliamentary published documents' AS source_scope,
+       'Coverage is descriptive; no official exhaustive document denominator is claimed.' AS limitations
+FROM mart_parliamentary_activity
+GROUP BY legislature, question_type, party_id
+ORDER BY legislature, question_type, published_questions DESC;
