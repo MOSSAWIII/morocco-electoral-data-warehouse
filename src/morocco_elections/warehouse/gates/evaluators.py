@@ -726,6 +726,7 @@ def _result_status(context: PublicationContext) -> GateResult:
     revisions = _rows(context, "result_revisions")
     decisions = _rows(context, "legal_decisions")
     gaps = _rows(context, "result_history_gaps")
+    semantic_facts = _rows(context, "semantic_facts")
     failures = _issue_failures(validate_revisions(revisions))
     failures += _issue_failures(validate_rows("fact_legal_decision", decisions))
     materialized, binding_failures = _bind_contract_tables(context, {
@@ -748,10 +749,22 @@ def _result_status(context: PublicationContext) -> GateResult:
     elif not revisions:
         failures += _require_rows("result_revisions", revisions)
     decisions_by_id = {row.get("decision_id"): row for row in decisions}
+    facts_by_result_id: dict[Any, list[Mapping[str, Any]]] = {}
+    for fact in semantic_facts:
+        if fact.get("result_id") is not None:
+            facts_by_result_id.setdefault(fact.get("result_id"), []).append(fact)
     referenced_decisions: set[Any] = set()
     expected_decision_types = {"RECTIFIED": "RECTIFICATION", "ANNULLED": "ANNULMENT"}
     for revision in revisions:
         rid, decision_id = str(revision.get("revision_id", "<unknown>")), revision.get("decision_id")
+        targets = facts_by_result_id.get(revision.get("result_id"), [])
+        if len(targets) != 1:
+            failures.append((rid, "revision must identify exactly one materialized result row"))
+        elif any(
+            revision.get(field) != targets[0].get(field)
+            for field in ("contest_id", "election_id", "geo_id")
+        ):
+            failures.append((rid, "revision scope differs from its materialized result row"))
         if revision.get("result_status") in expected_decision_types and decision_id is None:
             failures.append((rid, "rectified or annulled revision must reference its legal decision"))
         if decision_id is None:
@@ -830,6 +843,7 @@ def _result_status(context: PublicationContext) -> GateResult:
     evidence = {
         "revisions": revisions, "legal_decisions": decisions, "official_sources": referenced_sources,
         "result_history_gaps": gaps, "materialized": materialized, "source_claims": claims_by_source,
+        "semantic_facts": semantic_facts,
     }
     return _gate(
         "RESULT_STATUS_KNOWN",

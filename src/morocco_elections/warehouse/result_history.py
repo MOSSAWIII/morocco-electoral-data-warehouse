@@ -60,6 +60,36 @@ def build_result_history_diagnostic(
     for revision in revisions:
         revisions_by_election[str(revision.get("election_id"))].append(revision)
 
+    result_targets: dict[str, set[tuple[str, str, str]]] = defaultdict(set)
+    communal_columns = {
+        row[0] for row in connection.execute(
+            "SELECT column_name FROM information_schema.columns "
+            "WHERE table_schema='main' AND table_name='fact_communal_election_result'"
+        ).fetchall()
+    }
+    communal_result_expression = (
+        "concat('COMMUNAL:', contest_id, ':', party_id)"
+        if "party_id" in communal_columns else "result_id"
+    )
+    result_queries = {
+        "fact_election_result": "SELECT result_id, contest_id, election_id, geo_id FROM fact_election_result",
+        "fact_communal_election_result": (
+            f"SELECT {communal_result_expression}, contest_id, election_id, geo_id "
+            "FROM fact_communal_election_result"
+        ),
+    }
+    for query in result_queries.values():
+        for result_id, contest_id, election_id, geo_id in connection.execute(query).fetchall():
+            result_targets[str(result_id)].add((str(contest_id), str(election_id), str(geo_id)))
+
+    def target_matches(revision: dict[str, Any]) -> bool:
+        expected = (
+            str(revision.get("contest_id")),
+            str(revision.get("election_id")),
+            str(revision.get("geo_id")),
+        )
+        return result_targets.get(str(revision.get("result_id"))) == {expected}
+
     elections = connection.execute(
         "SELECT election_id, election_date, official_results_date, publication_date, retrieval_date "
         "FROM dim_election ORDER BY election_date, election_id"
@@ -107,6 +137,7 @@ def build_result_history_diagnostic(
             if revision.get("contest_id") is not None
             and revision.get("verification_method") == "STRUCTURED_SOURCE_CLAIM"
             and revision.get("verification_status") == "VERIFIED"
+            and target_matches(revision)
         } & expected_contest_ids
         complete_history = bool(expected_contest_ids) and expected_contest_ids <= verified_history_contest_ids
         available_dates = {
@@ -180,8 +211,11 @@ def build_result_history_diagnostic(
     )
     insufficient = sum(
         1 for row in revisions
-        if row.get("verification_method") != "STRUCTURED_SOURCE_CLAIM" or row.get("verification_status") != "VERIFIED"
+        if row.get("verification_method") != "STRUCTURED_SOURCE_CLAIM"
+        or row.get("verification_status") != "VERIFIED"
+        or not target_matches(row)
     )
+    invalid_targets = sum(not target_matches(row) for row in revisions)
     result_rows = connection.execute("SELECT count(*) FROM fact_election_result").fetchone()[0]
     communal_rows = connection.execute("SELECT count(*) FROM fact_communal_election_result").fetchone()[0]
     return {
@@ -204,5 +238,6 @@ def build_result_history_diagnostic(
             "validity_overlaps": sum(issue.code == "OVERLAPPING_RESULT_REVISIONS" for issue in revision_issues),
             "post_as_of_records": post_as_of,
             "invented_or_insufficiently_sourced_statuses": insufficient,
+            "orphan_or_mismatched_revision_targets": invalid_targets,
         },
     }

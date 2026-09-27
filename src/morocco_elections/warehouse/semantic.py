@@ -119,6 +119,9 @@ def table_semantics(name: str, columns: list[str]) -> dict[str, Any]:
 
 
 VIEW_SEMANTICS: dict[str, dict[str, Any]] = {
+    "dim_ballot_type": {"purpose": "Canonical ballot vocabulary.", "grain": "one canonical ballot type", "logical_key": ["ballot_type"], "dependencies": []},
+    "bridge_party_identity": {"purpose": "Result-to-party identity decision used to guard sensitive comparisons.", "grain": "one analytical result", "logical_key": ["analytical_result_id"], "dependencies": ["fact_election_result", "fact_communal_election_result", "dim_party"]},
+    "bridge_geo_identity": {"purpose": "Explicit geography identity decision with evidence and validity.", "grain": "one internal geography", "logical_key": ["geo_id"], "dependencies": ["dim_geo", "bridge_geo_official_identifier"]},
     "analytics_elections": {"purpose": "Election inventory with contest counts and source provenance.", "grain": "one election", "logical_key": ["election_id"], "dependencies": ["dim_election", "dim_electoral_contest", "sources"]},
     "analytics_contests": {"purpose": "Contest inventory with territory and applicable legal regime.", "grain": "one electoral contest", "logical_key": ["contest_id"], "dependencies": ["dim_electoral_contest", "dim_election", "dim_geo", "bridge_contest_legal_regime", "dim_legal_regime"]},
     "analytics_party_results": {"purpose": "Party/list results at their original contest grain; no completeness is inferred.", "grain": "one party/list result per contest and result family", "logical_key": ["analytical_result_id"], "dependencies": ["fact_election_result", "fact_communal_election_result"]},
@@ -128,7 +131,8 @@ VIEW_SEMANTICS: dict[str, dict[str, Any]] = {
     "analytics_quality_controls": {"purpose": "All reconciliation outcomes, including NOT_COMPUTABLE.", "grain": "one metric check per contest", "logical_key": ["reconciliation_id"], "dependencies": ["fact_result_reconciliation", "dim_electoral_contest", "dim_geo"]},
     "analytics_coverage": {"purpose": "Published coverage scopes and their verified or unknown denominators.", "grain": "one scope per release", "logical_key": ["release_id", "scope_id"], "dependencies": ["release_coverage_matrix"]},
     "analytics_provenance": {"purpose": "Source, licence and coverage metadata.", "grain": "one declared source", "logical_key": ["source_id"], "dependencies": ["sources"]},
-    "analytics_national_summary": {"purpose": "Observed national aggregates labelled non-exhaustive without an official denominator.", "grain": "one election", "logical_key": ["election_id"], "dependencies": ["dim_election", "analytics_party_results"]},
+    "analytics_national_summary": {"purpose": "Observed national aggregates labelled non-exhaustive without an official denominator.", "grain": "one election and ballot type", "logical_key": ["election_id", "ballot_type"], "dependencies": ["dim_election", "analytics_party_results"]},
+    "analytics_contest_metrics": {"purpose": "Guarded concentration metrics with explicit failed preconditions.", "grain": "one contest", "logical_key": ["contest_id"], "dependencies": ["analytics_party_results"]},
 }
 
 
@@ -152,6 +156,42 @@ def create_analytical_views(connection: duckdb.DuckDBPyConnection) -> None:
     if not required_tables <= available:
         return
     statements = {
+        "dim_ballot_type": """
+            SELECT * FROM (VALUES
+              ('LOCAL', 'Local legislative ballot'),
+              ('NATIONAL', 'National legislative ballot'),
+              ('REGIONAL', 'Regional ballot'),
+              ('COMMUNAL', 'Communal ballot')
+            ) AS t(ballot_type, ballot_type_label)
+        """,
+        "bridge_geo_identity": """
+            SELECT g.geo_id, x.official_geo_code,
+                   coalesce(x.matching_method, 'UNRESOLVED') AS matching_method,
+                   coalesce(x.source_id, g.source_id) AS source_id,
+                   coalesce(x.confidence, 0.0) AS confidence,
+                   g.valid_from, g.valid_to,
+                   CASE WHEN x.matching_method = 'OFFICIAL_IDENTIFIER' AND x.confidence = 1
+                        THEN 'RESOLVED_OFFICIAL'
+                        WHEN x.crosswalk_id IS NOT NULL THEN 'UNRESOLVED'
+                        ELSE 'NOT_APPLICABLE' END AS identity_status,
+                   CASE WHEN x.matching_method = 'OFFICIAL_IDENTIFIER' AND x.confidence = 1
+                        THEN TRUE ELSE FALSE END AS longitudinally_compatible
+            FROM dim_geo g
+            LEFT JOIN bridge_geo_official_identifier x USING (geo_id)
+        """,
+        "bridge_party_identity": """
+            SELECT result_id AS analytical_result_id, party_id, source_id,
+                   CASE WHEN identity_review_status = 'manual_review_required'
+                        THEN 'REVIEW_REQUIRED' ELSE 'SOURCE_IDENTIFIER' END AS matching_method,
+                   CASE WHEN identity_review_status = 'manual_review_required'
+                        THEN 'UNRESOLVED' ELSE 'RESOLVED' END AS identity_status,
+                   identity_review_status <> 'manual_review_required' AS longitudinally_compatible
+            FROM fact_election_result
+            UNION ALL
+            SELECT concat('COMMUNAL:', contest_id, ':', party_id), party_id, source_id,
+                   'SOURCE_IDENTIFIER', 'RESOLVED', TRUE
+            FROM fact_communal_election_result
+        """,
         "analytics_elections": """
             SELECT e.*, count(DISTINCT c.contest_id) AS contest_count,
                    s.source_name, s.publisher, s.license AS source_license
@@ -175,24 +215,37 @@ def create_analytical_views(connection: duckdb.DuckDBPyConnection) -> None:
         """,
         "analytics_party_results": """
             SELECT result_id AS analytical_result_id, 'GENERAL' AS result_family,
-                   contest_id, election_id, geo_id, party_id, votes, seats,
-                   'count' AS unit, NULL::BIGINT AS denominator_value,
-                   'NOT_APPLICABLE_TO_ADDITIVE_COUNT' AS denominator_status,
-                   source_id, evidence_id, quality_status,
+                   CASE c.list_type WHEN 'locale' THEN 'LOCAL' WHEN 'nationale' THEN 'NATIONAL'
+                        WHEN 'regionale' THEN 'REGIONAL' WHEN 'regional_council' THEN 'REGIONAL' END AS ballot_type,
+                   r.contest_id, r.election_id, r.geo_id, r.party_id, r.votes, r.seats,
+                   NULL::DOUBLE AS vote_share_ratio, NULL::BIGINT AS rank, NULL::BOOLEAN AS winner_flag,
+                   NULL::DOUBLE AS seat_share_ratio, NULL::DOUBLE AS previous_vote_share_ratio,
+                   NULL::DOUBLE AS swing_ratio, NULL::BIGINT AS vote_change, NULL::BIGINT AS seat_change,
+                   'count' AS unit, NULL::DOUBLE AS denominator_value,
+                   'UNIDENTIFIED' AS denominator_status,
+                   r.source_id, r.evidence_id, r.quality_status,
                    'UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR' AS coverage_status,
-                   identity_review_status AS validation_status,
+                   r.identity_review_status AS validation_status,
                    'NOT_ESTABLISHED_WITHOUT_VERIFIED_UNIVERSE' AS comparability_status,
+                   'OBSERVED' AS analytical_readiness_level,
+                   'No identified result-universe denominator; the sourced row is observable only.' AS analytical_readiness_reason,
                    'one party/list result per contest' AS grain,
                    'Observed result; completeness is not inferred.' AS limitations,
-                   notes
-            FROM fact_election_result
+                   r.notes
+            FROM fact_election_result r JOIN dim_electoral_contest c USING (contest_id, election_id, geo_id)
             UNION ALL
             SELECT concat('COMMUNAL:', contest_id, ':', party_id), 'COMMUNAL',
-                   contest_id, election_id, geo_id, party_id, votes, seats,
-                   'count', NULL::BIGINT, 'NOT_APPLICABLE_TO_ADDITIVE_COUNT',
-                   source_id, NULL, quality_status,
+                   'COMMUNAL', contest_id, election_id, geo_id, party_id, votes, seats,
+                   vote_share / 100.0, rank, winner_flag, seat_share / 100.0,
+                   previous_vote_share / 100.0, swing_pp / 100.0, vote_change, seat_change,
+                   'count', 1.0, 'SOURCE_DISTRIBUTION_TOTAL', source_id, NULL, quality_status,
                    'UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR', fact_status,
                    'NOT_ESTABLISHED_WITHOUT_VERIFIED_UNIVERSE',
+                   CASE WHEN abs(sum(vote_share) OVER (PARTITION BY contest_id) - 100.0) <= 0.000001
+                        THEN 'SOURCE_INTERNAL_COMPLETE' ELSE 'OBSERVED' END,
+                   CASE WHEN abs(sum(vote_share) OVER (PARTITION BY contest_id) - 100.0) <= 0.000001
+                        THEN 'Party shares sum to the identified source-distribution denominator (1.0).'
+                        ELSE 'The source distribution does not sum to its identified denominator (1.0).' END,
                    'one party/list result per contest',
                    'Observed result; completeness is not inferred.', notes
             FROM fact_communal_election_result
@@ -267,7 +320,7 @@ def create_analytical_views(connection: duckdb.DuckDBPyConnection) -> None:
             FROM sources
         """,
         "analytics_national_summary": """
-            SELECT e.election_id, e.election_name, e.election_date,
+            SELECT e.election_id, r.ballot_type, e.election_name, e.election_date,
                    count(DISTINCT r.contest_id) AS observed_contests,
                    count(DISTINCT r.geo_id) AS observed_territories,
                    count(DISTINCT r.party_id) AS observed_parties,
@@ -280,12 +333,48 @@ def create_analytical_views(connection: duckdb.DuckDBPyConnection) -> None:
                    'UNKNOWN_WITHOUT_OFFICIAL_DENOMINATOR' AS coverage_status,
                    'QUALIFIED_DESCRIPTIVE_ONLY' AS validation_status,
                    'NOT_COMPARABLE_AS_EXHAUSTIVE_TOTAL' AS comparability_status,
-                   'one election' AS grain,
+                   'one election and ballot type' AS grain,
                    string_agg(DISTINCT r.source_id, ',' ORDER BY r.source_id) AS source_ids,
                    'Observed sums are descriptive and are not presented as official exhaustive totals.' AS limitations
             FROM dim_election e
             LEFT JOIN analytics_party_results r USING (election_id)
-            GROUP BY e.election_id, e.election_name, e.election_date
+            GROUP BY e.election_id, r.ballot_type, e.election_name, e.election_date
+        """,
+        "analytics_contest_metrics": """
+            WITH distributions AS (
+              SELECT contest_id, election_id, ballot_type, count(*) AS party_count,
+                     sum(vote_share_ratio) AS share_sum,
+                     sum(vote_share_ratio * vote_share_ratio) AS raw_hhi,
+                     max(vote_share_ratio) AS first_share,
+                     max(vote_share_ratio) FILTER (WHERE share_rank = 2) AS second_share,
+                     bool_and(validation_status <> 'manual_review_required') AS party_identities_compatible,
+                     bool_and(g.longitudinally_compatible) AS geography_compatible
+              FROM (
+                SELECT r.*, dense_rank() OVER (PARTITION BY contest_id ORDER BY vote_share_ratio DESC) AS share_rank
+                FROM analytics_party_results r
+              ) r
+              JOIN bridge_geo_identity g USING (geo_id)
+              GROUP BY contest_id, election_id, ballot_type
+            )
+            SELECT contest_id, election_id, ballot_type,
+                   CASE WHEN share_sum IS NOT NULL AND abs(share_sum - 1.0) <= 0.000001 AND party_count >= 2
+                        THEN raw_hhi END AS hhi,
+                   CASE WHEN share_sum IS NOT NULL AND abs(share_sum - 1.0) <= 0.000001 AND raw_hhi > 0 AND party_count >= 2
+                        THEN 1.0 / raw_hhi END AS effective_number_of_parties,
+                   CASE WHEN share_sum IS NOT NULL AND abs(share_sum - 1.0) <= 0.000001 AND second_share IS NOT NULL
+                        THEN first_share - second_share END AS victory_margin_ratio,
+                   CASE WHEN share_sum IS NOT NULL AND abs(share_sum - 1.0) <= 0.000001 AND party_count >= 2
+                        THEN first_share END AS concentration_ratio,
+                   CASE WHEN share_sum IS NOT NULL AND abs(share_sum - 1.0) <= 0.000001 AND party_count >= 2
+                        THEN 'COMPUTED' ELSE 'NOT_COMPUTED' END AS metric_status,
+                   CASE WHEN share_sum IS NULL THEN 'VOTE_SHARE_RATIO_MISSING'
+                        WHEN abs(share_sum - 1.0) > 0.000001 THEN 'SOURCE_DISTRIBUTION_DENOMINATOR_FAILED'
+                        WHEN party_count < 2 THEN 'AT_LEAST_TWO_PARTIES_REQUIRED'
+                        WHEN second_share IS NULL THEN 'RUNNER_UP_REQUIRED_FOR_MARGIN'
+                        ELSE NULL END AS missing_preconditions,
+                   party_identities_compatible, geography_compatible,
+                   party_identities_compatible AND geography_compatible AS longitudinally_comparable
+            FROM distributions
         """,
     }
     for name, query in statements.items():

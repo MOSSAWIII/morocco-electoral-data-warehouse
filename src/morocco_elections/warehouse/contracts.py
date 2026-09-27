@@ -25,6 +25,8 @@ VOCABULARIES = {
         _v("quality_status", VERIFIED="Source and value verified", QUALIFIED="Usable with disclosed limits", UNRESOLVED="Not resolved", REJECTED="Rejected by validation"),
         _v("fact_status", OBSERVED="Directly observed", OFFICIAL="Published by competent authority", RECOMPUTED="Derived deterministically", INFERRED="Inferred and never an observed fact", FORECAST="Forecast and never an observed fact"),
         _v("list_type", LOCAL="Local constituency list", REGIONAL="Regional list", NATIONAL="National list", INDIVIDUAL="Individual candidacy"),
+        _v("ballot_type", LOCAL="Local legislative ballot", NATIONAL="National legislative ballot", REGIONAL="Regional ballot", COMMUNAL="Communal ballot"),
+        _v("analytical_readiness", OBSERVED="A sourced observation without a completeness claim", SOURCE_INTERNAL_COMPLETE="The source-internal distribution has an identified denominator and passes its checks", OFFICIAL_UNIVERSE_COMPLETE="A verified official universe is complete", LONGITUDINALLY_COMPARABLE="Official identities and boundaries are compatible over time"),
         _v("result_type", VOTES="Votes", SEATS="Seats", MOBILIZATION="Electoral mobilization", ALLOCATION="Seat allocation"),
         _v("result_status", SCHEDULED="Election scheduled", POLL_CLOSED="Poll closed", PROVISIONAL="Provisional result", PROCLAIMED="Officially proclaimed result", CONTESTED="Result under legal contest", RECTIFIED="Officially corrected result", ANNULLED="Annulled result", FINAL="Final result"),
         _v("verification_status", VERIFIED="Denominator verified against its source", PENDING="Verification pending", REJECTED="Failed verification"),
@@ -117,4 +119,5 @@ FIELD_VOCABULARIES = {
     "relationship_type": "geo_parent_relationship_type", "review_status": "geo_parent_review_status",
     "metric_status": "metric_status", "publication_status": "publication_status", "claim_class": "claim_class",
     "license_status": "license_status", "gate_status": "gate_status",
+    "ballot_type": "ballot_type", "analytical_readiness_level": "analytical_readiness",
 }

@@ -850,6 +850,24 @@ def test_result_status_gate_keeps_partial_history_gaps_blocking(tmp_path: Path) 
     assert "one contest remains unqualified" in result.justification
 
 
+def test_result_status_gate_rejects_revision_not_bound_to_materialized_result(tmp_path: Path) -> None:
+    context = _publication_context(tmp_path)
+    revision = {**context.datasets["result_revisions"][0], "result_id": "ABSENT"}
+    result = _result_status(_dataset(context, "result_revisions", [revision]))
+
+    assert result.status == "FAIL"
+    assert "exactly one materialized result row" in result.justification
+
+
+def test_result_status_gate_rejects_revision_with_mismatched_result_scope(tmp_path: Path) -> None:
+    context = _publication_context(tmp_path)
+    revision = {**context.datasets["result_revisions"][0], "geo_id": "G2"}
+    result = _result_status(_dataset(context, "result_revisions", [revision]))
+
+    assert result.status == "FAIL"
+    assert "scope differs from its materialized result row" in result.justification
+
+
 def test_temporal_gate_rejects_future_and_reversed_dates(tmp_path: Path) -> None:
     context = _publication_context(tmp_path)
     revision = context.datasets["result_revisions"][0]

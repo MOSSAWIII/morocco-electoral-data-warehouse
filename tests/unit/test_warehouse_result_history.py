@@ -19,9 +19,18 @@ def _history_connection() -> duckdb.DuckDBPyConnection:
         "CREATE TABLE dim_electoral_contest (contest_id VARCHAR, election_id VARCHAR)"
     )
     connection.execute("INSERT INTO dim_electoral_contest VALUES ('C1', 'E'), ('C2', 'E')")
-    for table in ("fact_election_result", "fact_communal_election_result", "fact_electoral_mobilization"):
-        connection.execute(f'CREATE TABLE "{table}" (election_id VARCHAR, source_id VARCHAR)')
-    connection.execute("INSERT INTO fact_election_result VALUES ('E', 'S')")
+    for table in ("fact_election_result", "fact_communal_election_result"):
+        connection.execute(
+            f'CREATE TABLE "{table}" (result_id VARCHAR, contest_id VARCHAR, '
+            "election_id VARCHAR, geo_id VARCHAR, source_id VARCHAR)"
+        )
+    connection.execute(
+        "CREATE TABLE fact_electoral_mobilization (election_id VARCHAR, source_id VARCHAR)"
+    )
+    connection.execute(
+        "INSERT INTO fact_election_result VALUES "
+        "('X1', 'C1', 'E', 'G1', 'S'), ('X2', 'C2', 'E', 'G2', 'S')"
+    )
     connection.execute(ddl("fact_result_revision"))
     connection.execute(
         "INSERT INTO fact_result_revision "
@@ -82,3 +91,18 @@ def test_result_history_diagnostic_clears_gap_only_after_every_contest_is_verifi
     assert inventory["additional_official_source_required"] is False
     assert inventory["verified_history_contest_count"] == 2
     assert report["gaps"] == []
+
+
+def test_result_history_diagnostic_rejects_revision_with_mismatched_result_scope(tmp_path: Path) -> None:
+    connection = _history_connection()
+    try:
+        connection.execute("UPDATE fact_result_revision SET geo_id = 'G2'")
+        report = build_result_history_diagnostic(connection, tmp_path, "2026-09-21")
+    finally:
+        connection.close()
+
+    inventory = report["inventory"][0]
+    assert inventory["verified_history_contest_count"] == 0
+    assert inventory["official_status_provable"] is False
+    assert report["diagnostic"]["official_status_proven"] == 0
+    assert report["diagnostic"]["orphan_or_mismatched_revision_targets"] == 1

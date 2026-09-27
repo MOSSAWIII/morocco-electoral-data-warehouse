@@ -368,8 +368,9 @@ def test_development_build_materializes_verified_legal_evidence(tmp_path: Path) 
         "cycles": 0,
         "validity_overlaps": 0,
         "post_as_of_records": 0,
-        "invented_or_insufficiently_sourced_statuses": 0,
-    }
+            "invented_or_insufficiently_sourced_statuses": 0,
+            "orphan_or_mismatched_revision_targets": 0,
+        }
     connection = duckdb.connect(str(output), read_only=True)
     try:
         assert connection.execute("SELECT count(*) FROM dim_legal_regime").fetchone()[0] == 15
@@ -388,11 +389,38 @@ def test_development_build_materializes_verified_legal_evidence(tmp_path: Path) 
             ).fetchall()
         }
         assert {
+            "dim_ballot_type", "bridge_party_identity", "bridge_geo_identity",
             "analytics_elections", "analytics_contests", "analytics_party_results",
             "analytics_seats", "analytics_mobilization", "analytics_geographies",
             "analytics_quality_controls", "analytics_coverage",
-            "analytics_provenance", "analytics_national_summary",
+            "analytics_provenance", "analytics_national_summary", "analytics_contest_metrics",
         } == views
+        assert connection.execute(
+            "SELECT count(*), count(DISTINCT analytical_result_id) FROM analytics_party_results"
+        ).fetchone() == (32937, 32937)
+        assert connection.execute(
+            "SELECT count(*) FROM analytics_party_results WHERE ballot_type IS NULL "
+            "OR analytical_readiness_level IS NULL OR analytical_readiness_reason IS NULL"
+        ).fetchone()[0] == 0
+        assert connection.execute(
+            "SELECT count(*) FROM analytics_party_results WHERE vote_share_ratio IS NOT NULL "
+            "AND vote_share_ratio NOT BETWEEN 0 AND 1"
+        ).fetchone()[0] == 0
+        assert connection.execute(
+            "SELECT count(*) FROM (SELECT contest_id FROM analytics_party_results "
+            "WHERE ballot_type='COMMUNAL' GROUP BY contest_id "
+            "HAVING min(analytical_readiness_level)='SOURCE_INTERNAL_COMPLETE')"
+        ).fetchone()[0] == 3076
+        assert connection.execute(
+            "SELECT count(*) FROM bridge_party_identity WHERE identity_status='UNRESOLVED'"
+        ).fetchone()[0] == 241
+        assert connection.execute(
+            "SELECT count(*) FROM bridge_geo_identity WHERE identity_status='UNRESOLVED'"
+        ).fetchone()[0] == 177
+        assert connection.execute(
+            "SELECT count(*) FROM analytics_contest_metrics WHERE metric_status='NOT_COMPUTED' "
+            "AND missing_preconditions IS NULL"
+        ).fetchone()[0] == 0
         assert connection.execute(
             "SELECT count(*) FROM analytics_geographies WHERE hcp_link_status='UNRESOLVED'"
         ).fetchone()[0] == 177
@@ -429,8 +457,9 @@ def test_development_build_materializes_verified_legal_evidence(tmp_path: Path) 
             "OR official_denominator IS NOT NULL"
         ).fetchone()[0] == 0
         assert connection.execute(
-            "SELECT count(*) FROM analytics_national_summary"
-        ).fetchone()[0] == 9
+            "SELECT count(*) FROM (SELECT election_id, ballot_type FROM analytics_national_summary "
+            "GROUP BY 1, 2 HAVING count(*) > 1)"
+        ).fetchone()[0] == 0
         identifier_columns = connection.execute(
             "SELECT table_name, column_name FROM information_schema.columns "
             "WHERE table_schema='main' AND data_type='VARCHAR' "
@@ -465,7 +494,7 @@ def test_development_build_materializes_verified_legal_evidence(tmp_path: Path) 
     finally:
         connection.close()
     catalog = _table_catalog(output)
-    assert (catalog["table_count"], catalog["view_count"]) == (45, 10)
+    assert (catalog["table_count"], catalog["view_count"]) == (45, 14)
     table_fields = {
         "role", "grain", "logical_key", "authorized_relation_keys",
         "authorized_relations", "usage", "known_limits",
