@@ -1,3 +1,5 @@
+> **English overview:** [Purpose, coverage, methodology and limitations](docs/OVERVIEW_EN.md). The French documentation below remains authoritative for current build and validation instructions.
+
 # Morocco Electoral Data Warehouse
 
 Un warehouse électoral marocain reproductible, publié comme un DuckDB accompagné d'un manifeste cryptographique compact. Le projet possède un modèle, une pipeline, une CLI et un validateur canoniques. Les anciennes publications restent des snapshots immuables de provenance; elles ne sont plus des applications à choisir ou maintenir.
